@@ -1,0 +1,10 @@
+{ "name": "cozyhome"
+, "version": "0.0.1"
+, "engines": ["node >= 0.4.0"]
+, "main": "server.coffee"
+, "dependencies":
+  { "http-proxy":             ">= 0.8.0"
+,   "coffee-script":          "> 0"
+  }
+}
+

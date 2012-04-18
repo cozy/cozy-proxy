@@ -23,21 +23,18 @@ getPort = (path) ->
 
 # Proxy server that uses route table defined earlier
 proxyServer = httpProxy.createServer (req, res, proxy) ->
+    buffer = httpProxy.buffer(req)
+
     port = defaultPort
     for route of routes
         if req.url.match("^" + route)
             req.url = req.url.substring(route.length)
-            console.log req.url
             port = routes[route]
 
-            res.writeHead 200,
-                'Set-Cookie': 'mycookie=' + route
-                'Content-Type': 'text/plain'
-
-
     proxy.proxyRequest req, res,
-        port: port
         host: 'localhost'
+        port: port
+        buffer: buffer
 
 # Start proxy server
 proxyServer.listen proxyPort

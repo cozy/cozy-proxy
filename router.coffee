@@ -1,9 +1,10 @@
 httpProxy = require('http-proxy')
 http = require('http')
-
+https = require('https')
+fs = require('fs')
 
 # Port on which proxy listens
-proxyPort = 80
+proxyPort = 7000
 
 # Default port where requests are redirected
 defaultPort = 3000
@@ -11,18 +12,16 @@ defaultPort = 3000
 routes =
     "/apps/noty-plus": 8001
 
-
-# Return port corresponding to given path, returns defaultPort if no
-# route corresponds.
-getPort = (path) ->
-    for route of routes
-        if path.match("^" + route)
-            return routes[route]
-    defaultPort
+# HTTPS options
+# Server.key and Server.cert should be regenerated for each installation
+options =
+    https:
+        key: fs.readFileSync('./server.key', 'utf8'),
+        cert: fs.readFileSync('./server.crt', 'utf8')
 
 
 # Proxy server that uses route table defined earlier
-proxyServer = httpProxy.createServer (req, res, proxy) ->
+proxyServer = httpProxy.createServer options, (req, res, proxy) ->
     buffer = httpProxy.buffer(req)
 
     port = defaultPort

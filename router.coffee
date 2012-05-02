@@ -16,8 +16,8 @@ routes =
 # Server.key and Server.cert should be regenerated for each installation
 options =
     https:
-        key: fs.readFileSync('./server.key', 'utf8'),
-        cert: fs.readFileSync('./server.crt', 'utf8')
+        key: fs.readFileSync('/home/cozy/server.key', 'utf8'),
+        cert: fs.readFileSync('/home/cozy/server.crt', 'utf8')
 
 
 # Proxy server that uses route table defined earlier

@@ -4,7 +4,7 @@ https = require('https')
 fs = require('fs')
 
 # Port on which proxy listens
-proxyPort = 7000
+proxyPort = 80
 
 # Default port where requests are redirected
 defaultPort = 3000

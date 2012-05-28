@@ -10,7 +10,7 @@ proxyPort = 80
 defaultPort = 3000
 # Routes for redirection depending on given path
 routes =
-    "/apps/noty-plus": 8001
+    "/apps/notes": 8001
 
 # HTTPS options
 # Server.key and Server.cert should be regenerated for each installation

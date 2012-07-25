@@ -4,7 +4,7 @@ https = require('https')
 fs = require('fs')
 
 # Port on which proxy listens
-proxyPort = 80
+proxyPort = 4000
 
 # Default port where requests are redirected
 defaultPort = 3000
@@ -14,10 +14,10 @@ routes =
 
 # HTTPS options
 # Server.key and Server.cert should be regenerated for each installation
-options =
-    https:
-        key: fs.readFileSync('/home/cozy/server.key', 'utf8'),
-        cert: fs.readFileSync('/home/cozy/server.crt', 'utf8')
+options = {}
+#    https:
+#        key: fs.readFileSync('/home/cozy/server.key', 'utf8'),
+#        cert: fs.readFileSync('/home/cozy/server.crt', 'utf8')
 
 
 # Proxy server that uses route table defined earlier

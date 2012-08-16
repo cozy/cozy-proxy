@@ -8,6 +8,7 @@ proxyPort = 4000
 
 # Default port where requests are redirected
 defaultPort = 3000
+
 # Routes for redirection depending on given path
 routes =
     "/apps/notes": 8001

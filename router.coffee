@@ -1,16 +1,13 @@
 httpProxy = require('http-proxy')
 http = require('http')
 
+controllers = require "./controllers"
+
 process.on 'uncaughtException', (err) ->
     console.log err.message
     console.log err.stack
 
-
-showRoutesController = (routes, req, res) =>
-    res.writeHead(200, {'Content-Type': 'application/json'})
-    res.end(JSON.stringify routes)
-
-class CozyProxy
+class exports.CozyProxy
 
     # Port on which proxy listens
     proxyPort: 4000
@@ -24,16 +21,17 @@ class CozyProxy
         "/apps/todos": 8002
         "/apps/mails": 8003
 
-    controllers: (=>
-        "/routes/add": (req, res) ->
-        "/routes/del": (req, res) ->
-        "/routes": showRoutesController
-    )()
-
+    controllers:
+        "/routes/add": controllers.addRoute
+        "/routes/del": controllers.delRoute
+        "/routes": controllers.showRoutes
+    
     # Return route matching request
     matchRoute: (req, routes, callback) ->
         for route of routes
-            callback(route) if req.url.match("^" + route)
+            if req.url.match("^" + route)
+                callback(route)
+                break
 
     # Proxy server that uses route table defined earlier
     handleRequest: (req, res, proxy) =>
@@ -46,6 +44,7 @@ class CozyProxy
         if port == @defaultPort
             @matchRoute req, @controllers, (route) =>
                 isAction = true
+                console.log route
                 @controllers[route](@routes, req, res)
 
         @proxyController(req, res, proxy, port) if not isAction
@@ -57,18 +56,21 @@ class CozyProxy
             port: port
             buffer: buffer
     
-    start: ->
+    start: (port) ->
+        @proxyPort = port if port
+
         if not @proxyServer
             @proxyServer = httpProxy.createServer @handleRequest
         @proxyServer.listen @proxyPort
-        console.log "Proxy listen on port " + @proxyPort
         
     stop: ->
         @proxyServer.close()
 
 
-router = new CozyProxy()
-router.start()
+if not module.parent
+    router = new exports.CozyProxy()
+    router.start()
+    console.log "Proxy listen on port " + router.proxyPort
 
 
 

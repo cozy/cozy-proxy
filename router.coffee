@@ -78,7 +78,7 @@ class exports.CozyProxy
             try
                 apps = JSON.parse body
                 for app in apps.rows
-                    @routes["/apps/#{app.slug}"] = app.port
+                    @routes["/apps/#{app.slug}"] = app.port if app.port?
                 callback()
             catch err
                 return callback err

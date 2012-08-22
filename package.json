@@ -5,6 +5,11 @@
 , "dependencies":
   { "http-proxy":             ">= 0.8.0"
 ,   "coffee-script":          "> 0"
+,   "request":                "> 0"
+  }
+, "devDependencies":
+  { "mocha":                  "> 0"
+,   "chai":                   "> 0"
   }
 }
 

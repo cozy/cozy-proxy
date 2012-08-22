@@ -1,4 +1,5 @@
 
+# Add a route to proxy routes if given request is correct. 
 exports.addRoute = (routes, req, res) ->
     body = ""
     req.on 'data', (chunk) ->
@@ -6,15 +7,19 @@ exports.addRoute = (routes, req, res) ->
     req.on 'end', ->
         routeInfos = JSON.parse body
         if not routeInfos.route? or not routeInfos.port?
+            console.log "Wrong data were sent, route cannot be added"
             res.statusCode = 400
             res.setHeader 'Content-Type', 'application/json'
             res.end()
         else
             routes[routeInfos.route] = routeInfos.port
+            console.log "New route added #{routeInfos.route} redirect to " + \
+                        "port #{routeInfos.port}"
             res.statusCode = 201
             res.setHeader 'Content-Type', 'application/json'
             res.end("")
 
+# Remove a route that is given in parameter.
 exports.delRoute = (routes, req, res) ->
     body = ""
     req.on 'data', (chunk) ->
@@ -27,6 +32,7 @@ exports.delRoute = (routes, req, res) ->
             res.end()
         else
             delete routes[routeInfos.route]
+            console.log "Route removed : #{routeInfos.route}"
             res.statusCode = 204
             res.setHeader 'Content-Type', 'application/json'
             res.end()

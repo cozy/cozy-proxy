@@ -1,6 +1,7 @@
 httpProxy = require('http-proxy')
 http = require('http')
 
+{Client} = require './common/test/client'
 controllers = require "./controllers"
 
 process.on 'uncaughtException', (err) ->
@@ -16,11 +17,10 @@ class exports.CozyProxy
     defaultPort: 3000
 
     # Routes for redirection depending on given path
-    routes:
-        "/apps/notes": 8001
-        "/apps/todos": 8002
-        "/apps/mails": 8003
+    routes: {}
 
+    # Controllers needed to configure the router dynamically through a 
+    # REST API
     controllers:
         "/routes/add": controllers.addRoute
         "/routes/del": controllers.delRoute
@@ -44,11 +44,12 @@ class exports.CozyProxy
         if port == @defaultPort
             @matchRoute req, @controllers, (route) =>
                 isAction = true
-                console.log route
+                console.log "#{req.method} #{route}"
                 @controllers[route](@routes, req, res)
 
         @proxyController(req, res, proxy, port) if not isAction
 
+    # Controller that proxies request to the given port.
     proxyController: (req, res, proxy, port) ->
         buffer = httpProxy.buffer(req)
         proxy.proxyRequest req, res,
@@ -56,6 +57,7 @@ class exports.CozyProxy
             port: port
             buffer: buffer
     
+    # Start proxy server listening.
     start: (port) ->
         @proxyPort = port if port
 
@@ -63,15 +65,39 @@ class exports.CozyProxy
             @proxyServer = httpProxy.createServer @handleRequest
         @proxyServer.listen @proxyPort
         
+    # Stop proxy server listening.
     stop: ->
         @proxyServer.close()
 
+    # Clear routes then build them from Cozy Home data.
+    resetRoutes: (callback) ->
+        @routes = {}
+        client = new Client("http://localhost:#{@defaultPort}/")
+        client.get "api/applications/", (error, response, body) =>
+            return callback(error) if error
+            try
+                apps = JSON.parse body
+                for app in apps.rows
+                    @routes["/apps/#{app.slug}"] = app.port
+                callback()
+            catch err
+                return callback err
 
+
+# Main function
 if not module.parent
     router = new exports.CozyProxy()
     router.start()
     console.log "Proxy listen on port " + router.proxyPort
-
+    console.log "Initializing routes..."
+    router.resetRoutes (error) ->
+        if error
+            console.log error.message
+            console.log "Routes initializing failed"
+        else
+            console.log "Routes initialized"
+            for route of router.routes
+                console.log "#{route} => #{router.routes[route]}"
 
 
 # Interesting links : 

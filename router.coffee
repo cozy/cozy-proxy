@@ -27,7 +27,7 @@ class exports.CozyProxy
         "/routes": controllers.showRoutes
     
     # Return route matching request
-    matchRoute: (req, routes, callback) ->
+    _matchRoute: (req, routes, callback) ->
         for route of routes
             if req.url.match("^" + route)
                 callback(route)
@@ -36,13 +36,13 @@ class exports.CozyProxy
     # Proxy server that uses route table defined earlier
     handleRequest: (req, res, proxy) =>
         port = @defaultPort
-        @matchRoute req, @routes, (route) =>
+        @_matchRoute req, @routes, (route) =>
             req.url = req.url.substring(route.length)
             port = @routes[route]
 
         isAction = false
         if port == @defaultPort
-            @matchRoute req, @controllers, (route) =>
+            @_matchRoute req, @controllers, (route) =>
                 isAction = true
                 console.log "#{req.method} #{route}"
                 @controllers[route](@routes, req, res)

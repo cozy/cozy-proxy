@@ -7,14 +7,16 @@ exports.addRoute = (routes, req, res) ->
     req.on 'end', ->
         routeInfos = JSON.parse body
         if not routeInfos.route? or not routeInfos.port?
-            console.log "Wrong data were sent, route cannot be added"
+            if process.env.NODE_ENV != "test"
+                console.log "Wrong data were sent, route cannot be added"
             res.statusCode = 400
             res.setHeader 'Content-Type', 'application/json'
             res.end()
         else
             routes[routeInfos.route] = routeInfos.port
-            console.log "New route added #{routeInfos.route} redirect to " + \
-                        "port #{routeInfos.port}"
+            if process.env.NODE_ENV != "test"
+                console.log "New route added #{routeInfos.route} redirect " + \
+                            "to port #{routeInfos.port}"
             res.statusCode = 201
             res.setHeader 'Content-Type', 'application/json'
             res.end("")
@@ -32,7 +34,8 @@ exports.delRoute = (routes, req, res) ->
             res.end()
         else
             delete routes[routeInfos.route]
-            console.log "Route removed : #{routeInfos.route}"
+            if process.env.NODE_ENV != "test"
+                console.log "Route removed : #{routeInfos.route}"
             res.statusCode = 204
             res.setHeader 'Content-Type', 'application/json'
             res.end()

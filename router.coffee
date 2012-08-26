@@ -44,7 +44,8 @@ class exports.CozyProxy
         if port == @defaultPort
             @_matchRoute req, @controllers, (route) =>
                 isAction = true
-                console.log "#{req.method} #{route}"
+                if process.env.NODE_ENV != "test"
+                    console.log "#{req.method} #{route}"
                 @controllers[route](@routes, req, res)
 
         @proxyController(req, res, proxy, port) if not isAction

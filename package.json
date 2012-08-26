@@ -10,7 +10,7 @@
 , "devDependencies":
   { "mocha":                  "> 0"
 ,   "chai":                   "> 0"
-,   "nock":                   "> 0"
+,   "should":                 "> 0"
   }
 }
 

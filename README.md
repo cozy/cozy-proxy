@@ -1,4 +1,4 @@
-# Cozy Proxy
+# Description
 
 Cozy Proxy redirects requests properly to the righ application depending on 
 given path.
@@ -6,7 +6,10 @@ given path.
 
 # About Cozy
 
-Cozy Proxy is suited to be deployed on the Cozy platform. Cozy allow you to 
-host all your personnal application in a single place you control. 
-You can manage your data efficiently while protecting your privacy.
-You will find more on our website : http://www.mycozycloud.com
+This app is part of the Cozy platform backend. Cozy is the personal
+server for everyone. It allows you to install your every day web applications 
+easily on your server, a single place you control. This means you can manage 
+efficiently your data while protecting your privacy without technical skills.
+
+More informations and hosting services on:
+http://www.mycozycloud.com

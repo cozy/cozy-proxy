@@ -1,7 +1,7 @@
 httpProxy = require('http-proxy')
 http = require('http')
 
-{Client} = require './common/test/client'
+Client = require('request-json').JsonClient
 controllers = require "./controllers"
 
 process.on 'uncaughtException', (err) ->
@@ -24,6 +24,7 @@ class exports.CozyProxy
     controllers:
         "/routes/add": controllers.addRoute
         "/routes/del": controllers.delRoute
+        "/routes/reset": controllers.resetRoutes
         "/routes": controllers.showRoutes
     
     # Return route matching request
@@ -46,7 +47,7 @@ class exports.CozyProxy
                 isAction = true
                 if process.env.NODE_ENV != "test"
                     console.log "#{req.method} #{route}"
-                @controllers[route](@routes, req, res)
+                @controllers[route](@, req, res)
 
         @proxyController(req, res, proxy, port) if not isAction
 
@@ -74,10 +75,10 @@ class exports.CozyProxy
     resetRoutes: (callback) ->
         @routes = {}
         client = new Client("http://localhost:#{@defaultPort}/")
-        client.get "api/applications/", (error, response, body) =>
+        client.get "api/applications/", (error, response, apps) =>
             return callback(error) if error
+            return callback new Error(apps.msg) if apps.error?
             try
-                apps = JSON.parse body
                 for app in apps.rows
                     @routes["/apps/#{app.slug}"] = app.port if app.port?
                 callback()

@@ -1,6 +1,7 @@
 
 # Add a route to proxy routes if given request is correct. 
-exports.addRoute = (routes, req, res) ->
+exports.addRoute = (router, req, res) ->
+    routes = router.routes
     body = ""
     req.on 'data', (chunk) ->
         body += chunk
@@ -22,7 +23,8 @@ exports.addRoute = (routes, req, res) ->
             res.end("")
 
 # Remove a route that is given in parameter.
-exports.delRoute = (routes, req, res) ->
+exports.delRoute = (router, req, res) ->
+    routes = router.routes
     body = ""
     req.on 'data', (chunk) ->
         body += chunk
@@ -42,8 +44,19 @@ exports.delRoute = (routes, req, res) ->
 
 
 # Controllers that returns all branches
-exports.showRoutes = (routes, req, res) ->
+exports.showRoutes = (router, req, res) ->
+    routes = router.routes
     res.writeHead 200, {'Content-Type': 'application/json'}
     res.end JSON.stringify(routes)
 
+
+# Reset controller routes by grabbing routes data from home application
+exports.resetRoutes = (router, req, res) ->
+    router.resetRoutes (error) ->
+        if error
+            res.writeHead 500, {'Content-Type': 'application/json'}
+            res.end JSON.stringify error
+        else
+            res.statusCode = 200
+            res.end()
 

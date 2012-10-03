@@ -1,6 +1,6 @@
 # Description
 
-Cozy Proxy redirects requests properly to the righ application depending on 
+Cozy Proxy redirects requests properly to the right application depending on 
 given path.
 
 
@@ -12,4 +12,4 @@ easily on your server, a single place you control. This means you can manage
 efficiently your data while protecting your privacy without technical skills.
 
 More informations and hosting services on:
-http://www.mycozycloud.com
+http://cozycloud.cc

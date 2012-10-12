@@ -6,6 +6,7 @@
   { "http-proxy":             ">= 0.8.0"
 ,   "coffee-script":          "> 0"
 ,   "request-json":           "> 0"
+,   "express":                "> 0"
   }
 , "devDependencies":
   { "mocha":                  "> 0"

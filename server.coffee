@@ -5,8 +5,40 @@ express = require('express')
 Client = require('request-json').JsonClient
 
 process.on 'uncaughtException', (err) ->
-    console.log err.message
-    console.log err.stack
+    console.error err.message
+    console.error err.stack
+
+mime = (req) ->
+  str = req.headers['content-type'] || ''
+  return str.split(';')[0]
+
+selectiveBodyParser = (req, res, next) ->
+    if req.url.indexOf("/routes") != 0
+            next()
+        else
+           # check Content-Type
+            return next()  unless "application/json" is mime(req)
+
+            # flag as parsed
+            req._body = true
+
+            # parse
+            buf = ""
+            req.setEncoding "utf8"
+            req.on "data", (chunk) ->
+                buf += chunk
+            req.on "end", ->
+                if "{" isnt buf[0] and "[" isnt buf[0]
+                    return next(new Error("invalid json"))
+                try
+                    console.log "parsed"
+                    
+                    req.body = JSON.parse(buf)
+                    next()
+                catch err
+                    err.body = buf
+                    err.status = 400
+                    next err
 
 
 class exports.CozyProxy
@@ -22,9 +54,9 @@ class exports.CozyProxy
 
     constructor: ->
         @app = express()
-        @app.use express.bodyParser()
         @proxy = new httpProxy.RoutingProxy()
-
+        @app.use selectiveBodyParser
+        
         @setControllers()
 
     # Controllers needed to configure the router dynamically through a 
@@ -55,7 +87,7 @@ class exports.CozyProxy
             return callback new Error(apps.msg) if apps.error?
             try
                 for app in apps.rows
-                    @routes["/apps/#{app.slug}"] = app.port if app.port?
+                    @routes[app.slug] = app.port if app.port?
                 callback()
             catch err
                 return callback err
@@ -72,11 +104,17 @@ class exports.CozyProxy
 
     # Redirect application, redirect request depening on app name.
     redirectAppAction: (req, res) =>
+        console.log "youpi!"
+        
         buffer = httpProxy.buffer(req)
         appName = req.params.name
         req.url = req.url.substring "/apps/#{appName}".length
         
-        port = @routes[req.params.name]
+        port = @routes[appName]
+        console.log port
+        console.log appName
+        console.log req.url
+        
         if port?
             @proxy.proxyRequest req, res,
                 host: 'localhost'
@@ -102,7 +140,7 @@ class exports.CozyProxy
 
     # Remove a route that is given in parameter.
     delRouteAction: (req, res) =>
-        route = "/apps/#{req.params.name}"
+        route = "#{req.params.name}"
 
         delete @routes[route]
         if process.env.NODE_ENV != "test"

@@ -1,5 +1,5 @@
 should = require('chai').Should()
-{Client} = require '../common/test/client'
+Client = require('request-json').JsonClient
 {CozyProxy} = require "../server.coffee"
 http = require('http')
 
@@ -22,7 +22,7 @@ describe "/routes", ->
         it "When I request for routes", (done) ->
             client.get "routes/", (error, response, body) =>
                 response.statusCode.should.equal 200
-                @body = JSON.parse body
+                @body = body
                 done()
 
         it "Then I got 3 routes", ->
@@ -34,7 +34,7 @@ describe "/routes", ->
     describe "POST /routes Add route", ->
             
         it "When I send a new route", (done) ->
-            @route = "/apps/myapp"
+            @route = "myapp"
             data = route: @route, port: 8100
             client.post "routes/", data, (error, response, body) =>
                 response.statusCode.should.equal 201
@@ -48,7 +48,7 @@ describe "/routes", ->
     describe "DELETE /routes/:name Del route", ->
             
         it "When I delete a route", (done) ->
-            client.delete "routes/myapp", (error, response, body) =>
+            client.del "routes/myapp", (error, response, body) =>
                 response.statusCode.should.equal 204
                 done()
 
@@ -74,7 +74,7 @@ describe "Proxying", ->
         it "When I send a request to an existing route", (done) ->
             client.get "apps/myapp/", (error, response, body) =>
                 response.statusCode.should.equal 200
-                @body = JSON.parse body
+                @body = body
                 done()
 
         it "Then I got a response from target server", ->

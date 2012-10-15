@@ -57,6 +57,7 @@ passport.currentUser = null
 passport.serializeUser = (user, done) ->
     done null, user._id
  
+# This caching should be studied...
 passport.deserializeUser = (id, done) ->
     if passport.currentUser? and id == passport.currentUser._id
         done null, passport.currentUser
@@ -82,7 +83,6 @@ passport.use new LocalStrategy (email, password, done) ->
                 passport.currentUser.id = users[0].value._id
                 done err, users[0].value
             else
-                console.log "wrong password"
                 done err, null
 
         if err

@@ -7,6 +7,13 @@
 ,   "coffee-script":          "> 0"
 ,   "request-json":           "> 0"
 ,   "express":                "> 0"
+,   "passport":               "> 0"
+,   "passport-local":         "> 0"
+,   "connect-redis":          "> 0"
+,   "redis":                  "> 0"
+,   "node-mailer":            "> 0"
+,   "randomstring":           "> 0"
+,   "jade":                   "> 0"
   }
 , "devDependencies":
   { "mocha":                  "> 0"

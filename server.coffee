@@ -145,8 +145,8 @@ class exports.CozyProxy
         @app.post '/register', @registerAction
         @app.get '/login', @loginView
         @app.post '/login', @loginAction
-        #@app.post "/login/forgot" @forgotPasswordAction
-        #@app.get "/password/reset/:key", @resetForm
+        @app.post "/login/forgot", @forgotPasswordAction
+        @app.get "/password/reset/:key", @resetFormView
         #@app.post "/password/reset/:key", "passport#resetPassword"
         @app.get '/logout', @logoutAction
 
@@ -320,7 +320,7 @@ class exports.CozyProxy
 
         if password? and password.length > 4
             if passport_utils.checkMail email
-                @dbClient.post "request/user/all/", {}, (err, users) =>
+                @dbClient.post "request/user/all/", {}, (err, res, users) =>
                     if err
                         console.log err
                         res.send error: true, msg: "Server error occured.", 500
@@ -332,6 +332,44 @@ class exports.CozyProxy
                 res.send error: true, msg: "Wrong email format", 400
         else
             res.send error: true, msg: "Password is too short", 400
+
+    # Send an email with a temporary key that allows acceess to 
+    # a change password page.
+    forgotPasswordAction: (req, res) =>
+        @dbClient.post "request/user/all/", {}, (err, resp, users) =>
+            if err
+                console.log err
+                res.send error: true, msg: "Server error occured.", 500
+            else if users.length == 0
+                res.send
+                    error: true
+                    msg: "No user set, register first error occured.", 500
+            else
+                user = users[0].value
+                key = passport_utils.genResetKey()
+                @dbClient.post "request/cozyinstance/all/", {}, (err, resp, instances) =>
+                    if err
+                        console.log err
+                        res.send error: true, msg: "Server error occured.", 500
+                    else
+                        if instances.length > 0
+                            instance = instances[0].value
+                        else
+                            instance = domain: "domain.not.set"
+                            passport_utils.sendResetEmail instance, user, key, (err, result) ->
+                                console.log err if err
+                                res.send success: true
+
+    # Display reset password view, only if given key is valid.
+    resetPasswordView: (req, res) =>
+        utils.checkKey req.params.key, (err, isKeyOk) ->
+            if err
+                console.log err
+                res.send error: true, msg: "Server error occured.", 500
+            else if isKeyOk
+                res.rend 'reset'
+            else
+                res.redirect '/'
 
 
 # Main function

@@ -20,17 +20,10 @@ exports.genResetKey = () ->
 
 # If key match current reset key, callbacks.success is run, key do not match,
 # callbacks.failure is run.
-exports.checkKey = (key, callbacks) ->
+exports.checkKey = (key, callback) ->
     client = redis.createClient()
     client.get "resetKey", (err, res) ->
-        if err
-            console.log err
-            send error: true,  msg: "Server error occured.", 500
-        else
-            if res == key
-                callbacks.success(res)
-            else
-                callbacks.failure()
+        callback(err, res == key)
 
 # Send email giving user email address he can connect on to change his
 # password. The validity of the address depends on the given key.

@@ -8,12 +8,14 @@
         password: $('#password-input').val()
       }, {
         success: function() {
-          $('.alert-success').show();
+          $('.alert-error').fadeOut();
+          $('.alert-success').fadeIn();
           $('.alert-success').html("Sign in succeeded");
           return window.location = "/";
         },
         error: function(err) {
           var msg;
+          $('.alert-success').fadeOut();
           msg = JSON.parse(err.responseText).msg;
           $('.alert-error').html(msg);
           return $('.alert-error').fadeIn();
@@ -25,7 +27,23 @@
         return submitPassword();
       }
     });
-    return $('#password-input').focus();
+    $('#password-input').focus();
+    return $('.forgot-password').click(function(event) {
+      return client.post("login/forgot", {}, {
+        success: function() {
+          $('.alert-error').fadeOut();
+          $('.alert-success').fadeIn();
+          return $('.alert-success').html("An email have been sent to your mailbox, " + "follow its instructions to get a new password");
+        },
+        error: function(err) {
+          var msg;
+          $('.alert-success').fadeOut();
+          msg = JSON.parse(err.responseText).msg;
+          $('.alert-error').html(msg);
+          return $('.alert-error').fadeIn();
+        }
+      });
+    });
   });
 
 }).call(this);

@@ -2,6 +2,7 @@ httpProxy = require 'http-proxy'
 express = require 'express'
 passport = require 'passport'
 bcrypt = require 'bcrypt'
+redis = require 'redis'
 LocalStrategy = require('passport-local').Strategy
 RedisStore = require('connect-redis')(express)
 
@@ -22,7 +23,7 @@ mime = (req) ->
   return str.split(';')[0]
 
 selectiveBodyParser = (req, res, next) ->
-    if req.url.indexOf("/routes") != 0 and req.url.indexOf("/register") != 0 and req.url.indexOf("/login") != 0
+    if req.url.indexOf("/routes") != 0 and req.url.indexOf("/login") != 0 and req.url.indexOf("/password") != 0 and req.url.indexOf("/register") != 0
         next()
     else
         # check Content-Type
@@ -97,7 +98,6 @@ passport.use new LocalStrategy (email, password, done) ->
 
 
 # Proxy 
-
 class exports.CozyProxy
 
     # Port on which this server listens
@@ -129,8 +129,6 @@ class exports.CozyProxy
         @app.use (err, req, res, next) ->
             console.error err.stack
             res.send 500, 'Something broke!'
-        @proxy.on 'end', ->
-            console.log "cool"
             
         @setControllers()
 
@@ -146,12 +144,12 @@ class exports.CozyProxy
         @app.get '/login', @loginView
         @app.post '/login', @loginAction
         @app.post "/login/forgot", @forgotPasswordAction
-        @app.get "/password/reset/:key", @resetFormView
-        #@app.post "/password/reset/:key", "passport#resetPassword"
+        @app.get '/password/reset/:key', @resetPasswordView
+        @app.post '/password/reset/:key', @resetPasswordAction
         @app.get '/logout', @logoutAction
 
-        @app.all "/apps/:name/*", @redirectAppAction
-        @app.all "/*", @defaultRedirectAction
+        @app.all '/apps/:name/*', @redirectAppAction
+        @app.all '/*', @defaultRedirectAction
         
     # Start proxy server listening.
     start: (port) ->
@@ -282,10 +280,7 @@ class exports.CozyProxy
     logoutAction: (req, res) =>
         req.logOut()
         passport.currentUser = null
-        console.log "out !"
         
-        console.log req.user
-        console.log passport.currentUser
         
         res.send
             success: true
@@ -362,15 +357,53 @@ class exports.CozyProxy
 
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
-        utils.checkKey req.params.key, (err, isKeyOk) ->
+        passport_utils.checkKey req.params.key, (err, isKeyOk) ->
             if err
                 console.log err
                 res.send error: true, msg: "Server error occured.", 500
             else if isKeyOk
-                res.rend 'reset'
+                res.render 'reset', resetKey: req.params.key
             else
                 res.redirect '/'
 
+    resetPasswordAction: (req, res) =>
+        key = req.params.key
+        newPassword = req.body.password
+
+        checkKey = (user) ->
+            passport_utils.checkKey key, (err, isKeyOk) ->
+               if err
+                   res.send error: true, msg: "Server error occured.", 500
+               else if not isKeyOk
+                   res.send error: true, msg: "Key is not valid.", 400
+               else
+                   changeUserData user
+
+        changeUserData = (user) =>
+            if newPassword? and newPassword.length > 5
+                data =
+                    password: passport_utils.cryptPassword newPassword
+            
+                
+                @dbClient.put "data/merge/#{user._id}/", data, (err, resp) ->
+                    if resp.statusCode == 404 or resp.statusCode == 500
+                        res.send error: true, msg: 'User cannot be updated', 400
+                    else
+                        client = redis.createClient()
+
+                        client.set "resetKey", "", ->
+                            res.send success: true, msg: 'Password updated successfully'
+            else
+                res.send error: true, msg: 'Password is too short', 400
+
+        @dbClient.post "request/user/all/", {}, (err, response, users) ->
+            if err
+                console.log err
+                res.send error: true, msg: "Server error occured.", 500
+            else if users.length == 0
+                res.send error: true, msg: "No user registered.", 400
+            else
+                checkKey users[0].value
 
 # Main function
 if not module.parent

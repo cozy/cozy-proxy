@@ -9,6 +9,7 @@
       }, {
         success: function() {
           $('.alert-error').fadeOut();
+          $('#forgot-password').hide();
           $('.alert-success').fadeIn();
           $('.alert-success').html("Sign in succeeded");
           return window.location = "/";
@@ -18,7 +19,8 @@
           $('.alert-success').fadeOut();
           msg = JSON.parse(err.responseText).msg;
           $('.alert-error').html(msg);
-          return $('.alert-error').fadeIn();
+          $('.alert-error').fadeIn();
+          return $('#forgot-password').fadeIn();
         }
       });
     };
@@ -28,7 +30,7 @@
       }
     });
     $('#password-input').focus();
-    return $('.forgot-password').click(function(event) {
+    return $('#forgot-password').click(function(event) {
       return client.post("login/forgot", {}, {
         success: function() {
           $('.alert-error').fadeOut();

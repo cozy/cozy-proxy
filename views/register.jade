@@ -1,0 +1,23 @@
+doctype 5
+html(lang="en")
+  head
+    title Cozy Home - Register
+    script(src='/jquery-1.8.2.js')
+    script(src='/client.js')
+    script(src='/register.js')
+    link(rel='stylesheet', href='/bootstrap.css') 
+    link(rel='stylesheet', href='/app.css') 
+    link(rel="icon", type="image/x-icon", href="/favicon.png")
+  body
+    #content
+      .proxy-form
+        h1 Register
+        p
+          input#email-input(type="text", placeholder="email address")
+        p
+          input#password-input(type="text", type="password",
+                               placeholder="password")
+        p
+          img(src="/grey-logo.png", alt="Cozy logo")
+      .error-box.alert.alert-error
+      .error-box.alert.alert-success

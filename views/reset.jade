@@ -1,0 +1,24 @@
+doctype 5
+doctype 5
+html(lang="en")
+  head
+    title Cozy Home - Reset password
+    script(src='/jquery-1.8.2.js')
+    script(src='/client.js')
+    script(src='/reset.js')
+    link(rel='stylesheet', href='/bootstrap.css') 
+    link(rel='stylesheet', href='/app.css') 
+    link(rel='icon', type='image/x-icon', href='/favicon.png')
+  body
+    script
+        key = "#{resetKey}"
+    #content
+      .proxy-form
+        h1 Reset password
+        p
+          input#password-input(type='text', type='password',
+                               placeholder='password')
+        p
+          img(src='/grey-logo.png', alt='Cozy logo')
+      .error-box.alert.alert-error
+      .error-box.alert.alert-success

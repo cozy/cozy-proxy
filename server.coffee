@@ -7,7 +7,7 @@ LocalStrategy = require('passport-local').Strategy
 RedisStore = require('connect-redis')(express)
 
 Client = require('request-json').JsonClient
-dbClient = new Client "http://localhost:7000/"
+dbClient = new Client "http://localhost:9101/"
 
 passport_utils = require './passport_utils'
 
@@ -101,10 +101,10 @@ passport.use new LocalStrategy (email, password, done) ->
 class exports.CozyProxy
 
     # Port on which this server listens
-    proxyPort: 4000
+    proxyPort: 9104
 
     # Default port for redirection
-    defaultPort: 3000
+    defaultPort: 9103
 
     # Routes for app redirections
     routes: {}

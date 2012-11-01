@@ -3,6 +3,7 @@ express = require 'express'
 passport = require 'passport'
 bcrypt = require 'bcrypt'
 redis = require 'redis'
+
 LocalStrategy = require('passport-local').Strategy
 RedisStore = require('connect-redis')(express)
 
@@ -112,8 +113,8 @@ class exports.CozyProxy
     constructor: ->
         @app = express()
         @proxy = new httpProxy.RoutingProxy()
-        @proxy.source.port = 4000
-        @dbClient = new Client "http://localhost:7000/"
+        @proxy.source.port = 9104
+        @dbClient = new Client "http://localhost:9101/"
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'

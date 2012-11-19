@@ -1,12 +1,14 @@
 httpProxy = require 'http-proxy'
 express = require 'express'
+randomstring = require 'randomstring'
+bcrypt = require 'bcrypt'
+redis = require 'redis'
+
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
-bcrypt = require 'bcrypt'
-redis = require 'redis'
 passport_utils = require './passport_utils'
 middlewares = require './middlewares'
 
@@ -73,9 +75,10 @@ class exports.CozyProxy
         @app.set 'view engine', 'jade'
         @app.use express.static(__dirname + '/public')
         @app.use middlewares.selectiveBodyParser
-        @app.use express.cookieParser 'secret'
+        secretKey = randomstring.generate()
+        @app.use express.cookieParser secretKey
         @app.use express.session
-            secret: 'secret'
+            secret: secretKey
             store: new RedisStore(db:'cozy')
         @app.use passport.initialize()
         @app.use passport.session()
@@ -111,20 +114,8 @@ class exports.CozyProxy
     stop: ->
         @server.close()
 
-    # Clear routes then build them from Cozy Home data.
-    resetRoutes: (callback) ->
-        @routes = {}
-        client = new Client "http://localhost:#{@defaultPort}/"
-        client.get "api/applications/", (error, response, apps) =>
-            return callback(error) if error
-            return callback new Error(apps.msg) if apps.error?
-            try
-                for app in apps.rows
-                    @routes[app.slug] = app.port if app.port?
-                callback()
-            catch err
-                return callback err
-
+    ### helpers ###
+    
     sendSuccess: (res, msg, code=200) ->
         res.send success: true, msg: msg, code
 
@@ -178,6 +169,19 @@ class exports.CozyProxy
             @sendError res, 'User cannot be updated', 400
         res.send @routes
 
+    # Clear routes then build them from Cozy Home data.
+    resetRoutes: (callback) ->
+        @routes = {}
+        client = new Client "http://localhost:#{@defaultPort}/"
+        client.get "api/applications/", (error, response, apps) =>
+            return callback(error) if error
+            return callback new Error(apps.msg) if apps.error?
+            try
+                for app in apps.rows
+                    @routes[app.slug] = app.port if app.port?
+                callback()
+            catch err
+                return callback err
 
     ### Authentication ###
 
@@ -304,6 +308,8 @@ class exports.CozyProxy
             else
                 res.redirect '/'
 
+    # Check password validity, then change password, then clear reset key
+    # from redis cache.
     resetPasswordAction: (req, res) =>
         key = req.params.key
         newPassword = req.body.password

@@ -6,9 +6,12 @@ $ ->
                 $('#forgot-password').hide()
                 $('.alert-success').fadeIn()
                 $('.alert-success').html "Sign in succeeded"
-                window.location = "/"
+                setTimeout ->
+                    window.location = "/"
+                , 500
             error: (err) ->
                 $('.alert-success').fadeOut()
+                $('.alert-error').hide()
                 msg = JSON.parse(err.responseText).msg
                 $('.alert-error').html msg
                 $('.alert-error').fadeIn()
@@ -29,6 +32,7 @@ $ ->
                     "follow its instructions to get a new password"
             error: (err) ->
                 $('.alert-success').fadeOut()
+                $('.alert-error').hide()
                 msg = JSON.parse(err.responseText).msg
                 $('.alert-error').html msg
                 $('.alert-error').fadeIn()

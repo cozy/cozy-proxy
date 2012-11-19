@@ -12,11 +12,14 @@
           $('#forgot-password').hide();
           $('.alert-success').fadeIn();
           $('.alert-success').html("Sign in succeeded");
-          return window.location = "/";
+          return setTimeout(function() {
+            return window.location = "/";
+          }, 500);
         },
         error: function(err) {
           var msg;
           $('.alert-success').fadeOut();
+          $('.alert-error').hide();
           msg = JSON.parse(err.responseText).msg;
           $('.alert-error').html(msg);
           $('.alert-error').fadeIn();
@@ -40,6 +43,7 @@
         error: function(err) {
           var msg;
           $('.alert-success').fadeOut();
+          $('.alert-error').hide();
           msg = JSON.parse(err.responseText).msg;
           $('.alert-error').html(msg);
           return $('.alert-error').fadeIn();

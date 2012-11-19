@@ -251,6 +251,10 @@ class exports.CozyProxy
                     req.logIn user, {}, =>
                         @sendSuccess res, "Register succeeds."
 
+        user =
+            email: email
+            password: password
+            
         if @userManager.isValid user
             @userManager.all (err, users) =>
                 if err
@@ -261,13 +265,13 @@ class exports.CozyProxy
                 else
                     createUser()
         else
-            @sendError res, @userManager.error
+            @sendError res, @userManager.error, 400
 
     # Send an email with a temporary key that allows acceess to
     # a change password page.
     forgotPasswordAction: (req, res) =>
 
-        sendEmail = (instances) =>
+        sendEmail = (instances, user, key) =>
             if instances.length > 0
                 instance = instances[0].value
             else
@@ -298,7 +302,7 @@ class exports.CozyProxy
                         console.log err
                         @sendError res, "Server error occured.", 500
                     else
-                        sendEmail instances
+                        sendEmail instances, user, key
 
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>

@@ -48,4 +48,10 @@ task "xunit", "", ->
   exec command, (err, stdout, stderr) ->
     console.log stdout
 
-
+task "lint", "Run coffeelint on proxy files", ->
+    process.env.TZ = "Europe/Paris"
+    command = "coffeelint "
+    command += "  -f coffeelint.json -r ./*.coffee test/"
+    exec command, (err, stdout, stderr) ->
+        console.log err
+        console.log stdout

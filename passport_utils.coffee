@@ -35,7 +35,7 @@ exports.sendResetEmail = (instance, user, key, callback) ->
         from : "no-reply@" + instance.domain
         subject : "[Cozy] Reset password procedure"
         text: """
-You told to your cozy that you forgot your password. No worry about that, just 
+You told to your cozy that you forgot your password. No worry about that, just
 go to following url and you will be able to set a new one:
 
 https://#{instance.domain}/password/reset/#{key}
@@ -46,5 +46,5 @@ https://#{instance.domain}/password/reset/#{key}
 
 # Return true if given email is a valid email, false either.
 exports.checkMail = (email)->
-        re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        email? and email.length > 0 and re.test(email)
+    re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    email? and email.length > 0 and re.test(email)

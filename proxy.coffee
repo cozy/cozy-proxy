@@ -266,9 +266,25 @@ class exports.CozyProxy
         else
             @sendError res, "Password is too short", 400
 
-    # Send an email with a temporary key that allows acceess to 
+    # Send an email with a temporary key that allows acceess to
     # a change password page.
     forgotPasswordAction: (req, res) =>
+
+        sendEmail = (instances) =>
+            if instances.length > 0
+                instance = instances[0].value
+            else
+                instance = domain: "domain.not.set"
+
+            passport_utils.sendResetEmail instance, user, key, (err, result) =>
+                console.log err if err
+                if err
+                    console.log err
+                    @sendErrorr res, "Email cannot be sent"
+                else
+                    @sendSuccess res, "Reset email sent."
+
+
         @userManager.all (err, users) =>
             if err
                 console.log err
@@ -281,19 +297,11 @@ class exports.CozyProxy
                 user = users[0].value
                 key = passport_utils.genResetKey()
                 @instanceManager.all (err, instances) =>
-                    console.log instances
                     if err
                         console.log err
                         @sendError res, "Server error occured.", 500
                     else
-                        if instances.length > 0
-                            instance = instances[0].value
-                        else
-                            instance = domain: "domain.not.set"
-
-                        passport_utils.sendResetEmail instance, user, key, (err, result) =>
-                            console.log err if err
-                            @sendSuccess res, "Reset email sent."
+                        sendEmail instances
 
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
@@ -314,12 +322,12 @@ class exports.CozyProxy
 
         checkKey = (user) ->
             passport_utils.checkKey key, (err, isKeyOk) =>
-               if err
-                   @sendError res, "Server error occured.", 500
-               else if not isKeyOk
-                   @sendError res, "Key is not valid.", 400
-               else
-                   changeUserData user
+                if err
+                    @sendError res, "Server error occured.", 500
+                else if not isKeyOk
+                    @sendError res, "Key is not valid.", 400
+                else
+                    changeUserData user
 
         changeUserData = (user) =>
             if newPassword? and newPassword.length > 5

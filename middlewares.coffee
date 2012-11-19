@@ -1,12 +1,17 @@
 ### Middlewares ###
 
 mime = (req) ->
-  str = req.headers['content-type'] || ''
-  return str.split(';')[0]
+    str = req.headers['content-type'] || ''
+    return str.split(';')[0]
 
 # Parse body only for non-proxied requests.
 exports.selectiveBodyParser = (req, res, next) ->
-    if req.url.indexOf("/routes") != 0 and req.url.indexOf("/login") != 0 and req.url.indexOf("/password") != 0 and req.url.indexOf("/register") != 0
+    isNoAuthRoute = req.url.indexOf("/routes") != 0
+    isNoAuthRoute = isNoAuthRoute and req.url.indexOf("/login") != 0
+    isNoAuthRoute = isNoAuthRoute and req.url.indexOf("/password") != 0
+    isNoAuthRoute = isNoAuthRoute and req.url.indexOf("/register") != 0
+
+    if isNoAuthRoute
         next()
     else
         # check Content-Type

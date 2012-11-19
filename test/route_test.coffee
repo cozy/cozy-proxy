@@ -36,8 +36,8 @@ describe "Proxying", ->
         router.start 4444
         router.routes["myapp"] = 4445
         @server = http.createServer (req, res) ->
-          res.writeHead 200, 'Content-Type': 'application/json'
-          res.end(JSON.stringify msg:"ok")
+            res.writeHead 200, 'Content-Type': 'application/json'
+            res.end(JSON.stringify msg:"ok")
         @server.listen(4445, 'localhost')
 
     after ->

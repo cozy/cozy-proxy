@@ -165,8 +165,6 @@ class exports.CozyProxy
 
     # Return currently set routes.
     showRoutesAction: (req, res) =>
-        if resp.statusCode == 404 or resp.statusCode == 500
-            @sendError res, 'User cannot be updated', 400
         res.send @routes
 
     # Clear routes then build them from Cozy Home data.

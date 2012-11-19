@@ -42,7 +42,7 @@ https://#{instance.domain}/password/reset/#{key}
 """
     , (error, response) ->
         transport.close()
-        callback(error, response)
+        callback error, response
 
 # Return true if given email is a valid email, false either.
 exports.checkMail = (email)->

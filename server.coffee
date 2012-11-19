@@ -4,7 +4,7 @@ process.on 'uncaughtException', (err) ->
     console.error err.message
     console.error err.stack
 
-# Write on console all couples, routes/port.
+# Log all couples, routes/port.
 displayRoutes = (error) ->
     if error
         console.log error.message

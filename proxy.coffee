@@ -51,7 +51,7 @@ configurePassport = (userManager) ->
             else
                 bcrypt.compare password, users[0].value.password, checkResult
 
-# Proxy 
+# Proxy Class : handles redirection and authentication
 class exports.CozyProxy
 
     # Port on which this server listens

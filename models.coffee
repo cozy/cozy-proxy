@@ -1,5 +1,7 @@
 Client = require("request-json").JsonClient
 
+# Main class used to manage models.
+# It requires to be extend and "typed". See examples below.
 class DbManager
 
     constructor: ->

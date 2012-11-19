@@ -1,4 +1,5 @@
-Client = require("request-json").JsonClient
+Client = require('request-json').JsonClient
+passport_utils = require './passport_utils'
 
 # Main class used to manage models.
 # It requires to be extend and "typed". See examples below.
@@ -8,7 +9,8 @@ class DbManager
         @dbClient = new Client "http://localhost:9101/"
 
     all: (callback) ->
-        @dbClient.post "request/#{@type}/all/", {}, (err, response, users) ->
+        path = "request/#{@type.toLowerCase()}/all/"
+        @dbClient.post path, {}, (err, response, users) ->
             if err
                 callback err
             else if response.statusCode != 200
@@ -17,25 +19,40 @@ class DbManager
                 callback null, users
 
     create: (model, callback) ->
+        model.docType = @type
         @dbClient.post "data/", model, (err, response, model) =>
             if err
                 callback err, 500
             else if response.statusCode != 201
-                callaback new Error("Error occured"), response.statusCode
+                callback new Error("Error occured"), response.statusCode
             else
                 callback null, 201, model
 
-    merge: (model, callback) ->
+    merge: (model, data, callback) ->
         @dbClient.put "data/merge/#{model._id}/", data, (err, res, body) =>
             if err
                 callback err
+            else if res.statusCode == 404
+                callback new Error("Model does not exist")
             else if res.statusCode != 200
                 callback new Error(users)
             else
                 callback null
 
 class exports.UserManager extends DbManager
-    type: "user"
+    type: 'User'
+
+    isValid: (user) ->
+        if user.password? and user.password.length > 4
+            if passport_utils.checkMail user.email
+                @error = null
+                true
+            else
+                @error = 'Wrong email format'
+                false
+        else
+            @error = 'Password is too short'
+            false
 
 class exports.InstanceManager extends DbManager
-    type: "cozyinstance"
+    type: 'CozyInstance'

@@ -251,20 +251,17 @@ class exports.CozyProxy
                     req.logIn user, {}, =>
                         @sendSuccess res, "Register succeeds."
 
-        if password? and password.length > 4
-            if passport_utils.checkMail email
-                @userManager.all (err, users) =>
-                    if err
-                        console.log err
-                        @sendError res, "Server error occured.", 500
-                    else if users.length
-                        @sendError res, "User already registered.", 400
-                    else
-                        createUser()
-            else
-                @sendError res, "Wrong email format", 400
+        if @userManager.isValid user
+            @userManager.all (err, users) =>
+                if err
+                    console.log err
+                    @sendError res, "Server error occured.", 500
+                else if users.length
+                    @sendError res, "User already registered.", 400
+                else
+                    createUser()
         else
-            @sendError res, "Password is too short", 400
+            @sendError res, @userManager.error
 
     # Send an email with a temporary key that allows acceess to
     # a change password page.
@@ -334,7 +331,7 @@ class exports.CozyProxy
                 data =
                     password: passport_utils.cryptPassword newPassword
             
-                @userManager.merge (err) =>
+                @userManager.merge user, data, (err) =>
                     if err
                         @sendError res, 'User cannot be updated'
                     else

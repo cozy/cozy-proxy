@@ -15,7 +15,7 @@ exports.genResetKey = () ->
     client = redis.createClient()
     client.on "error", (err) ->
         console.log "Redis error: " + err
-    client.set "resetKey", key
+    client.set "resetKey", key, redis.print
     key
 
 # If key match current reset key, callbacks.success is run, key do not match,

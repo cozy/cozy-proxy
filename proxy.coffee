@@ -9,7 +9,7 @@ Client = require('request-json').JsonClient
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
-passport_utils = require './passport_utils'
+helpers = require './helpers'
 middlewares = require './middlewares'
 
 UserManager = require('./models').UserManager
@@ -101,6 +101,7 @@ class exports.CozyProxy
         @app.get '/password/reset/:key', @resetPasswordView
         @app.post '/password/reset/:key', @resetPasswordAction
         @app.get '/logout', @logoutAction
+        @app.get '/authenticated', @authenticatedAction
 
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all '/*', @defaultRedirectAction
@@ -153,6 +154,10 @@ class exports.CozyProxy
         else
             res.redirect '/login'
 
+    # Return success: true if user is authenticated, false either.
+    authenticatedAction: (req, res) =>
+        res.send success: req.isAuthenticated()
+
     # Reset routes with routes coming from application app.
     resetRoutesAction: (req, res) =>
         console.log "GET reset/routes start route reseting"
@@ -197,6 +202,9 @@ class exports.CozyProxy
             else
                 res.redirect 'login'
     
+    authenticatedAction: (req, res) =>
+        res.send success: req.isAuthenticated()
+
     # Check user credentials and keep user authentication through session.
     loginAction: (req, res) =>
         answer = (err) =>
@@ -233,7 +241,7 @@ class exports.CozyProxy
         password = req.body.password
 
         createUser = (url) =>
-            hash = passport_utils.cryptPassword password
+            hash = helpers.cryptPassword password
 
             user =
                 email: email
@@ -277,7 +285,7 @@ class exports.CozyProxy
             else
                 instance = domain: "domain.not.set"
 
-            passport_utils.sendResetEmail instance, user, key, (err, result) =>
+            helpers.sendResetEmail instance, user, key, (err, result) =>
                 console.log err if err
                 if err
                     console.log err
@@ -296,7 +304,7 @@ class exports.CozyProxy
                     msg: "No user set, register first error occured.", 500
             else
                 user = users[0].value
-                key = passport_utils.genResetKey()
+                key = helpers.genResetKey()
                 @instanceManager.all (err, instances) =>
                     if err
                         console.log err
@@ -306,7 +314,7 @@ class exports.CozyProxy
 
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
-        passport_utils.checkKey req.params.key, (err, isKeyOk) =>
+        helpers.checkKey req.params.key, (err, isKeyOk) =>
             if err
                 console.log err
                 @sendError res, "Server error occured.", 500
@@ -322,7 +330,7 @@ class exports.CozyProxy
         newPassword = req.body.password
 
         checkKey = (user) ->
-            passport_utils.checkKey key, (err, isKeyOk) =>
+            helpers.checkKey key, (err, isKeyOk) =>
                 if err
                     @sendError res, "Server error occured.", 500
                 else if not isKeyOk
@@ -333,7 +341,7 @@ class exports.CozyProxy
         changeUserData = (user) =>
             if newPassword? and newPassword.length > 5
                 data =
-                    password: passport_utils.cryptPassword newPassword
+                    password: helpers.cryptPassword newPassword
             
                 @userManager.merge user, data, (err) =>
                     if err

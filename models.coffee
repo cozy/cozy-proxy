@@ -1,5 +1,5 @@
 Client = require('request-json').JsonClient
-passport_utils = require './passport_utils'
+helpers = require './helpers'
 
 # Main class used to manage models.
 # It requires to be extend and "typed". See examples below.
@@ -39,12 +39,24 @@ class DbManager
             else
                 callback null
 
+    deleteAll: (callback) ->
+        path = "request/#{@type.toLowerCase()}/all/destroy/"
+        @dbClient.put path, {}, (err, response, users) ->
+            if err
+                callback err
+            else if response.statusCode != 204
+                callback new Error("Server error")
+            else
+                callback null
+
+
+
 class exports.UserManager extends DbManager
     type: 'User'
 
     isValid: (user) ->
         if user.password? and user.password.length > 4
-            if passport_utils.checkMail user.email
+            if helpers.checkMail user.email
                 @error = null
                 true
             else

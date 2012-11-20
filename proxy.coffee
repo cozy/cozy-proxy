@@ -340,8 +340,7 @@ class exports.CozyProxy
 
         changeUserData = (user) =>
             if newPassword? and newPassword.length > 5
-                data =
-                    password: helpers.cryptPassword newPassword
+                data = helpers.cryptPassword newPassword
             
                 @userManager.merge user, data, (err) =>
                     if err

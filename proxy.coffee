@@ -286,7 +286,6 @@ class exports.CozyProxy
                 instance = domain: "domain.not.set"
 
             helpers.sendResetEmail instance, user, key, (err, result) =>
-                console.log err if err
                 if err
                     console.log err
                     @sendErrorr res, "Email cannot be sent"

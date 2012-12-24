@@ -80,6 +80,8 @@ class exports.CozyProxy
         @app.use express.session
             secret: secretKey
             store: new RedisStore(db:'cozy')
+            cookie:
+                maxAge: 30 * 86400 * 1000
         @app.use passport.initialize()
         @app.use passport.session()
 

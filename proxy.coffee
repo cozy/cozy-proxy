@@ -207,13 +207,13 @@ class exports.CozyProxy
     authenticatedAction: (req, res) =>
         res.send success: req.isAuthenticated()
 
-    # Check user credentials and keep user authentication through session.
-    loginAction: (req, res) =>
+    authenticate: (req, res) =>
+        # Check user credentials and keep user authentication through session.
         answer = (err) =>
             if err
                 @sendError res, "Login failed"
             else
-                @sendSuccess res, "Login succeeds"
+                @sendSuccess res, "Login succeeded"
 
         authenticator = passport.authenticate 'local', (err, user) =>
             if err
@@ -225,8 +225,12 @@ class exports.CozyProxy
             else
                 req.logIn user, {}, answer
 
-        req.body.username = "owner"
         authenticator(req, res)
+
+
+    loginAction: (req, res) =>
+        req.body.username = "owner"
+        @authenticate(req, res)
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>
@@ -235,7 +239,7 @@ class exports.CozyProxy
         
         res.send
             success: true
-            msg: "Log out succeeds."
+            msg: "Log out succeeded."
 
     # Create user with given credentials
     registerAction: (req, res) =>
@@ -258,8 +262,8 @@ class exports.CozyProxy
                     console.log err
                     @sendError res, "Server error occured.", 500
                 else
-                    req.logIn user, {}, =>
-                        @sendSuccess res, "Register succeeds."
+                    req.body.username = "owner"
+                    @authenticate req, res
 
         user =
             email: email

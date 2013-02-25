@@ -105,6 +105,7 @@ class exports.CozyProxy
         @app.get '/logout', @logoutAction
         @app.get '/authenticated', @authenticatedAction
 
+        @app.all '/apps/:name/public/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all '/*', @defaultRedirectAction
         
@@ -155,6 +156,21 @@ class exports.CozyProxy
                 res.send 404
         else
             res.redirect '/login'
+
+    # Redirect public side of application, redirect request depening on app name.
+    redirectPublicAppAction: (req, res) =>
+        buffer = httpProxy.buffer(req)
+        appName = req.params.name
+        req.url = req.url.substring "/apps/#{appName}".length
+        port = @routes[appName]
+
+        if port?
+            @proxy.proxyRequest req, res,
+                host: 'localhost'
+                port: @routes[req.params.name]
+                buffer: buffer
+        else
+            res.send 404
 
     # Return success: true if user is authenticated, false either.
     authenticatedAction: (req, res) =>

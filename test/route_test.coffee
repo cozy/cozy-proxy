@@ -61,7 +61,8 @@ describe "Proxying", ->
         @server.close
 
     describe "Redirection", ->
-        it "When I send non-identified request to an existing private route", (done) ->
+        it "When I send non-identified request to an existing 
+private route", (done) ->
             client.get "apps/myapp/", (error, response, body) =>
                 @response = response
                 done()
@@ -75,7 +76,7 @@ describe "Proxying", ->
     describe "Public proxying", ->
         
         it "When I send a request to an existing public route", (done) ->
-            client.get "apps/myapp/public/", (error, response, body) =>
+            client.get "public/myapp/", (error, response, body) =>
                 @body = body
                 @response = response
                 done()

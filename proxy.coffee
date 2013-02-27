@@ -105,7 +105,7 @@ class exports.CozyProxy
         @app.get '/logout', @logoutAction
         @app.get '/authenticated', @authenticatedAction
 
-        @app.all '/apps/:name/public/*', @redirectPublicAppAction
+        @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all '/*', @defaultRedirectAction
         
@@ -161,7 +161,7 @@ class exports.CozyProxy
     redirectPublicAppAction: (req, res) =>
         buffer = httpProxy.buffer(req)
         appName = req.params.name
-        req.url = req.url.substring "/apps/#{appName}".length
+        req.url = req.url.substring "/public/#{appName}".length
         port = @routes[appName]
 
         if port?

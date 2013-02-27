@@ -162,7 +162,7 @@ class exports.CozyProxy
         buffer = httpProxy.buffer(req)
         appName = req.params.name
         req.url = req.url.substring "/public/#{appName}".length
-        req.url = "/public/#{req.url}"
+        req.url = "/public#{req.url}"
         port = @routes[appName]
 
         if port?

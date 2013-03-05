@@ -13,6 +13,7 @@ text-shadow()
     src: url('/signika-regular.ttf')
 
 
+highlightcolor = #cff
 textcolor = #cad1d1
 shadowcolor = #2b4244
 
@@ -39,6 +40,9 @@ h1
     text-shadow: 1px 1px shadowcolor
     text-transform: uppercase
 
+    span#username
+        color: highlightcolor
+
 .proxy-form
     padding-top: 20%
     text-transform: uppercase
@@ -47,6 +51,9 @@ h1
         font-size: 1.3em
         border-radius: 0.4em
         padding: 0.6em 0.8em
+
+    button#submit-btn
+        margin-left 5px
 
     input
         font-size: 1.5em

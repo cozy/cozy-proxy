@@ -12,10 +12,12 @@ html(lang="en")
   body
     #content
       .proxy-form
-        h1 Sign in
+        h1 Welcome, 
+          span#username #{username}
         p
           input#password-input(type='text', type='password',
                                placeholder='password')
+          button#submit-btn Login
         p
           img(src='/grey-logo.png', alt='Cozy logo')
       .error-box.alert.alert-error

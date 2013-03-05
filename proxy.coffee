@@ -6,11 +6,13 @@ redis = require 'redis'
 
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
+Adapter = require './lib/adapter'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 helpers = require './helpers'
 middlewares = require './middlewares'
+adapter = new Adapter()
 
 UserManager = require('./models').UserManager
 InstanceManager = require('./models').InstanceManager
@@ -20,7 +22,7 @@ configurePassport = (userManager) ->
     passport.currentUser = null
     passport.serializeUser = (user, done) ->
         done null, user._id
-     
+
     # This caching should be studied...
     passport.deserializeUser = (id, done) ->
         if passport.currentUser? and id is passport.currentUser._id
@@ -88,7 +90,7 @@ class exports.CozyProxy
         @app.use (err, req, res, next) ->
             console.error err.stack
             res.send 500, 'Something broke!'
-            
+
         @setControllers()
 
     setControllers: ->
@@ -107,18 +109,18 @@ class exports.CozyProxy
 
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all '/*', @defaultRedirectAction
-        
+
     # Start proxy server listening.
     start: (port) ->
         @proxyPort = port if port
         @server = @app.listen(process.env.PORT || @proxyPort)
-        
+
     # Stop proxy server listening.
     stop: ->
         @server.close()
 
     ### helpers ###
-    
+
     sendSuccess: (res, msg, code=200) ->
         res.send success: true, msg: msg, code
 
@@ -203,7 +205,7 @@ class exports.CozyProxy
                 res.render 'register'
             else
                 res.redirect 'login'
-    
+
     authenticatedAction: (req, res) =>
         res.send success: req.isAuthenticated()
 
@@ -229,17 +231,24 @@ class exports.CozyProxy
 
 
     loginAction: (req, res) =>
-        req.body.username = "owner"
-        @authenticate(req, res)
+        adapter.initializeKeys req.body.password, (err) =>
+            if err
+                success: false
+            else
+                req.body.username = "owner"
+                @authenticate(req, res)
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>
-        req.logOut()
-        passport.currentUser = null
-        
-        res.send
-            success: true
-            msg: "Log out succeeded."
+        adapter.deleteKeys (err) =>
+            if err
+                success: false
+            else
+                req.logOut()
+                passport.currentUser = null
+                res.send
+                    success: true
+                    msg: "Log out succeeded."
 
     # Create user with given credentials
     registerAction: (req, res) =>
@@ -262,13 +271,17 @@ class exports.CozyProxy
                     console.log err
                     @sendError res, "Server error occured.", 500
                 else
-                    req.body.username = "owner"
-                    @authenticate req, res
+                    adapter.initializeKeys req.body.password, (err) =>
+                        if err
+                            success: false
+                        else
+                            req.body.username = "owner"
+                            @authenticate(req, res)
 
         user =
             email: email
             password: password
-            
+
         if @userManager.isValid user
             @userManager.all (err, users) =>
                 if err
@@ -346,14 +359,18 @@ class exports.CozyProxy
         changeUserData = (user) =>
             if newPassword? and newPassword.length > 5
                 data = password: helpers.cryptPassword(newPassword).hash
-            
+
                 @userManager.merge user, data, (err) =>
                     if err
                         @sendError res, 'User cannot be updated'
                     else
-                        client = redis.createClient()
-                        client.set "resetKey", "", =>
-                            @sendSuccess res, 'Password updated successfully'
+                        adapter.updateKeys req.body.password, (err) =>
+                        if err
+                            success: false
+                        else
+                            client = redis.createClient()
+                            client.set "resetKey", "", =>
+                                @sendSuccess res, 'Password updated successfully'
             else
                 @sendError res, 'Password is too short', 400
 

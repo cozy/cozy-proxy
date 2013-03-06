@@ -1,6 +1,8 @@
 http = require('http')
 should = require('chai').Should()
 Client = require('request-json').JsonClient
+redis = require 'redis'
+
 
 helpers = require '../helpers'
 {CozyProxy} = require '../proxy.coffee'
@@ -24,39 +26,62 @@ describe "Register / Login", ->
         router.stop()
         @userManager.deleteAll done
 
-    it "When I send a request to register", (done) ->
-        data = email: email, password: password
-        client.post "register", data, (error, response, body) =>
-            @body = body
-            @response = response
-            done()
+    describe "Register", ->
 
-    it "Then I got a success response", ->
-        @response.statusCode.should.equal 200
-        should.exist @body
-        @body.success.should.equal true
+        it "When I send a request to register", (done) ->
+            data = email: email, password: password
+            client.post "register", data, (error, response, body) =>
+                @body = body
+                @response = response
+                done()
 
-    it "When I send a request to login", (done) ->
-        client.post "login", password: password, (error, response, body) =>
-            @body = body
-            @response = response
-            done()
+        it "Then I got a success response", ->
+            @response.statusCode.should.equal 200
+            should.exist @body
+            @body.success.should.equal true
 
-    it "Then user is authenticated", (done) ->
-        client.get "authenticated", (error, response, body) ->
-            response.statusCode.should.equal 200
-            body.success.should.be.ok
-            done()
+    describe "Login", ->
 
-    it "When I send a request to logout", (done) ->
-        client.get "logout", (error, response, body) ->
-            response.statusCode.should.equal 200
-            done()
+        it "When I send a request to login", (done) ->
+            client.post "login", password: password, (error, response, body) =>
+                @body = body
+                @response = response
+                done()
 
-    it "Then user is authenticated", (done) ->
-        client.get "authenticated", (error, response, body) ->
-            body.success.should.not.be.ok
-            done()
+        it "Then user is authenticated", (done) ->
+            client.get "authenticated", (error, response, body) ->
+                response.statusCode.should.equal 200
+                body.success.should.be.ok
+                done()
+
+    ###describe "Modification of password", ->
+
+        it "When I send a request to change password", (done) ->
+            clientRedis = redis.createClient()
+            clientRedis.get "resetKey", (err, key) ->
+                client.post "/password/reset/#{key}", password: "newPassword",
+                    success: ->
+                        @success = true
+                    error: (err) ->
+                        @success = false
+                        @err = err
+
+        it "Then I got a success response", ->
+            @succes.should.be true
+            @err.should.not.exists###
+
+
+    describe "Logout", ->
+
+        it "When I send a request to logout", (done) ->
+            client.get "logout", (error, response, body) ->
+                response.statusCode.should.equal 200
+                done()
+
+        it "Then user is authenticated", (done) ->
+            client.get "authenticated", (error, response, body) ->
+                body.success.should.not.be.ok
+                done()
 
 describe "Register failure", ->
 

@@ -21,7 +21,7 @@ $ ->
         submitPassword() if event.which == 13
 
     $('#password-input').focus()
-    
+
     $('#forgot-password').click (event) ->
         client.post "login/forgot", {},
             success: ->

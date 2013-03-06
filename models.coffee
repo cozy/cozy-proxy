@@ -37,11 +37,7 @@ class DbManager
             else if res.statusCode != 200
                 callback new Error(users)
             else
-                adapter.updateKeys req.body.password, (err) =>
-                    if err
-                        callback new Error("Keys are not updated")
-                    else
-                        callback null
+                callback null
 
     deleteAll: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/destroy/"

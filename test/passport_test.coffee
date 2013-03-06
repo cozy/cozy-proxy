@@ -54,23 +54,6 @@ describe "Register / Login", ->
                 body.success.should.be.ok
                 done()
 
-    ###describe "Modification of password", ->
-
-        it "When I send a request to change password", (done) ->
-            clientRedis = redis.createClient()
-            clientRedis.get "resetKey", (err, key) ->
-                client.post "/password/reset/#{key}", password: "newPassword",
-                    success: ->
-                        @success = true
-                    error: (err) ->
-                        @success = false
-                        @err = err
-
-        it "Then I got a success response", ->
-            @succes.should.be true
-            @err.should.not.exists###
-
-
     describe "Logout", ->
 
         it "When I send a request to logout", (done) ->

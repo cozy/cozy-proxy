@@ -6,13 +6,13 @@ redis = require 'redis'
 
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
-Adapter = require './lib/adapter'
+PasswordKeys = require './lib/passwordKeys'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 helpers = require './helpers'
 middlewares = require './middlewares'
-adapter = new Adapter()
+passwordKeys = new PasswordKeys()
 
 UserManager = require('./models').UserManager
 InstanceManager = require('./models').InstanceManager
@@ -248,7 +248,7 @@ class exports.CozyProxy
 
 
     loginAction: (req, res) =>
-        adapter.initializeKeys req.body.password, (err) =>
+        passwordKeys.initializeKeys req.body.password, (err) =>
             if err
                 success: false
             else
@@ -257,7 +257,7 @@ class exports.CozyProxy
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>
-        adapter.deleteKeys (err) =>
+        passwordKeys.deleteKeys (err) =>
             if err
                 success: false
             else
@@ -288,7 +288,7 @@ class exports.CozyProxy
                     console.log err
                     @sendError res, "Server error occured.", 500
                 else
-                    adapter.initializeKeys req.body.password, (err) =>
+                    passwordKeys.initializeKeys req.body.password, (err) =>
                         if err
                             success: false
                         else
@@ -324,7 +324,7 @@ class exports.CozyProxy
             helpers.sendResetEmail instance, user, key, (err, result) =>
                 if err
                     console.log err
-                    @sendErrorr res, "Email cannot be sent"
+                    @sendError res, "Email cannot be sent"
                 else
                     @sendSuccess res, "Reset email sent."
 
@@ -377,17 +377,13 @@ class exports.CozyProxy
             if newPassword? and newPassword.length > 5
                 data = password: helpers.cryptPassword(newPassword).hash
 
-                adapter.updateKeys newPassword, (err) =>
+                @userManager.merge user, data, (err) =>
                     if err
                         @sendError res, 'User cannot be updated'
                     else
-                        @userManager.merge user, data, (err) =>
-                            if err
-                                @sendError res, 'User cannot be updated'
-                            else
-                                client = redis.createClient()
-                                client.set "resetKey", "", =>
-                                    @sendSuccess res, 'Password updated successfully'
+                        client = redis.createClient()
+                        client.set "resetKey", "", =>
+                            @sendSuccess res, 'Password updated successfully'
             else
                 @sendError res, 'Password is too short', 400
 

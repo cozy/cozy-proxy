@@ -360,17 +360,13 @@ class exports.CozyProxy
             if newPassword? and newPassword.length > 5
                 data = password: helpers.cryptPassword(newPassword).hash
 
-                passwordKeys.updateKeys newPassword, (err) =>
+                @userManager.merge user, data, (err) =>
                     if err
                         @sendError res, 'User cannot be updated'
                     else
-                        @userManager.merge user, data, (err) =>
-                            if err
-                                @sendError res, 'User cannot be updated'
-                            else
-                                client = redis.createClient()
-                                client.set "resetKey", "", =>
-                                    @sendSuccess res, 'Password updated successfully'
+                        client = redis.createClient()
+                        client.set "resetKey", "", =>
+                            @sendSuccess res, 'Password updated successfully'
             else
                 @sendError res, 'Password is too short', 400
 

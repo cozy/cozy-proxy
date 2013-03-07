@@ -159,7 +159,8 @@ class exports.CozyProxy
         else
             res.redirect '/login'
 
-    # Redirect public side of application, redirect request depening on app name.
+    # Redirect public side of application, redirect request depening on app
+    # name.
     redirectPublicAppAction: (req, res) =>
         buffer = httpProxy.buffer(req)
         appName = req.params.name

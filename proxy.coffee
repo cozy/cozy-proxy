@@ -307,7 +307,7 @@ class exports.CozyProxy
             helpers.sendResetEmail instance, user, key, (err, result) =>
                 if err
                     console.log err
-                    @sendErrorr res, "Email cannot be sent"
+                    @sendError res, "Email cannot be sent"
                 else
                     @sendSuccess res, "Reset email sent."
 

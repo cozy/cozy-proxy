@@ -6,7 +6,7 @@ redis = require 'redis'
 
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
-PasswordKeys = require './lib/passwordKeys'
+PasswordKeys = require './lib/password_keys'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -366,7 +366,11 @@ class exports.CozyProxy
                     else
                         client = redis.createClient()
                         client.set "resetKey", "", =>
-                            @sendSuccess res, 'Password updated successfully'
+                            passwordKeys.deleteAccounts user (err) =>
+                                if err
+                                    @sendError res, "Server error occured", 500
+                                else
+                                    @sendSuccess res, 'Password updated successfully'
             else
                 @sendError res, 'Password is too short', 400
 

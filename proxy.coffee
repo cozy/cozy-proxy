@@ -67,7 +67,8 @@ class exports.CozyProxy
 
     constructor: ->
         @app = express()
-        @proxy = new httpProxy.RoutingProxy()
+        @server = httpProxy.createServer @app
+        @proxy = @server.proxy
         @proxy.source.port = 9104
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
@@ -91,6 +92,7 @@ class exports.CozyProxy
             console.error err.stack
             res.send 500, 'Something broke!'
 
+        @enableSocketRedirection()
         @setControllers()
 
     setControllers: ->
@@ -114,7 +116,7 @@ class exports.CozyProxy
     # Start proxy server listening.
     start: (port) ->
         @proxyPort = port if port
-        @server = @app.listen(process.env.PORT || @proxyPort)
+        @server.listen(process.env.PORT || @proxyPort)
 
     # Stop proxy server listening.
     stop: ->
@@ -129,6 +131,16 @@ class exports.CozyProxy
         res.send error: true, msg: msg, code
 
     ### Routes ###
+
+    # enable websockets
+    # this is safe with socket.io, not sure if still safe with plain Websockets
+    enableSocketRedirection: =>
+        @server.on 'upgrade', (req, socket, head) =>
+            slug = @app._router.matchRequest(req).params.name # @dirtyhack ?
+            req.url = req.url.replace "/apps/#{slug}", ''
+            @proxy.proxyWebSocketRequest req, socket, head,
+                host: 'localhost',
+                port: @routes[slug] # @FIXME after merge with feature.multiple
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

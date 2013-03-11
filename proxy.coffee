@@ -225,18 +225,19 @@ class exports.CozyProxy
                 console.log err if err
                 @sendError res, "Wrong password", 400
             else
-                req.logIn user, {}, answer
+                passwordKeys.initializeKeys req.body.password, (err) =>
+                    if err
+                        console.log err
+                        @sendError res, "Keys aren't initialized", 500
+                    else
+                        req.logIn user, {}, answer
 
         authenticator(req, res)
 
 
     loginAction: (req, res) =>
-        passwordKeys.initializeKeys req.body.password, (err) =>
-            if err
-                success: false
-            else
-                req.body.username = "owner"
-                @authenticate(req, res)
+        req.body.username = "owner"
+        @authenticate(req, res)
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>
@@ -271,12 +272,8 @@ class exports.CozyProxy
                     console.log err
                     @sendError res, "Server error occured.", 500
                 else
-                    passwordKeys.initializeKeys req.body.password, (err) =>
-                        if err
-                            success: false
-                        else
-                            req.body.username = "owner"
-                            @authenticate(req, res)
+                    req.body.username = "owner"
+                    @authenticate(req, res)
 
         user =
             email: email
@@ -303,6 +300,9 @@ class exports.CozyProxy
                 instance = instances[0].value
             else
                 instance = domain: "domain.not.set"
+
+            console.log instance.domain
+            console.log key
 
             helpers.sendResetEmail instance, user, key, (err, result) =>
                 if err
@@ -366,11 +366,12 @@ class exports.CozyProxy
                     else
                         client = redis.createClient()
                         client.set "resetKey", "", =>
-                            passwordKeys.deleteAccounts user (err) =>
+                            passwordKeys.resetKeys (err) =>
                                 if err
                                     @sendError res, "Server error occured", 500
                                 else
-                                    @sendSuccess res, 'Password updated successfully'
+                                    @sendSuccess res, "Password updated \
+                                        successfully"
             else
                 @sendError res, 'Password is too short', 400
 

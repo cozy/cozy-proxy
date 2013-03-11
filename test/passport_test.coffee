@@ -12,7 +12,7 @@ client = new Client("http://localhost:4444/")
 router = new CozyProxy()
 
 
-email = "zoe@cozycloud.cc"
+email = "test@cozycloud.cc"
 password = "password"
 
 describe "Register / Login", ->

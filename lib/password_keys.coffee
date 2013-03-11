@@ -33,8 +33,3 @@ module.exports = class PasswordKeys
                 callback err
             else
                 callback()
-                ###client.del "account/all/", (err, res, body) =>
-                    if err
-                        callback err
-                    else
-                        callback()###

@@ -26,7 +26,7 @@ patchCookieJar = ->
         originalXHR.apply @, arguments
         @setDisableHeaderCheck true
         stdOpen = @open
-     
+
         @open = ->
             stdOpen.apply @, arguments
             header = jar.get url: 'http://localhost:4444'
@@ -45,7 +45,7 @@ describe "websockets", ->
         @jar = patchCookieJar()
 
         router.start 4444
-        router.routes["myapp"] = 4445
+        router.routes["myapp"] = port: 4445, state: 'installed'
         @myapp = http.createServer (req, res) ->
             res.writeHead 200, 'Content-Type': 'application/json'
             res.end(JSON.stringify msg:"ok")

@@ -94,7 +94,7 @@ private route", (done) ->
                     @body = body
                     done()
 
-        it "should be redirected to the app server", ->
+        it "Then I should be redirected to the app server", ->
             @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok"

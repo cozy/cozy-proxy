@@ -54,6 +54,11 @@ h1
 
     button#submit-btn
         margin-left 5px
+        margin-bottom 9px
+        display none
+        background-color textcolor
+        border-radius 0.4em
+        border 0
 
     input
         font-size: 1.5em
@@ -68,6 +73,10 @@ h1
     input:focus
         shadow: 0 1px 1px rgba(0, 0, 0, 0.75) inset, 0 0 17px rgba(82, 168, 236, 0.9)
         background: #e2f8ff
+
+@media(max-width: 640px)
+  .proxy-form button#submit-btn
+    display inline
 
 .alert
     margin: auto

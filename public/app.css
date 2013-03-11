@@ -6,10 +6,11 @@ h1{margin-top:0;font-size:2.5em;color:#cad1d1;-moz-text-shadow:1px 1px #2b4244;-
 h1 span#username{color:#cff}
 .proxy-form{padding-top:20%;text-transform:uppercase;}
 .proxy-form button{font-size:1.3em;border-radius:.4em;padding:.6em .8em}
-.proxy-form button#submit-btn{margin-left:5px}
+.proxy-form button#submit-btn{margin-left:5px;margin-bottom:9px;display:none;background-color:#cad1d1;border-radius:.4em;border:0}
 .proxy-form input{font-size:1.5em;height:1.6em;padding:.2em;border-radius:.4em;background-color:#cad1d1;-moz-box-shadow:0 2px 2px rgba(0,0,0,0.45) inset;-webkit-box-shadow:0 2px 2px rgba(0,0,0,0.45) inset;box-shadow:0 2px 2px rgba(0,0,0,0.45) inset;width:15em;border:0}
 .proxy-form input:focus{-moz-box-shadow:0 1px 1px rgba(0,0,0,0.75) inset,0 0 17px rgba(82,168,236,0.9);-webkit-box-shadow:0 1px 1px rgba(0,0,0,0.75) inset,0 0 17px rgba(82,168,236,0.9);box-shadow:0 1px 1px rgba(0,0,0,0.75) inset,0 0 17px rgba(82,168,236,0.9);background:#e2f8ff}
-.alert{margin:auto;margin-top:1em;padding:1em;width:22em;border:0;display:none}
+@media (max-width: 640px){.proxy-form button#submit-btn{display:inline}
+}.alert{margin:auto;margin-top:1em;padding:1em;width:22em;border:0;display:none}
 .alert-error{-moz-box-shadow:0 0 6px rgba(100,60,60,0.85) inset;-webkit-box-shadow:0 0 6px rgba(100,60,60,0.85) inset;box-shadow:0 0 6px rgba(100,60,60,0.85) inset;background:rgba(242,222,222,0.8)}
 .alert-success{-moz-box-shadow:0 0 6px rgba(60,100,60,0.85) inset;-webkit-box-shadow:0 0 6px rgba(60,100,60,0.85) inset;box-shadow:0 0 6px rgba(60,100,60,0.85) inset;background:rgba(223,240,216,0.8)}
 .additional-line{margin-top:1em}

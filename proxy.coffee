@@ -212,14 +212,14 @@ class exports.CozyProxy
 
     loginView: (req, res) =>
         @userManager.all (err, users) ->
-            if users.length > 0
+            if users?.length > 0 and not err
                 res.render 'login'
             else
                 res.redirect 'register'
 
     registerView: (req, res) =>
         @userManager.all (err, users) ->
-            if users.length is 0
+            if not users? or users.length is 0
                 res.render 'register'
             else
                 res.redirect 'login'

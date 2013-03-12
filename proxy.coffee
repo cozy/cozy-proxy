@@ -243,18 +243,18 @@ class exports.CozyProxy
                 console.log err if err
                 @sendError res, "Wrong password", 400
             else
-                req.logIn user, {}, answer
+                passwordKeys.initializeKeys req.body.password, (err) =>
+                    if err
+                        @sendError res, "Keys aren't initialized"
+                    else
+                        req.logIn user, {}, answer
 
         authenticator(req, res)
 
 
     loginAction: (req, res) =>
-        passwordKeys.initializeKeys req.body.password, (err) =>
-            if err
-                success: false
-            else
-                req.body.username = "owner"
-                @authenticate(req, res)
+        req.body.username = "owner"
+        @authenticate(req, res)
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>

@@ -289,12 +289,8 @@ class exports.CozyProxy
                     console.log err
                     @sendError res, "Server error occured.", 500
                 else
-                    passwordKeys.initializeKeys req.body.password, (err) =>
-                        if err
-                            success: false
-                        else
-                            req.body.username = "owner"
-                            @authenticate(req, res)
+                    req.body.username = "owner"
+                    @authenticate(req, res)
 
         user =
             email: email

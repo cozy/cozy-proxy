@@ -93,6 +93,13 @@ class exports.CozyProxy
         @app.use passport.initialize()
         @app.use passport.session()
 
+        @app.use express.logger '
+            \\n \\033[33;22m :date \\033[0m
+            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
+            \\n  >>> perform
+            \\n  Send to client: :status
+            \\n  <<<  [:response-time ms]'
+
         @app.use (err, req, res, next) ->
             console.error err.stack
             res.send 500, 'Something broke!'

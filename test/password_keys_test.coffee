@@ -3,16 +3,16 @@ should = require('chai').Should()
 async = require('async')
 
 Client = require("request-json").JsonClient
-PasswordKeys = require "../lib/password_keys"
+PasswordKeys = require "../lib/passwordKeys"
 
 client = new Client "http://localhost:9101/"
 passwordKeys = new PasswordKeys()
 
 
 describe "Password Keys", ->
-    describe "Initialize keys", ->
+  describe "Initialize keys", ->
 
-        before (done) ->
+    before (done) ->
             client.del 'data/102/', (err, res, body) =>
                 data =
                     email: "user@CozyCloud.CC"
@@ -25,51 +25,40 @@ describe "Password Keys", ->
                         done()
 
 
-        it "When I initialize keys", (done) ->
-            passwordKeys.initializeKeys "password", (err) =>
-                @err = err
-                done()
+    it "When I initialize keys", (done) ->
+          passwordKeys.initializeKeys "password", (err) =>
+              @err = err
+              done()
 
-        it "Then no error should be returned", ->
-            should.not.exist @err
+      it "Then no error is returned", ->
+          should.not.exist @err
 
-    describe "Update keys", ->
+  describe "Update keys", ->
 
-        it "When I update keys", (done) ->
-            passwordKeys.updateKeys "newPassword", (err) =>
-                @err = err
-                done()
+      it "When I update keys", (done) ->
+          passwordKeys.updateKeys "newPassword", (err) =>
+              @err = err
+              done()
 
-        it "Then no error should be returned", ->
-            should.not.exist @err
+      it "Then no error is returned", ->
+          should.not.exist @err
 
-    describe "Delete keys", ->
+  describe "Delete keys", ->
 
-        it "When I delete keys", (done) ->
-            passwordKeys.deleteKeys (err) =>
-                @err = err
-                done()
+      it "When I delete keys", (done) ->
+          passwordKeys.deleteKeys (err) =>
+              @err = err
+              done()
 
-        it "Then no error is returned", ->
-            should.not.exist @err
+      it "Then no error is returned", ->
+          should.not.exist @err
 
-    describe "Initialize keys in a second connexion", ->
+  describe "Initialize keys in a second connexion", ->
 
-        it "When I initialize keys", (done) ->
-            passwordKeys.initializeKeys "newPassword", (err) =>
-                @err = err
-                done()
+      it "When I initialize keys", (done) ->
+          passwordKeys.initializeKeys "newPassword", (err) =>
+              @err = err
+              done()
 
-        it "Then no error should be returned", ->
-            should.not.exist @err
-
-    describe "Reset keys", ->
-
-        it "When I reset keys", (done) ->
-            passwordKeys.resetKeys (err) =>
-                @err = err
-                done()
-
-        it "Then no error should be returned", ->
-            should.not.exist @err
-
+      it "Then no error is returned", ->
+          should.not.exist @err

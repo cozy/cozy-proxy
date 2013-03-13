@@ -60,14 +60,41 @@ describe "Proxying", ->
         router.stop()
         @server.close
 
-    describe "Proxy success", ->
-        it "When I send a request to an existing route", (done) ->
+    describe "Redirection", ->
+        it "When I send non-identified request to an existing 
+private route", (done) ->
+            client.get "apps/myapp/", (error, response, body) =>
+                @response = response
+                done()
+
+        it "Then I should get redirected to login", ->
+            @response.statusCode.should.equal 200
+            @response.request.path.should.equal "/login"
+            
+
+
+    describe "Public proxying", ->
+        
+        it "When I send a request to an existing public route", (done) ->
+            client.get "public/myapp/", (error, response, body) =>
+                @body = body
+                @response = response
+                done()
+
+        it "Then I should be proxyed to the app server", ->
+            @response.statusCode.should.equal 200
+            should.exist @body.msg
+            @body.msg.should.equal "ok"
+
+    describe "Private proxying", ->
+        it "When I send an authentified request to an existing route", (done) ->
             client.post 'login', password: "password", =>
                 client.get "apps/myapp/", (error, response, body) =>
-                    response.statusCode.should.equal 200
+                    @response = response
                     @body = body
                     done()
 
-        it "Then I got a response from target server", ->
+        it "Then I should be redirected to the app server", ->
+            @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok"

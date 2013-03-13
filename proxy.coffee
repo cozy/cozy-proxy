@@ -65,6 +65,9 @@ class exports.CozyProxy
     # Routes for app redirections
     routes: {}
 
+    # Username to display on login page
+    username: '?'
+
     constructor: ->
         @app = express()
         @proxy = new httpProxy.RoutingProxy()
@@ -72,6 +75,9 @@ class exports.CozyProxy
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
+
+        @userManager.all (err, users) ->
+            @username = users[0].value.email if users.length > 0
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'
@@ -107,6 +113,7 @@ class exports.CozyProxy
         @app.get '/logout', @logoutAction
         @app.get '/authenticated', @authenticatedAction
 
+        @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all '/*', @defaultRedirectAction
 
@@ -158,6 +165,23 @@ class exports.CozyProxy
         else
             res.redirect '/login'
 
+    # Redirect public side of application, redirect request depening on app
+    # name.
+    redirectPublicAppAction: (req, res) =>
+        buffer = httpProxy.buffer(req)
+        appName = req.params.name
+        req.url = req.url.substring "/public/#{appName}".length
+        req.url = "/public#{req.url}"
+        port = @routes[appName]
+
+        if port?
+            @proxy.proxyRequest req, res,
+                host: 'localhost'
+                port: @routes[req.params.name]
+                buffer: buffer
+        else
+            res.send 404
+
     # Return success: true if user is authenticated, false either.
     authenticatedAction: (req, res) =>
         res.send success: req.isAuthenticated()
@@ -194,14 +218,14 @@ class exports.CozyProxy
 
     loginView: (req, res) =>
         @userManager.all (err, users) ->
-            if users.length > 0
-                res.render 'login'
+            if users?.length > 0 and not err
+                res.render 'login', username: @username
             else
                 res.redirect 'register'
 
     registerView: (req, res) =>
         @userManager.all (err, users) ->
-            if users.length is 0
+            if not users? or users.length is 0
                 res.render 'register'
             else
                 res.redirect 'login'

@@ -20,6 +20,9 @@ $ ->
     $('#password-input').keyup (event) ->
         submitPassword() if event.which == 13
 
+    $('#submit-btn').click (event) ->
+        submitPassword()
+
     $('#password-input').focus()
 
     $('#forgot-password').click (event) ->

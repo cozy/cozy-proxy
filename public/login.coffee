@@ -23,8 +23,6 @@ $ ->
     $('#submit-btn').click (event) ->
         submitPassword()
 
-    $('#submit-btn').toggle $(window).width() < 600
-
     $('#password-input').focus()
 
     $('#forgot-password').click (event) ->

@@ -4,7 +4,7 @@ Client = require("request-json").JsonClient
 
 module.exports = class PasswordKeys
 
-    @client: new Client "http://localhost:9101/"
+    client: new Client "http://localhost:9101/"
 
     initializeKeys: (pwd, callback) ->
         @client.post "accounts/password/", password: pwd, (err, res, body) =>

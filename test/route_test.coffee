@@ -58,7 +58,7 @@ describe "Proxying", ->
 
     after ->
         router.stop()
-        @server.close
+        @server.close()
 
     describe "Redirection", ->
         it "When I send non-identified request to an existing 

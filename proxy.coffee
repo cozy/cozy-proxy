@@ -140,7 +140,7 @@ class exports.CozyProxy
             req.url = req.url.replace "/apps/#{slug}", ''
             @proxy.proxyWebSocketRequest req, socket, head,
                 host: 'localhost',
-                port: @routes[slug] # @FIXME after merge with feature.multiple
+                port: @routes[slug] # @FIXME after merge with feature/autostart
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

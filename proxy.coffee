@@ -70,7 +70,8 @@ class exports.CozyProxy
 
     constructor: ->
         @app = express()
-        @proxy = new httpProxy.RoutingProxy()
+        @server = httpProxy.createServer @app
+        @proxy = @server.proxy
         @proxy.source.port = 9104
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
@@ -104,6 +105,7 @@ class exports.CozyProxy
             console.error err.stack
             res.send 500, 'Something broke!'
 
+        @enableSocketRedirection()
         @setControllers()
 
     setControllers: ->
@@ -127,7 +129,7 @@ class exports.CozyProxy
     # Start proxy server listening.
     start: (port) ->
         @proxyPort = port if port
-        @server = @app.listen(process.env.PORT || @proxyPort)
+        @server.listen(process.env.PORT || @proxyPort)
 
     # Stop proxy server listening.
     stop: ->
@@ -142,6 +144,25 @@ class exports.CozyProxy
         res.send error: true, msg: msg, code
 
     ### Routes ###
+
+    # enable websockets
+    # this is safe with socket.io, if we want to use a plain Websockets server
+    # for some apps, we should use passport here too
+    # We extract the app's slug using express's router
+    # However, the _router variable is "private"
+    # and might break with a future version of express
+    enableSocketRedirection: =>
+        @server.on 'upgrade', (req, socket, head) =>
+            slug = @app._router.matchRequest(req).params.name
+            req.url = req.url.replace "/apps/#{slug}", ''
+            if @routes[slug]?
+                @proxy.proxyWebSocketRequest req, socket, head,
+                    host: 'localhost',
+                    port: @routes[slug]
+                    #@FIXME after merge with feature/autostart
+            else
+                socket.end "HTTP/1.1 404 NOT FOUND \r\n" +
+                           "Connection: close\r\n", 'ascii'
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

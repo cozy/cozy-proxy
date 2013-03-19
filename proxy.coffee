@@ -133,14 +133,23 @@ class exports.CozyProxy
     ### Routes ###
 
     # enable websockets
-    # this is safe with socket.io, not sure if still safe with plain Websockets
+    # this is safe with socket.io, if we want to use a plain Websockets server
+    # for some apps, we should use passport here too
+    # We extract the app's slug using express's router
+    # However, the _router variable is "private"
+    # and might break with a future version of express
     enableSocketRedirection: =>
         @server.on 'upgrade', (req, socket, head) =>
-            slug = @app._router.matchRequest(req).params.name # @dirtyhack ?
+            slug = @app._router.matchRequest(req).params.name
             req.url = req.url.replace "/apps/#{slug}", ''
-            @proxy.proxyWebSocketRequest req, socket, head,
-                host: 'localhost',
-                port: @routes[slug] # @FIXME after merge with feature/autostart
+            if @routes[slug]?
+                @proxy.proxyWebSocketRequest req, socket, head,
+                    host: 'localhost',
+                    port: @routes[slug]
+                    #@FIXME after merge with feature/autostart
+            else
+                socket.end "HTTP/1.1 404 NOT FOUND \r\n" +
+                           "Connection: close\r\n", 'ascii'
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

@@ -13,30 +13,29 @@ router = new CozyProxy()
 
 
 # https://gist.github.com/jfromaniello/4087861
+# use request cookiejar with socket.io-client
 patchCookieJar = ->
+    xhrPackage = 'socket.io-client/node_modules/xmlhttprequest'
 
-  xhrPackage = 'socket.io-client/node_modules/xmlhttprequest'
-  xhrPackageNew = 'xmlhttprequest' 
+    request = require 'request-json/node_modules/request'
+    jar = request.jar()
 
-  request = require 'request-json/node_modules/request'
-  jar = request.jar()
+    originalXHR = require('xmlhttprequest').XMLHttpRequest
 
-  originalRequest = require(xhrPackageNew).XMLHttpRequest
-
-  require(xhrPackage).XMLHttpRequest = ->
-      originalRequest.apply @, arguments
-      @setDisableHeaderCheck true
-      stdOpen = @open
+    require(xhrPackage).XMLHttpRequest = ->
+        originalXHR.apply @, arguments
+        @setDisableHeaderCheck true
+        stdOpen = @open
      
-      @open = ->
-          stdOpen.apply @, arguments
-          header = jar.get url: 'http://localhost:4444'
-          header = header.map (c) -> c.name + "=" + c.value
-          header = header.join "; "
-          @setRequestHeader 'cookie', header
-      @
+        @open = ->
+            stdOpen.apply @, arguments
+            header = jar.get url: 'http://localhost:4444'
+            header = header.map (c) -> c.name + "=" + c.value
+            header = header.join "; "
+            @setRequestHeader 'cookie', header
+        @
 
-  jar
+    jar
 
 
 describe "websockets", ->
@@ -51,6 +50,8 @@ describe "websockets", ->
             res.writeHead 200, 'Content-Type': 'application/json'
             res.end(JSON.stringify msg:"ok")
         @myapp.sockets = ioServer.listen @myapp
+        @myapp.sockets.set 'log level', 1
+
         @myapp.sockets.on 'connection', (client) ->
             client.emit 'welcome'
 
@@ -73,23 +74,37 @@ describe "websockets", ->
         router.stop()
         @myapp.sockets.server.close()
 
-    describe "When I open a socket.io connection to the proxy", ->
+    describe "When I request without a cookie", ->
 
-        it "It get redirected to the correct app", (done) ->
-          httpClient.post 'login', password: "password", (err, res) =>
-            cookie = res.headers["set-cookie"][0];
-            @jar.add(new Cookie(cookie))
+        it "should refuse the request", (done) ->
+            client = ioClient.connect 'http://localhost',
+                'force new connection':true
+                port:4444
+                resource: 'apps/myapp/socket.io'
+                transports: ['websocket']
 
-            client = ioClient.connect 'http://localhost', 
-              port:4444
-              resource: 'apps/myapp/socket.io'
-              transports: ['websocket']
+            client.on 'error', ->
+                done()
 
-            client.on 'connect', ->
-              console.log 'connected'
-            client.on 'welcome', ->
-              client.disconnect()
-            client.on 'disconnect', ->
-              done()
+    describe "When I request with a cookie", ->
+
+        it "should forward to the application", (done) ->
+            httpClient.post 'login', password: "password", (err, res) =>
+
+                cookie = res.headers["set-cookie"][0]
+                @jar.add(new Cookie(cookie))
+
+                client = ioClient.connect 'http://localhost',
+                    'force new connection':true
+                    port:4444
+                    resource: 'apps/myapp/socket.io'
+                    transports: ['websocket']
+
+                client.on 'connect', ->
+
+                client.on 'welcome', ->
+                    client.disconnect()
+                client.on 'disconnect', ->
+                    done()
 
 

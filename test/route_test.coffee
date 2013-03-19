@@ -61,7 +61,7 @@ describe "Proxying", ->
         @server.close()
 
     describe "Redirection", ->
-        it "When I send non-identified request to an existing 
+        it "When I send non-identified request to an existing
 private route", (done) ->
             client.get "apps/myapp/", (error, response, body) =>
                 @response = response
@@ -87,7 +87,7 @@ private route", (done) ->
             @body.msg.should.equal "ok"
 
     describe "Private proxying", ->
-        it "When I send an authentified request to an existing route", (done) ->
+        it "When I send an authentified request to an existing route", (done)->
             client.post 'login', password: "password", =>
                 client.get "apps/myapp/", (error, response, body) =>
                     @response = response

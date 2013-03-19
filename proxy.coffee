@@ -77,7 +77,8 @@ class exports.CozyProxy
         configurePassport @userManager
 
         @userManager.all (err, users) ->
-            @username = users[0].value.email if users.length > 0
+            if users.length > 0
+                @username = helpers.hideEmail(users[0].value.email)
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'

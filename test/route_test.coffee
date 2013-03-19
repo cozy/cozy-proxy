@@ -39,10 +39,17 @@ describe "Proxying", ->
 
         router.start 4444
         router.routes["myapp"] = 4445
+        router.routes["myapp2"] = 4446
         @server = http.createServer (req, res) ->
             res.writeHead 200, 'Content-Type': 'application/json'
             res.end(JSON.stringify msg:"ok")
         @server.listen 4445, 'localhost'
+
+        @server2 = http.createServer (req, res) ->
+            res.writeHead 200, 'Content-Type': 'application/json'
+            res.end(JSON.stringify msg:"ok2")
+        @server2.listen 4446, 'localhost'
+
         @userManager = new UserManager()
 
         @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) =>
@@ -58,10 +65,11 @@ describe "Proxying", ->
 
     after ->
         router.stop()
-        @server.close
+        @server.close()
+        @server2.close()
 
     describe "Redirection", ->
-        it "When I send non-identified request to an existing 
+        it "When I send non-identified request to an existing
 private route", (done) ->
             client.get "apps/myapp/", (error, response, body) =>
                 @response = response
@@ -71,7 +79,6 @@ private route", (done) ->
             @response.statusCode.should.equal 200
             @response.request.path.should.equal "/login"
             
-
 
     describe "Public proxying", ->
         
@@ -87,7 +94,7 @@ private route", (done) ->
             @body.msg.should.equal "ok"
 
     describe "Private proxying", ->
-        it "When I send an authentified request to an existing route", (done) ->
+        it "When I send an authentified request to an existing route", (done)->
             client.post 'login', password: "password", =>
                 client.get "apps/myapp/", (error, response, body) =>
                     @response = response
@@ -98,3 +105,17 @@ private route", (done) ->
             @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok"
+
+    describe "no regression on issue #1", ->
+        it "When I send an request to myapp2 ", (done) ->
+            client.post 'login', password: "password", =>
+                client.get "apps/myapp2/", (error, response, body) =>
+                    @response = response
+                    @body = body
+                    done()
+
+        it "Then I should be redirected to the myapp2
+server (and not myapp)", ->
+            @response.statusCode.should.equal 200
+            should.exist @body.msg
+            @body.msg.should.equal "ok2"

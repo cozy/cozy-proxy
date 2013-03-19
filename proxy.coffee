@@ -6,7 +6,7 @@ redis = require 'redis'
 
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
-PasswordKeys = require './lib/passwordKeys'
+PasswordKeys = require './lib/password_keys'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -65,13 +65,20 @@ class exports.CozyProxy
     # Routes for app redirections
     routes: {}
 
+    # Username to display on login page
+    username: '?'
+
     constructor: ->
         @app = express()
-        @proxy = new httpProxy.RoutingProxy()
+        @server = httpProxy.createServer @app
+        @proxy = @server.proxy
         @proxy.source.port = 9104
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
+
+        @userManager.all (err, users) ->
+            @username = users[0].value.email if users.length > 0
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'
@@ -87,10 +94,18 @@ class exports.CozyProxy
         @app.use passport.initialize()
         @app.use passport.session()
 
+        @app.use express.logger '
+            \\n \\033[33;22m :date \\033[0m
+            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
+            \\n  >>> perform
+            \\n  Send to client: :status
+            \\n  <<<  [:response-time ms]'
+
         @app.use (err, req, res, next) ->
             console.error err.stack
             res.send 500, 'Something broke!'
 
+        @enableSocketRedirection()
         @setControllers()
 
     setControllers: ->
@@ -114,7 +129,7 @@ class exports.CozyProxy
     # Start proxy server listening.
     start: (port) ->
         @proxyPort = port if port
-        @server = @app.listen(process.env.PORT || @proxyPort)
+        @server.listen(process.env.PORT || @proxyPort)
 
     # Stop proxy server listening.
     stop: ->
@@ -129,6 +144,25 @@ class exports.CozyProxy
         res.send error: true, msg: msg, code
 
     ### Routes ###
+
+    # enable websockets
+    # this is safe with socket.io, if we want to use a plain Websockets server
+    # for some apps, we should use passport here too
+    # We extract the app's slug using express's router
+    # However, the _router variable is "private"
+    # and might break with a future version of express
+    enableSocketRedirection: =>
+        @server.on 'upgrade', (req, socket, head) =>
+            slug = @app._router.matchRequest(req).params.name
+            req.url = req.url.replace "/apps/#{slug}", ''
+            if @routes[slug]?
+                @proxy.proxyWebSocketRequest req, socket, head,
+                    host: 'localhost',
+                    port: @routes[slug]
+                    #@FIXME after merge with feature/autostart
+            else
+                socket.end "HTTP/1.1 404 NOT FOUND \r\n" +
+                           "Connection: close\r\n", 'ascii'
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>
@@ -213,7 +247,7 @@ class exports.CozyProxy
     loginView: (req, res) =>
         @userManager.all (err, users) ->
             if users?.length > 0 and not err
-                res.render 'login'
+                res.render 'login', username: @username
             else
                 res.redirect 'register'
 
@@ -245,7 +279,8 @@ class exports.CozyProxy
             else
                 passwordKeys.initializeKeys req.body.password, (err) =>
                     if err
-                        @sendError res, "Keys aren't initialized"
+                        console.log err
+                        @sendError res, "Keys aren't initialized", 500
                     else
                         req.logIn user, {}, answer
 
@@ -380,7 +415,12 @@ class exports.CozyProxy
                     else
                         client = redis.createClient()
                         client.set "resetKey", "", =>
-                            @sendSuccess res, 'Password updated successfully'
+                            passwordKeys.resetKeys (err) =>
+                                if err
+                                    @sendError res, "Server error occured", 500
+                                else
+                                    @sendSuccess res, "Password updated \
+                                        successfully"
             else
                 @sendError res, 'Password is too short', 400
 

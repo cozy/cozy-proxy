@@ -76,7 +76,7 @@ class exports.CozyProxy
         @instanceManager = new InstanceManager()
         configurePassport @userManager
 
-        @userManager.all (err, users) ->
+        @userManager.all (err, users) =>
             if users.length > 0
                 @username = helpers.hideEmail(users[0].value.email)
 

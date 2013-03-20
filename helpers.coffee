@@ -48,3 +48,8 @@ https://#{instance.domain}/password/reset/#{key}
 exports.checkMail = (email)->
     re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     email? and email.length > 0 and re.test(email)
+
+exports.hideEmail = (email) ->
+    email.split('@')[0]
+        .replace '.', ' '
+        .replace '-', ' '

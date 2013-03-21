@@ -246,7 +246,7 @@ class exports.CozyProxy
     ### Authentication ###
 
     loginView: (req, res) =>
-        @userManager.all (err, users) ->
+        @userManager.all (err, users) =>
             if users?.length > 0 and not err
                 res.render 'login', username: @username
             else

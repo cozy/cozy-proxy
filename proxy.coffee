@@ -65,9 +65,6 @@ class exports.CozyProxy
     # Routes for app redirections
     routes: {}
 
-    # Username to display on login page
-    username: '?'
-
     constructor: ->
         @app = express()
         @server = httpProxy.createServer @app
@@ -76,9 +73,6 @@ class exports.CozyProxy
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
-
-        @userManager.all (err, users) ->
-            @username = users[0].value.email if users.length > 0
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'
@@ -247,7 +241,8 @@ class exports.CozyProxy
     loginView: (req, res) =>
         @userManager.all (err, users) ->
             if users?.length > 0 and not err
-                res.render 'login', username: @username
+                username = helpers.hideEmail users[0].value.email
+                res.render 'login', username: username
             else
                 res.redirect 'register'
 

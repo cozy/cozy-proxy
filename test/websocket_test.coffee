@@ -72,6 +72,7 @@ describe "websockets", ->
 
     after ->
         router.stop()
+        router.routes = {}
         @myapp.sockets.server.close()
 
     describe "When I request without a cookie", ->

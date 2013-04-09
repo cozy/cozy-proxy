@@ -31,6 +31,16 @@ h1 {
   -webkit-text-shadow: 1px 1px #2b4244;
   text-shadow: 1px 1px #2b4244;
 }
+h2 {
+ margin-top: 0;
+ font-size: 1em;
+ text-transform: normal;
+ font-variant: small-caps;
+ color: #cff;
+ -moz-text-shadow: 1px 1px #2b4244;
+ -webkit-text-shadow: 1px 1px #2b4244;
+ text-shadow: 1px 1px #2b4244;
+}
 h1 span#username {
   color: #cff;
 }

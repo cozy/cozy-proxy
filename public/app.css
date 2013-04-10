@@ -31,18 +31,20 @@ h1 {
   -webkit-text-shadow: 1px 1px #2b4244;
   text-shadow: 1px 1px #2b4244;
 }
-h2 {
- margin-top: 0;
- font-size: 1em;
- text-transform: normal;
- font-variant: small-caps;
- color: #cff;
- -moz-text-shadow: 1px 1px #2b4244;
- -webkit-text-shadow: 1px 1px #2b4244;
- text-shadow: 1px 1px #2b4244;
-}
 h1 span#username {
   color: #cff;
+}
+h2 {
+  margin-top: 0;
+  font-size: 1em;
+  text-transform: normal;
+  font-variant: small-caps;
+  color: #cff;
+  -moz-text-shadow: 1px 1px #2b4244;
+  -webkit-text-shadow: 1px 1px #2b4244;
+  -moz-text-shadow: 1px 1px #2b4244;
+  -webkit-text-shadow: 1px 1px #2b4244;
+  text-shadow: 1px 1px #2b4244;
 }
 .proxy-form {
   padding-top: 20%;
@@ -62,14 +64,14 @@ h1 span#username {
   border: 0;
   background: #cfd6d6;
   border: 1px solid #a2afaf;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.40) inset, 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 1px 2px rgba(0,0,0,0.05);
 }
 .proxy-form button#submit-btn:hover {
   background: #ecefef;
   box-shadow: 0 0 8px #cff;
 }
 .proxy-form button#submit-btn:active {
-  box-shadow: 1px 3px 2px rgba(0,0,0,0.40) inset;
+  box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
   background: #b8c3c3;
 }
 .proxy-form input {
@@ -85,9 +87,9 @@ h1 span#username {
   border: 0;
 }
 .proxy-form input:focus {
-  -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.90);
-  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.90);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.90);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.9);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.9);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.75) inset, 0 0 17px rgba(82,168,236,0.9);
   background: #e2f8ff;
 }
 .alert {
@@ -102,13 +104,13 @@ h1 span#username {
   -moz-box-shadow: 0 0 6px rgba(100,60,60,0.85) inset;
   -webkit-box-shadow: 0 0 6px rgba(100,60,60,0.85) inset;
   box-shadow: 0 0 6px rgba(100,60,60,0.85) inset;
-  background: rgba(242,222,222,0.80);
+  background: rgba(242,222,222,0.8);
 }
 .alert-success {
   -moz-box-shadow: 0 0 6px rgba(60,100,60,0.85) inset;
   -webkit-box-shadow: 0 0 6px rgba(60,100,60,0.85) inset;
   box-shadow: 0 0 6px rgba(60,100,60,0.85) inset;
-  background: rgba(223,240,216,0.80);
+  background: rgba(223,240,216,0.8);
 }
 .additional-line {
   margin-top: 1em;

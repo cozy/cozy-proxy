@@ -7,6 +7,7 @@ redis = require 'redis'
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 PasswordKeys = require './lib/password_keys'
+StatusChecker = require './lib/status'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -115,6 +116,7 @@ class exports.CozyProxy
         @app.post '/password/reset/:key', @resetPasswordAction
         @app.get '/logout', @logoutAction
         @app.get '/authenticated', @authenticatedAction
+        @app.get '/status', @statusAction
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
@@ -427,3 +429,11 @@ class exports.CozyProxy
                 @sendError res, "No user registered.", 400
             else
                 checkKey users[0].value
+
+    # Returns the state of main Cozy modules (true means up and false means
+    # down).
+    statusAction: (req, res) ->
+        statusChecker = new StatusChecker()
+        statusChecker.checkAllStatus (err, status) ->
+            if err then res.send 500
+            else res.send status

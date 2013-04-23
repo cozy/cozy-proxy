@@ -10,10 +10,13 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
+        console.log path
         @dbClient.post path, {}, (err, response, users) ->
+            console.log err
+
             if err
                 callback err
-            else if response.statusCode != 200
+            else if response.statusCode isnt 200
                 callback new Error(users)
             else
                 callback null, users
@@ -23,7 +26,7 @@ class DbManager
         @dbClient.post "data/", model, (err, response, model) =>
             if err
                 callback err, 500
-            else if response.statusCode != 201
+            else if response.statusCode isnt 201
                 callback new Error("Error occured"), response.statusCode
             else
                 callback null, 201, model
@@ -32,9 +35,9 @@ class DbManager
         @dbClient.put "data/merge/#{model._id}/", data, (err, res, body) =>
             if err
                 callback err
-            else if res.statusCode == 404
+            else if res.statusCode is 404
                 callback new Error("Model does not exist")
-            else if res.statusCode != 200
+            else if res.statusCode isnt 200
                 callback new Error(users)
             else
                 callback null
@@ -44,11 +47,10 @@ class DbManager
         @dbClient.put path, {}, (err, response, users) ->
             if err
                 callback err
-            else if response.statusCode != 204
+            else if response.statusCode isnt 204
                 callback new Error("Server error")
             else
                 callback null
-
 
 
 class exports.UserManager extends DbManager
@@ -65,6 +67,13 @@ class exports.UserManager extends DbManager
         else
             @error = 'Password is too short'
             false
+
+    getUser: (callback) ->
+        @all (err, users) ->
+            if err then callback err
+            else if users.length is 0 then callback null, null
+            else callback null, users[0]
+
 
 class exports.InstanceManager extends DbManager
     type: 'CozyInstance'

@@ -1,12 +1,12 @@
-{ "name": "cozyhome"
-, "version": "0.0.1"
-, "engines": ["node >= 0.4.0"]
+{ "name": "cozy-proxy"
+, "version": "0.8.9"
+, "engines": ["node >= 0.8.0"]
 , "main": "server.coffee"
 , "dependencies":
   { "http-proxy":             "= 0.8.5"
 ,   "coffee-script":          "= 1.4.0"
-,   "request-json":           "= 0.2.9"
-,   "express":                "= 3.0.3"
+,   "request-json":           "= 0.3.3"
+,   "express":                "= 3.0.6"
 ,   "passport":               "= 0.1.15"
 ,   "passport-local":         "= 0.1.6"
 ,   "connect-redis":          "= 1.4.5"
@@ -15,12 +15,12 @@
 ,   "randomstring":           "= 1.0.2"
 ,   "nodemailer":             "= 0.3.31"
 ,   "jade":                   "= 0.27.7"
+,   "async":                  "= 0.1.22"
   }
 , "devDependencies":
   { "mocha":                  "> 0"
 ,   "chai":                   "> 0"
 ,   "should":                 "> 0"
-,   "async":                  "> 0"
 ,   "socket.io":              "~0.9.13"
 ,   "socket.io-client":       "~0.9.11"
 ,   "xmlhttprequest":         "~1.5.0"

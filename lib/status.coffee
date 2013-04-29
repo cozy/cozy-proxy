@@ -54,6 +54,6 @@ module.exports = class StatusChecker
         (callback) =>
             @client.host = url
             @client.get path, (err, res, body) =>
-                @status[app] = res?.statusCode is 200
+                @status[app] = res?.statusCode is 200 or res?.statusCode is 403
                 callback()
             , false

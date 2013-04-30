@@ -3,11 +3,11 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 redis = require 'redis'
+fs = require 'fs'
 
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 PasswordKeys = require './lib/password_keys'
-StatusChecker = require './lib/status'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -89,12 +89,19 @@ class exports.CozyProxy
         @app.use passport.initialize()
         @app.use passport.session()
 
-        @app.use express.logger '
+        format = '
             \\n \\033[33;22m :date \\033[0m
             \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
             \\n  >>> perform
             \\n  Send to client: :status
             \\n  <<<  [:response-time ms]'
+        if process.env.NODE_ENV is "production"
+            if not fs.existsSync './log/production.log'
+                fs.mkdirSync 'log'
+            logFile = fs.createWriteStream('./log/production.log', {flags: 'a'}); 
+            @app.use express.logger {stream: logFile, format: format}
+        else 
+            @app.use express.logger format
 
         @app.use (err, req, res, next) ->
             console.error err.stack

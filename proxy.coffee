@@ -8,6 +8,7 @@ fs = require 'fs'
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 PasswordKeys = require './lib/password_keys'
+StatusChecker = require './lib/status' 
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy

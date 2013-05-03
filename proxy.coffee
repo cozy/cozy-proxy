@@ -99,7 +99,7 @@ class exports.CozyProxy
         if process.env.NODE_ENV is "production"
             if not fs.existsSync './log/production.log'
                 fs.mkdirSync 'log'
-            logFile = fs.createWriteStream('./log/production.log', {flags: 'a'}); 
+            logFile = fs.createWriteStream './log/production.log', {flags: 'a'}
             @app.use express.logger {stream: logFile, format: format}
         else 
             @app.use express.logger format

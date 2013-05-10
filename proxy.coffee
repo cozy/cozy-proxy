@@ -96,13 +96,20 @@ class exports.CozyProxy
             \\n  >>> perform
             \\n  Send to client: :status
             \\n  <<<  [:response-time ms]'
-        if process.env.NODE_ENV is "production"
-            if not fs.existsSync './log/production.log'
-                fs.mkdirSync 'log'
-            logFile = fs.createWriteStream './log/production.log', {flags: 'a'}
-            @app.use express.logger {stream: logFile, format: format}
-        else 
+        if process.env.NODE_ENV is "development"
             @app.use express.logger format
+        else 
+            env = process.env.NODE_ENV
+            if not fs.existsSync './log'
+                fs.mkdirSync 'log'
+            logFile = fs.createWriteStream "./log/#{env}.log", {flags: 'w'}
+            @app.use express.logger {stream: logFile, format: format}
+            if env is "production"
+                console.log = (text) ->
+                    logFile.write(text + '\n')
+
+                console.error = (text) ->
+                    logFile.write(text + '\n')
 
         @app.use (err, req, res, next) ->
             console.error err.stack

@@ -149,13 +149,16 @@ class exports.CozyProxy
     # and might break with a future version of express
     enableSocketRedirection: =>
         @server.on 'upgrade', (req, socket, head) =>
-            slug = @app._router.matchRequest(req).params.name
-            req.url = req.url.replace "/apps/#{slug}", ''
-            if @routes[slug]?
+            if slug = @app._router.matchRequest(req).params.name
+                req.url = req.url.replace "/apps/#{slug}", ''
+                port = @routes[slug]
+            else
+                port = @defaultPort
+
+            if port
                 @proxy.proxyWebSocketRequest req, socket, head,
                     host: 'localhost',
-                    port: @routes[slug]
-                    #@FIXME after merge with feature/autostart
+                    port: port
             else
                 socket.end "HTTP/1.1 404 NOT FOUND \r\n" +
                            "Connection: close\r\n", 'ascii'
@@ -271,7 +274,6 @@ class exports.CozyProxy
                 console.log err
                 @sendError res, "Server error occured.", 500
             else if user is undefined or not user
-                console.log err if err
                 @sendError res, "Wrong password", 400
             else
                 passwordKeys.initializeKeys req.body.password, (err) =>

@@ -10,10 +10,7 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        console.log path
         @dbClient.post path, {}, (err, response, users) ->
-            console.log err
-
             if err
                 callback err
             else if response.statusCode isnt 200

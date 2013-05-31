@@ -22,9 +22,9 @@ a:hover {
   cursor: pointer;
 }
 h1 {
-  margin-top: 0;
-  font-size: 1.5em;
-  text-transform: normal;
+  margin: 0 0 1em 0;
+  font-size: 1.8em;
+  line-height: 1.6em;
   font-variant: small-caps;
   color: #cad1d1;
   -moz-text-shadow: 1px 1px #2b4244;
@@ -48,7 +48,6 @@ h2 {
 }
 .proxy-form {
   padding-top: 20%;
-  text-transform: uppercase;
 }
 .proxy-form button {
   font-size: 1.1em;

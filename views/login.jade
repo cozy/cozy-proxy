@@ -11,10 +11,12 @@ html(lang="en")
     link(rel='stylesheet', href='/app.css') 
     link(rel='icon', type='image/x-icon', href='/favicon.png')
   body
-    #content
-      .proxy-form
-        h1 sign in as 
+    .proxy-form
+      h1 
+          | Welcome 
           span#username #{username}
+          |  to your Cozy <br />
+          | please type your password to sign in
         p
           input#password-input(type='text', type='password',
                                placeholder='password')

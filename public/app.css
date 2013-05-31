@@ -8,6 +8,7 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 body {
   text-align: center;
@@ -118,7 +119,25 @@ h2 {
   display: none;
 }
 @media (max-width: 640px) {
+  body {
+    padding: 1em;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  h1 {
+    padding: 0 1em;
+  }
+  .proxy-form {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
   .proxy-form button#submit-btn {
     display: inline;
+    width: 80%;
+    margin-left: 0;
+  }
+  .proxy-form input {
+    width: 80%;
   }
 }

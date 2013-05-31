@@ -261,8 +261,10 @@ class exports.CozyProxy
     loginView: (req, res) =>
         @userManager.all (err, users) =>
             if users?.length > 0 and not err
-                username = helpers.hideEmail users[0].value.email
-                res.render 'login', username: username
+                name = helpers.hideEmail users[0].value.email
+                if name?
+                    name = name.charAt(0).toUpperCase() + name.slice(1)
+                res.render 'login', username: name
             else
                 res.redirect 'register'
 
@@ -276,8 +278,8 @@ class exports.CozyProxy
     authenticatedAction: (req, res) =>
         res.send success: req.isAuthenticated()
 
+    # Check user credentials and keep user authentication through session.
     authenticate: (req, res) =>
-        # Check user credentials and keep user authentication through session.
         answer = (err) =>
             if err
                 @sendError res, "Login failed"
@@ -298,12 +300,12 @@ class exports.CozyProxy
                     else
                         req.logIn user, {}, answer
 
-        authenticator(req, res)
+        authenticator req, res
 
 
     loginAction: (req, res) =>
         req.body.username = "owner"
-        @authenticate(req, res)
+        @authenticate req, res
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>

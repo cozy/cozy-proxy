@@ -8,7 +8,7 @@ fs = require 'fs'
 RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 PasswordKeys = require './lib/password_keys'
-StatusChecker = require './lib/status' 
+StatusChecker = require './lib/status'
 
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -98,7 +98,7 @@ class exports.CozyProxy
             \\n  <<<  [:response-time ms]'
         if process.env.NODE_ENV is "development"
             @app.use express.logger format
-        else 
+        else
             env = process.env.NODE_ENV
             if not fs.existsSync './log'
                 fs.mkdirSync 'log'

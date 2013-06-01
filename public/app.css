@@ -8,6 +8,11 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
+}
+html,
+body,
+h1,
+p {
   box-sizing: border-box;
 }
 body {

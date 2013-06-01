@@ -1,5 +1,6 @@
 {CozyProxy} = require './proxy'
 
+process.env.NODE_ENV ?= "development"
 process.on 'uncaughtException', (err) ->
     console.error err.message
     console.error err.stack
@@ -14,7 +15,6 @@ displayRoutes = (error) ->
         for route of router.routes
             console.log "#{route} => #{router.routes[route]}"
 
-# Main function
 if not module.parent
     router = new CozyProxy()
     router.start()

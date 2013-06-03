@@ -7,10 +7,14 @@ class DbManager
 
     constructor: ->
         @dbClient = new Client "http://localhost:9101/"
+        @name = process.env.name
+        @token = process.env.token
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
         console.log path
+        if process.env.NODE_ENV is "production"
+            @dbClient.setBasicAuth @name, @token
         @dbClient.post path, {}, (err, response, users) ->
             console.log err
 
@@ -23,6 +27,8 @@ class DbManager
 
     create: (model, callback) ->
         model.docType = @type
+        if process.env.NODE_ENV is "production"
+            @dbClient.setBasicAuth @name, @token
         @dbClient.post "data/", model, (err, response, model) =>
             if err
                 callback err, 500
@@ -32,6 +38,8 @@ class DbManager
                 callback null, 201, model
 
     merge: (model, data, callback) ->
+        if process.env.NODE_ENV is "production"
+            @dbClient.setBasicAuth @name, @token
         @dbClient.put "data/merge/#{model._id}/", data, (err, res, body) =>
             if err
                 callback err
@@ -44,6 +52,8 @@ class DbManager
 
     deleteAll: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/destroy/"
+        if process.env.NODE_ENV is "production"
+            @dbClient.setBasicAuth @name, @token
         @dbClient.put path, {}, (err, response, users) ->
             if err
                 callback err

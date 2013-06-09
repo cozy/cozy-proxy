@@ -2,10 +2,8 @@ httpProxy = require 'http-proxy'
 express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
-redis = require 'redis'
 fs = require 'fs'
 
-RedisStore = require('connect-redis')(express)
 Client = require('request-json').JsonClient
 PasswordKeys = require './lib/password_keys'
 StatusChecker = require './lib/status'
@@ -84,7 +82,6 @@ class exports.CozyProxy
         @app.use express.cookieParser secretKey
         @app.use express.session
             secret: secretKey
-            store: new RedisStore(db:'cozy')
             cookie:
                 maxAge: 30 * 86400 * 1000
         @app.use passport.initialize()

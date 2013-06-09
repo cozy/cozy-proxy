@@ -12,18 +12,7 @@ exports.cryptPassword = (password) ->
 # Generate a random key and store it in the redis store
 exports.genResetKey = () ->
     key = randomstring.generate()
-    client = redis.createClient()
-    client.on "error", (err) ->
-        console.log "Redis error: " + err
-    client.set "resetKey", key
     key
-
-# If key match current reset key, callbacks.success is run, key do not match,
-# callbacks.failure is run.
-exports.checkKey = (key, callback) ->
-    client = redis.createClient()
-    client.get "resetKey", (err, res) ->
-        callback(err, res == key)
 
 # Send email giving user email address he can connect on to change his
 # password. The validity of the address depends on the given key.
@@ -32,7 +21,7 @@ exports.sendResetEmail = (instance, user, key, callback) ->
     transport = nodemailer.createTransport("SMTP", {})
     transport.sendMail
         to : user.email
-        from : "no-reply@" + instance.domain
+        from : "Your Cozy Instance <no-reply@#{instance.domain}>"
         subject : "[Cozy] Reset password procedure"
         text: """
 You told to your cozy that you forgot your password. No worry about that, just

@@ -364,10 +364,12 @@ class exports.CozyProxy
     forgotPasswordAction: (req, res) =>
 
         sendEmail = (instances, user, key) =>
+            console.log "send email"
             if instances.length > 0
                 instance = instances[0].value
             else
                 instance = domain: "domain.not.set"
+
 
             helpers.sendResetEmail instance, user, key, (err, result) =>
                 if err
@@ -387,24 +389,20 @@ class exports.CozyProxy
                     msg: "No user set, register first error occured.", 500
             else
                 user = users[0].value
-                key = helpers.genResetKey()
+                @resetKey = helpers.genResetKey()
                 @instanceManager.all (err, instances) =>
                     if err
                         console.log err
                         @sendError res, "Server error occured.", 500
                     else
-                        sendEmail instances, user, key
+                        sendEmail instances, user, @resetKey
 
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
-        helpers.checkKey req.params.key, (err, isKeyOk) =>
-            if err
-                console.log err
-                @sendError res, "Server error occured.", 500
-            else if isKeyOk
-                res.render 'reset', resetKey: req.params.key
-            else
-                res.redirect '/'
+        if @resetKey is req.params.key
+            res.render 'reset', resetKey: req.params.key
+        else
+            res.redirect '/'
 
     # Check password validity, then change password, then clear reset key
     # from redis cache.
@@ -412,14 +410,11 @@ class exports.CozyProxy
         key = req.params.key
         newPassword = req.body.password
 
-        checkKey = (user) ->
-            helpers.checkKey key, (err, isKeyOk) =>
-                if err
-                    @sendError res, "Server error occured.", 500
-                else if not isKeyOk
-                    @sendError res, "Key is not valid.", 400
-                else
-                    changeUserData user
+        checkKey = (user) =>
+            if @resetKey is req.params.key
+                changeUserData user
+            else
+                @sendError res, "Key is not valid.", 400
 
         changeUserData = (user) =>
             if newPassword? and newPassword.length > 5
@@ -429,13 +424,12 @@ class exports.CozyProxy
                     if err
                         @sendError res, 'User cannot be updated'
                     else
-                        client = redis.createClient()
-                        client.set "resetKey", "", =>
-                            passwordKeys.resetKeys (err) =>
-                                if err
-                                    @sendError res, "Server error occured", 500
-                                else
-                                    @sendSuccess res, "Password updated \
+                        @resetKey = ""
+                        passwordKeys.resetKeys (err) =>
+                            if err
+                                @sendError res, "Server error occured", 500
+                            else
+                                @sendSuccess res, "Password updated \
                                         successfully"
             else
                 @sendError res, 'Password is too short', 400

@@ -1,6 +1,5 @@
 randomstring = require("randomstring")
 bcrypt = require('bcrypt')
-redis = require("redis")
 
 
 # Crypt given password with bcrypt algorithm.
@@ -8,11 +7,6 @@ exports.cryptPassword = (password) ->
     salt = bcrypt.genSaltSync(10)
     hash = bcrypt.hashSync(password, salt)
     { hash: hash, salt: salt }
-
-# Generate a random key and store it in the redis store
-exports.genResetKey = () ->
-    key = randomstring.generate()
-    key
 
 # Send email giving user email address he can connect on to change his
 # password. The validity of the address depends on the given key.

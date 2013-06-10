@@ -3,19 +3,18 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 fs = require 'fs'
-
-Client = require('request-json').JsonClient
-PasswordKeys = require './lib/password_keys'
-StatusChecker = require './lib/status'
-
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
+Client = require('request-json').JsonClient
+
 helpers = require './helpers'
 middlewares = require './middlewares'
-passwordKeys = new PasswordKeys()
-
+PasswordKeys = require './lib/password_keys'
+StatusChecker = require './lib/status'
 UserManager = require('./models').UserManager
 InstanceManager = require('./models').InstanceManager
+
+passwordKeys = new PasswordKeys()
 
 ## Passport / Authentication
 configurePassport = (userManager) ->
@@ -78,15 +77,23 @@ class exports.CozyProxy
         @app.set 'view engine', 'jade'
         @app.use express.static(__dirname + '/public')
         @app.use middlewares.selectiveBodyParser
-        secretKey = randomstring.generate()
-        @app.use express.cookieParser secretKey
+        @app.use express.cookieParser randomstring.generate()
         @app.use express.session
-            secret: secretKey
+            secret: randomstring.generate()
             cookie:
                 maxAge: 30 * 86400 * 1000
         @app.use passport.initialize()
         @app.use passport.session()
+        @configureLogs()
+        @app.use (err, req, res, next) ->
+            console.error err.stack
+            sendError res, err.message
 
+        @enableSocketRedirection()
+        @setControllers()
+
+
+    configureLogs: ->
         format = '
             \\n \\033[33;22m :date \\033[0m
             \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
@@ -97,23 +104,17 @@ class exports.CozyProxy
             @app.use express.logger format
         else
             env = process.env.NODE_ENV
-            if not fs.existsSync './log'
-                fs.mkdirSync 'log'
-            logFile = fs.createWriteStream "./log/#{env}.log", {flags: 'w'}
-            @app.use express.logger {stream: logFile, format: format}
+            fs.mkdirSync 'log' unless fs.existsSync './log'
+            logFile = fs.createWriteStream "./log/#{env}.log", flags: 'w'
+            @app.use express.logger
+                stream: logFile
+                format: format
             if env is "production"
                 console.log = (text) ->
                     logFile.write(text + '\n')
 
                 console.error = (text) ->
                     logFile.write(text + '\n')
-
-        @app.use (err, req, res, next) ->
-            console.error err.stack
-            res.send 500, 'Something broke!'
-
-        @enableSocketRedirection()
-        @setControllers()
 
     setControllers: ->
         @app.get "/routes", @showRoutesAction
@@ -386,7 +387,7 @@ class exports.CozyProxy
                     msg: "No user set, register first error occured.", 500
             else
                 user = users[0].value
-                @resetKey = helpers.genResetKey()
+                @resetKey = randomstring.generate()
                 @instanceManager.all (err, instances) =>
                     if err
                         console.log err

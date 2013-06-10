@@ -3,12 +3,6 @@ helpers = require '../helpers'
 
 
 describe 'helpers', ->
-    describe 'genResetKey', ->
-        it 'When you generate a key', ->
-            @key = helpers.genResetKey()
-
-        it 'Then it is 32 chars long', ->
-            @key.length.should.equal 32
 
     describe 'checkMail', ->
         it 'Check good mail', ->

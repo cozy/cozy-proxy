@@ -10,13 +10,13 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        @dbClient.post path, {}, (err, response, users) ->
+        @dbClient.post path, {}, (err, response, models) ->
             if err
                 callback err
             else if response.statusCode isnt 200
-                callback new Error(users)
+                callback new Error(models)
             else
-                callback null, users
+                callback null, models
 
     create: (model, callback) ->
         model.docType = @type

@@ -7,10 +7,16 @@ class DbManager
 
     constructor: ->
         @dbClient = new Client "http://localhost:9101/"
+        @name = process.env.name
+        @token = process.env.token
+        if process.env.NODE_ENV is "production"
+            @dbClient.setBasicAuth @name, @token
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        @dbClient.post path, {}, (err, response, models) ->
+        @dbClient.post path, {}, (err, response, users) ->
+            console.log err
+
             if err
                 callback err
             else if response.statusCode isnt 200

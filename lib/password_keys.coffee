@@ -4,7 +4,12 @@ Client = require("request-json").JsonClient
 
 module.exports = class PasswordKeys
 
-    client: new Client "http://localhost:9101/"
+    constructor: ->
+        @client = new Client "http://localhost:9101/"
+        @name = process.env.name
+        @token = process.env.token
+        if process.env.NODE_ENV is "production"
+            @client.setBasicAuth @name, @token
 
     initializeKeys: (pwd, callback) ->
         @client.post "accounts/password/", password: pwd, (err, res, body) =>
@@ -14,6 +19,8 @@ module.exports = class PasswordKeys
                 callback()
 
     updateKeys: (pwd, callback) ->
+        if process.env.NODE_ENV is "production"
+            @client.setBasicAuth @name, @token
         @client.put "accounts/password/", password: pwd, (err, res, body) =>
             if err
                 callback err
@@ -21,6 +28,8 @@ module.exports = class PasswordKeys
                 callback()
 
     deleteKeys: (callback) ->
+        if process.env.NODE_ENV is "production"
+            @client.setBasicAuth @name, @token
         @client.del "accounts/", (err, res, body) =>
             if err
                 callback err
@@ -28,6 +37,8 @@ module.exports = class PasswordKeys
                 callback()
 
     resetKeys: (callback) ->
+        if process.env.NODE_ENV is "production"
+            @client.setBasicAuth @name, @token
         @client.del "accounts/reset/", (err, res, body) =>
             if err
                 callback err

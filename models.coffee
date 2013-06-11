@@ -14,7 +14,7 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        @dbClient.post path, {}, (err, response, users) ->
+        @dbClient.post path, {}, (err, response, models) ->
             console.log err
 
             if err
@@ -41,13 +41,13 @@ class DbManager
             else if res.statusCode is 404
                 callback new Error("Model does not exist")
             else if res.statusCode isnt 200
-                callback new Error(users)
+                callback new Error(body)
             else
                 callback null
 
     deleteAll: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/destroy/"
-        @dbClient.put path, {}, (err, response, users) ->
+        @dbClient.put path, {}, (err, response) ->
             if err
                 callback err
             else if response.statusCode isnt 204

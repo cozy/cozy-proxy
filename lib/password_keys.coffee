@@ -6,8 +6,8 @@ module.exports = class PasswordKeys
 
     constructor: ->
         @client = new Client "http://localhost:9101/"
-        @name = process.env.name
-        @token = process.env.token
+        @name = process.env.NAME
+        @token = process.env.TOKEN
         if process.env.NODE_ENV is "production"
             @client.setBasicAuth @name, @token
 

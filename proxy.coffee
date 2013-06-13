@@ -122,9 +122,9 @@ class exports.CozyProxy
 
         @app.get '/register', @registerView
         @app.post '/register', @registerAction
-        @app.get '/login', @loginView
+        @app.get  /^\/login/, @loginView
         @app.post '/login', @loginAction
-        @app.post "/login/forgot", @forgotPasswordAction
+        @app.post '/login/forgot', @forgotPasswordAction
         @app.get '/password/reset/:key', @resetPasswordView
         @app.post '/password/reset/:key', @resetPasswordAction
         @app.get '/logout', @logoutAction
@@ -185,7 +185,7 @@ class exports.CozyProxy
                 port: @defaultPort
                 buffer: buffer
         else
-            res.redirect '/login'
+            res.redirect "/login#{req.url}"
 
     # Redirect application, redirect request depening on app name.
     redirectAppAction: (req, res) =>
@@ -203,7 +203,7 @@ class exports.CozyProxy
             else
                 res.send 404
         else
-            res.redirect '/login'
+            res.redirect "/login#{req.url}"
 
     # Redirect public side of application, redirect request depening on app
     # name.

@@ -57,6 +57,7 @@ describe "Models", ->
                 done()
 
         it "Then I find my user modified", ->
+            should.exist @users
             @users.length.should.equal 1
             @user.email.should.equal @users[0].value.email
 

@@ -10,4 +10,5 @@ env:
 before_install:
     - git clone git://github.com/mycozycloud/cozy-data-system.git
     - cd cozy-data-system && npm install
-    - cd cozy-data-system && coffee server.coffe &
+    - coffee server.coffe &
+    - cd ..

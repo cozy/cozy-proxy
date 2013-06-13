@@ -1,7 +1,6 @@
 http = require('http')
 should = require('chai').Should()
 Client = require('request-json').JsonClient
-redis = require 'redis'
 
 
 helpers = require '../helpers'

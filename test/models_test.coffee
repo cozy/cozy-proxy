@@ -14,7 +14,7 @@ describe "Models", ->
 
     describe "creation", ->
         it "When I create an user", (done) ->
-             
+
             user =
                 email: "test@cozycloud.cc"
                 owner: true
@@ -37,6 +37,7 @@ describe "Models", ->
                 done()
 
         it "Then I find my new user", ->
+            should.exist @users
             @users.length.should.equal 1
             @user._id.should.equal @users[0].value._id
 
@@ -46,7 +47,7 @@ describe "Models", ->
             @userManager.merge @user, email: @user.email, (err, code, body) =>
                 @err = err
                 done()
-            
+
         it "Then I got no error", ->
             should.not.exist @err
 

@@ -12,5 +12,5 @@ before_install:
     - cd cozy-data-system 
     - npm install
     - pwd
-    - start-stop-daemon --start --chdir /home/mycozycloud/cozy-proxy/cozy-data-system/ --exec /home/mycozycloud/cozy-proxy/cozy-data-system/server.coffee -b
+    - start-stop-daemon --start --chdir /home/travis/build/mycozycloud/cozy-proxy/cozy-data-system/ --exec /home/travis/build/mycozycloud/cozy-proxy/cozy-data-system/server.coffee -b
     - cd ..

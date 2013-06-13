@@ -14,5 +14,6 @@ before_install:
     - pwd
     - start-stop-daemon --start --chdir /home/travis/build/mycozycloud/cozy-proxy/cozy-data-system/ --exec /home/travis/build/mycozycloud/cozy-proxy/cozy-data-system/server.coffee -b
     - ps aux | grep coffee
-    - curl http://localhost:9101
+    - sleep 1
+    - curl http://localhost:9101/
     - cd ..

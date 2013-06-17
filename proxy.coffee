@@ -186,7 +186,9 @@ class exports.CozyProxy
                 port: @defaultPort
                 buffer: buffer
         else
-            res.redirect "/login#{req.url}?#{qs.stringify(req.query)}"
+            url = "/login#{req.url}"
+            url += "?#{qs.stringify(req.query)}" if req.query.length
+            res.redirect url
 
     # Redirect application, redirect request depening on app name.
     redirectAppAction: (req, res) =>
@@ -204,7 +206,9 @@ class exports.CozyProxy
             else
                 res.send 404
         else
-            res.redirect "/login#{req.url}?#{qs.stringify(req.query)}"
+            url = "/login#{req.url}"
+            url += "?#{qs.stringify(req.query)}" if req.query.length
+            res.redirect url
 
     # Redirect public side of application, redirect request depening on app
     # name.

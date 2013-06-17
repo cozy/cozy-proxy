@@ -62,7 +62,7 @@
     };
     submitPassword = function() {
       $('#submit-btn').spin('small');
-      return client.post("login/", {
+      return client.post("/login", {
         password: $('#password-input').val()
       }, {
         success: function() {
@@ -79,7 +79,10 @@
             $('#submit-btn').spin(null, null, msg);
           }
           return setTimeout(function() {
-            return window.location = "/";
+            var newpath;
+
+            newpath = window.location.pathname.substring(6);
+            return window.location.pathname = newpath;
           }, 500);
         },
         error: function(err) {

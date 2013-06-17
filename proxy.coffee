@@ -3,6 +3,7 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 fs = require 'fs'
+qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 Client = require('request-json').JsonClient
@@ -122,9 +123,9 @@ class exports.CozyProxy
 
         @app.get '/register', @registerView
         @app.post '/register', @registerAction
-        @app.get '/login', @loginView
+        @app.get  /^\/login/, @loginView
         @app.post '/login', @loginAction
-        @app.post "/login/forgot", @forgotPasswordAction
+        @app.post '/login/forgot', @forgotPasswordAction
         @app.get '/password/reset/:key', @resetPasswordView
         @app.post '/password/reset/:key', @resetPasswordAction
         @app.get '/logout', @logoutAction
@@ -185,7 +186,9 @@ class exports.CozyProxy
                 port: @defaultPort
                 buffer: buffer
         else
-            res.redirect '/login'
+            url = "/login#{req.url}"
+            url += "?#{qs.stringify(req.query)}" if req.query.length
+            res.redirect url
 
     # Redirect application, redirect request depening on app name.
     redirectAppAction: (req, res) =>
@@ -203,7 +206,9 @@ class exports.CozyProxy
             else
                 res.send 404
         else
-            res.redirect '/login'
+            url = "/login#{req.url}"
+            url += "?#{qs.stringify(req.query)}" if req.query.length
+            res.redirect url
 
     # Redirect public side of application, redirect request depening on app
     # name.

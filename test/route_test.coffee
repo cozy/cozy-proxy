@@ -32,7 +32,7 @@ describe "/routes", ->
             nbRoutes = 0
             nbRoutes++ for route of @body
             nbRoutes.should.equal 3
-        
+
 describe "Proxying", ->
 
     before (done) ->
@@ -71,17 +71,28 @@ describe "Proxying", ->
     describe "Redirection", ->
         it "When I send non-identified request to an existing
 private route", (done) ->
-            client.get "apps/myapp/", (error, response, body) =>
+            client.get "apps/myapp", (error, response, body) =>
                 @response = response
                 done()
 
         it "Then I should get redirected to login", ->
             @response.statusCode.should.equal 200
-            @response.request.path.should.equal "/login"
-            
+            @response.request.path.should.equal "/login/apps/myapp"
+
+        it "When I send non-identified request to an existing
+private route (with params)", (done) ->
+            client.get "apps/myapp/?param=a", (error, response, body) =>
+                @response = response
+                done()
+
+        it "Then I should get redirected to login", ->
+            @response.statusCode.should.equal 200
+            @response.request.path.should.equal "/login/apps/myapp/?param=a"
+
+
 
     describe "Public proxying", ->
-        
+
         it "When I send a request to an existing public route", (done) ->
             client.get "public/myapp/", (error, response, body) =>
                 @body = body

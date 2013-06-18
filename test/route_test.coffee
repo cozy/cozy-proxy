@@ -52,6 +52,7 @@ describe "Proxying", ->
 
         @userManager = new UserManager()
 
+        @userManager.dbClient.setBasicAuth "proxy", "token"
         @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) =>
             password = helpers.cryptPassword('password').hash
             user =
@@ -71,13 +72,13 @@ describe "Proxying", ->
     describe "Redirection", ->
         it "When I send non-identified request to an existing
 private route", (done) ->
-            client.get "apps/myapp", (error, response, body) =>
+            client.get "apps/myapp/", (error, response, body) =>
                 @response = response
                 done()
 
         it "Then I should get redirected to login", ->
             @response.statusCode.should.equal 200
-            @response.request.path.should.equal "/login/apps/myapp"
+            @response.request.path.should.equal "/login/apps/myapp/"
 
         it "When I send non-identified request to an existing
 private route (with params)", (done) ->

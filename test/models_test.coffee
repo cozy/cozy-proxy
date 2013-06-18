@@ -1,6 +1,10 @@
 should = require('chai').Should()
 UserManager = require('../models').UserManager
 
+# Allow proxy to be authenticated for DS
+process.env.NAME = "proxy"
+process.env.TOKEN = "token"
+
 describe "Models", ->
 
     before (done) ->

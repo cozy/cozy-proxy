@@ -13,6 +13,7 @@ describe "Password Keys", ->
     describe "Initialize keys", ->
 
         before (done) ->
+            client.setBasicAuth "proxy", "token"
             client.del 'data/102/', (err, res, body) =>
                 data =
                     email: "user@CozyCloud.CC"

@@ -11,11 +11,18 @@ router = new CozyProxy()
 
 describe "/routes", ->
 
-    before ->
+    before (done) ->
         router.start 4444
         router.routes["/apps/app1"] = 8001
         router.routes["/apps/app2"] = 8002
         router.routes["/apps/app3"] = 8003
+        map = (doc) ->
+            emit doc._id, doc if doc.docType is "User"
+        design_doc =
+            "map": map.toString()
+        clientDS = new Client("http://localhost:9101/")
+        clientDS.put 'request/user/all/', design_doc, (err, res, body) =>
+            done()
 
     after ->
         router.stop()

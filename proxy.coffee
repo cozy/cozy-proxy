@@ -500,6 +500,7 @@ class exports.CozyProxy
 
     # Return the host meta file
     # support only JSON format
+    # @TODO : support xml
     webfingerHostMeta: (req, res) =>
         return res.send 404 unless req.params.ext is 'json'
 
@@ -531,7 +532,7 @@ class exports.CozyProxy
 
         accountinfo = links: []
 
-        if @routes['remotestorage']
+        if @routes['remote-storage']
 
             link =
                 href: "#{host}/public/remotestorage/storage"

@@ -532,7 +532,7 @@ class exports.CozyProxy
 
         accountinfo = links: []
 
-        if @routes['remote-storage']
+        if @routes['remotestorage']
 
             link =
                 href: "#{host}/public/remotestorage/storage"

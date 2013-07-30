@@ -1,12 +1,21 @@
 should = require('chai').Should()
 UserManager = require('../models').UserManager
 
+# Allow proxy to be authenticated for DS
+process.env.NAME = "proxy"
+process.env.TOKEN = "token"
+
 describe "Models", ->
 
     before (done) ->
         @userManager = new UserManager()
-        @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) ->
-            done()
+        @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) =>
+            map = (doc) ->
+                emit doc._id, doc if doc.docType is "User"
+            design_doc =
+                "map": map.toString()
+            @userManager.dbClient.put 'request/user/all/', design_doc, (err, res, body) =>
+                done()
 
     after (done) ->
         @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) ->

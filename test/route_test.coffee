@@ -11,11 +11,18 @@ router = new CozyProxy()
 
 describe "/routes", ->
 
-    before ->
+    before (done) ->
         router.start 4444
         router.routes["/apps/app1"] = 8001
         router.routes["/apps/app2"] = 8002
         router.routes["/apps/app3"] = 8003
+        map = (doc) ->
+            emit doc._id, doc if doc.docType is "User"
+        design_doc =
+            "map": map.toString()
+        clientDS = new Client("http://localhost:9101/")
+        clientDS.put 'request/user/all/', design_doc, (err, res, body) =>
+            done()
 
     after ->
         router.stop()
@@ -52,6 +59,7 @@ describe "Proxying", ->
 
         @userManager = new UserManager()
 
+        @userManager.dbClient.setBasicAuth "proxy", "token"
         @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) =>
             password = helpers.cryptPassword('password').hash
             user =
@@ -71,13 +79,13 @@ describe "Proxying", ->
     describe "Redirection", ->
         it "When I send non-identified request to an existing
 private route", (done) ->
-            client.get "apps/myapp", (error, response, body) =>
+            client.get "apps/myapp/", (error, response, body) =>
                 @response = response
                 done()
 
         it "Then I should get redirected to login", ->
             @response.statusCode.should.equal 200
-            @response.request.path.should.equal "/login/apps/myapp"
+            @response.request.path.should.equal "/login/apps/myapp/"
 
         it "When I send non-identified request to an existing
 private route (with params)", (done) ->

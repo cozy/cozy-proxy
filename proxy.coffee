@@ -132,7 +132,7 @@ class exports.CozyProxy
         @app.get '/authenticated', @authenticatedAction
         @app.get '/status', @statusAction
         @app.get '/.well-known/host-meta.?:ext', @webfingerHostMeta
-        @app.get '/.well-known/webfinger', @webfingerAccount
+        @app.get '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
@@ -522,28 +522,37 @@ class exports.CozyProxy
     # @TODO : let the user add more information here
     # OpenID provider, public email, public tel, ...
     webfingerAccount: (req, res) =>
-        host = 'https://' + req.get 'host'
-        OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
-        PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
 
-        res.header 'Access-Control-Allow-Origin', '*'
-        res.header 'Access-Control-Allow-Credentials', true
-        res.header 'Access-Control-Allow-Methods', 'GET'
+        if req.params.module is 'caldav' or req.params.module is 'carddav'
+            res.redirect '/public/webdav/'
 
-        accountinfo = links: []
+        else if req.params.module is 'webfinger'
 
-        if @routes['remotestorage']
+            host = 'https://' + req.get 'host'
+            OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
+            PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
 
-            link =
-                href: "#{host}/public/remotestorage/storage"
-                rel: 'remotestorage'
-                type: PROTOCOL_VERSION
-                properties:
-                    'auth-method': OAUTH_VERSION
-                    'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
+            res.header 'Access-Control-Allow-Origin', '*'
+            res.header 'Access-Control-Allow-Credentials', true
+            res.header 'Access-Control-Allow-Methods', 'GET'
 
-            link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+            accountinfo = links: []
 
-            accountinfo.links.push link
+            if @routes['remotestorage']
 
-        res.send accountinfo
+                link =
+                    href: "#{host}/public/remotestorage/storage"
+                    rel: 'remotestorage'
+                    type: PROTOCOL_VERSION
+                    properties:
+                        'auth-method': OAUTH_VERSION
+                        'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
+
+                link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+
+                accountinfo.links.push link
+
+            return res.send accountinfo
+
+        else
+            res.send 404

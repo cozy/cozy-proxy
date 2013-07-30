@@ -19,7 +19,13 @@ describe "Register / Login", ->
     before (done) ->
         router.start 4444
         @userManager = new UserManager()
-        @userManager.deleteAll done
+        @userManager.deleteAll () =>
+            map = (doc) ->
+                emit doc._id, doc if doc.docType is "User"
+            design_doc =
+                "map": map.toString()
+            @userManager.dbClient.put 'request/user/all/', design_doc, (err, res, body) =>
+                done()
 
     after (done) ->
         router.stop()

@@ -8,7 +8,7 @@ module.exports = class PasswordKeys
         @client = new Client "http://localhost:9101/"
         @name = process.env.NAME
         @token = process.env.TOKEN
-        if process.env.NODE_ENV is "production"
+        if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
             @client.setBasicAuth @name, @token
 
     initializeKeys: (pwd, callback) ->
@@ -19,8 +19,6 @@ module.exports = class PasswordKeys
                 callback()
 
     updateKeys: (pwd, callback) ->
-        if process.env.NODE_ENV is "production"
-            @client.setBasicAuth @name, @token
         @client.put "accounts/password/", password: pwd, (err, res, body) =>
             if err
                 callback err
@@ -28,8 +26,6 @@ module.exports = class PasswordKeys
                 callback()
 
     deleteKeys: (callback) ->
-        if process.env.NODE_ENV is "production"
-            @client.setBasicAuth @name, @token
         @client.del "accounts/", (err, res, body) =>
             if err
                 callback err
@@ -37,8 +33,6 @@ module.exports = class PasswordKeys
                 callback()
 
     resetKeys: (callback) ->
-        if process.env.NODE_ENV is "production"
-            @client.setBasicAuth @name, @token
         @client.del "accounts/reset/", (err, res, body) =>
             if err
                 callback err

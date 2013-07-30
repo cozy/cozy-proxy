@@ -9,7 +9,7 @@ class DbManager
         @dbClient = new Client "http://localhost:9101/"
         @name = process.env.NAME
         @token = process.env.TOKEN
-        if process.env.NODE_ENV is "production"
+        if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
             @dbClient.setBasicAuth @name, @token
 
     all: (callback) ->

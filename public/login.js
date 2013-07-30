@@ -112,7 +112,7 @@
     });
     $('#password-input').focus();
     return $('#forgot-password').click(function(event) {
-      return client.post("login/forgot", {}, {
+      return client.post("/login/forgot", {}, {
         success: function() {
           $('.alert-error').fadeOut();
           $('.alert-success').fadeIn();

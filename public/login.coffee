@@ -88,7 +88,7 @@ $ ->
     $('#password-input').focus()
 
     $('#forgot-password').click (event) ->
-        client.post "login/forgot", {},
+        client.post "/login/forgot", {},
             success: ->
                 $('.alert-error').fadeOut()
                 $('.alert-success').fadeIn()

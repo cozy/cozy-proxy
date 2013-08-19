@@ -53,6 +53,9 @@ h2 {
   -webkit-text-shadow: 1px 1px #2b4244;
   text-shadow: 1px 1px #2b4244;
 }
+p {
+  color: #cad1d1;
+}
 .proxy-form {
   padding-top: 20%;
 }
@@ -147,5 +150,8 @@ h2 {
   }
   .proxy-form input {
     width: 80%;
+  }
+  .proxy-form #loading-indicator {
+    display: none;
   }
 }

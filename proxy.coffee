@@ -134,6 +134,7 @@ class exports.CozyProxy
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
+        @app.all  '/cozy/*', @replication
         @app.all '/*', @defaultRedirectAction
 
     # Start proxy server listening.
@@ -176,6 +177,14 @@ class exports.CozyProxy
             else
                 socket.end "HTTP/1.1 404 NOT FOUND \r\n" +
                            "Connection: close\r\n", 'ascii'
+
+
+    replication: (req, res) =>
+        buffer = httpProxy.buffer(req)
+        @proxy.proxyRequest req, res,
+            host: 'localhost'
+            port: req.route.path
+            buffer: buffer
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

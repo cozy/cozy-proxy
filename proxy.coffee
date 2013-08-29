@@ -233,36 +233,30 @@ class exports.CozyProxy
             url += "?#{qs.stringify(req.query)}" if req.query.length
             return res.redirect url
 
-
-
         buffer = httpProxy.buffer(req)
         appName = req.params.name
         req.url = req.url.substring "/apps/#{appName}".length
         @ensureStarted appName, (err, port) =>
-            if err?
-                res.send err.code, err.msg
-            else
-                @proxy.proxyRequest req, res,
-                    host: 'localhost'
-                    port: port
-                    buffer: buffer
-
-    # Redirect public side of application, redirect request depening on app
-    # name. As for now, do not autostart on public routes
-    redirectPublicAppAction: (req, res) =>
-        buffer = httpProxy.buffer(req)
-        appName = req.params.name
-        req.url = req.url.substring "/public/#{appName}".length
-        req.url = "/public#{req.url}"
-        port = @routes[appName].port
-
-        if port?
+            return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,
                 host: 'localhost'
                 port: port
                 buffer: buffer
-        else
-            res.send 404
+
+    # Redirect public side of application, redirect request depening on app
+    # name. As for now, do not autostart on public routes
+    redirectPublicAppAction: (req, res) =>
+
+        buffer = httpProxy.buffer(req)
+        appName = req.params.name
+        req.url = req.url.substring "/public/#{appName}".length
+        req.url = "/public#{req.url}"
+        @ensureStarted appName, (err, port) =>
+            return res.send err.code, err.msg if err ?
+            @proxy.proxyRequest req, res,
+                host: 'localhost'
+                port: port
+                buffer: buffer
 
     # Return success: true if user is authenticated, false either.
     authenticatedAction: (req, res) =>

@@ -42,11 +42,20 @@ describe "/routes", ->
 
 describe "Proxying", ->
 
+    fakeHomeLastUrl = ""
+
     before (done) ->
 
+        router.defaultPort = 4446
         router.start 4444
-        router.routes["myapp"] = 4445
-        router.routes["myapp2"] = 4446
+        router.routes["myapp"] = {port:4445, state:'installed'}
+        router.routes["myapp2"] = {port:4447, state:'stopped'}
+        @fakeHome = http.createServer (req, res) ->
+            fakeHomeLastUrl = req.url
+            res.writeHead 201
+            res.end(JSON.stringify {app:{port:4447, state:'installed'}})
+        @fakeHome.listen router.defaultPort
+
         @server = http.createServer (req, res) ->
             res.writeHead 200, 'Content-Type': 'application/json'
             res.end(JSON.stringify msg:"ok")
@@ -55,7 +64,7 @@ describe "Proxying", ->
         @server2 = http.createServer (req, res) ->
             res.writeHead 200, 'Content-Type': 'application/json'
             res.end(JSON.stringify msg:"ok2")
-        @server2.listen 4446, 'localhost'
+        @server2.listen 4447, 'localhost'
 
         @userManager = new UserManager()
 
@@ -98,7 +107,6 @@ private route (with params)", (done) ->
             @response.request.path.should.equal "/login/apps/myapp/?param=a"
 
 
-
     describe "Public proxying", ->
 
         it "When I send a request to an existing public route", (done) ->
@@ -135,6 +143,22 @@ private route (with params)", (done) ->
 
         it "Then I should be redirected to the myapp2
 server (and not myapp)", ->
+            @response.statusCode.should.equal 200
+            should.exist @body.msg
+            @body.msg.should.equal "ok2"
+
+    describe "Autostarting", ->
+
+        it "When I send a request to a stopped app", (done) ->
+            client.get "apps/myapp2/", (error, response, body) =>
+                @body = body
+                @response = response
+                done()
+
+        it "should have called home to start the app", ->
+            fakeHomeLastUrl.should.equal "/api/applications/myapp2/start"
+
+        it "Then I should be proxyed to the app server", ->
             @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok2"

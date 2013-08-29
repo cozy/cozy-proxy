@@ -252,7 +252,7 @@ class exports.CozyProxy
         req.url = req.url.substring "/public/#{appName}".length
         req.url = "/public#{req.url}"
         @ensureStarted appName, (err, port) =>
-            return res.send err.code, err.msg if err ?
+            return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,
                 host: 'localhost'
                 port: port

@@ -195,7 +195,7 @@ class exports.CozyProxy
     # @arg slug the app slug
     # @arg cb(err, port) a callback
     #   err.code / err.msg
-    ensureStarted: (slug, cb) =>
+    ensureStarted: (slug, doStart, cb) =>
         if not @routes[slug]?
             cb code:404, msg:'app unknown'
             return
@@ -205,12 +205,15 @@ class exports.CozyProxy
             when 'installing'   then cb code:404, msg:'app is still installing'
             when 'installed'    then cb null, @routes[slug].port
             when 'stopped'
+                unless doStart
+                    return code: 500, msg: 'wont start'
+
                 @startApp slug, (err) =>
                     if err?
-                        cb code:500, msg:"cannot start app : #{err}"
+                        cb code: 500, msg: "cannot start app : #{err}"
                     else
                         cb null, @routes[slug].port
-            else cb code:500, msg:'incorrect app state'
+            else cb code: 500, msg: 'incorrect app state'
 
     # request home to start a new app
     startApp: (slug, cb) =>
@@ -236,7 +239,10 @@ class exports.CozyProxy
         buffer = httpProxy.buffer(req)
         appName = req.params.name
         req.url = req.url.substring "/apps/#{appName}".length
-        @ensureStarted appName, (err, port) =>
+
+        doStart = -1 isnt req.url.indexOf 'socket.io'
+
+        @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,
                 host: 'localhost'
@@ -251,7 +257,10 @@ class exports.CozyProxy
         appName = req.params.name
         req.url = req.url.substring "/public/#{appName}".length
         req.url = "/public#{req.url}"
-        @ensureStarted appName, (err, port) =>
+
+        doStart = -1 isnt req.url.indexOf 'socket.io'
+
+        @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,
                 host: 'localhost'

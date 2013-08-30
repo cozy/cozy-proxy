@@ -60,26 +60,34 @@
     };
     submitPassword = function() {
       $('#submit-btn').spin('small');
+      $('.loading').spin('small');
       return client.post("/login", {
         password: $('#password-input').val()
       }, {
         success: function() {
           var msg;
-          $('.alert-error').fadeOut();
+          $('.alert-error').hide();
           $('#forgot-password').hide();
-          msg = "Sign in succeeded";
+          msg = "Sign in succeeded, let's go to the Cozy Home...";
           if ($(window).width() > 640) {
-            $('.alert-success').fadeIn();
             $('.alert-success').html(msg);
+            $('.alert-success').fadeIn();
+            $('.loading').spin();
             $('#submit-btn').spin(null, null, "Sign in");
           } else {
             $('#submit-btn').spin(null, null, msg);
           }
+          $('#loading-indicator').spin();
           return setTimeout(function() {
-            var newpath;
-            newpath = window.location.pathname.substring(6);
-            return window.location.pathname = newpath;
-          }, 500);
+            var _this = this;
+            return $('#content').fadeOut(function() {
+              return setTimeout(function() {
+                var newpath;
+                newpath = window.location.pathname.substring(6);
+                return window.location.pathname = newpath;
+              }, 500);
+            });
+          }, 1000);
         },
         error: function(err) {
           var msg;
@@ -93,6 +101,7 @@
           } else {
             $('#submit-btn').spin(null, null, "Sign in failed");
           }
+          $('.loading').spin();
           return $('#forgot-password').fadeIn();
         }
       });

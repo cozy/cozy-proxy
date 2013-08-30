@@ -50,33 +50,45 @@ $ ->
 
     submitPassword = ->
         $('#submit-btn').spin 'small'
+        $('.loading').spin 'small'
         client.post "/login", { password: $('#password-input').val() },
             success: ->
-                $('.alert-error').fadeOut()
+                $('.alert-error').hide()
                 $('#forgot-password').hide()
 
-                msg = "Sign in succeeded"
+                msg = "Sign in succeeded, let's go to the Cozy Home..."
 
                 if $(window).width() > 640
-                    $('.alert-success').fadeIn()
                     $('.alert-success').html msg
+                    $('.alert-success').fadeIn()
+                    $('.loading').spin()
                     $('#submit-btn').spin null, null, "Sign in"
                 else
                     $('#submit-btn').spin null, null, msg
+                $('#loading-indicator').spin()
+
+
                 setTimeout ->
-                    newpath = window.location.pathname.substring 6 #/login
-                    window.location.pathname = newpath
-                , 500
+                    $('#content').fadeOut =>
+                        setTimeout ->
+                            newpath = window.location.pathname.substring 6 #/login
+                            window.location.pathname = newpath
+                        , 500
+                , 1000
+
             error: (err) ->
                 $('.alert-success').fadeOut()
                 $('.alert-error').hide()
                 msg = JSON.parse(err.responseText).msg
                 $('.alert-error').html msg
+
                 if $(window).width() > 640
                     $('.alert-error').fadeIn()
                     $('#submit-btn').spin null, null, "Sign in"
                 else
                     $('#submit-btn').spin null, null, "Sign in failed"
+
+                $('.loading').spin()
                 $('#forgot-password').fadeIn()
 
     $('#password-input').keyup (event) ->

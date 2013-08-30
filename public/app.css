@@ -31,7 +31,7 @@ body {
 }
 a,
 a:hover {
-  color: #cad1d1;
+  color: #c60;
   cursor: pointer;
 }
 h1 {
@@ -116,6 +116,7 @@ h2 {
   font-family: styled;
   font-size: 2em;
   background: transparent;
+  padding-left: 0;
 }
 .alert-success {
   font-family: styled;
@@ -161,5 +162,8 @@ h2 {
   }
   .proxy-form input {
     width: 80%;
+  }
+  .proxy-form .loading {
+    display: none;
   }
 }

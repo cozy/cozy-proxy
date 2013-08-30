@@ -242,6 +242,8 @@ class exports.CozyProxy
 
         doStart = -1 isnt req.url.indexOf 'socket.io'
 
+        console.log 'APP ACTION', doStart
+
         @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,

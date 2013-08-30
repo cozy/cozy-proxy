@@ -5,6 +5,8 @@ html(lang="en")
     meta(http-equiv="content-type", content="text/html; charset=utf-8")
     title Cozy Home - Register
     script(src='/jquery-1.8.2.js')
+    script(src='/spin.min.js')
+    script(src='/fade-text.js')
     script(src='/client.js')
     script(src='/register.js')
     link(rel='stylesheet', href='/bootstrap.css') 
@@ -12,16 +14,21 @@ html(lang="en")
     link(rel="icon", type="image/x-icon", href="/favicon.png")
   body
     #content
+      a#logo(href="http://cozy.io") 
+          img(src="/happycloud.png")
       .proxy-form
-        h1 Register
+        h1 Welcome to your Cozy!
+        h1 It's the first time you connect,
+        h1 Before going further I need:
         p
-          input#email-input(type="text", placeholder="email address")
+          input#email-input(type="text", placeholder="your email address")
         p
           input#password-input(type="text", type="password",
-                               placeholder="password")
+               placeholder="the password you will use to sign in")
         p
           button#submit-btn register
-        p
-          img(src="/grey-logo.png", alt="Cozy logo")
       .error-box.alert.alert-error
       .error-box.alert.alert-success
+        | Thank you! Now let's go to your homepage...
+      p.loading
+        | &nbsp;

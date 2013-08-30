@@ -240,9 +240,7 @@ class exports.CozyProxy
         appName = req.params.name
         req.url = req.url.substring "/apps/#{appName}".length
 
-        doStart = -1 isnt req.url.indexOf 'socket.io'
-
-        console.log 'APP ACTION', doStart
+        doStart = -1 is req.url.indexOf 'socket.io'
 
         @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?
@@ -260,7 +258,7 @@ class exports.CozyProxy
         req.url = req.url.substring "/public/#{appName}".length
         req.url = "/public#{req.url}"
 
-        doStart = -1 isnt req.url.indexOf 'socket.io'
+        doStart = -1 is req.url.indexOf 'socket.io'
 
         @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?

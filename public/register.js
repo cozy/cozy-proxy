@@ -2,7 +2,7 @@
 (function() {
 
   $(function() {
-    var submitCredentials, text1, text2, text3,
+    var progFadeIn, progFadeOut, submitCredentials,
       _this = this;
     $.fn.spin = function(opts, color, content) {
       var presets;
@@ -70,12 +70,13 @@
           $('.alert-success').fadeIn();
           return setTimeout(function() {
             var _this = this;
-            return $("body").fadeOut(function() {
+            $('img').fadeOut();
+            return progFadeOut([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input'), $(".alert-success")], function() {
               return setTimeout(function() {
                 return window.location = "/";
-              }, 500);
+              }, 200);
             });
-          }, 2000);
+          }, 1000);
         },
         error: function(err) {
           var msg;
@@ -86,35 +87,51 @@
         }
       });
     };
-    text1 = 'Welcome to your Cozy!';
-    text2 = "It's the first time you connect,";
-    text3 = "Before going further I need you to give me:";
+    progFadeIn = function(objs, callback) {
+      var obj,
+        _this = this;
+      if (objs.length === 1) {
+        obj = objs.shift();
+        return obj.fadeIn(800, callback);
+      } else if (objs.length > 0) {
+        obj = objs.shift();
+        obj.fadeIn(800);
+        return setTimeout(function() {
+          return progFadeIn(objs, callback);
+        }, 100);
+      }
+    };
+    progFadeOut = function(objs, callback) {
+      var obj,
+        _this = this;
+      if (objs.length === 1) {
+        obj = objs.pop();
+        console.log(callback);
+        obj.fadeOut(800, callback);
+      }
+      if (objs.length > 0) {
+        obj = objs.pop();
+        obj.fadeOut(800);
+        return setTimeout(function() {
+          return progFadeOut(objs, callback);
+        }, 100);
+      }
+    };
     $('h1').hide();
     $('input').hide();
-    $($('h1')[0]).fadeIn(1500);
-    setTimeout(function() {
-      return $($('h1')[1]).fadeIn(1500);
-    }, 500);
-    setTimeout(function() {
-      return $($('h1')[2]).fadeIn(1500);
-    }, 1000);
-    setTimeout(function() {
-      return $('#email-input').fadeIn(1500);
-    }, 1500);
-    setTimeout(function() {
-      return $('#password-input').fadeIn(1500);
-    }, 2000);
+    progFadeIn([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input')], function() {
+      return $('#email-input').focus();
+    });
     $('#email-input').keyup(function(event) {
       if (event.which === 13) {
         return $('#password-input').focus();
       }
     });
-    $('#password-input').keyup(function(event) {
+    return $('#password-input').keyup(function(event) {
       if (event.which === 13) {
         return submitCredentials();
       }
     });
-    return $('#email-input').focus();
   });
 
 }).call(this);

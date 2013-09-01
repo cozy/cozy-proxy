@@ -47,8 +47,6 @@ $ ->
             console.log "Spinner class not available."
             null
 
-
-
     submitCredentials = ->
         $('.loading').spin 'small'
         client.post "register/",
@@ -59,41 +57,48 @@ $ ->
                 $('.loading').spin()
                 $('.alert-success').fadeIn()
                 setTimeout ->
-                    $("body").fadeOut =>
+                    $('img').fadeOut()
+                    progFadeOut [$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input'), $(".alert-success")], =>
                         setTimeout ->
                             window.location = "/"
-                        , 500
-                , 2000
+                        , 200
+                , 1000
             error: (err) ->
                 $('.loading').spin()
                 msg = JSON.parse(err.responseText).msg
                 $('.alert-error').html msg
                 $('.alert-error').fadeIn()
 
-    text1 = 'Welcome to your Cozy!'
-    text2 = "It's the first time you connect,"
-    text3 = "Before going further I need you to give me:"
+    progFadeIn = (objs, callback) ->
+        if objs.length is 1
+            obj = objs.shift()
+            obj.fadeIn 800, callback
+        else if objs.length > 0
+            obj = objs.shift()
+            obj.fadeIn 800
+            setTimeout =>
+                progFadeIn objs, callback
+            , 100
+
+    progFadeOut = (objs, callback) ->
+        if objs.length is 1
+            obj = objs.pop()
+            console.log callback
+            obj.fadeOut 800, callback
+        if objs.length > 0
+            obj = objs.pop()
+            obj.fadeOut 800
+            setTimeout =>
+                progFadeOut objs, callback
+            , 100
+
     $('h1').hide()
     $('input').hide()
-
-    $($('h1')[0]).fadeIn 1500
-    setTimeout =>
-        $($('h1')[1]).fadeIn 1500
-    , 500
-    setTimeout =>
-        $($('h1')[2]).fadeIn 1500
-    , 1000
-    setTimeout =>
-        $('#email-input').fadeIn 1500
-    , 1500
-    setTimeout =>
-        $('#password-input').fadeIn 1500
-    , 2000
+    progFadeIn [$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input')], =>
+        $('#email-input').focus()
 
     $('#email-input').keyup (event) ->
         $('#password-input').focus() if event.which is 13
 
     $('#password-input').keyup (event) ->
         submitCredentials() if event.which is 13
-
-    $('#email-input').focus()

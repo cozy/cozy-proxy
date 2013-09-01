@@ -1,5 +1,5 @@
 @font-face {
-  font-family: regulartext;
+  font-family: main;
   src: url("/signika-regular.ttf");
 }
 @font-face {
@@ -25,10 +25,6 @@ div {
 body {
   background: #fcf9f5;
 }
-#content {
-  padding: 20px;
-  padding-left: 60px;
-}
 a,
 a:hover {
   color: #c60;
@@ -43,7 +39,7 @@ h1 {
   margin: 0;
 }
 h1 span#username {
-  color: #585e72;
+  color: #363a46;
 }
 h2 {
   margin-top: 0;
@@ -57,22 +53,12 @@ h2 {
   -webkit-text-shadow: 1px 1px #2b4244;
   text-shadow: 1px 1px #2b4244;
 }
-#password-input {
-  margin-top: 10px;
-}
-#email-input {
-  margin-top: 20px;
-  margin-bottom: 0px;
-}
-.proxy-form {
-  padding-top: 20%;
-}
-.proxy-form button {
+button {
   font-size: 1.1em;
   border-radius: 0.4em;
   padding: 0.6em 0.8em;
 }
-.proxy-form button#submit-btn {
+button#submit-btn {
   margin-left: 5px;
   margin-bottom: 9px;
   display: none;
@@ -83,29 +69,35 @@ h2 {
   border: 1px solid #a2afaf;
   box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 1px 2px rgba(0,0,0,0.05);
 }
-.proxy-form button#submit-btn:hover {
+button#submit-btn:hover {
   background: #ecefef;
   box-shadow: 0 0 8px #cff;
 }
-.proxy-form button#submit-btn:active {
+button#submit-btn:active {
   box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
   background: #b8c3c3;
 }
-.proxy-form input {
+input {
   font-family: styled;
   font-size: 2.2em;
   height: 1.3em;
   padding: 0.2em;
   border-radius: 0.4em;
-  width: 500px;
+  width: 550px;
   border: 0;
   color: #c60;
   box-shadow: 0 0 0 0;
   border: 1px solid #fff;
 }
-.proxy-form input:focus {
-  border: 1px solid #c60;
+input:focus {
   box-shadow: 0 0 0 0;
+  border: 1px solid #ffb366;
+}
+.form {
+  background-color: #969ac6;
+  padding: 20px;
+  border-radius: 10px;
+  width: 520px;
 }
 .alert {
   width: 22em;
@@ -131,8 +123,19 @@ h2 {
 .loading {
   width: 30px;
 }
+.proxy-form {
+  padding-top: 20%;
+}
+#content {
+  padding: 20px;
+  padding-left: 60px;
+}
+#email-input {
+  margin-bottom: 0px;
+}
 #forgot-password {
   display: none;
+  font-family: main;
 }
 #logo {
   float: right;

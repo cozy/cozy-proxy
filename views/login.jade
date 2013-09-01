@@ -6,21 +6,21 @@ html(lang="en")
     title Cozy Home - Sign in
     script(src='/jquery-1.8.2.js')
     script(src='/spin.min.js')
-    script(src='/fade-text.js')
     script(src='/client.js')
     script(src='/login.js')
-    link(rel='stylesheet', href='/bootstrap.css') 
     link(rel='stylesheet', href='/app.css') 
     link(rel='icon', type='image/x-icon', href='/favicon.png')
   body
     #content
-       .proxy-form
+      a#logo(href="http://cozy.io") 
+          img(src="/happycloud.png")
+      .proxy-form
           h1 
               | Welcome 
               span#username #{username}
               |  to your Cozy, <br />
               | please type your password to sign in:
-            p
+          p
               input#password-input(type='password',
                                    placeholder='password')
               button#submit-btn Sign in

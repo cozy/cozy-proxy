@@ -33,71 +33,31 @@ a:hover {
 h1 {
   font-size: 2.2em;
   line-height: 1.3em;
-  color: #363a46;
   font-family: styled;
   font-weight: normal;
-  margin: 0;
-}
-h1 span#username {
   color: #363a46;
-}
-h2 {
-  margin-top: 0;
-  font-size: 1em;
-  text-transform: normal;
-  font-variant: small-caps;
-  color: #cff;
-  -moz-text-shadow: 1px 1px #2b4244;
-  -webkit-text-shadow: 1px 1px #2b4244;
-  -moz-text-shadow: 1px 1px #2b4244;
-  -webkit-text-shadow: 1px 1px #2b4244;
-  text-shadow: 1px 1px #2b4244;
+  margin: 0;
 }
 button {
   font-size: 1.1em;
   border-radius: 0.4em;
   padding: 0.6em 0.8em;
 }
-button#submit-btn {
-  margin-left: 5px;
-  margin-bottom: 9px;
-  display: none;
-  background-color: #cad1d1;
-  border-radius: 0.4em;
-  border: 0;
-  background: #cfd6d6;
-  border: 1px solid #a2afaf;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 1px 2px rgba(0,0,0,0.05);
-}
-button#submit-btn:hover {
-  background: #ecefef;
-  box-shadow: 0 0 8px #cff;
-}
-button#submit-btn:active {
-  box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
-  background: #b8c3c3;
-}
 input {
   font-family: styled;
   font-size: 2.2em;
   height: 1.3em;
-  padding: 0.2em;
-  border-radius: 0.4em;
   width: 550px;
+  padding: 10px;
+  border-radius: 0.4em;
   border: 0;
-  color: #c60;
+  color: #ff850a;
   box-shadow: 0 0 0 0;
   border: 1px solid #fff;
 }
 input:focus {
   box-shadow: 0 0 0 0;
   border: 1px solid #ffb366;
-}
-.form {
-  background-color: #969ac6;
-  padding: 20px;
-  border-radius: 10px;
-  width: 520px;
 }
 .alert {
   width: 22em;
@@ -109,11 +69,11 @@ input:focus {
   font-size: 2em;
   background: transparent;
   padding-left: 0;
+  color: #a66a66;
 }
 .alert-success {
   font-family: styled;
   font-size: 2em;
-  background: rgba(249,252,247,0.8);
   background: transparent;
   padding-left: 0;
 }
@@ -122,9 +82,43 @@ input:focus {
 }
 .loading {
   width: 30px;
+  margin-bottom: 0px;
 }
 .proxy-form {
-  padding-top: 20%;
+  padding-top: 20px;
+}
+#header {
+  width: 100%;
+  clear: both;
+}
+#header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#submit-btn {
+  margin-left: 5px;
+  margin-bottom: 9px;
+  background: #ff850a;
+  border-radius: 0.4em;
+  border: 0;
+  outline: 0;
+  padding: 10px;
+  color: #fff;
+  margin-left: 10px;
+  width: 550px;
+  cursor: pointer;
+}
+#submit-btn:hover {
+  background: #ffc285;
+  color: #555;
+}
+#submit-btn:active {
+  box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
+  background: #eb7500;
+}
+#username {
+  color: #363a46;
 }
 #content {
   padding: 20px;
@@ -142,31 +136,29 @@ input:focus {
   margin: 60px;
 }
 @media (max-width: 640px) {
-  body {
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  #content {
-    padding: 1em;
-  }
   h1 {
     display: none;
-    padding: 0 1em;
+    padding: 0 0;
   }
   .proxy-form {
     padding-top: 1em;
     padding-bottom: 1em;
   }
-  .proxy-form button#submit-btn {
-    display: inline;
-    width: 80%;
-    margin-left: 0;
-  }
   .proxy-form input {
-    width: 80%;
+    width: 100%;
   }
   .proxy-form .loading {
     display: none;
+  }
+  #content {
+    padding: 40px;
+  }
+  #logo {
+    margin: 20px;
+  }
+  #submit-btn {
+    display: inline;
+    width: 100%;
+    margin-left: 10px;
   }
 }

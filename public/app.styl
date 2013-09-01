@@ -16,15 +16,10 @@ text-shadow()
     font-family: styled
     src: url('/maven-pro-light-200.otf')
 
-
-highlightcolor = #cff
-textcolor = #cad1d1
-shadowcolor = #2b4244
-buttoncolor = #CAD1D1 + 10%
-yellowwhite = #fcf9f5
 darkblue = #363a46 
 darkred = #A66a66 
 orange = #C60
+orangewhite = #fcf9f5
 
 html, body
     height: 100%
@@ -37,7 +32,7 @@ html, body, h1, p, input, div
     box-sizing: border-box
 
 body
-    background: yellowwhite 
+    background: orangewhite 
 
 a, a:hover
     color: orange
@@ -46,69 +41,31 @@ a, a:hover
 h1
     font-size: 2.2em
     line-height: 1.3em
-    color: darkblue
     font-family: styled
     font-weight: normal
+    color: darkblue
     margin: 0
-
-    span#username
-        color: darkblue
-
-h2
-    margin-top: 0;
-    font-size: 1em;
-    text-transform: normal;
-    font-variant: small-caps;
-    color: #cff;
-    -moz-text-shadow: 1px 1px #2b4244;
-    -webkit-text-shadow: 1px 1px #2b4244;
-    text-shadow: 1px 1px #2b4244;
 
 button
     font-size: 1.1em
     border-radius: 0.4em
     padding: 0.6em 0.8em
 
-button#submit-btn
-    margin-left 5px
-    margin-bottom 9px
-    display none
-    background-color textcolor
-    border-radius 0.4em
-    border 0
-    background: buttoncolor
-    border: 1px solid buttoncolor - 20%
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 2px rgba(0, 0, 0, 0.05)
-
-button#submit-btn:hover
-    background: buttoncolor + 60%
-    box-shadow: 0 0 8px highlightcolor
-
-button#submit-btn:active
-    box-shadow: 1px 3px 2px rgba(0, 0, 0, 0.4) inset
-    background: buttoncolor - 10%
-
 input
     font-family: styled
     font-size: 2.2em
     height: 1.3em
-    padding: 0.2em
-    border-radius: 0.4em
     width: 550px
+    padding: 10px
+    border-radius: 0.4em
     border: 0
-    color: orange
+    color: orange + 20%
     box-shadow: 0 0 0 0
     border: 1px solid white
 
 input:focus
     box-shadow: 0 0 0 0
     border: 1px solid orange + 50%
-
-.form
-    background-color:  #969aC6 
-    padding: 20px
-    border-radius: 10px
-    width: 520px
 
 .alert
     width: 22em
@@ -120,11 +77,11 @@ input:focus
     font-size: 2em
     background: transparent
     padding-left: 0
+    color: darkred
 
 .alert-success
     font-family: styled
     font-size: 2em
-    background: rgba(223, 240, 216, 0.8) + 80%
     background: transparent
     padding-left: 0
 
@@ -133,9 +90,43 @@ input:focus
 
 .loading
     width: 30px
+    margin-bottom: 0px
 
 .proxy-form
-    padding-top: 20%
+    padding-top: 20px
+
+#header
+    width: 100%
+    clear: both
+
+#header:after
+    content: ""
+    display: table
+    clear: both
+
+#submit-btn
+    margin-left: 5px
+    margin-bottom: 9px
+    background: orange + 20%
+    border-radius: 0.4em
+    border: 0
+    outline: 0
+    padding: 10px
+    color: white
+    margin-left: 10px
+    width: 550px
+    cursor: pointer
+
+#submit-btn:hover
+    background: orange + 60%
+    color: #555
+
+#submit-btn:active
+    box-shadow: 1px 3px 2px rgba(0, 0, 0, 0.4) inset
+    background: orange + 10%
+
+#username
+    color: darkblue
 
 #content
     padding: 20px
@@ -152,29 +143,31 @@ input:focus
     float: right
     margin: 60px
 
+
 @media(max-width: 640px)
-
-    body
-        shadow: none 
-
-    #content
-        padding: 1em
 
     h1
         display: none
-        padding: 0 1em
+        padding: 0 0
 
     .proxy-form
         padding-top: 1em
         padding-bottom: 1em
         
-        button#submit-btn
-            display: inline
-            width: 80%
-            margin-left: 0
 
         input
-            width: 80%
+            width: 100%
 
         .loading
             display: none
+            
+    #content
+        padding: 40px
+
+    #logo
+        margin: 20px
+
+    #submit-btn
+        display: inline
+        width: 100%
+        margin-left: 10px

@@ -13,8 +13,9 @@ html(lang="en")
     link(rel="icon", type="image/x-icon", href="/favicon.png")
   body
     #content
-      a#logo(href="http://cozy.io") 
-          img(src="/happycloud.png")
+      div#header
+          a#logo(href="http://cozy.io") 
+              img(src="/happycloud.png")
       .proxy-form
         h1 Welcome to your Cozy!
         h1 It's the first time you connect,
@@ -25,7 +26,7 @@ html(lang="en")
             input#password-input(type="text", type="password",
                placeholder="the password you will use to sign in")
         p
-          button#submit-btn register
+          button#submit-btn send informations
       .error-box.alert.alert-error
       .error-box.alert.alert-success
         | Thank you! Now let's go to your homepage...

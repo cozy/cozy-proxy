@@ -27,8 +27,11 @@ body {
 }
 a,
 a:hover {
-  color: #c60;
+  color: #15a7c7;
   cursor: pointer;
+}
+a:hover {
+  color: #ff850a;
 }
 h1 {
   font-size: 2.2em;
@@ -51,13 +54,17 @@ input {
   padding: 10px;
   border-radius: 0.4em;
   border: 0;
-  color: #ff850a;
+  color: #15a7c7;
   box-shadow: 0 0 0 0;
   border: 1px solid #fff;
 }
 input:focus {
+  color: #ff850a;
   box-shadow: 0 0 0 0;
   border: 1px solid #ffb366;
+}
+p {
+  font-family: main;
 }
 .alert {
   width: 22em;
@@ -67,15 +74,18 @@ input:focus {
 .alert-error {
   font-family: styled;
   font-size: 2em;
-  background: transparent;
-  padding-left: 0;
-  color: #a66a66;
+  background: #c66666;
+  padding: 20px;
+  width: 530px;
+  color: #fff;
 }
 .alert-success {
   font-family: styled;
   font-size: 2em;
-  background: transparent;
-  padding-left: 0;
+  background: #66c666;
+  padding: 20px;
+  width: 530px;
+  color: #fff;
 }
 .additional-line {
   margin-top: 1em;
@@ -84,8 +94,9 @@ input:focus {
   width: 30px;
   margin-bottom: 0px;
 }
-.proxy-form {
-  padding-top: 20px;
+.alert-error,
+.alert-success {
+  display: none;
 }
 #header {
   width: 100%;
@@ -99,19 +110,18 @@ input:focus {
 #submit-btn {
   margin-left: 5px;
   margin-bottom: 9px;
-  background: #ff850a;
   border-radius: 0.4em;
   border: 0;
   outline: 0;
   padding: 10px;
   color: #fff;
-  margin-left: 10px;
-  width: 550px;
+  margin-left: 0px;
+  width: 570px;
   cursor: pointer;
+  background: #15a7c7;
 }
 #submit-btn:hover {
-  background: #ffc285;
-  color: #555;
+  background: #ff850a;
 }
 #submit-btn:active {
   box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
@@ -133,32 +143,47 @@ input:focus {
 }
 #logo {
   float: right;
-  margin: 60px;
+  margin: 40px;
 }
 @media (max-width: 640px) {
   h1 {
-    display: none;
     padding: 0 0;
   }
   .proxy-form {
     padding-top: 1em;
     padding-bottom: 1em;
   }
+  .proxy-form p {
+    box-sizing: border-box;
+  }
+  .proxy-form .input-wrapper {
+    padding-right: 20px;
+  }
   .proxy-form input {
     width: 100%;
+    display: block;
+    box-sizing: border-box;
   }
   .proxy-form .loading {
     display: none;
   }
+  .alert-error,
+  .alert-success {
+    width: auto;
+    box-sizing: border-box;
+  }
   #content {
     padding: 40px;
+    box-sizing: border-box;
+  }
+  #content div {
+    box-sizing: border-box;
   }
   #logo {
     margin: 20px;
   }
   #submit-btn {
-    display: inline;
+    display: block;
     width: 100%;
-    margin-left: 10px;
   }
 }

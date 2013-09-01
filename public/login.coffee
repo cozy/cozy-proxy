@@ -1,115 +1,63 @@
 $ ->
-
-    # Prepare spin
-    $.fn.spin = (opts, color, content) ->
-        presets =
-            tiny:
-                lines: 8
-                length: 2
-                width: 2
-                radius: 3
-
-            small:
-                lines: 8
-                length: 1
-                width: 2
-                radius: 5
-
-            large:
-                lines: 10
-                length: 8
-                width: 4
-                radius: 8
-
-        if Spinner
-            @each ->
-                $this = $ this
-                $this.html "&nbsp;"
-                spinner = $this.data "spinner"
-                if spinner?
-                    spinner.stop()
-                    $this.data "spinner", null
-                    $this.html content
-
-                else if opts isnt false
-                    if typeof opts is "string"
-                        if opts of presets
-                            opts = presets[opts]
-                        else
-                            opts = {}
-                        opts.color = color if color
-                    spinner = new Spinner(
-                        $.extend(color: $this.css("color"), opts))
-                    spinner.spin this
-                    $this.data "spinner", spinner
-
-        else
-            console.log "Spinner class not available."
-            null
-
+    loader = $('.loading')
+    button = $('#submit-btn')
+    passwordInput = $('#password-input')
+    errorAlert = $('.alert-error')
+    successAlert = $('.alert-success')
+    forgotPassword = $('#forgot-password')
 
     submitPassword = ->
-        $('#submit-btn').spin 'small'
-        $('.loading').spin 'small'
-        client.post "/login", { password: $('#password-input').val() },
+        button.spin 'small'
+        loader.spin 'small'
+        client.post "/login", { password: passwordInput.val() },
             success: ->
-                $('.alert-error').hide()
-                $('#forgot-password').hide()
+                errorAlert.hide()
+                forgotPassword.hide()
 
                 msg = "Sign in succeeded, let's go to the Cozy Home..."
 
-                if $(window).width() > 640
-                    $('.alert-success').html msg
-                    $('.alert-success').fadeIn()
-                    $('.loading').spin()
-                    $('#submit-btn').spin null, null, "Sign in"
-                else
-                    $('#submit-btn').spin null, null, msg
-                $('#loading-indicator').spin()
+                successAlert.html msg
+                successAlert.fadeIn()
+                loader.spin()
+                button.spin()
+                button.html 'sign in'
 
-
-                setTimeout ->
-                    $('#content').fadeOut =>
-                        setTimeout ->
-                            newpath = window.location.pathname.substring 6 #/login
+                wait 1000, ->
+                    $('#content').fadeOut ->
+                        wait 500, ->
+                            newpath = window.location.pathname.substring 6
                             window.location.pathname = newpath
-                        , 500
-                , 1000
 
             error: (err) ->
-                $('.alert-success').fadeOut()
-                $('.alert-error').hide()
                 msg = JSON.parse(err.responseText).msg
-                $('.alert-error').html msg
+                successAlert.fadeOut()
+                errorAlert.hide()
+                errorAlert.html msg
+                errorAlert.fadeIn()
 
-                if $(window).width() > 640
-                    $('.alert-error').fadeIn()
-                    $('#submit-btn').spin null, null, "Sign in"
-                else
-                    $('#submit-btn').spin null, null, "Sign in failed"
+                loader.spin()
+                button.spin()
+                button.html "sign in"
+                forgotPassword.fadeIn()
 
-                $('.loading').spin()
-                $('#forgot-password').fadeIn()
-
-    $('#password-input').keyup (event) ->
+    passwordInput.keyup (event) ->
         submitPassword() if event.which == 13
 
-    $('#submit-btn').click (event) ->
-        submitPassword()
+    button.click submitPassword
 
-    $('#password-input').focus()
-
-    $('#forgot-password').click (event) ->
+    forgotPassword.click (event) ->
         client.post "/login/forgot", {},
             success: ->
-                $('.alert-error').fadeOut()
-                $('.alert-success').fadeIn()
-                $('.alert-success').html \
-                    "An email have been sent to your mailbox, " + \
+                errorAlert.fadeOut()
+                successAlert.fadeIn()
+                successAlert.html \
+                    "An email has been sent to your mailbox, " + \
                     "follow its instructions to get a new password"
             error: (err) ->
-                $('.alert-success').fadeOut()
-                $('.alert-error').hide()
+                successAlert.fadeOut()
+                errorAlert.hide()
                 msg = JSON.parse(err.responseText).msg
-                $('.alert-error').html msg
-                $('.alert-error').fadeIn()
+                errorAlert.html msg
+                errorAlert.fadeIn()
+
+    passwordInput.focus()

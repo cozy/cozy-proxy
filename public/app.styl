@@ -16,8 +16,11 @@ text-shadow()
     font-family: styled
     src: url('/maven-pro-light-200.otf')
 
+
+blue = #15a7c7
 darkblue = #363a46 
-darkred = #A66a66 
+darkred = #C66666 
+darkgreen = #66C666 
 orange = #C60
 orangewhite = #fcf9f5
 
@@ -35,8 +38,11 @@ body
     background: orangewhite 
 
 a, a:hover
-    color: orange
+    color: blue
     cursor: pointer
+
+a:hover
+    color: orange + 20%
 
 h1
     font-size: 2.2em
@@ -59,13 +65,17 @@ input
     padding: 10px
     border-radius: 0.4em
     border: 0
-    color: orange + 20%
+    color: blue
     box-shadow: 0 0 0 0
     border: 1px solid white
 
 input:focus
+    color: orange + 20%
     box-shadow: 0 0 0 0
     border: 1px solid orange + 50%
+
+p
+    font-family: main
 
 .alert
     width: 22em
@@ -75,15 +85,18 @@ input:focus
 .alert-error
     font-family: styled
     font-size: 2em
-    background: transparent
-    padding-left: 0
-    color: darkred
+    background: darkred
+    padding: 20px
+    width: 530px
+    color: white
 
 .alert-success
     font-family: styled
     font-size: 2em
-    background: transparent
-    padding-left: 0
+    background: darkgreen 
+    padding: 20px
+    width: 530px
+    color: white
 
 .additional-line
     margin-top: 1em
@@ -92,8 +105,9 @@ input:focus
     width: 30px
     margin-bottom: 0px
 
-.proxy-form
-    padding-top: 20px
+.alert-error
+.alert-success
+    display: none
 
 #header
     width: 100%
@@ -107,19 +121,18 @@ input:focus
 #submit-btn
     margin-left: 5px
     margin-bottom: 9px
-    background: orange + 20%
     border-radius: 0.4em
     border: 0
     outline: 0
     padding: 10px
     color: white
-    margin-left: 10px
-    width: 550px
+    margin-left: 0px
+    width: 570px
     cursor: pointer
+    background: blue
 
 #submit-btn:hover
-    background: orange + 60%
-    color: #555
+    background: orange + 20%
 
 #submit-btn:active
     box-shadow: 1px 3px 2px rgba(0, 0, 0, 0.4) inset
@@ -141,13 +154,12 @@ input:focus
 
 #logo
     float: right
-    margin: 60px
+    margin: 40px
 
 
 @media(max-width: 640px)
 
     h1
-        display: none
         padding: 0 0
 
     .proxy-form
@@ -155,19 +167,35 @@ input:focus
         padding-bottom: 1em
         
 
+        p
+            box-sizing: border-box
+
+        .input-wrapper
+            padding-right: 20px
+
         input
             width: 100%
+            display: block
+            box-sizing: border-box
 
         .loading
             display: none
+
+    .alert-error
+    .alert-success
+        width: auto
+        box-sizing: border-box
             
     #content
         padding: 40px
+        box-sizing: border-box
+
+        div
+            box-sizing: border-box
 
     #logo
         margin: 20px
 
     #submit-btn
-        display: inline
+        display: block
         width: 100%
-        margin-left: 10px

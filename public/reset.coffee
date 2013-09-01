@@ -1,20 +1,30 @@
 $ ->
+    button = $ '#submit-btn'
+    passwordInput = $ '#password-input'
+    errorAlert = $ '.alert-error'
+    successAlert = $ '.alert-success'
+
     submitPassword = ->
-        client.post "/password/reset/#{key}", { password: $('#password-input').val() },
+        button.spin 'small'
+        client.post "/password/reset/#{key}", { password: passwordInput.val() },
             success: ->
-                $('.alert-error').fadeOut()
-                $('.alert-success').fadeIn()
-                $('.alert-success').html "Password reset succeeded"
-                setTimeout ->
-                    window.location = "/login"
-                , 1500
+                button.spin()
+                button.html 'change password'
+                errorAlert.fadeOut()
+                successAlert.fadeIn()
+                successAlert.html "Password reset succeeded"
+                wait 1000, ->
+                    $("#content").fadeOut ->
+                        window.location = "/login"
             error: (err) ->
-                $('.alert-success').fadeOut()
+                button.spin()
+                button.html 'change password'
+                successAlert.fadeOut()
                 msg = JSON.parse(err.responseText).msg
-                $('.alert-error').html msg
-                $('.alert-error').fadeIn()
+                errorAlert.html msg
+                errorAlert.fadeIn()
 
-    $('#password-input').keyup (event) ->
-        submitPassword() if event.which == 13
+    passwordInput.keyup (event) ->
+        submitPassword() if event.which is 13
 
-    $('#password-input').focus()
+    passwordInput.focus()

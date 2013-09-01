@@ -2,135 +2,67 @@
 (function() {
 
   $(function() {
-    var progFadeIn, progFadeOut, submitCredentials,
+    var button, emailInput, errorAlert, hideAll, loader, passwordInput, submitCredentials, successAlert,
       _this = this;
-    $.fn.spin = function(opts, color, content) {
-      var presets;
-      presets = {
-        tiny: {
-          lines: 8,
-          length: 2,
-          width: 2,
-          radius: 3
-        },
-        small: {
-          lines: 8,
-          length: 1,
-          width: 2,
-          radius: 5
-        },
-        large: {
-          lines: 10,
-          length: 8,
-          width: 4,
-          radius: 8
-        }
-      };
-      if (Spinner) {
-        return this.each(function() {
-          var $this, spinner;
-          $this = $(this);
-          $this.html("&nbsp;");
-          spinner = $this.data("spinner");
-          if (spinner != null) {
-            spinner.stop();
-            $this.data("spinner", null);
-            return $this.html(content);
-          } else if (opts !== false) {
-            if (typeof opts === "string") {
-              if (opts in presets) {
-                opts = presets[opts];
-              } else {
-                opts = {};
-              }
-              if (color) {
-                opts.color = color;
-              }
-            }
-            spinner = new Spinner($.extend({
-              color: $this.css("color")
-            }, opts));
-            spinner.spin(this);
-            return $this.data("spinner", spinner);
-          }
+    loader = $('.loading');
+    passwordInput = $('#password-input');
+    emailInput = $('#email-input');
+    errorAlert = $('.alert-error');
+    successAlert = $('.alert-success');
+    button = $('#submit-btn');
+    hideAll = function() {
+      return wait(1000, function() {
+        var _this = this;
+        return progFadeOut([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), emailInput, passwordInput, button, successAlert], function() {
+          $('img').fadeOut();
+          return wait(100, function() {
+            return window.location = "/";
+          });
         });
-      } else {
-        console.log("Spinner class not available.");
-        return null;
-      }
+      });
     };
     submitCredentials = function() {
-      $('.loading').spin('small');
+      errorAlert.fadeOut();
+      loader.spin('small');
+      button.spin('small');
       return client.post("register/", {
-        password: $('#password-input').val(),
-        email: $('#email-input').val()
+        password: passwordInput.val(),
+        email: emailInput.val()
       }, {
         success: function() {
-          $('.loading').spin();
-          $('.alert-success').fadeIn();
-          return setTimeout(function() {
-            var _this = this;
-            $('img').fadeOut();
-            return progFadeOut([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input'), $(".alert-success")], function() {
-              return setTimeout(function() {
-                return window.location = "/";
-              }, 200);
-            });
-          }, 1000);
+          loader.spin();
+          button.spin();
+          button.html('send informations');
+          successAlert.fadeIn();
+          return hideAll();
         },
         error: function(err) {
           var msg;
-          $('.loading').spin();
+          loader.spin();
+          button.spin();
+          button.html('send informations');
           msg = JSON.parse(err.responseText).msg;
-          $('.alert-error').html(msg);
-          return $('.alert-error').fadeIn();
+          errorAlert.html(msg);
+          return errorAlert.fadeIn();
         }
       });
     };
-    progFadeIn = function(objs, callback) {
-      var obj,
-        _this = this;
-      if (objs.length === 1) {
-        obj = objs.shift();
-        return obj.fadeIn(800, callback);
-      } else if (objs.length > 0) {
-        obj = objs.shift();
-        obj.fadeIn(800);
-        return setTimeout(function() {
-          return progFadeIn(objs, callback);
-        }, 100);
-      }
-    };
-    progFadeOut = function(objs, callback) {
-      var obj,
-        _this = this;
-      if (objs.length === 1) {
-        obj = objs.pop();
-        console.log(callback);
-        obj.fadeOut(800, callback);
-      }
-      if (objs.length > 0) {
-        obj = objs.pop();
-        obj.fadeOut(800);
-        return setTimeout(function() {
-          return progFadeOut(objs, callback);
-        }, 100);
-      }
-    };
-    $('h1').hide();
-    $('input').hide();
-    progFadeIn([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), $('#email-input'), $('#password-input')], function() {
-      return $('#email-input').focus();
-    });
-    $('#email-input').keyup(function(event) {
+    emailInput.keyup(function(event) {
       if (event.which === 13) {
-        return $('#password-input').focus();
+        return passwordInput.focus();
       }
     });
-    return $('#password-input').keyup(function(event) {
+    passwordInput.keyup(function(event) {
       if (event.which === 13) {
         return submitCredentials();
       }
+    });
+    button.click(submitCredentials);
+    $('h1').hide();
+    $('input').hide();
+    button.hide();
+    return progFadeIn([$($('h1')[0]), $($('h1')[1]), $($('h1')[2]), emailInput, passwordInput, button], function() {
+      return $('#email-input').focus();
     });
   });
 

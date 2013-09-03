@@ -62,6 +62,7 @@
     };
     submitPassword = function() {
       $('#submit-btn').spin('small');
+      $('#loading-indicator').spin('small');
       return client.post("/login", {
         password: $('#password-input').val()
       }, {
@@ -78,6 +79,7 @@
           } else {
             $('#submit-btn').spin(null, null, msg);
           }
+          $('#loading-indicator').spin();
           return setTimeout(function() {
             var newpath;
 
@@ -98,6 +100,7 @@
           } else {
             $('#submit-btn').spin(null, null, "Sign in failed");
           }
+          $('#loading-indicator').spin();
           return $('#forgot-password').fadeIn();
         }
       });
@@ -112,7 +115,7 @@
     });
     $('#password-input').focus();
     return $('#forgot-password').click(function(event) {
-      return client.post("login/forgot", {}, {
+      return client.post("/login/forgot", {}, {
         success: function() {
           $('.alert-error').fadeOut();
           $('.alert-success').fadeIn();

@@ -50,6 +50,7 @@ $ ->
 
     submitPassword = ->
         $('#submit-btn').spin 'small'
+        $('#loading-indicator').spin 'small'
         client.post "/login", { password: $('#password-input').val() },
             success: ->
                 $('.alert-error').fadeOut()
@@ -63,6 +64,7 @@ $ ->
                     $('#submit-btn').spin null, null, "Sign in"
                 else
                     $('#submit-btn').spin null, null, msg
+                $('#loading-indicator').spin()
                 setTimeout ->
                     newpath = window.location.pathname.substring 6 #/login
                     window.location.pathname = newpath
@@ -77,6 +79,7 @@ $ ->
                     $('#submit-btn').spin null, null, "Sign in"
                 else
                     $('#submit-btn').spin null, null, "Sign in failed"
+                $('#loading-indicator').spin()
                 $('#forgot-password').fadeIn()
 
     $('#password-input').keyup (event) ->
@@ -88,7 +91,7 @@ $ ->
     $('#password-input').focus()
 
     $('#forgot-password').click (event) ->
-        client.post "login/forgot", {},
+        client.post "/login/forgot", {},
             success: ->
                 $('.alert-error').fadeOut()
                 $('.alert-success').fadeIn()

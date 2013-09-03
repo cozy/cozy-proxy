@@ -135,6 +135,8 @@ class exports.CozyProxy
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
+        @app.all  '/files/*', @replication
+        @app.get '/apps/:name*', @redirectWithSlash
         @app.all '/*', @defaultRedirectAction
 
     # Start proxy server listening.
@@ -166,7 +168,7 @@ class exports.CozyProxy
         @server.on 'upgrade', (req, socket, head) =>
             if slug = @app._router.matchRequest(req).params.name
                 req.url = req.url.replace "/apps/#{slug}", ''
-                port = @routes[slug]
+                port = @routes[slug].port
             else
                 port = @defaultPort
 
@@ -183,7 +185,7 @@ class exports.CozyProxy
         buffer = httpProxy.buffer(req)
         @proxy.proxyRequest req, res,
             host: 'localhost'
-            port: req.route.path
+            port: 9101
             buffer: buffer
 
     # Default redirection send requests to home.
@@ -199,42 +201,81 @@ class exports.CozyProxy
             url += "?#{qs.stringify(req.query)}" if req.query.length
             res.redirect url
 
-    # Redirect application, redirect request depening on app name.
-    redirectAppAction: (req, res) =>
-        if req.isAuthenticated()
-            buffer = httpProxy.buffer(req)
-            appName = req.params.name
-            req.url = req.url.substring "/apps/#{appName}".length
-            port = @routes[appName]
+    # ensure an app is started
+    # @arg slug the app slug
+    # @arg cb(err, port) a callback
+    #   err.code / err.msg
+    ensureStarted: (slug, doStart, cb) =>
+        if not @routes[slug]?
+            cb code:404, msg:'app unknown'
+            return
 
-            if port?
-                @proxy.proxyRequest req, res,
-                    host: 'localhost'
-                    port: @routes[req.params.name]
-                    buffer: buffer
-            else
-                res.send 404
-        else
+        switch @routes[slug].state
+            when 'broken'       then cb code:500, msg:'app broken'
+            when 'installing'   then cb code:404, msg:'app is still installing'
+            when 'installed'    then cb null, @routes[slug].port
+            when 'stopped'
+                unless doStart
+                    return code: 500, msg: 'wont start'
+
+                @startApp slug, (err) =>
+                    if err?
+                        cb code: 500, msg: "cannot start app : #{err}"
+                    else
+                        cb null, @routes[slug].port
+            else cb code: 500, msg: 'incorrect app state'
+
+    # request home to start a new app
+    startApp: (slug, cb) =>
+        client = new Client "http://localhost:#{@defaultPort}/"
+        client.post "api/applications/#{slug}/start", {}, (err, _, data) =>
+            cb(err) if err?
+            cb(data.msg) if data.error
+            @routes[slug] = data.app
+            cb(null)
+
+    # so we can go to /apps/app (no slash)
+    redirectWithSlash: (req, res) =>
+        res.redirect req.url+'/'
+
+    # Redirect application, redirect request depending on app name.
+    redirectAppAction: (req, res) =>
+
+        unless req.isAuthenticated()
             url = "/login#{req.url}"
             url += "?#{qs.stringify(req.query)}" if req.query.length
-            res.redirect url
+            return res.redirect url
+
+        buffer = httpProxy.buffer(req)
+        appName = req.params.name
+        req.url = req.url.substring "/apps/#{appName}".length
+
+        doStart = -1 is req.url.indexOf 'socket.io'
+
+        @ensureStarted appName, doStart, (err, port) =>
+            return res.send err.code, err.msg if err?
+            @proxy.proxyRequest req, res,
+                host: 'localhost'
+                port: port
+                buffer: buffer
 
     # Redirect public side of application, redirect request depening on app
-    # name.
+    # name. As for now, do not autostart on public routes
     redirectPublicAppAction: (req, res) =>
+
         buffer = httpProxy.buffer(req)
         appName = req.params.name
         req.url = req.url.substring "/public/#{appName}".length
         req.url = "/public#{req.url}"
-        port = @routes[appName]
 
-        if port?
+        doStart = -1 is req.url.indexOf 'socket.io'
+
+        @ensureStarted appName, doStart, (err, port) =>
+            return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,
                 host: 'localhost'
-                port: @routes[req.params.name]
+                port: port
                 buffer: buffer
-        else
-            res.send 404
 
     # Return success: true if user is authenticated, false either.
     authenticatedAction: (req, res) =>
@@ -263,7 +304,9 @@ class exports.CozyProxy
             return callback new Error(apps.msg) if apps.error?
             try
                 for app in apps.rows
-                    @routes[app.slug] = app.port if app.port?
+                    @routes[app.slug] = {}
+                    @routes[app.slug].port = app.port if app.port?
+                    @routes[app.slug].state = app.state if app.state?
                 callback()
             catch err
                 return callback err

@@ -17,6 +17,7 @@ password = "password"
 describe "Register / Login", ->
 
     before (done) ->
+        @timeout 5000
         router.start 4444
         @userManager = new UserManager()
         @userManager.deleteAll () =>

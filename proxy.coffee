@@ -309,14 +309,16 @@ class exports.CozyProxy
                 name = helpers.hideEmail users[0].value.email
                 if name?
                     name = name.charAt(0).toUpperCase() + name.slice(1)
-                res.render 'login', username: name
+                res.render 'login',
+                    username: name
+                    title: 'Cozy Home - Sign in'
             else
                 res.redirect 'register'
 
     registerView: (req, res) =>
         @userManager.all (err, users) ->
             if not users? or users.length is 0
-                res.render 'register'
+                res.render 'register', title: 'Cozy Home - Sign up'
             else
                 res.redirect 'login'
 
@@ -445,7 +447,9 @@ class exports.CozyProxy
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
         if @resetKey is req.params.key
-            res.render 'reset', resetKey: req.params.key
+            res.render 'reset',
+                resetKey: req.params.key
+                title: 'Cozy Home - Reset password'
         else
             res.redirect '/'
 

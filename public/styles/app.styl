@@ -59,20 +59,20 @@ button
 
 input
     font-family: styled
-    font-size: 2.2em
-    height: 1.3em
+    font-size: 26px
+    height: 52px
     width: 550px
-    padding: 10px
+    padding: 4px 10px
     border-radius: 0.4em
-    border: 0
     color: blue
     box-shadow: 0 0 0 0
-    border: 1px solid white
+    border: 1px solid transparent
 
 input:focus
     color: orange + 20%
     box-shadow: 0 0 0 0
     border: 1px solid orange + 50%
+    outline: none
 
 p
     font-family: main
@@ -84,10 +84,10 @@ p
 
 .alert-error
     font-family: styled
-    font-size: 2em
+    font-size: 20px
     background: darkred
-    padding: 20px
-    width: 530px
+    padding: 5px 10px
+    width: 550px
     color: white
 
 .alert-success
@@ -131,6 +131,10 @@ p
     width: 570px
     cursor: pointer
     background: blue
+
+@media screen and (-webkit-min-device-pixel-ratio:0)
+    #submit-btn
+        width: 550px
 
 #submit-btn:hover
     background: orange + 20%

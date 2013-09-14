@@ -109,9 +109,6 @@ class exports.CozyProxy
                 console.log = (text) ->
                     logFile.write(text + '\n')
 
-                console.error = (text) ->
-                    logFile.write(text + '\n')
-
     setControllers: ->
         @app.get "/routes", @showRoutesAction
         @app.get "/routes/reset", @resetRoutesAction

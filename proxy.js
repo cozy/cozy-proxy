@@ -151,10 +151,7 @@ exports.CozyProxy = (function() {
         format: '[:date] :method :url :status :response-time ms'
       }));
       if (env === "production") {
-        console.log = function(text) {
-          return logFile.write(text + '\n');
-        };
-        return console.error = function(text) {
+        return console.log = function(text) {
           return logFile.write(text + '\n');
         };
       }

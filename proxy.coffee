@@ -17,7 +17,7 @@ InstanceManager = require('./models').InstanceManager
 
 passwordKeys = new PasswordKeys()
 
-## Passport / Authentication
+# Passport / Authentication
 configurePassport = (userManager) ->
     passport.currentUser = null
     passport.serializeUser = (user, done) ->
@@ -95,21 +95,16 @@ class exports.CozyProxy
 
 
     configureLogs: ->
-        format = '
-            \\n \\033[33;22m :date \\033[0m
-            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
-            \\n  >>> perform
-            \\n  Send to client: :status
-            \\n  <<<  [:response-time ms]'
         if process.env.NODE_ENV is "development"
-            @app.use express.logger format
+            @app.use express.logger 'dev'
         else
+            format = '[:date] :method :url :status :response-time ms'
             env = process.env.NODE_ENV
             fs.mkdirSync 'log' unless fs.existsSync './log'
             logFile = fs.createWriteStream "./log/#{env}.log", flags: 'w'
             @app.use express.logger
                 stream: logFile
-                format: format
+                format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
                     logFile.write(text + '\n')

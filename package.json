@@ -3,7 +3,6 @@
 , "engines": ["node >= 0.8.0"]
 , "dependencies":
   { "http-proxy":             "= 0.8.5"
-,   "coffee-script":          "= 1.4.0"
 ,   "request-json":           "= 0.3.3"
 ,   "express":                "= 3.0.6"
 ,   "passport":               "= 0.1.15"

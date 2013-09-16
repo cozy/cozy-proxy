@@ -182,10 +182,20 @@ class exports.CozyProxy
 
 
     replication: (req, res) =>
+        initLoginCouch = ->
+            try
+                data = fs.readFileSync '/etc/cozy/couchdb.login'
+            catch err
+                console.log "No CouchDB credentials file found: /etc/cozy/couchdb.login"
+            lines = S(data.toString('utf8')).lines()
+            return lines
+        idCouch = initLoginCouch()
+        username = idCouch[0]
+        password = idCouch[1]
         buffer = httpProxy.buffer(req)
         @proxy.proxyRequest req, res,
-            host: 'localhost'
-            port: 9101
+            host: username + ':' + password + "@localhost"
+            port: req._parsedUrl.port
             buffer: buffer
 
     # Default redirection send requests to home.

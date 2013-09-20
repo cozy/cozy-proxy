@@ -17,7 +17,7 @@ InstanceManager = require('./models').InstanceManager
 
 passwordKeys = new PasswordKeys()
 
-## Passport / Authentication
+# Passport / Authentication
 configurePassport = (userManager) ->
     passport.currentUser = null
     passport.serializeUser = (user, done) ->
@@ -95,27 +95,19 @@ class exports.CozyProxy
 
 
     configureLogs: ->
-        format = '
-            \\n \\033[33;22m :date \\033[0m
-            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
-            \\n  >>> perform
-            \\n  Send to client: :status
-            \\n  <<<  [:response-time ms]'
         if process.env.NODE_ENV is "development"
-            @app.use express.logger format
+            @app.use express.logger 'dev'
         else
+            format = '[:date] :method :url :status :response-time ms'
             env = process.env.NODE_ENV
             fs.mkdirSync 'log' unless fs.existsSync './log'
             logFile = fs.createWriteStream "./log/#{env}.log", flags: 'w'
             @app.use express.logger
                 stream: logFile
-                format: format
+                format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
                     logFile.write(text + '\n')
-
-                ###console.error = (text) ->
-                    logFile.write(text + '\n')###
 
     setControllers: ->
         @app.get "/routes", @showRoutesAction
@@ -311,14 +303,16 @@ class exports.CozyProxy
                 name = helpers.hideEmail users[0].value.email
                 if name?
                     name = name.charAt(0).toUpperCase() + name.slice(1)
-                res.render 'login', username: name
+                res.render 'login',
+                    username: name
+                    title: 'Cozy Home - Sign in'
             else
                 res.redirect 'register'
 
     registerView: (req, res) =>
         @userManager.all (err, users) ->
             if not users? or users.length is 0
-                res.render 'register'
+                res.render 'register', title: 'Cozy Home - Sign up'
             else
                 res.redirect 'login'
 
@@ -447,7 +441,9 @@ class exports.CozyProxy
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
         if @resetKey is req.params.key
-            res.render 'reset', resetKey: req.params.key
+            res.render 'reset',
+                resetKey: req.params.key
+                title: 'Cozy Home - Reset password'
         else
             res.redirect '/'
 

@@ -122,8 +122,9 @@ class exports.CozyProxy
                         console.log "Reset routes succeeded"
                 @updateRoutes occurence
             , 60000
-        else
+        else if occurence < 15
             setTimeout () =>
+                occurence = occurence + 1
                 @resetRoutes (error) ->
                     if error
                         console.log 'Error during routes resetting: '

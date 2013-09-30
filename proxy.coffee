@@ -73,6 +73,7 @@ class exports.CozyProxy
         @userManager = new UserManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
+        @updateRoutes 0
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'
@@ -108,6 +109,30 @@ class exports.CozyProxy
             if env is "production"
                 console.log = (text) ->
                     logFile.write(text + '\n')
+
+    updateRoutes: (occurence) ->
+        if occurence < 10
+            setTimeout () =>
+                occurence = occurence + 1
+                @resetRoutes (error) ->
+                    if error
+                        console.log 'Error during routes resetting: '
+                        console.log error
+                    else
+                        console.log "Reset routes succeeded"
+                @updateRoutes occurence
+            , 60000
+        else
+            setTimeout () =>
+                @resetRoutes (error) ->
+                    if error
+                        console.log 'Error during routes resetting: '
+                        console.log error
+                    else
+                        console.log "Reset routes succeeded"
+                @updateRoutes occurence
+            , 900000
+
 
     setControllers: ->
         @app.get "/routes", @showRoutesAction

@@ -44,17 +44,19 @@ task 'tests:file', 'run test through mocha for a given file', (options) ->
             console.log "Running mocha caught exception: \n" + err
         console.log stdout
 
-task "xunit", "", ->
-    process.env.TZ = "Europe/Paris"
-    command = "mocha "
-    command += " --require should --compilers coffee:coffee-script -R xunit > xunit.xml"
+task "convert", "Convert code to JS", ->
+    command = "coffee -cb *.coffee lib/*.coffee"
     exec command, (err, stdout, stderr) ->
-        console.log stdout
+        if err
+            console.log "Conversion to JS failed.\n" + err
+        else
+            console.log "Conversion to JS succeeded."
+
 
 task "lint", "Run coffeelint on proxy files", ->
         process.env.TZ = "Europe/Paris"
         command = "coffeelint "
-        command += "    -f coffeelint.json -r ./*.coffee test/"
+        command += "    -f coffeelint.json -r ./*.coffee lib/ test/"
         exec command, (err, stdout, stderr) ->
                 console.log err
                 console.log stdout

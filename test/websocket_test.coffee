@@ -41,6 +41,7 @@ patchCookieJar = ->
 describe "websockets", ->
 
     before (done) ->
+        @timeout 5000
 
         @jar = patchCookieJar()
 

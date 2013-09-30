@@ -1,27 +1,21 @@
-doctype 5
-html(lang="en")
-  head
-    meta(name="viewport", content="width=device-width,initial-scale=1")
-    meta(http-equiv="content-type", content="text/html; charset=utf-8")
-    title Cozy Home - Register
-    script(src='/jquery-1.8.2.js')
-    script(src='/client.js')
-    script(src='/register.js')
-    link(rel='stylesheet', href='/bootstrap.css') 
-    link(rel='stylesheet', href='/app.css') 
-    link(rel="icon", type="image/x-icon", href="/favicon.png")
-  body
-    #content
-      .proxy-form
-        h1 Register
+extends base
+
+block js
+    script(src='/scripts/register.js')
+
+block content
+    .proxy-form
+        h1 Welcome to your Cozy!
+        h1 It's the first time you connect,
+        h1 Before going further I need:
+        p.input-wrapper
+            input#email-input(type="text", placeholder="your email address")
+        p.input-wrapper
+            input#password-input(type="text", type="password",
+               placeholder="the password you will use to sign in")
         p
-          input#email-input(type="text", placeholder="email address")
-        p
-          input#password-input(type="text", type="password",
-                               placeholder="password")
-        p
-          button#submit-btn register
-        p
-          img(src="/grey-logo.png", alt="Cozy logo")
-      .error-box.alert.alert-error
-      .error-box.alert.alert-success
+          button#submit-btn send informations
+        .alert-error &nbsp;
+
+        .alert-success
+            | Good, let's go to your homepage...

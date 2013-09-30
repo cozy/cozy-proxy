@@ -12,6 +12,7 @@ router = new CozyProxy()
 describe "/routes", ->
 
     before (done) ->
+        @timeout 5000
         router.start 4444
         router.routes["/apps/app1"] = 8001
         router.routes["/apps/app2"] = 8002

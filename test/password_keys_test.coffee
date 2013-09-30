@@ -13,6 +13,7 @@ describe "Password Keys", ->
     describe "Initialize keys", ->
 
         before (done) ->
+            @timeout 5000
             client.setBasicAuth "proxy", "token"
             client.del 'data/102/', (err, res, body) =>
                 data =

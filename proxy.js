@@ -85,6 +85,8 @@
     CozyProxy.prototype.routes = {};
 
     function CozyProxy() {
+      this.webfingerAccount = __bind(this.webfingerAccount, this);
+      this.webfingerHostMeta = __bind(this.webfingerHostMeta, this);
       this.resetPasswordAction = __bind(this.resetPasswordAction, this);
       this.resetPasswordView = __bind(this.resetPasswordView, this);
       this.forgotPasswordAction = __bind(this.forgotPasswordAction, this);
@@ -137,15 +139,10 @@
     CozyProxy.prototype.configureLogs = function() {
       var env, format, logFile;
 
-      format = '\
-            \\n \\033[33;22m :date \\033[0m\
-            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m\
-            \\n  >>> perform\
-            \\n  Send to client: :status\
-            \\n  <<<  [:response-time ms]';
       if (process.env.NODE_ENV === "development") {
-        return this.app.use(express.logger(format));
+        return this.app.use(express.logger('dev'));
       } else {
+        format = '[:date] :method :url :status :response-time ms';
         env = process.env.NODE_ENV;
         if (!fs.existsSync('./log')) {
           fs.mkdirSync('log');
@@ -155,7 +152,7 @@
         });
         this.app.use(express.logger({
           stream: logFile,
-          format: format
+          format: '[:date] :method :url :status :response-time ms'
         }));
         if (env === "production") {
           return console.log = function(text) {
@@ -209,6 +206,8 @@
       this.app.get('/logout', this.logoutAction);
       this.app.get('/authenticated', this.authenticatedAction);
       this.app.get('/status', this.statusAction);
+      this.app.get('/.well-known/host-meta.?:ext', this.webfingerHostMeta);
+      this.app.get('/.well-known/:module', this.webfingerAccount);
       this.app.all('/public/:name/*', this.redirectPublicAppAction);
       this.app.all('/apps/:name/*', this.redirectAppAction);
       this.app.get('/apps/:name*', this.redirectWithSlash);
@@ -486,7 +485,8 @@
             name = name.charAt(0).toUpperCase() + name.slice(1);
           }
           return res.render('login', {
-            username: name
+            username: name,
+            title: 'Cozy Home - Sign in'
           });
         } else {
           return res.redirect('register');
@@ -497,7 +497,9 @@
     CozyProxy.prototype.registerView = function(req, res) {
       return this.userManager.all(function(err, users) {
         if ((users == null) || users.length === 0) {
-          return res.render('register');
+          return res.render('register', {
+            title: 'Cozy Home - Sign up'
+          });
         } else {
           return res.redirect('login');
         }
@@ -666,7 +668,8 @@
     CozyProxy.prototype.resetPasswordView = function(req, res) {
       if (this.resetKey === req.params.key) {
         return res.render('reset', {
-          resetKey: req.params.key
+          resetKey: req.params.key,
+          title: 'Cozy Home - Reset password'
         });
       } else {
         return res.redirect('/');
@@ -734,6 +737,60 @@
           return res.send(status);
         }
       });
+    };
+
+    CozyProxy.prototype.webfingerHostMeta = function(req, res) {
+      var host, hostmeta, template;
+
+      if (req.params.ext !== 'json') {
+        return res.send(404);
+      }
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Methods', 'GET');
+      host = 'https://' + req.get('host');
+      template = "" + host + "/webfinger/json?resource={uri}";
+      hostmeta = {
+        links: {
+          rel: 'lrdd',
+          template: template
+        }
+      };
+      return res.send(hostmeta);
+    };
+
+    CozyProxy.prototype.webfingerAccount = function(req, res) {
+      var OAUTH_VERSION, PROTOCOL_VERSION, accountinfo, host, link;
+
+      if (req.params.module === 'caldav' || req.params.module === 'carddav') {
+        return res.redirect('/public/webdav/');
+      } else if (req.params.module === 'webfinger') {
+        host = 'https://' + req.get('host');
+        OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';
+        PROTOCOL_VERSION = 'draft-dejong-remotestorage-01';
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Allow-Methods', 'GET');
+        accountinfo = {
+          links: []
+        };
+        if (this.routes['remotestorage']) {
+          link = {
+            href: "" + host + "/public/remotestorage/storage",
+            rel: 'remotestorage',
+            type: PROTOCOL_VERSION,
+            properties: {
+              'auth-method': OAUTH_VERSION,
+              'auth-endpoint': "" + host + "/apps/remotestorage/oauth/"
+            }
+          };
+          link.properties[OAUTH_VERSION] = link.properties['auth-endpoint'];
+          accountinfo.links.push(link);
+        }
+        return res.send(accountinfo);
+      } else {
+        return res.send(404);
+      }
     };
 
     return CozyProxy;

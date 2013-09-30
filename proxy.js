@@ -178,8 +178,9 @@
           });
           return _this.updateRoutes(occurence);
         }, 60000);
-      } else {
+      } else if (occurence < 15) {
         return setTimeout(function() {
+          occurence = occurence + 1;
           _this.resetRoutes(function(error) {
             if (error) {
               console.log('Error during routes resetting: ');

@@ -7,6 +7,8 @@ qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 Client = require('request-json').JsonClient
+S = require 'string'
+util = require 'util'
 
 helpers = require './helpers'
 middlewares = require './middlewares'
@@ -92,6 +94,15 @@ class exports.CozyProxy
 
         @enableSocketRedirection()
         @setControllers()
+        ###@couchProxy = require('express-couch-proxy');
+        @couchProxy = @couchProxy {realm: 'CouchDB Replication'}, (database, username, password, next) =>
+            console.log 'function'
+            if 'test' == username
+                return next(null, "http://test:secrets@localhost:5984/" + database)
+            else
+                return next(new Error('unauthorized'))
+        @app.use(express.limit('1mb'));
+        @app.use('/*', @couchProxy);###
 
 
     configureLogs: ->
@@ -129,7 +140,7 @@ class exports.CozyProxy
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
-        @app.all  '/files/*', @replication
+        @app.all  '/files/*', @replication2
         @app.get '/apps/:name*', @redirectWithSlash
         @app.all '/*', @defaultRedirectAction
 
@@ -175,7 +186,8 @@ class exports.CozyProxy
                            "Connection: close\r\n", 'ascii'
 
 
-    replication: (req, res) =>
+    replication: (req, res) => 
+        console.log 'replication'
         initLoginCouch = ->
             try
                 data = fs.readFileSync '/etc/cozy/couchdb.login'
@@ -186,9 +198,22 @@ class exports.CozyProxy
         idCouch = initLoginCouch()
         username = idCouch[0]
         password = idCouch[1]
+        credentials = "#{username}:#{password}"
+        basicCredentials = new Buffer(credentials).toString('base64')
+        auth = "Basic #{basicCredentials}"
+        buffer = httpProxy.buffer(req)
+        req.headers['authorization'] = auth
+        @proxy.proxyRequest req, res,
+            host: "127.0.0.1"
+            'authorization': auth
+            port: req._parsedUrl.port
+            buffer: buffer    
+
+
+    replication2: (req, res) =>             
         buffer = httpProxy.buffer(req)
         @proxy.proxyRequest req, res,
-            host: username + ':' + password + "@localhost"
+            host: "127.0.0.1"
             port: req._parsedUrl.port
             buffer: buffer
 

@@ -17,7 +17,7 @@ InstanceManager = require('./models').InstanceManager
 
 passwordKeys = new PasswordKeys()
 
-## Passport / Authentication
+# Passport / Authentication
 configurePassport = (userManager) ->
     passport.currentUser = null
     passport.serializeUser = (user, done) ->
@@ -95,26 +95,18 @@ class exports.CozyProxy
 
 
     configureLogs: ->
-        format = '
-            \\n \\033[33;22m :date \\033[0m
-            \\n \\033[37;1m :method \\033[0m \\033[30;1m :url \\033[0m
-            \\n  >>> perform
-            \\n  Send to client: :status
-            \\n  <<<  [:response-time ms]'
         if process.env.NODE_ENV is "development"
-            @app.use express.logger format
+            @app.use express.logger 'dev'
         else
+            format = '[:date] :method :url :status :response-time ms'
             env = process.env.NODE_ENV
             fs.mkdirSync 'log' unless fs.existsSync './log'
             logFile = fs.createWriteStream "./log/#{env}.log", flags: 'w'
             @app.use express.logger
                 stream: logFile
-                format: format
+                format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
-                    logFile.write(text + '\n')
-
-                console.error = (text) ->
                     logFile.write(text + '\n')
 
     setControllers: ->
@@ -131,6 +123,8 @@ class exports.CozyProxy
         @app.get '/logout', @logoutAction
         @app.get '/authenticated', @authenticatedAction
         @app.get '/status', @statusAction
+        @app.get '/.well-known/host-meta.?:ext', @webfingerHostMeta
+        @app.get '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
@@ -329,14 +323,16 @@ class exports.CozyProxy
                 name = helpers.hideEmail users[0].value.email
                 if name?
                     name = name.charAt(0).toUpperCase() + name.slice(1)
-                res.render 'login', username: name
+                res.render 'login',
+                    username: name
+                    title: 'Cozy Home - Sign in'
             else
                 res.redirect 'register'
 
     registerView: (req, res) =>
         @userManager.all (err, users) ->
             if not users? or users.length is 0
-                res.render 'register'
+                res.render 'register', title: 'Cozy Home - Sign up'
             else
                 res.redirect 'login'
 
@@ -465,7 +461,9 @@ class exports.CozyProxy
     # Display reset password view, only if given key is valid.
     resetPasswordView: (req, res) =>
         if @resetKey is req.params.key
-            res.render 'reset', resetKey: req.params.key
+            res.render 'reset',
+                resetKey: req.params.key
+                title: 'Cozy Home - Reset password'
         else
             res.redirect '/'
 
@@ -515,3 +513,62 @@ class exports.CozyProxy
         statusChecker.checkAllStatus (err, status) ->
             if err then res.send 500
             else res.send status
+
+    # Return the host meta file
+    # support only JSON format
+    # @TODO : support xml
+    webfingerHostMeta: (req, res) =>
+        return res.send 404 unless req.params.ext is 'json'
+
+        res.header 'Access-Control-Allow-Origin', '*'
+        res.header 'Access-Control-Allow-Credentials', true
+        res.header 'Access-Control-Allow-Methods', 'GET'
+
+        host = 'https://' + req.get 'host'
+        template = "#{host}/webfinger/json?resource={uri}"
+
+        hostmeta = links:
+            rel: 'lrdd'
+            template: template
+
+        res.send hostmeta
+
+
+    # return the account file
+    # @TODO : let the user add more information here
+    # OpenID provider, public email, public tel, ...
+    webfingerAccount: (req, res) =>
+
+        if req.params.module is 'caldav' or req.params.module is 'carddav'
+            res.redirect '/public/webdav/'
+
+        else if req.params.module is 'webfinger'
+
+            host = 'https://' + req.get 'host'
+            OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
+            PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
+
+            res.header 'Access-Control-Allow-Origin', '*'
+            res.header 'Access-Control-Allow-Credentials', true
+            res.header 'Access-Control-Allow-Methods', 'GET'
+
+            accountinfo = links: []
+
+            if @routes['remotestorage']
+
+                link =
+                    href: "#{host}/public/remotestorage/storage"
+                    rel: 'remotestorage'
+                    type: PROTOCOL_VERSION
+                    properties:
+                        'auth-method': OAUTH_VERSION
+                        'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
+
+                link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+
+                accountinfo.links.push link
+
+            return res.send accountinfo
+
+        else
+            res.send 404

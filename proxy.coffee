@@ -3,6 +3,7 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 fs = require 'fs'
+util = require 'util'
 qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy

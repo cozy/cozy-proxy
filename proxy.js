@@ -250,24 +250,10 @@ exports.CozyProxy = (function() {
   };
 
   CozyProxy.prototype.replication = function(req, res) {
-    var auth, basicCredentials, buffer, credentials, idCouch, initLoginCouch, password, username;
+    var auth, basicCredentials, buffer, credentials, password, username;
 
-    console.log('replication');
-    initLoginCouch = function() {
-      var data, err, lines;
-
-      try {
-        data = fs.readFileSync('/etc/cozy/couchdb.login');
-      } catch (_error) {
-        err = _error;
-        console.log("No CouchDB credentials file found: /etc/cozy/couchdb.login");
-      }
-      lines = S(data.toString('utf8')).lines();
-      return lines;
-    };
-    idCouch = initLoginCouch();
-    username = idCouch[0];
-    password = idCouch[1];
+    username = process.env.NAME;
+    password = process.env.TOKEN;
     credentials = "" + username + ":" + password;
     basicCredentials = new Buffer(credentials).toString('base64');
     auth = "Basic " + basicCredentials;
@@ -275,7 +261,6 @@ exports.CozyProxy = (function() {
     req.headers['authorization'] = auth;
     return this.proxy.proxyRequest(req, res, {
       host: "127.0.0.1",
-      'authorization': auth,
       port: req._parsedUrl.port,
       buffer: buffer
     });

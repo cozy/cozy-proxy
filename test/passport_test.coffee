@@ -2,35 +2,22 @@ http = require('http')
 should = require('chai').Should()
 Client = require('request-json').JsonClient
 
-
-helpers = require '../helpers'
 {CozyProxy} = require '../proxy.coffee'
-UserManager = require('../models').UserManager
 
 client = new Client("http://localhost:4444/")
 router = new CozyProxy()
-
+helpers = require './helpers'
 
 email = "test@cozycloud.cc"
 password = "password"
 
 describe "Register / Login", ->
 
-    before (done) ->
-        @timeout 5000
-        router.start 4444
-        @userManager = new UserManager()
-        @userManager.deleteAll () =>
-            map = (doc) ->
-                emit doc._id, doc if doc.docType is "User"
-            design_doc =
-                "map": map.toString()
-            @userManager.dbClient.put 'request/user/all/', design_doc, (err, res, body) =>
-                done()
-
-    after (done) ->
-        router.stop()
-        @userManager.deleteAll done
+    before helpers.createUserAllRequest
+    before helpers.deleteAllUsers
+    before -> router.start 4444
+    after  -> router.stop()
+    after  helpers.deleteAllUsers
 
     describe "Register", ->
 
@@ -74,14 +61,11 @@ describe "Register / Login", ->
 
 describe "Register failure", ->
 
-    before (done) ->
-        router.start 4444
-        @userManager = new UserManager()
-        @userManager.deleteAll done
-
-    after (done) ->
-        router.stop()
-        @userManager.deleteAll done
+    before helpers.createUserAllRequest
+    before helpers.deleteAllUsers
+    before -> router.start 4444
+    after  -> router.stop()
+    after  helpers.deleteAllUsers
 
     it "When I send a register request with a wrong string as email", (done) ->
         data = email: "wrongemail", password: password

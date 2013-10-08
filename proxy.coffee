@@ -3,6 +3,7 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 fs = require 'fs'
+util = require 'util'
 qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -108,7 +109,7 @@ class exports.CozyProxy
                 format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
-                    logFile.write(text + '\n')
+                    logFile.write util.format.apply(this, arguments) + '\n'
 
     updateRoutes: (occurence) ->
         if occurence < 10

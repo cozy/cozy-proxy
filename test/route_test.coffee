@@ -2,31 +2,27 @@ http = require('http')
 should = require('chai').Should()
 Client = require('request-json').JsonClient
 
-helpers = require '../helpers'
+{cryptPassword} = require '../helpers'
 {CozyProxy} = require '../proxy.coffee'
 UserManager = require('../models').UserManager
 
 client = new Client("http://localhost:4444/")
 router = new CozyProxy()
+helpers = require './helpers'
 
 describe "/routes", ->
 
-    before (done) ->
-        @timeout 5000
-        router.start 4444
-        router.routes["/apps/app1"] = 8001
-        router.routes["/apps/app2"] = 8002
-        router.routes["/apps/app3"] = 8003
-        map = (doc) ->
-            emit doc._id, doc if doc.docType is "User"
-        design_doc =
-            "map": map.toString()
-        clientDS = new Client("http://localhost:9101/")
-        clientDS.put 'request/user/all/', design_doc, (err, res, body) =>
-            done()
+    before helpers.createUserAllRequest
+    before helpers.deleteAllUsers
 
-    after ->
-        router.stop()
+    before ->
+        router.start 4444
+        router.routes =
+            "app1": port: 4441, state: 'installed'
+            "app2": port: 4442, state: 'installed'
+            "app3": port: 8003, state: 'installed'
+    after  -> router.stop()
+    after  helpers.deleteAllUsers
 
     describe "GET /routes Return available routes.", ->
 
@@ -43,48 +39,24 @@ describe "/routes", ->
 
 describe "Proxying", ->
 
-    fakeHomeLastUrl = ""
+    before helpers.deleteAllUsers
+    before helpers.createUser 'test@cozycloud.cc', 'password'
 
-    before (done) ->
+    homeResponse = app: port: 4447, state: 'installed'
+    before helpers.fakeServer 'home', 4446, homeResponse
+    before helpers.fakeServer 'myapp', 4445, msg: 'ok'
+    before helpers.fakeServer 'myapp2', 4447, msg: 'ok2'
 
+    before ->
         router.defaultPort = 4446
         router.start 4444
         router.routes["myapp"] = {port:4445, state:'installed'}
         router.routes["myapp2"] = {port:4447, state:'stopped'}
-        @fakeHome = http.createServer (req, res) ->
-            fakeHomeLastUrl = req.url
-            res.writeHead 201
-            res.end(JSON.stringify {app:{port:4447, state:'installed'}})
-        @fakeHome.listen router.defaultPort
-
-        @server = http.createServer (req, res) ->
-            res.writeHead 200, 'Content-Type': 'application/json'
-            res.end(JSON.stringify msg:"ok")
-        @server.listen 4445, 'localhost'
-
-        @server2 = http.createServer (req, res) ->
-            res.writeHead 200, 'Content-Type': 'application/json'
-            res.end(JSON.stringify msg:"ok2")
-        @server2.listen 4447, 'localhost'
-
-        @userManager = new UserManager()
-
-        @userManager.dbClient.setBasicAuth "proxy", "token"
-        @userManager.dbClient.put 'request/user/all/destroy/', {}, (err) =>
-            password = helpers.cryptPassword('password').hash
-            user =
-                email: "test@cozycloud.cc"
-                owner: true
-                password: password
-                activated: true
-
-            @userManager.create user, (err, code, user) =>
-                done()
 
     after ->
         router.stop()
-        @server.close()
-        @server2.close()
+
+    after helpers.closeFakeServers
 
     describe "Redirection", ->
         it "When I send non-identified request to an existing
@@ -122,12 +94,15 @@ private route (with params)", (done) ->
             @body.msg.should.equal "ok"
 
     describe "Private proxying", ->
+
+        before (done) ->
+            client.post 'login', password: "password", done
+
         it "When I send an authentified request to an existing route", (done)->
-            client.post 'login', password: "password", =>
-                client.get "apps/myapp/", (error, response, body) =>
-                    @response = response
-                    @body = body
-                    done()
+            client.get "apps/myapp/", (error, response, body) =>
+                @response = response
+                @body = body
+                done()
 
         it "Then I should be redirected to the app server", ->
             @response.statusCode.should.equal 200
@@ -135,12 +110,12 @@ private route (with params)", (done) ->
             @body.msg.should.equal "ok"
 
     describe "no regression on issue #1", ->
+
         it "When I send an request to myapp2 ", (done) ->
-            client.post 'login', password: "password", =>
-                client.get "apps/myapp2/", (error, response, body) =>
-                    @response = response
-                    @body = body
-                    done()
+            client.get "apps/myapp2/", (error, response, body) =>
+                @response = response
+                @body = body
+                done()
 
         it "Then I should be redirected to the myapp2
 server (and not myapp)", ->
@@ -157,7 +132,8 @@ server (and not myapp)", ->
                 done()
 
         it "should have called home to start the app", ->
-            fakeHomeLastUrl.should.equal "/api/applications/myapp2/start"
+            expected = "/api/applications/myapp2/start"
+            @fakeServers['home'].lastUrl.should.equal expected
 
         it "Then I should be proxyed to the app server", ->
             @response.statusCode.should.equal 200

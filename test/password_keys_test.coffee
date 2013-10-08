@@ -7,25 +7,17 @@ PasswordKeys = require "../lib/password_keys"
 
 client = new Client "http://localhost:9101/"
 passwordKeys = new PasswordKeys()
+helpers = require './helpers'
 
 
 describe "Password Keys", ->
+
+    before helpers.createUserAllRequest
+    before helpers.deleteAllUsers
+    before helpers.createUser "user@CozyCloud.CC", "user_pwd"
+    after helpers.deleteAllUsers
+
     describe "Initialize keys", ->
-
-        before (done) ->
-            @timeout 5000
-            client.setBasicAuth "proxy", "token"
-            client.del 'data/102/', (err, res, body) =>
-                data =
-                    email: "user@CozyCloud.CC"
-                    timezone: "Europe/Paris"
-                    password: "user_pwd"
-                    docType: "User"
-                client.post 'data/102/', data, (err, res, body) =>
-                    pwd = password: "password"
-                    client.post "accounts/password/", pwd, (err, res, body) =>
-                        done()
-
 
         it "When I initialize keys", (done) ->
             passwordKeys.initializeKeys "password", (err) =>

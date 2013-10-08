@@ -20,6 +20,7 @@
 ,   "socket.io":              "~0.9.13"
 ,   "socket.io-client":       "~0.9.11"
 ,   "xmlhttprequest":         "~1.5.0"
+,   "coffee-script":          "latest"
   }
 , "main":"server.js"
 , "scripts": {

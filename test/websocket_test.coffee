@@ -90,23 +90,32 @@ describe "websockets", ->
 
     describe "When I request with a cookie", ->
 
-        it "should forward to the application", (done) ->
+        before (done) ->
             httpClient.post 'login', password: "password", (err, res) =>
-
                 cookie = res.headers["set-cookie"][0]
                 @jar.add(new Cookie(cookie))
+                done()
 
-                client = ioClient.connect 'http://localhost',
-                    'force new connection':true
-                    port:4444
-                    resource: 'apps/myapp/socket.io'
-                    transports: ['websocket']
+        it "should forward to the application", (done) ->
+            @timeout 5000
+            client = ioClient.connect 'http://localhost',
+                'force new connection':true
+                port:4444
+                resource: 'apps/myapp/socket.io'
+                transports: ['websocket']
 
-                client.on 'connect', ->
+            client.on 'connect', ->
+                console.log 'connect event fired'
 
-                client.on 'welcome', ->
-                    client.disconnect()
-                client.on 'disconnect', ->
-                    done()
+            client.on 'error', ->
+                console.log 'client error', arguments
+                done new Error('client error')
+
+            client.on 'welcome', ->
+                console.log 'welcom event fired'
+                client.disconnect()
+
+            client.on 'disconnect', ->
+                done()
 
 

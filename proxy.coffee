@@ -108,7 +108,7 @@ class exports.CozyProxy
                 format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
-                    logFile.write(text + '\n')
+                    logFile.write util.format.apply(this, arguments) + '\n'
 
     updateRoutes: (occurence) ->
         if occurence < 10

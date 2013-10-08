@@ -7,8 +7,6 @@ qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 Client = require('request-json').JsonClient
-S = require 'string'
-util = require 'util'
 
 helpers = require './helpers'
 middlewares = require './middlewares'
@@ -186,7 +184,7 @@ class exports.CozyProxy
         req.headers['authorization'] = auth
         @proxy.proxyRequest req, res,
             host: "127.0.0.1"
-            port: req._parsedUrl.port
+            port: 5984
             buffer: buffer    
 
     # Default redirection send requests to home.

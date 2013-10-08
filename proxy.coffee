@@ -177,7 +177,6 @@ class exports.CozyProxy
 
 
     replication: (req, res) => 
-        console.log 'replication'
         initLoginCouch = ->
             try
                 data = fs.readFileSync '/etc/cozy/couchdb.login'

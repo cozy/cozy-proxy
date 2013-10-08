@@ -94,15 +94,6 @@ class exports.CozyProxy
 
         @enableSocketRedirection()
         @setControllers()
-        ###@couchProxy = require('express-couch-proxy');
-        @couchProxy = @couchProxy {realm: 'CouchDB Replication'}, (database, username, password, next) =>
-            console.log 'function'
-            if 'test' == username
-                return next(null, "http://test:secrets@localhost:5984/" + database)
-            else
-                return next(new Error('unauthorized'))
-        @app.use(express.limit('1mb'));
-        @app.use('/*', @couchProxy);###
 
 
     configureLogs: ->
@@ -140,7 +131,6 @@ class exports.CozyProxy
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
-        @app.all  '/files/*', @replication2
         @app.get '/apps/:name*', @redirectWithSlash
         @app.all '/*', @defaultRedirectAction
 
@@ -208,14 +198,6 @@ class exports.CozyProxy
             'authorization': auth
             port: req._parsedUrl.port
             buffer: buffer    
-
-
-    replication2: (req, res) =>             
-        buffer = httpProxy.buffer(req)
-        @proxy.proxyRequest req, res,
-            host: "127.0.0.1"
-            port: req._parsedUrl.port
-            buffer: buffer
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>

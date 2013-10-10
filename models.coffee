@@ -75,6 +75,8 @@ class exports.UserManager extends DbManager
             else if users.length is 0 then callback null, null
             else callback null, users[0]
 
+class exports.RemoteManager extends DbManager
+    type: 'Remote'
 
 class exports.InstanceManager extends DbManager
     type: 'CozyInstance'

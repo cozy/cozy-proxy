@@ -13,6 +13,7 @@ middlewares = require './middlewares'
 PasswordKeys = require './lib/password_keys'
 StatusChecker = require './lib/status'
 UserManager = require('./models').UserManager
+RemoteManager = require('./models').RemoteManager
 InstanceManager = require('./models').InstanceManager
 
 passwordKeys = new PasswordKeys()
@@ -71,6 +72,7 @@ class exports.CozyProxy
         @proxy = @server.proxy
         @proxy.source.port = 9104
         @userManager = new UserManager()
+        @remoteManager = new RemoteManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
 
@@ -127,6 +129,7 @@ class exports.CozyProxy
         @app.get '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
+        @app.all '/apps/files/remotes*', @redirectRemoteAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
         @app.get '/apps/:name*', @redirectWithSlash
@@ -174,18 +177,38 @@ class exports.CozyProxy
                            "Connection: close\r\n", 'ascii'
 
 
-    replication: (req, res) => 
-        username = process.env.NAME
-        password = process.env.TOKEN
-        credentials = "#{username}:#{password}"
-        basicCredentials = new Buffer(credentials).toString('base64')
-        auth = "Basic #{basicCredentials}"
+    replication: (req, res) =>
         buffer = httpProxy.buffer(req)
-        req.headers['authorization'] = auth
-        @proxy.proxyRequest req, res,
-            host: "127.0.0.1"
-            port: 5984
-            buffer: buffer    
+        isAuthenticated = (username, password, callback) =>
+            auth = false
+            @remoteManager.all (err, remotes) ->
+                for remote in remotes
+                    remote = remote.value
+                    if remote.login is usernameRemote
+                        if remote.password is passwordRemote
+                            auth = true
+                            callback true
+                        else
+                            callback false
+                callback false if not auth
+
+        # Authenticate the remote
+        authRemote = req.headers['authorization'].replace 'Basic ', ''
+        authRemote = new Buffer(authRemote, 'base64').toString('ascii')
+        isAuthenticated authRemote.split(':')[0], authRemote.split(':')[1], (isAuth) =>
+            if isAuth   
+                # Add his creadentials for couchDB 
+                credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
+                basicCredentials = new Buffer(credentials).toString('base64')
+                authProxy = "Basic #{basicCredentials}"
+                req.headers['authorization'] = authProxy
+                # Send request
+                @proxy.proxyRequest req, res,
+                    host: "127.0.0.1"
+                    port: 5984
+                    buffer: buffer    
+            else
+                @sendError res, "Request unauthorized", 401
 
     # Default redirection send requests to home.
     defaultRedirectAction: (req, res) =>
@@ -233,6 +256,38 @@ class exports.CozyProxy
             @routes[slug] = data.app
             cb(null)
 
+    # Redirect to cozy-files if remote is authenticated   
+    redirectRemoteAction: (req, res) =>
+        buffer = httpProxy.buffer(req) 
+        sendRequest = () =>
+            doStart = -1 is req.url.indexOf 'socket.io'     
+            @ensureStarted 'files', doStart, (err, port) =>
+                return res.send err.code, err.msg if err?                 
+                req.url = req.url.replace "/apps/files", ''
+                @proxy.proxyRequest req, res,
+                    host: 'localhost'
+                    port: port
+                    buffer: buffer
+
+        authenticator = passport.authenticate 'local', (err, user) =>
+            if err
+                console.log err
+                @sendError res, "Server error occured.", 500
+            else if user is undefined or not user
+                @sendError res,  "Wrong password", 400
+            else  
+                # Send request to cozy-files                        
+                sendRequest()
+
+        # Initialiaze user
+        user = {} 
+        user.body =
+            username: "owner"
+            password: req.headers['x-auth-token']
+        req.headers['x-auth-token'] = undefined 
+        # Check if request is authenticated
+        authenticator user, res
+
     # so we can go to /apps/app (no slash)
     redirectWithSlash: (req, res) =>
         res.redirect req.url+'/'
@@ -250,7 +305,6 @@ class exports.CozyProxy
         req.url = req.url.substring "/apps/#{appName}".length
 
         doStart = -1 is req.url.indexOf 'socket.io'
-
         @ensureStarted appName, doStart, (err, port) =>
             return res.send err.code, err.msg if err?
             @proxy.proxyRequest req, res,

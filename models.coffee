@@ -14,7 +14,7 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        @dbClient.post path, {}, (err, response, models) ->
+        @dbClient.post path, {}, (err, response, models) =>
             if err
                 callback err
             else if response.statusCode isnt 200
@@ -77,6 +77,22 @@ class exports.UserManager extends DbManager
 
 class exports.RemoteManager extends DbManager
     type: 'Remote'
+    allRemote: []
+
+    update: () ->
+        @allRemote = []
+        @all (err, remotes) =>
+            if err then console.log err
+            for remote in remotes
+                remote = remote.value
+                @allRemote[remote.login] = remote.password
+
+    isAuthenticated: (username, password, callback) ->
+        if @allRemote[username]? is password
+            callback true
+        else 
+            callback false
+
 
 class exports.InstanceManager extends DbManager
     type: 'CozyInstance'

@@ -18,7 +18,8 @@ DbManager = (function() {
   }
 
   DbManager.prototype.all = function(callback) {
-    var path;
+    var path,
+      _this = this;
 
     path = "request/" + (this.type.toLowerCase()) + "/all/";
     return this.dbClient.post(path, {}, function(err, response, models) {
@@ -132,6 +133,36 @@ exports.RemoteManager = (function(_super) {
   }
 
   RemoteManager.prototype.type = 'Remote';
+
+  RemoteManager.prototype.allRemote = [];
+
+  RemoteManager.prototype.update = function() {
+    var _this = this;
+
+    this.allRemote = [];
+    return this.all(function(err, remotes) {
+      var remote, _i, _len, _results;
+
+      if (err) {
+        console.log(err);
+      }
+      _results = [];
+      for (_i = 0, _len = remotes.length; _i < _len; _i++) {
+        remote = remotes[_i];
+        remote = remote.value;
+        _results.push(_this.allRemote[remote.login] = remote.password);
+      }
+      return _results;
+    });
+  };
+
+  RemoteManager.prototype.isAuthenticated = function(username, password, callback) {
+    if ((this.allRemote[username] != null) === password) {
+      return callback(true);
+    } else {
+      return callback(false);
+    }
+  };
 
   return RemoteManager;
 

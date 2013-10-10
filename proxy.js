@@ -104,7 +104,7 @@ exports.CozyProxy = (function() {
     this.redirectPublicAppAction = __bind(this.redirectPublicAppAction, this);
     this.redirectAppAction = __bind(this.redirectAppAction, this);
     this.redirectWithSlash = __bind(this.redirectWithSlash, this);
-    this.redirectAppFilesAction = __bind(this.redirectAppFilesAction, this);
+    this.redirectRemoteAction = __bind(this.redirectRemoteAction, this);
     this.startApp = __bind(this.startApp, this);
     this.ensureStarted = __bind(this.ensureStarted, this);
     this.defaultRedirectAction = __bind(this.defaultRedirectAction, this);
@@ -137,6 +137,7 @@ exports.CozyProxy = (function() {
     });
     this.enableSocketRedirection();
     this.setControllers();
+    this.remoteManager.update();
   }
 
   CozyProxy.prototype.configureLogs = function() {
@@ -181,7 +182,7 @@ exports.CozyProxy = (function() {
     this.app.get('/.well-known/host-meta.?:ext', this.webfingerHostMeta);
     this.app.get('/.well-known/:module', this.webfingerAccount);
     this.app.all('/public/:name/*', this.redirectPublicAppAction);
-    this.app.all('/apps/files/remotes*', this.redirectAppFilesAction);
+    this.app.all('/apps/files/remotes*', this.redirectRemoteAction);
     this.app.all('/apps/:name/*', this.redirectAppAction);
     this.app.all('/cozy/*', this.replication);
     this.app.get('/apps/:name*', this.redirectWithSlash);
@@ -251,59 +252,28 @@ exports.CozyProxy = (function() {
   };
 
   CozyProxy.prototype.replication = function(req, res) {
-    var authRemote, buffer, isAuthenticated, passwordRemote, usernameRemote,
+    var authRemote, buffer,
       _this = this;
 
     buffer = httpProxy.buffer(req);
-    isAuthenticated = function(username, password, callback) {
-      var auth;
-
-      auth = false;
-      return _this.remoteManager.all(function(err, remotes) {
-        var remote, _i, _len;
-
-        for (_i = 0, _len = remotes.length; _i < _len; _i++) {
-          remote = remotes[_i];
-          remote = remote.value;
-          console.log(remotes);
-          if (remote.login === usernameRemote) {
-            if (remote.password === passwordRemote) {
-              console.log(remote.login);
-              auth = true;
-              callback(true);
-            } else {
-              callback(false);
-            }
-          }
-        }
-        if (!auth) {
-          return callback(false);
-        }
-      });
-    };
-    authRemote = req.headers['authorization'];
-    authRemote = authRemote.substr(5, authRemote.length - 1);
+    authRemote = req.headers['authorization'].replace('Basic ', '');
     authRemote = new Buffer(authRemote, 'base64').toString('ascii');
-    usernameRemote = authRemote.split(':')[0];
-    passwordRemote = authRemote.split(':')[1];
-    return isAuthenticated(usernameRemote, passwordRemote, function(isAuth) {
-      var authProxy, basicCredentials, credentials, passwordProxy, usernameProxy;
+    return this.remoteManager.isAuthenticated(authRemote.split(':')[0], authRemote.split(':')[1], function(isAuth) {
+      var authProxy, basicCredentials, credentials;
 
-      console.log(isAuth);
       if (isAuth) {
-        usernameProxy = process.env.NAME;
-        passwordProxy = process.env.TOKEN;
-        credentials = "" + usernameProxy + ":" + passwordProxy;
-        basicCredentials = new Buffer(credentials).toString('base64');
-        authProxy = "Basic " + basicCredentials;
-        req.headers['authorization'] = authProxy;
+        if (process.env.NODE_ENV === "production") {
+          credentials = "" + process.env.NAME + ":" + process.env.TOKEN;
+          basicCredentials = new Buffer(credentials).toString('base64');
+          authProxy = "Basic " + basicCredentials;
+          req.headers['authorization'] = authProxy;
+        }
         return _this.proxy.proxyRequest(req, res, {
           host: "127.0.0.1",
           port: 5984,
           buffer: buffer
         });
       } else {
-        console.log("else");
         return _this.sendError(res, "Request unauthorized", 401);
       }
     });
@@ -393,7 +363,7 @@ exports.CozyProxy = (function() {
     });
   };
 
-  CozyProxy.prototype.redirectAppFilesAction = function(req, res) {
+  CozyProxy.prototype.redirectRemoteAction = function(req, res) {
     var authenticator, buffer, sendRequest, user,
       _this = this;
 
@@ -407,10 +377,13 @@ exports.CozyProxy = (function() {
           return res.send(err.code, err.msg);
         }
         req.url = req.url.replace("/apps/files", '');
-        return _this.proxy.proxyRequest(req, res, {
+        _this.proxy.proxyRequest(req, res, {
           host: 'localhost',
           port: port,
           buffer: buffer
+        });
+        return _this.proxy.on('end', function() {
+          return _this.remoteManager.update();
         });
       });
     };

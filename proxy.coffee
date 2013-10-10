@@ -94,6 +94,7 @@ class exports.CozyProxy
 
         @enableSocketRedirection()
         @setControllers()
+        @remoteManager.update()
 
 
     configureLogs: ->
@@ -179,29 +180,18 @@ class exports.CozyProxy
 
     replication: (req, res) =>
         buffer = httpProxy.buffer(req)
-        isAuthenticated = (username, password, callback) =>
-            auth = false
-            @remoteManager.all (err, remotes) ->
-                for remote in remotes
-                    remote = remote.value
-                    if remote.login is usernameRemote
-                        if remote.password is passwordRemote
-                            auth = true
-                            callback true
-                        else
-                            callback false
-                callback false if not auth
 
         # Authenticate the remote
         authRemote = req.headers['authorization'].replace 'Basic ', ''
         authRemote = new Buffer(authRemote, 'base64').toString('ascii')
-        isAuthenticated authRemote.split(':')[0], authRemote.split(':')[1], (isAuth) =>
+        @remoteManager.isAuthenticated authRemote.split(':')[0], authRemote.split(':')[1], (isAuth) =>
             if isAuth   
                 # Add his creadentials for couchDB 
-                credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
-                basicCredentials = new Buffer(credentials).toString('base64')
-                authProxy = "Basic #{basicCredentials}"
-                req.headers['authorization'] = authProxy
+                if process.env.NODE_ENV is "production"
+                    credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
+                    basicCredentials = new Buffer(credentials).toString('base64')
+                    authProxy = "Basic #{basicCredentials}"
+                    req.headers['authorization'] = authProxy
                 # Send request
                 @proxy.proxyRequest req, res,
                     host: "127.0.0.1"
@@ -268,6 +258,8 @@ class exports.CozyProxy
                     host: 'localhost'
                     port: port
                     buffer: buffer
+                @proxy.on 'end', () =>
+                    @remoteManager.update()
 
         authenticator = passport.authenticate 'local', (err, user) =>
             if err

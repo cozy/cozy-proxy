@@ -1,31 +1,33 @@
-{ "name": "cozy-proxy"
-, "version": "0.8.10"
-, "engines": ["node >= 0.8.0"]
-, "dependencies":
-  { "http-proxy":             "= 0.8.5"
-,   "request-json":           "= 0.3.3"
-,   "express":                "= 3.0.6"
-,   "passport":               "= 0.1.15"
-,   "passport-local":         "= 0.1.6"
-,   "bcrypt":                 "= 0.7.6"
-,   "randomstring":           "= 1.0.2"
-,   "nodemailer":             "= 0.3.31"
-,   "jade":                   "= 0.27.7"
-,   "async":                  "= 0.1.22"
-  }
-, "devDependencies":
-  { "mocha":                  "> 0"
-,   "chai":                   "> 0"
-,   "should":                 "> 0"
-,   "socket.io":              "~0.9.13"
-,   "socket.io-client":       "~0.9.11"
-,   "xmlhttprequest":         "~1.5.0"
-,   "coffee-script":          "latest"
-  }
-, "main":"server.js"
-, "scripts": {
-    "test": "cake tests"
-,   "start": "node server.js"
+{
+  "name": "cozy-proxy",
+  "version": "1.0.0",
+  "engines": [
+    "node >= 0.8.0"
+  ],
+  "dependencies": {
+    "http-proxy": "= 0.8.5",
+    "request-json": "= 0.3.3",
+    "express": "= 3.0.6",
+    "passport": "= 0.1.15",
+    "passport-local": "= 0.1.6",
+    "bcrypt": "= 0.7.6",
+    "randomstring": "= 1.0.2",
+    "nodemailer": "= 0.3.31",
+    "jade": "= 0.27.7",
+    "async": "= 0.1.22"
+  },
+  "devDependencies": {
+    "mocha": "> 0",
+    "chai": "> 0",
+    "should": "> 0",
+    "socket.io": "~0.9.13",
+    "socket.io-client": "~0.9.11",
+    "xmlhttprequest": "~1.5.0",
+    "coffee-script": "latest"
+  },
+  "main": "server.js",
+  "scripts": {
+    "test": "cake tests",
+    "start": "node server.js"
   }
 }
-

@@ -80,7 +80,6 @@ class exports.RemoteManager extends DbManager
     allRemote: []
 
     update: () ->
-        @allRemote = []
         @all (err, remotes) =>
             if err then console.log err
             for remote in remotes
@@ -88,10 +87,7 @@ class exports.RemoteManager extends DbManager
                 @allRemote[remote.login] = remote.password
 
     isAuthenticated: (username, password, callback) ->
-        if @allRemote[username]? is password
-            callback true
-        else 
-            callback false
+        callback @allRemote[username]? and (@allRemote[username] is password)
 
 
 class exports.InstanceManager extends DbManager

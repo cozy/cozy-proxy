@@ -266,7 +266,7 @@ class exports.CozyProxy
                 console.log err
                 @sendError res, "Server error occured.", 500
             else if user is undefined or not user
-                @sendError res,  "Wrong password", 400
+                @sendError res,  "Wrong password", 401
             else  
                 # Send request to cozy-files                        
                 sendRequest()

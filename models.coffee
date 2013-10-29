@@ -75,19 +75,19 @@ class exports.UserManager extends DbManager
             else if users.length is 0 then callback null, null
             else callback null, users[0]
 
-class exports.RemoteManager extends DbManager
-    type: 'Remote'
-    allRemote: []
+class exports.DeviceManager extends DbManager
+    type: 'Device'
+    allDevice: []
 
     update: () ->
-        @all (err, remotes) =>
+        @all (err, devices) =>
             if err then console.log err
-            for remote in remotes
-                remote = remote.value
-                @allRemote[remote.login] = remote.password
+            for device in devices
+                device = device.value
+                @allDevice[device.login] = device.password
 
     isAuthenticated: (username, password, callback) ->
-        callback @allRemote[username]? and (@allRemote[username] is password)
+        callback((@allDevice[username]?) and  (@allDevice[username] is password))
 
 
 class exports.InstanceManager extends DbManager

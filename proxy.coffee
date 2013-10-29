@@ -13,7 +13,7 @@ middlewares = require './middlewares'
 PasswordKeys = require './lib/password_keys'
 StatusChecker = require './lib/status'
 UserManager = require('./models').UserManager
-RemoteManager = require('./models').RemoteManager
+DeviceManager = require('./models').DeviceManager
 InstanceManager = require('./models').InstanceManager
 
 passwordKeys = new PasswordKeys()
@@ -72,7 +72,7 @@ class exports.CozyProxy
         @proxy = @server.proxy
         @proxy.source.port = 9104
         @userManager = new UserManager()
-        @remoteManager = new RemoteManager()
+        @deviceManager = new DeviceManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
 
@@ -94,7 +94,7 @@ class exports.CozyProxy
 
         @enableSocketRedirection()
         @setControllers()
-        @remoteManager.update()
+        #@remoteManager.update()
 
 
     configureLogs: ->
@@ -130,7 +130,7 @@ class exports.CozyProxy
         @app.get '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
-        @app.all '/apps/files/remotes*', @redirectRemoteAction
+        @app.all '/devices*', @redirectDeviceAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
         @app.get '/apps/:name*', @redirectWithSlash
@@ -181,10 +181,10 @@ class exports.CozyProxy
     replication: (req, res) =>
         buffer = httpProxy.buffer(req)
 
-        # Authenticate the remote
-        authRemote = req.headers['authorization'].replace 'Basic ', ''
-        authRemote = new Buffer(authRemote, 'base64').toString('ascii')
-        @remoteManager.isAuthenticated authRemote.split(':')[0], authRemote.split(':')[1], (isAuth) =>
+        # Authenticate the device
+        authDevice = req.headers['authorization'].replace 'Basic ', ''
+        authDevice = new Buffer(authDevice, 'base64').toString('ascii')
+        @deviceManager.isAuthenticated authDevice.split(':')[0], authDevice.split(':')[1], (isAuth) =>
             if isAuth   
                 # Add his creadentials for couchDB 
                 if process.env.NODE_ENV is "production"
@@ -246,20 +246,19 @@ class exports.CozyProxy
             @routes[slug] = data.app
             cb(null)
 
-    # Redirect to cozy-files if remote is authenticated   
-    redirectRemoteAction: (req, res) =>
+    # Redirect to data system if device is authenticated   
+    redirectDeviceAction: (req, res) =>
         buffer = httpProxy.buffer(req) 
         sendRequest = () =>
             doStart = -1 is req.url.indexOf 'socket.io'     
-            @ensureStarted 'files', doStart, (err, port) =>
-                return res.send err.code, err.msg if err?                 
-                req.url = req.url.replace "/apps/files", ''
+            @ensureStarted 'data-system', doStart, (err, port) =>
+                return res.send err.code, err.msg if err?   
                 @proxy.proxyRequest req, res,
                     host: 'localhost'
                     port: port
                     buffer: buffer
                 @proxy.on 'end', () =>
-                    @remoteManager.update()
+                    @deviceManager.update()
 
         authenticator = passport.authenticate 'local', (err, user) =>
             if err
@@ -273,10 +272,13 @@ class exports.CozyProxy
 
         # Initialiaze user
         user = {} 
+
+        auth = req.headers['authorization'].replace 'Basic ', ''
+        auth = new Buffer(authDevice, 'base64').toString('ascii')
         user.body =
-            username: "owner"
-            password: req.headers['x-auth-token']
-        req.headers['x-auth-token'] = undefined 
+            username: auth.split(':')[0]
+            password: auth.split(':')[1]
+        req.headers['authorization'] = undefined 
         # Check if request is authenticated
         authenticator user, res
 

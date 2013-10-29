@@ -357,6 +357,11 @@ exports.CozyProxy = (function() {
       _this = this;
     buffer = httpProxy.buffer(req);
     sendRequest = function() {
+      var authProxy, basicCredentials, credentials;
+      credentials = "" + process.env.NAME + ":" + process.env.TOKEN;
+      basicCredentials = new Buffer(credentials).toString('base64');
+      authProxy = "Basic " + basicCredentials;
+      req.headers['authorization'] = authProxy;
       _this.proxy.proxyRequest(req, res, {
         host: "127.0.0.1",
         port: 9101,

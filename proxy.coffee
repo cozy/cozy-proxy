@@ -250,6 +250,10 @@ class exports.CozyProxy
     redirectDeviceAction: (req, res) =>
         buffer = httpProxy.buffer(req) 
         sendRequest = () =>  
+            credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
+            basicCredentials = new Buffer(credentials).toString('base64')
+            authProxy = "Basic #{basicCredentials}"
+            req.headers['authorization'] = authProxy
             @proxy.proxyRequest req, res,
                 host: "127.0.0.1"
                 port: 9101

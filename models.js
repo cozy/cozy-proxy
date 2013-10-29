@@ -120,40 +120,40 @@ exports.UserManager = (function(_super) {
 
 })(DbManager);
 
-exports.RemoteManager = (function(_super) {
-  __extends(RemoteManager, _super);
+exports.DeviceManager = (function(_super) {
+  __extends(DeviceManager, _super);
 
-  function RemoteManager() {
-    _ref1 = RemoteManager.__super__.constructor.apply(this, arguments);
+  function DeviceManager() {
+    _ref1 = DeviceManager.__super__.constructor.apply(this, arguments);
     return _ref1;
   }
 
-  RemoteManager.prototype.type = 'Remote';
+  DeviceManager.prototype.type = 'Device';
 
-  RemoteManager.prototype.allRemote = [];
+  DeviceManager.prototype.allDevice = [];
 
-  RemoteManager.prototype.update = function() {
+  DeviceManager.prototype.update = function() {
     var _this = this;
-    return this.all(function(err, remotes) {
-      var remote, _i, _len, _results;
+    return this.all(function(err, devices) {
+      var device, _i, _len, _results;
       if (err) {
         console.log(err);
       }
       _results = [];
-      for (_i = 0, _len = remotes.length; _i < _len; _i++) {
-        remote = remotes[_i];
-        remote = remote.value;
-        _results.push(_this.allRemote[remote.login] = remote.password);
+      for (_i = 0, _len = devices.length; _i < _len; _i++) {
+        device = devices[_i];
+        device = device.value;
+        _results.push(_this.allDevice[device.login] = device.password);
       }
       return _results;
     });
   };
 
-  RemoteManager.prototype.isAuthenticated = function(username, password, callback) {
-    return callback((this.allRemote[username] != null) && (this.allRemote[username] === password));
+  DeviceManager.prototype.isAuthenticated = function(username, password, callback) {
+    return callback((this.allDevice[username] != null) && (this.allDevice[username] === password));
   };
 
-  return RemoteManager;
+  return DeviceManager;
 
 })(DbManager);
 

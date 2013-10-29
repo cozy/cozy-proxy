@@ -130,7 +130,7 @@ class exports.CozyProxy
         @app.get '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
-        @app.all '/devices*', @redirectDeviceAction
+        @app.post '/device*', @redirectDeviceAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
         @app.get '/apps/:name*', @redirectWithSlash
@@ -249,16 +249,13 @@ class exports.CozyProxy
     # Redirect to data system if device is authenticated   
     redirectDeviceAction: (req, res) =>
         buffer = httpProxy.buffer(req) 
-        sendRequest = () =>
-            doStart = -1 is req.url.indexOf 'socket.io'     
-            @ensureStarted 'data-system', doStart, (err, port) =>
-                return res.send err.code, err.msg if err?   
-                @proxy.proxyRequest req, res,
-                    host: 'localhost'
-                    port: port
-                    buffer: buffer
-                @proxy.on 'end', () =>
-                    @deviceManager.update()
+        sendRequest = () =>  
+            @proxy.proxyRequest req, res,
+                host: "127.0.0.1"
+                port: 9101
+                buffer: buffer
+            @proxy.on 'end', () =>
+                @deviceManager.update()
 
         authenticator = passport.authenticate 'local', (err, user) =>
             if err
@@ -273,7 +270,7 @@ class exports.CozyProxy
         # Initialiaze user
         user = {} 
 
-        auth = req.headers['authorization'].replace 'Basic ', ''
+        authDevice = req.headers['authorization'].replace 'Basic ', ''
         auth = new Buffer(authDevice, 'base64').toString('ascii')
         user.body =
             username: auth.split(':')[0]

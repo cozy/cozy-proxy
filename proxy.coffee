@@ -94,7 +94,7 @@ class exports.CozyProxy
 
         @enableSocketRedirection()
         @setControllers()
-        #@remoteManager.update()
+        @deviceManager.update()
 
 
     configureLogs: ->
@@ -249,17 +249,17 @@ class exports.CozyProxy
     # Redirect to data system if device is authenticated   
     redirectDeviceAction: (req, res) =>
         buffer = httpProxy.buffer(req) 
-        sendRequest = () =>  
+        sendRequest = () => 
             credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
             basicCredentials = new Buffer(credentials).toString('base64')
             authProxy = "Basic #{basicCredentials}"
             req.headers['authorization'] = authProxy
+            res.end = () =>
+                @deviceManager.update()
             @proxy.proxyRequest req, res,
                 host: "127.0.0.1"
                 port: 9101
                 buffer: buffer
-            @proxy.on 'end', () =>
-                @deviceManager.update()
 
         authenticator = passport.authenticate 'local', (err, user) =>
             if err

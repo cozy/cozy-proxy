@@ -137,6 +137,7 @@ exports.CozyProxy = (function() {
     });
     this.enableSocketRedirection();
     this.setControllers();
+    this.deviceManager.update();
   }
 
   CozyProxy.prototype.configureLogs = function() {
@@ -357,18 +358,19 @@ exports.CozyProxy = (function() {
       _this = this;
     buffer = httpProxy.buffer(req);
     sendRequest = function() {
-      var authProxy, basicCredentials, credentials;
+      var authProxy, basicCredentials, credentials, end;
       credentials = "" + process.env.NAME + ":" + process.env.TOKEN;
       basicCredentials = new Buffer(credentials).toString('base64');
       authProxy = "Basic " + basicCredentials;
       req.headers['authorization'] = authProxy;
-      _this.proxy.proxyRequest(req, res, {
+      end = false;
+      res.end = function() {
+        return _this.deviceManager.update();
+      };
+      return _this.proxy.proxyRequest(req, res, {
         host: "127.0.0.1",
         port: 9101,
         buffer: buffer
-      });
-      return _this.proxy.on('end', function() {
-        return _this.deviceManager.update();
       });
     };
     authenticator = passport.authenticate('local', function(err, user) {

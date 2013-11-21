@@ -3,6 +3,7 @@ express = require 'express'
 randomstring = require 'randomstring'
 bcrypt = require 'bcrypt'
 fs = require 'fs'
+util = require 'util'
 qs = require 'querystring'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
@@ -75,6 +76,7 @@ class exports.CozyProxy
         @deviceManager = new DeviceManager()
         @instanceManager = new InstanceManager()
         configurePassport @userManager
+        @updateRoutes 0
 
         @app.enable 'trust proxy'
         @app.set 'view engine', 'jade'
@@ -110,7 +112,32 @@ class exports.CozyProxy
                 format: '[:date] :method :url :status :response-time ms'
             if env is "production"
                 console.log = (text) ->
-                    logFile.write(text + '\n')
+                    logFile.write util.format.apply(this, arguments) + '\n'
+
+    updateRoutes: (occurence) ->
+        if occurence < 10
+            setTimeout () =>
+                occurence = occurence + 1
+                @resetRoutes (error) ->
+                    if error
+                        console.log 'Error during routes resetting: '
+                        console.log error
+                    else
+                        console.log "Reset routes succeeded"
+                @updateRoutes occurence
+            , 60000
+        else if occurence < 15
+            setTimeout () =>
+                occurence = occurence + 1
+                @resetRoutes (error) ->
+                    if error
+                        console.log 'Error during routes resetting: '
+                        console.log error
+                    else
+                        console.log "Reset routes succeeded"
+                @updateRoutes occurence
+            , 900000
+
 
     setControllers: ->
         @app.get "/routes", @showRoutesAction

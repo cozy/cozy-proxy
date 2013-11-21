@@ -182,6 +182,7 @@ exports.CozyProxy = (function() {
     this.app.get('/.well-known/:module', this.webfingerAccount);
     this.app.all('/public/:name/*', this.redirectPublicAppAction);
     this.app.post('/device*', this.redirectDeviceAction);
+    this.app["delete"]('/device*', this.redirectDeviceAction);
     this.app.all('/apps/:name/*', this.redirectAppAction);
     this.app.all('/cozy/*', this.replication);
     this.app.get('/apps/:name*', this.redirectWithSlash);
@@ -358,12 +359,11 @@ exports.CozyProxy = (function() {
       _this = this;
     buffer = httpProxy.buffer(req);
     sendRequest = function() {
-      var authProxy, basicCredentials, credentials, end;
+      var authProxy, basicCredentials, credentials;
       credentials = "" + process.env.NAME + ":" + process.env.TOKEN;
       basicCredentials = new Buffer(credentials).toString('base64');
       authProxy = "Basic " + basicCredentials;
       req.headers['authorization'] = authProxy;
-      end = false;
       res.end = function() {
         return _this.deviceManager.update();
       };

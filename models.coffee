@@ -80,6 +80,7 @@ class exports.DeviceManager extends DbManager
     allDevice: []
 
     update: () ->
+        @allDevice = []
         @all (err, devices) =>
             if err then console.log err
             for device in devices

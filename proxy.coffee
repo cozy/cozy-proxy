@@ -131,6 +131,7 @@ class exports.CozyProxy
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.post '/device*', @redirectDeviceAction
+        @app.delete '/device*', @redirectDeviceAction
         @app.all '/apps/:name/*', @redirectAppAction
         @app.all  '/cozy/*', @replication
         @app.get '/apps/:name*', @redirectWithSlash
@@ -273,7 +274,6 @@ class exports.CozyProxy
 
         # Initialiaze user
         user = {} 
-
         authDevice = req.headers['authorization'].replace 'Basic ', ''
         auth = new Buffer(authDevice, 'base64').toString('ascii')
         user.body =

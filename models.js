@@ -134,6 +134,7 @@ exports.DeviceManager = (function(_super) {
 
   DeviceManager.prototype.update = function() {
     var _this = this;
+    this.allDevice = [];
     return this.all(function(err, devices) {
       var device, _i, _len, _results;
       if (err) {

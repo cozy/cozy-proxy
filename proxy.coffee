@@ -80,6 +80,7 @@ class exports.CozyProxy
         @app.set 'view engine', 'jade'
         @app.use express.static(__dirname + '/public')
         @app.use middlewares.selectiveBodyParser
+        @app.use middlewares.tracker
         @app.use express.cookieParser randomstring.generate()
         @app.use express.session
             secret: randomstring.generate()

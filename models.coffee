@@ -83,9 +83,10 @@ class exports.DeviceManager extends DbManager
         @allDevice = []
         @all (err, devices) =>
             if err then console.log err
-            for device in devices
-                device = device.value
-                @allDevice[device.login] = device.password
+            if devices
+                for device in devices
+                    device = device.value
+                    @allDevice[device.login] = device.password
 
     isAuthenticated: (username, password, callback) ->
         callback((@allDevice[username]?) and  (@allDevice[username] is password))

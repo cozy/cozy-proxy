@@ -140,13 +140,15 @@ exports.DeviceManager = (function(_super) {
       if (err) {
         console.log(err);
       }
-      _results = [];
-      for (_i = 0, _len = devices.length; _i < _len; _i++) {
-        device = devices[_i];
-        device = device.value;
-        _results.push(_this.allDevice[device.login] = device.password);
+      if (devices) {
+        _results = [];
+        for (_i = 0, _len = devices.length; _i < _len; _i++) {
+          device = devices[_i];
+          device = device.value;
+          _results.push(_this.allDevice[device.login] = device.password);
+        }
+        return _results;
       }
-      return _results;
     });
   };
 

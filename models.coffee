@@ -14,7 +14,7 @@ class DbManager
 
     all: (callback) ->
         path = "request/#{@type.toLowerCase()}/all/"
-        @dbClient.post path, {}, (err, response, models) ->
+        @dbClient.post path, {}, (err, response, models) =>
             if err
                 callback err
             else if response.statusCode isnt 200
@@ -74,6 +74,22 @@ class exports.UserManager extends DbManager
             if err then callback err
             else if users.length is 0 then callback null, null
             else callback null, users[0]
+
+class exports.DeviceManager extends DbManager
+    type: 'Device'
+    allDevice: []
+
+    update: () ->
+        @allDevice = []
+        @all (err, devices) =>
+            if err then console.log err
+            if devices
+                for device in devices
+                    device = device.value
+                    @allDevice[device.login] = device.password
+
+    isAuthenticated: (username, password, callback) ->
+        callback((@allDevice[username]?) and  (@allDevice[username] is password))
 
 
 class exports.InstanceManager extends DbManager

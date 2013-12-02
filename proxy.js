@@ -124,6 +124,7 @@ exports.CozyProxy = (function() {
     this.app.set('view engine', 'jade');
     this.app.use(express["static"](__dirname + '/public'));
     this.app.use(middlewares.selectiveBodyParser);
+    this.app.use(middlewares.tracker);
     this.app.use(express.cookieParser(randomstring.generate()));
     this.app.use(express.session({
       secret: randomstring.generate(),

@@ -56,6 +56,10 @@ else
 # Data system process
 Client = require('request-json').JsonClient
 client = new Client "http://Localhost:9101/"
+authentifiedEnvs = ['test', 'production']
+if process.env.NODE_ENV in authentifiedEnvs
+    clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
+
 saveTrackingInfo = (info) ->
     info.docType = "UseTracker"
     client.post 'data/', info, (err, res, body) ->

@@ -214,7 +214,7 @@ exports.CozyProxy = (function() {
     this.app.get('/authenticated', this.authenticatedAction);
     this.app.get('/status', this.statusAction);
     this.app.get('/.well-known/host-meta.?:ext', this.webfingerHostMeta);
-    this.app.get('/.well-known/:module', this.webfingerAccount);
+    this.app.all('/.well-known/:module', this.webfingerAccount);
     this.app.all('/public/:name/*', this.redirectPublicAppAction);
     this.app.post('/device*', this.redirectDeviceAction);
     this.app["delete"]('/device*', this.redirectDeviceAction);

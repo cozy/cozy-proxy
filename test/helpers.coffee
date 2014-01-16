@@ -50,7 +50,7 @@ helpers.createUser = (email, pass) -> (done) ->
         password: cryptPassword(pass).hash
         activated: true
 
-    @userManager.create user, done
+    @userManager.createUser user, done
 
 
 helpers.fakeServer = (name, port, json, prepare) -> (done) ->

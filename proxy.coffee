@@ -155,7 +155,7 @@ class exports.CozyProxy
         @app.get '/authenticated', @authenticatedAction
         @app.get '/status', @statusAction
         @app.get '/.well-known/host-meta.?:ext', @webfingerHostMeta
-        @app.get '/.well-known/:module', @webfingerAccount
+        @app.all '/.well-known/:module', @webfingerAccount
 
         @app.all '/public/:name/*', @redirectPublicAppAction
         @app.post '/device*', @redirectDeviceAction
@@ -214,8 +214,8 @@ class exports.CozyProxy
         authDevice = req.headers['authorization'].replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString('ascii')
         @deviceManager.isAuthenticated authDevice.split(':')[0], authDevice.split(':')[1], (isAuth) =>
-            if isAuth   
-                # Add his creadentials for couchDB 
+            if isAuth
+                # Add his creadentials for couchDB
                 if process.env.NODE_ENV is "production"
                     credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
                     basicCredentials = new Buffer(credentials).toString('base64')
@@ -225,7 +225,7 @@ class exports.CozyProxy
                 @proxy.proxyRequest req, res,
                     host: "127.0.0.1"
                     port: 5984
-                    buffer: buffer    
+                    buffer: buffer
             else
                 @sendError res, "Request unauthorized", 401
 
@@ -275,10 +275,10 @@ class exports.CozyProxy
             @routes[slug] = data.app
             cb(null)
 
-    # Redirect to data system if device is authenticated   
+    # Redirect to data system if device is authenticated
     redirectDeviceAction: (req, res) =>
-        buffer = httpProxy.buffer(req) 
-        sendRequest = () => 
+        buffer = httpProxy.buffer(req)
+        sendRequest = () =>
             credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
             basicCredentials = new Buffer(credentials).toString('base64')
             authProxy = "Basic #{basicCredentials}"
@@ -296,18 +296,18 @@ class exports.CozyProxy
                 @sendError res, "Server error occured.", 500
             else if user is undefined or not user
                 @sendError res,  "Wrong password", 401
-            else  
-                # Send request to cozy-files                        
+            else
+                # Send request to cozy-files
                 sendRequest()
 
         # Initialiaze user
-        user = {} 
+        user = {}
         authDevice = req.headers['authorization'].replace 'Basic ', ''
         auth = new Buffer(authDevice, 'base64').toString('ascii')
         user.body =
             username: auth.split(':')[0]
             password: auth.split(':')[1]
-        req.headers['authorization'] = undefined 
+        req.headers['authorization'] = undefined
         # Check if request is authenticated
         authenticator user, res
 

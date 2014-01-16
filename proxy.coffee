@@ -467,8 +467,7 @@ class exports.CozyProxy
                 salt: hash.salt
                 activated: true
                 docType: "User"
-
-            @userManager.create user, (err, code, user) =>
+            @userManager.createUser user, (err, code, user) =>
                 if err
                     console.log err
                     @sendError res, "Server error occured.", 500
@@ -497,12 +496,10 @@ class exports.CozyProxy
     forgotPasswordAction: (req, res) =>
 
         sendEmail = (instances, user, key) =>
-            console.log "send email"
             if instances.length > 0
                 instance = instances[0].value
             else
                 instance = domain: "domain.not.set"
-
 
             helpers.sendResetEmail instance, user, key, (err, result) =>
                 if err
@@ -555,7 +552,7 @@ class exports.CozyProxy
             if newPassword? and newPassword.length > 5
                 data = password: helpers.cryptPassword(newPassword).hash
 
-                @userManager.merge user, data, (err) =>
+                @userManager.mergeUser user, data, (err) =>
                     if err
                         @sendError res, 'User cannot be updated'
                     else

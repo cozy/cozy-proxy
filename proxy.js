@@ -643,7 +643,7 @@ exports.CozyProxy = (function() {
         activated: true,
         docType: "User"
       };
-      return _this.userManager.create(user, function(err, code, user) {
+      return _this.userManager.createUser(user, function(err, code, user) {
         if (err) {
           console.log(err);
           return _this.sendError(res, "Server error occured.", 500);
@@ -678,7 +678,6 @@ exports.CozyProxy = (function() {
       _this = this;
     sendEmail = function(instances, user, key) {
       var instance;
-      console.log("send email");
       if (instances.length > 0) {
         instance = instances[0].value;
       } else {
@@ -749,7 +748,7 @@ exports.CozyProxy = (function() {
         data = {
           password: helpers.cryptPassword(newPassword).hash
         };
-        return _this.userManager.merge(user, data, function(err) {
+        return _this.userManager.mergeUser(user, data, function(err) {
           if (err) {
             return _this.sendError(res, 'User cannot be updated');
           } else {

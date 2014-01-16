@@ -104,6 +104,36 @@ exports.UserManager = (function(_super) {
     }
   };
 
+  UserManager.prototype.createUser = function(model, callback) {
+    var _this = this;
+    model.docType = this.type;
+    return this.dbClient.post("user/", model, function(err, response, model) {
+      console.log(err);
+      if (err) {
+        return callback(err, 500);
+      } else if (response.statusCode !== 201) {
+        return callback(new Error("Error occured"), response.statusCode);
+      } else {
+        return callback(null, 201, model);
+      }
+    });
+  };
+
+  UserManager.prototype.mergeUser = function(model, data, callback) {
+    var _this = this;
+    return this.dbClient.put("user/merge/" + model._id + "/", data, function(err, res, body) {
+      if (err) {
+        return callback(err);
+      } else if (res.statusCode === 404) {
+        return callback(new Error("Model does not exist"));
+      } else if (res.statusCode !== 200) {
+        return callback(new Error(body));
+      } else {
+        return callback(null);
+      }
+    });
+  };
+
   UserManager.prototype.getUser = function(callback) {
     return this.all(function(err, users) {
       if (err) {

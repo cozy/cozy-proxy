@@ -1,6 +1,6 @@
 fs = require 'fs'
 
-# Grab test files 
+# Grab test files
 walk = (dir, fileList) ->
     list = fs.readdirSync(dir)
     if list
@@ -19,11 +19,11 @@ testFiles = walk("test", [])
 
 task 'tests', 'run tests through mocha', ->
         runTests testFiles
-        
+
 runTests = (fileList) ->
     console.log "Run tests with Mocha for " + fileList.join(" ")
     command = "mocha " + fileList.join(" ") + " --reporter spec "
-    command += "--require should --compilers coffee:coffee-script --colors"
+    command += "--require should --compilers coffee:coffee-script/register --colors"
     exec command, (err, stdout, stderr) ->
         console.log stdout
         if err
@@ -38,7 +38,7 @@ task 'tests:file', 'run test through mocha for a given file', (options) ->
     file = options.file
     console.log "Run tests with Mocha for " + file
     command = "mocha " + file + " --reporter spec "
-    command += "--require should --compilers coffee:coffee-script --colors"
+    command += "--require should --compilers coffee:coffee-script/register --colors"
     exec command, (err, stdout, stderr) ->
         if err
             console.log "Running mocha caught exception: \n" + err

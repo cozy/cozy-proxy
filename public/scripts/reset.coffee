@@ -27,4 +27,6 @@ $ ->
     passwordInput.keyup (event) ->
         submitPassword() if event.which is 13
 
+    button.click submitPassword
+
     passwordInput.focus()

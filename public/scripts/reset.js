@@ -40,6 +40,7 @@
         return submitPassword();
       }
     });
+    button.click(submitPassword);
     return passwordInput.focus();
   });
 

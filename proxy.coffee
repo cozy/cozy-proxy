@@ -442,15 +442,11 @@ class exports.CozyProxy
 
     # Clear authentication credentials from session for current user.
     logoutAction: (req, res) =>
-        passwordKeys.deleteKeys (err) =>
-            if err
-                success: false
-            else
-                req.logOut()
-                passport.currentUser = null
-                res.send
-                    success: true
-                    msg: "Log out succeeded."
+        req.logOut()
+        passport.currentUser = null
+        res.send
+            success: true
+            msg: "Log out succeeded."
 
     # Create user with given credentials
     registerAction: (req, res) =>

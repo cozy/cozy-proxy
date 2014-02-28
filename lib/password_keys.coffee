@@ -25,13 +25,6 @@ module.exports = class PasswordKeys
             else
                 callback()
 
-    deleteKeys: (callback) ->
-        @client.del "accounts/", (err, res, body) =>
-            if err
-                callback err
-            else
-                callback()
-
     resetKeys: (callback) ->
         @client.del "accounts/reset/", (err, res, body) =>
             if err

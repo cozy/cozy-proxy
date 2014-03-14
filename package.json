@@ -1,6 +1,13 @@
 {
   "name": "cozy-proxy",
   "version": "1.0.2",
+  "author": "Cozy Cloud <contact@cozycloud.cc> (http://cozycloud.cc)",
+  "licenses": [
+    {
+      "type": "AGPL v3",
+      "url": "http://www.gnu.org/licenses/agpl-3.0.html"
+    }
+  ],
   "engines": [
     "node >= 0.8.0"
   ],
@@ -25,6 +32,12 @@
     "xmlhttprequest": "~1.5.0",
     "coffee-script": "latest"
   },
+  "contributors": [
+    "Zoe Bellot",
+    "Romain Foucault",
+    "Frank Rousseau",
+    "Joseph Silvestre"
+  ],
   "main": "server.js",
   "scripts": {
     "test": "cake tests",

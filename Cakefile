@@ -52,6 +52,7 @@ task 'tests', "Run tests #{taskDetails}", (opts) ->
     command += "--compilers coffee:coffee-script/register"
     exec command, (err, stdout, stderr) ->
         console.log stdout
+        console.log stderr
         if err
             err = err
             logger.error "Running mocha caught exception:\n" + err

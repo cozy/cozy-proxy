@@ -15,7 +15,7 @@ helpers.options =
     serverPort: process.env.PORT or 9104
 
 # default client
-client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/"
+client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/", jar: true
 
 # set the configuration for the server
 process.env.HOST = helpers.options.serverHost
@@ -24,7 +24,7 @@ process.env.PORT = helpers.options.serverPort
 # Returns a client if url is given, default app client otherwise
 helpers.getClient = (url = null) ->
     if url?
-        return new Client url
+        return new Client url, jar: true
     else
         return client
 

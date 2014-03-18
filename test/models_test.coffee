@@ -1,9 +1,9 @@
 should = require('chai').Should()
 helpers = require './helpers'
+User = require "#{helpers.prefix}server/models/user"
 
 describe "Models", ->
 
-    before helpers.createUserAllRequest
     before helpers.deleteAllUsers
     after  helpers.deleteAllUsers
 
@@ -16,30 +16,29 @@ describe "Models", ->
                 password: "password"
                 activated: true
 
-            @userManager.create user, (err, code, user) =>
+            User.create user, (err, user) =>
                 @err = err
-                @code = code
                 @user = user
                 done()
 
         it "Then I got no error", ->
             should.not.exist @err
-            @code.should.equal 201
+            should.exist @user
 
         it "When I request for users", (done) ->
-            @userManager.all (err, users) =>
+            User.request 'all', (err, users) =>
                 @users = users
                 done()
 
         it "Then I find my new user", ->
             should.exist @users
             @users.length.should.equal 1
-            @user._id.should.equal @users[0].value._id
+            @user.id.should.equal @users[0].id
 
     describe "update", ->
         it "When I modify this user", (done) ->
-            @user.email = "new@cozycloud.cc"
-            @userManager.merge @user, email: @user.email, (err, code, body) =>
+            email = "new@cozycloud.cc"
+            @user.updateAttributes email: email, (err) =>
                 @err = err
                 done()
 
@@ -47,14 +46,14 @@ describe "Models", ->
             should.not.exist @err
 
         it "When I request for users", (done) ->
-            @userManager.all (err, users) =>
+            User.request 'all', (err, users) =>
                 @users = users
                 done()
 
         it "Then I find my user modified", ->
             should.exist @users
             @users.length.should.equal 1
-            @user.email.should.equal @users[0].value.email
+            @user.email.should.equal @users[0].email
 
 describe "User", ->
     describe "isValidUser", ->
@@ -63,17 +62,26 @@ describe "User", ->
             user =
                 email: "test"
                 password: "password"
-            @userManager.isValid(user).should.equal false
-            should.exist @userManager.error
+                timezone: "Europe/Paris"
+            User.validate(user).length.should.equal 1
+
         it "wrong password", ->
             user =
-                email: "test"
+                email: "test@cozycloud.cc"
                 password: "pas"
-            @userManager.isValid(user).should.equal false
-            should.exist @userManager.error
-        it "right email and right password", ->
+                timezone: "Europe/Paris"
+            User.validate(user).length.should.equal 1
+
+        it "wrong timezone", ->
             user =
                 email: "test@cozycloud.cc"
                 password: "password"
-            @userManager.isValid(user).should.equal true
-            should.not.exist @userManager.error
+                timezone: "blabla"
+            User.validate(user).length.should.equal 1
+
+        it "right email, right password and right timezone", ->
+            user =
+                email: "test@cozycloud.cc"
+                password: "password"
+                timezone: "Europe/Paris"
+            User.validate(user).length.should.equal 0

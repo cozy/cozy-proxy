@@ -1,4 +1,5 @@
 http = require 'http'
+americano = require 'americano'
 Client = require('request-json').JsonClient
 module.exports = helpers = {}
 
@@ -109,6 +110,12 @@ helpers.login = (password) -> (done) ->
             values = cookie.split ';'
             @jar.authCookie = values[0]
         done()
+
+helpers.createAllRequests = (done) ->
+    @timeout 15000
+    root = require('path').join __dirname, '..'
+    require('americano-cozy').configure root, null, (err) ->
+        done err
 
 helpers.createUser = (email, pass) -> (done) ->
     {cryptPassword} = require "#{helpers.prefix}server/lib/helpers"

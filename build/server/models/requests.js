@@ -9,5 +9,8 @@ module.exports = {
   },
   device: {
     all: americano.defaultRequests.all
+  },
+  instance: {
+    all: americano.defaultRequests.all
   }
 };

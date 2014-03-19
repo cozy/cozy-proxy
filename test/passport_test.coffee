@@ -1,5 +1,8 @@
 should = require('chai').Should()
+nock = require 'nock'
 helpers = require './helpers'
+
+router = require "#{helpers.prefix}server/lib/router"
 
 client = helpers.getClient()
 
@@ -65,18 +68,23 @@ describe "Register / Login", ->
 
     describe "When I login again", (done) ->
 
+        before helpers.fakeServer 'myapp', 4445, msg: 'ok'
+        before -> router.routes = "myapp": port: 4445, state: 'installed'
         before (done) ->
             client.post "login", password: password, (error, response, body) =>
                 @body = body
                 @response = response
                 done()
+
+        after helpers.closeFakeServers
+
         it "The server should send the cookie", ->
             should.exist @response
             @response.should.have.property 'headers'
             @response['headers'].should.have.property 'set-cookie'
 
         it "And it shouldn't send the cookie afterwards", (done) ->
-            client.get '', (err, res, body) ->
+            client.get 'apps/myapp', (err, res, body) ->
                 should.exist res
                 res.should.have.property 'headers'
                 res['headers'].should.not.have.property 'set-cookie'

@@ -10,7 +10,7 @@ module.exports = ->
     passport.currentUser = null
 
     # serialize the user to cookie
-    passport.serializeUser = (user, done) ->
+    passport.serializeUser = (user, req, done) ->
         done null, user._id
 
     # deserialize the user from cookie

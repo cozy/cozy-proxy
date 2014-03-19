@@ -41,16 +41,9 @@ helpers.startApp = (done) ->
 helpers.stopApp = (done) ->
     @timeout 10000
     setTimeout =>
-        #delete require.cache[require.resolve("#{helpers.prefix}server/config")]
         @app.server.close done
     , 1000
 
-
-User = require "#{helpers.prefix}server/models/user"
-
-helpers.deleteAllUsers = (done) ->
-    @timeout 5000
-    User.requestDestroy 'all', done
 
 helpers.patchCookieJar = ->
     # https://gist.github.com/jfromaniello/4087861
@@ -117,15 +110,20 @@ helpers.createAllRequests = (done) ->
     require('americano-cozy').configure root, null, (err) ->
         done err
 
+User = require "#{helpers.prefix}server/models/user"
+
 helpers.createUser = (email, pass) -> (done) ->
     {cryptPassword} = require "#{helpers.prefix}server/lib/helpers"
     user =
         email: email
-        owner: true
         password: cryptPassword(pass).hash
+        owner: true
         activated: true
+    User.createNew user, done
 
-    User.create user, done
+helpers.deleteAllUsers = (done) ->
+    @timeout 5000
+    User.requestDestroy 'all', done
 
 helpers.fakeServer = (name, port, json, prepare) -> (done) ->
     @fakeServers ?= {}

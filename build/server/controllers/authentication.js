@@ -70,7 +70,7 @@ module.exports.register = function(req, res, next) {
           if (err) {
             return next(new Error(err));
           } else {
-            return User.create(userData, function(err, user) {
+            return User.createNew(userData, function(err) {
               if (err) {
                 return next(new Error(err));
               } else {
@@ -182,7 +182,7 @@ module.exports.resetPassword = function(req, res) {
           data = {
             password: helpers.cryptPassword(newPassword).hash
           };
-          return user.updateAttributes(data, function(err) {
+          return user.merge(data, function(err) {
             if (err != null) {
               return next(new Error(err));
             } else {

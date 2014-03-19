@@ -1,7 +1,12 @@
 americano = require 'americano-cozy'
+Client = require('request-json').JsonClient
 
 helpers = require '../lib/helpers'
 timezones = require '../lib/timezones'
+
+client = new Client "http://localhost:9101/"
+if process.env.NODE_ENV in ['production', 'test']
+    client.setBasicAuth process.env.NAME, process.env.TOKEN
 
 module.exports = User = americano.getModel 'User',
     email: String
@@ -11,6 +16,27 @@ module.exports = User = americano.getModel 'User',
     timezone: String
     owner: Boolean
     activated: Boolean
+
+User.createNew = (data, callback) ->
+    data.docType = "User"
+    client.post "user/", data, (err, res, body) ->
+        if err? then callback err
+        else if res.statusCode isnt 201
+            err = "#{res.statusCode} -- #{body}"
+            callback err
+        else
+            callback()
+
+User::merge = (data, callback) ->
+    client.put "user/merge/#{@id}/", data, (err, res, body) =>
+        if err? then callback err
+        else if res.statusCode is 404
+            callback new Error "Model does not exist"
+        else if res.statusCode isnt 200
+            err = "#{res.statusCode} -- #{body}"
+            callback err
+        else
+            callback()
 
 User.first = (callback) ->
     User.request 'all', (err, users) ->

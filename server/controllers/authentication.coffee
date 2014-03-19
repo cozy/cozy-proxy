@@ -49,7 +49,7 @@ module.exports.register = (req, res, next) ->
                 Instance.createOrUpdate instanceData, (err) ->
                     if err then next new Error err
                     else
-                        User.create userData, (err, user) ->
+                        User.createNew userData, (err) ->
                             if err then next new Error err
                             else next()
     else
@@ -122,7 +122,7 @@ module.exports.resetPassword = (req, res) ->
                 validationErrors = User.validatePassword newPassword
                 if validationErrors.length is 0
                     data = password: helpers.cryptPassword(newPassword).hash
-                    user.updateAttributes data, (err) ->
+                    user.merge data, (err) ->
                         if err? then next new Error err
                         else
                             Instance.resetKey = null

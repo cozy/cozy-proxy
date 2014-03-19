@@ -42,7 +42,7 @@ Router = (function() {
       return function(error, res, apps) {
         var app, err, _i, _len, _ref;
         if ((error != null) || (apps.error != null)) {
-          logger.error("Oops, something went wrong during route reset.");
+          logger.error("Cannot retrieve applications list.");
           logger.error(util.inspect(error) || apps.msg);
           return callback(error || apps.msg);
         }

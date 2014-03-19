@@ -25,7 +25,7 @@ class Router
         @routes = {}
         @client.get "api/applications/", (error, res, apps) =>
             if error? or apps.error?
-                logger.error "Oops, something went wrong during route reset."
+                logger.error "Cannot retrieve applications list."
                 logger.error util.inspect(error) or apps.msg
                 return callback error or apps.msg
 

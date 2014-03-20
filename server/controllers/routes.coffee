@@ -2,6 +2,7 @@ index = require './index'
 auth = require './authentication'
 devices = require './devices'
 apps = require './applications'
+experiment = require './experimental'
 
 utils = require '../middlewares/authentication'
 
@@ -38,6 +39,9 @@ module.exports =
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
     'cozy/*': devices.replication
+
+    '.well-known/host-meta.?:ext': get: experiment.webfingerHostMeta
+    '.well-known/:module': all: experiment.webfingerAccount
 
     '*': all: [
         utils.isAuthenticated

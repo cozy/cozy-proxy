@@ -74,6 +74,7 @@ module.exports.register = function(req, res, next) {
               if (err) {
                 return next(new Error(err));
               } else {
+                localization.polyglot = localization.getPolyglotByLocale(req.body.locale);
                 return next();
               }
             });

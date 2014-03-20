@@ -51,7 +51,12 @@ module.exports.register = (req, res, next) ->
                     else
                         User.createNew userData, (err) ->
                             if err then next new Error err
-                            else next()
+                            else
+                                # at first load, 'en' is the default locale
+                                # we must change it now if it has changed
+                                localization.polyglot = \
+                                localization.getPolyglotByLocale req.body.locale
+                                next()
     else
         error = new Error validationErrors
         error.status = 400

@@ -128,7 +128,10 @@ task 'build', 'Build CoffeeScript to Javascript', ->
     logger.info "Start compilation..."
     command = "coffee -cb --output build/server server && " + \
               "coffee -cb --output build/ server.coffee && " + \
-              "rm -rf build/client && cp -R client build/"
+              "rm -rf build/client && mkdir build/client && " + \
+              "coffee -cb --output build/client/locales/ client/locales && " + \
+              "cp -R client/views build/client/ && " + \
+              "cp -R client/public build/client/"
     exec command, (err, stdout, stderr) ->
         if err
             logger.error "An error has occurred while compiling:\n" + err

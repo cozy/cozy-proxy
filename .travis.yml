@@ -5,6 +5,7 @@ matrix:
         - node_js: "0.11"
 node_js:
     - "0.10"
+    - "0.11"
 services:
     - couchdb
 env:

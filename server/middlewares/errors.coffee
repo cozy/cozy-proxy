@@ -11,7 +11,10 @@ module.exports = (err, req, res, next) ->
     if err.headers? and Object.keys(err.headers).length > 0
         res.set header, value for header, value of err.headers
 
-    res.send statusCode, error: message
+    if err.template?
+        res.render "#{err.template.name}.jade", err.template.params
+    else
+        res.send statusCode, error: message
 
     if err instanceof Error
         logger.error err.message

@@ -7,6 +7,7 @@ logger = require('printit')
             prefix: 'lib:proxy'
 
 router = require './router'
+localization = require './localization_manager'
 
 # singleton variable
 proxy = null
@@ -19,7 +20,10 @@ module.exports.initializeProxy = (app, server) ->
     proxy = httpProxy.createProxyServer()
 
     # proxy error handling
-    proxy.on 'error', (err) -> logger.error err
+    proxy.on 'error', (err, req, res) ->
+        logger.error err
+        polyglot = localization.getPolyglot()
+        res.render "error.jade", polyglot: polyglot
 
     # Manage socket.io's websocket
     server.on 'upgrade', (req, socket, head) ->

@@ -251,6 +251,25 @@ p {
   float: right;
   margin: 40px 40px;
 }
+.proxy-form.error {
+  margin-top: -40px;
+  font-family: styled;
+  font-size: 20px;
+  background: #c66666;
+  padding: 5px 10px;
+  width: 750px;
+  color: #fff;
+  border-radius: 5px;
+}
+.proxy-form.error h1 {
+  color: #fff;
+}
+.proxy-form.error a {
+  color: #fff;
+}
+.proxy-form.error a:hover {
+  color: #15a7c7;
+}
 @media (max-width: 640px) {
   h1 {
     padding: 0 0;

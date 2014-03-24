@@ -18,9 +18,13 @@ module.exports = function(err, req, res, next) {
       res.set(header, value);
     }
   }
-  res.send(statusCode, {
-    error: message
-  });
+  if (err.template != null) {
+    res.render("" + err.template.name + ".jade", err.template.params);
+  } else {
+    res.send(statusCode, {
+      error: message
+    });
+  }
   if (err instanceof Error) {
     logger.error(err.message);
     return logger.error(err.stack);

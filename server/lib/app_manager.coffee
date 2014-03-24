@@ -14,7 +14,7 @@ class AppManager
     ensureStarted: (slug, shouldStart, callback) ->
         routes = @router.getRoutes()
         if not routes[slug]?
-            callback code: 404, msg:'app unknown'
+            callback code: 404, msg: 'app unknown'
             return
 
         switch routes[slug].state

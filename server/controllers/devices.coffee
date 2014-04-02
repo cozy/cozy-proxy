@@ -1,3 +1,4 @@
+passport = require 'passport'
 deviceManager = require '../models/device'
 {getProxy} = require '../lib/proxy'
 
@@ -15,7 +16,7 @@ getCredentialsHeader = ->
 # controller actions
 module.exports.management = (req, res) ->
 
-    authenticator = passport.authenticate 'local', (err, user) =>
+    authenticator = passport.authenticate 'local', (err, user) ->
         if err
             next new Error "Server error occured."
         else if user is undefined or not user
@@ -32,10 +33,9 @@ module.exports.management = (req, res) ->
     [username, password] = extractCredentials req.headers['authorization']
 
     # Initialize user
+    console.log username, password
     user = {}
-    user.body =
-        username: username
-        password: password
+    user.body = password: password
 
     req.headers['authorization'] = undefined
     # Check if request is authenticated

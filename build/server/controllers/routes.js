@@ -64,7 +64,9 @@ module.exports = {
   'apps/:name*': {
     all: [utils.isAuthenticated, apps.appWithSlash]
   },
-  'cozy/*': devices.replication,
+  'cozy/*': {
+    all: devices.replication
+  },
   '.well-known/host-meta.?:ext': {
     get: experiment.webfingerHostMeta
   },

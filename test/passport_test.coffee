@@ -1,28 +1,33 @@
-http = require('http')
 should = require('chai').Should()
-Client = require('request-json').JsonClient
-
-{CozyProxy} = require '../proxy.coffee'
-
-client = new Client("http://localhost:4444/")
-router = new CozyProxy()
+nock = require 'nock'
 helpers = require './helpers'
 
-email = "test@cozycloud.cc"
+router = require "#{helpers.prefix}server/lib/router"
+
+client = helpers.getClient()
+
+email = "john.doe@cozycloud.cc"
 password = "password"
+timezone = "Europe/Paris"
+public_name = "John"
+locale = "fr"
 
 describe "Register / Login", ->
 
-    before helpers.createUserAllRequest
     before helpers.deleteAllUsers
-    before -> router.start 4444
-    after  -> router.stop()
-    after  helpers.deleteAllUsers
+    before helpers.startApp
+    after helpers.stopApp
+    after helpers.deleteAllUsers
 
     describe "Register", ->
 
         it "When I send a request to register", (done) ->
-            data = email: email, password: password
+            data =
+                email: email
+                password: password
+                timezone: timezone
+                public_name: public_name
+                locale: locale
             client.post "register", data, (error, response, body) =>
                 @body = body
                 @response = response
@@ -44,28 +49,54 @@ describe "Register / Login", ->
         it "Then user is authenticated", (done) ->
             client.get "authenticated", (error, response, body) ->
                 response.statusCode.should.equal 200
-                body.success.should.be.ok
+                body.should.have.property 'isAuthenticated'
+                body.isAuthenticated.should.be.ok
                 done()
 
     describe "Logout", ->
 
         it "When I send a request to logout", (done) ->
             client.get "logout", (error, response, body) ->
-                response.statusCode.should.equal 200
+                response.statusCode.should.equal 204
                 done()
 
-        it "Then user is authenticated", (done) ->
+        it "Then user isn't authenticated anymore", (done) ->
             client.get "authenticated", (error, response, body) ->
-                body.success.should.not.be.ok
+                body.should.have.property 'isAuthenticated'
+                body.isAuthenticated.should.not.be.ok
                 done()
+
+    describe "When I login again", (done) ->
+
+        before helpers.fakeServer 'myapp', 4445, msg: 'ok'
+        before -> router.routes = "myapp": port: 4445, state: 'installed'
+        before (done) ->
+            client.post "login", password: password, (error, response, body) =>
+                @body = body
+                @response = response
+                done()
+
+        after helpers.closeFakeServers
+
+        it "The server should send the cookie", ->
+            should.exist @response
+            @response.should.have.property 'headers'
+            @response['headers'].should.have.property 'set-cookie'
+
+        it "And it shouldn't send the cookie afterwards", (done) ->
+            client.get 'apps/myapp', (err, res, body) ->
+                should.exist res
+                res.should.have.property 'headers'
+                res['headers'].should.not.have.property 'set-cookie'
+                done()
+            , false
 
 describe "Register failure", ->
 
-    before helpers.createUserAllRequest
     before helpers.deleteAllUsers
-    before -> router.start 4444
-    after  -> router.stop()
-    after  helpers.deleteAllUsers
+    before helpers.startApp
+    after helpers.stopApp
+    after helpers.deleteAllUsers
 
     it "When I send a register request with a wrong string as email", (done) ->
         data = email: "wrongemail", password: password
@@ -76,7 +107,7 @@ describe "Register failure", ->
 
     it "Then an error response is returned.", ->
         @response.statusCode.should.equal 400
-        @body.error.should.equal true
+        @body.should.have.property 'error'
 
     it "When I send a register request with a too short password", (done) ->
         data = email: email, password: "pas"

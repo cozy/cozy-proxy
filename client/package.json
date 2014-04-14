@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script-brunch": "1.8.0",
+    "stylus-brunch": "1.8.0",
+    "javascript-brunch": "1.7.1",
+    "css-brunch": "1.7.0"
+  }
+}

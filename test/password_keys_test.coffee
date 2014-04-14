@@ -2,17 +2,11 @@ fs = require("fs")
 should = require('chai').Should()
 async = require('async')
 
-Client = require("request-json").JsonClient
-PasswordKeys = require "../lib/password_keys"
-
-client = new Client "http://localhost:9101/"
-passwordKeys = new PasswordKeys()
 helpers = require './helpers'
-
+passwordKeys = require "#{helpers.prefix}server/lib/password_keys"
 
 describe "Password Keys", ->
 
-    before helpers.createUserAllRequest
     before helpers.deleteAllUsers
     before helpers.createUser "user@CozyCloud.CC", "user_pwd"
     after helpers.deleteAllUsers
@@ -31,16 +25,6 @@ describe "Password Keys", ->
 
         it "When I update keys", (done) ->
             passwordKeys.updateKeys "newPassword", (err) =>
-                @err = err
-                done()
-
-        it "Then no error is returned", ->
-            should.not.exist @err
-
-    describe "Delete keys", ->
-
-        it "When I delete keys", (done) ->
-            passwordKeys.deleteKeys (err) =>
                 @err = err
                 done()
 

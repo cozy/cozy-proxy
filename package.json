@@ -12,25 +12,29 @@
     "node >= 0.8.0"
   ],
   "dependencies": {
-    "http-proxy": "= 0.8.5",
-    "request-json": "= 0.3.3",
-    "express": "= 3.0.6",
-    "passport": "= 0.1.15",
-    "passport-local": "= 0.1.6",
-    "bcrypt": "= 0.7.6",
-    "randomstring": "= 1.0.2",
-    "nodemailer": "= 0.3.31",
-    "jade": "= 0.27.7",
-    "async": "= 0.1.22"
+    "http-proxy": "1.0.2",
+    "request-json": "0.4.8",
+    "passport": "0.2.0",
+    "passport-local": "1.0.0",
+    "bcrypt": "0.7.7",
+    "randomstring": "1.0.3",
+    "jade": "1.3.0",
+    "async": "0.2.10",
+    "americano": "0.3.3",
+    "americano-cozy": "0.2.2",
+    "printit": "0.1.3",
+    "locale": "0.0.14",
+    "node-polyglot": "0.3.0"
   },
   "devDependencies": {
-    "mocha": "> 0",
-    "chai": "> 0",
-    "should": "> 0",
-    "socket.io": "~0.9.13",
-    "socket.io-client": "~0.9.11",
-    "xmlhttprequest": "~1.5.0",
-    "coffee-script": "latest"
+    "mocha": "1.18.2",
+    "chai": "1.9.0",
+    "socket.io": "0.9.16",
+    "socket.io-client": "0.9.16",
+    "xmlhttprequest": "1.6.0",
+    "nock": "0.27.2",
+    "coffee-script": "latest",
+    "coffee-coverage": "0.4.2"
   },
   "contributors": [
     "Zoe Bellot",
@@ -40,7 +44,7 @@
   ],
   "main": "server.js",
   "scripts": {
-    "test": "cake tests",
-    "start": "node server.js"
+    "test": "cake --use-js tests",
+    "start": "node build/server.js"
   }
 }

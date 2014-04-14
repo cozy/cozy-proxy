@@ -1,27 +1,22 @@
-http = require('http')
 should = require('chai').Should()
-Client = require('request-json').JsonClient
-
-{cryptPassword} = require '../helpers'
-{CozyProxy} = require '../proxy.coffee'
-UserManager = require('../models').UserManager
-
-client = new Client("http://localhost:4444/")
-router = new CozyProxy()
+nock = require 'nock'
 helpers = require './helpers'
+
+client = helpers.getClient()
+
+router = require "#{helpers.prefix}server/lib/router"
 
 describe "/routes", ->
 
-    before helpers.createUserAllRequest
     before helpers.deleteAllUsers
 
+    before helpers.startApp
     before ->
-        router.start 4444
         router.routes =
             "app1": port: 4441, state: 'installed'
             "app2": port: 4442, state: 'installed'
             "app3": port: 8003, state: 'installed'
-    after  -> router.stop()
+    after  helpers.stopApp
     after  helpers.deleteAllUsers
 
     describe "GET /routes Return available routes.", ->
@@ -47,20 +42,19 @@ describe "Proxying", ->
     before helpers.fakeServer 'myapp', 4445, msg: 'ok'
     before helpers.fakeServer 'myapp2', 4447, msg: 'ok2'
 
+    before helpers.startApp
     before ->
-        router.defaultPort = 4446
-        router.start 4444
-        router.routes["myapp"] = {port:4445, state:'installed'}
-        router.routes["myapp2"] = {port:4447, state:'stopped'}
+        router.routes =
+            "myapp": port: 4445, state: 'installed'
+            "myapp2": port: 4447, state: 'stopped'
 
-    after ->
-        router.stop()
-
+    after helpers.stopApp
     after helpers.closeFakeServers
 
     describe "Redirection", ->
-        it "When I send non-identified request to an existing
-private route", (done) ->
+        it "When I send non-identified request to an existing private route", \
+        (done) ->
+            @timeout 10000
             client.get "apps/myapp/", (error, response, body) =>
                 @response = response
                 done()
@@ -109,21 +103,14 @@ private route (with params)", (done) ->
             should.exist @body.msg
             @body.msg.should.equal "ok"
 
-    describe "no regression on issue #1", ->
-
-        it "When I send an request to myapp2 ", (done) ->
-            client.get "apps/myapp2/", (error, response, body) =>
-                @response = response
-                @body = body
-                done()
-
-        it "Then I should be redirected to the myapp2
-server (and not myapp)", ->
-            @response.statusCode.should.equal 200
-            should.exist @body.msg
-            @body.msg.should.equal "ok2"
-
     describe "Autostarting", ->
+        before ->
+            host = "http://localhost:#{process.env.DEFAULT_REDIRECT_PORT}"
+            @scope = nock host, allowUnmocked: true
+               .post '/api/applications/myapp2/start'
+               .reply 200, {app: port: 4447, state: 'installed'}
+
+        after -> nock.restore()
 
         it "When I send a request to a stopped app", (done) ->
             client.get "apps/myapp2/", (error, response, body) =>
@@ -133,9 +120,23 @@ server (and not myapp)", ->
 
         it "should have called home to start the app", ->
             expected = "/api/applications/myapp2/start"
-            @fakeServers['home'].lastUrl.should.equal expected
+            @scope.isDone().should.be.true
 
         it "Then I should be proxyed to the app server", ->
+            @response.statusCode.should.equal 200
+            should.exist @body.msg
+            @body.msg.should.equal "ok2"
+
+    describe "no regression on issue #1", ->
+
+        it "When I send an request to myapp2 ", (done) ->
+            client.get "apps/myapp2/", (error, response, body) =>
+                @response = response
+                @body = body
+                done()
+
+        it "Then I should be redirected to the myapp2 server (and not myapp)", \
+        ->
             @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok2"

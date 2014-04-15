@@ -426,7 +426,10 @@ $(function() {
     return validateEmail();
   });
   passwordInput.keyup(function(event) {
-    return validatePassword();
+    validatePassword();
+    if (passwordCheckInput.val() !== "") {
+      return validateCheckPassword();
+    }
   });
   passwordCheckInput.keyup(function(event) {
     return validateCheckPassword();

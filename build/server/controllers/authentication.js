@@ -93,7 +93,7 @@ module.exports.loginIndex = function(req, res) {
   return User.first(function(err, user) {
     var name, polyglot, words, _ref;
     if (user != null) {
-      if (((_ref = user.public_name) != null ? _ref.length : void 0) > 0 && false) {
+      if (((_ref = user.public_name) != null ? _ref.length : void 0) > 0) {
         name = user.public_name;
       } else {
         name = helpers.hideEmail(user.email);

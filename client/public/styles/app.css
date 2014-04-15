@@ -88,7 +88,7 @@ p {
   padding: 20px;
   width: 530px;
   color: #fff;
-  margin: 35px 25px;
+  margin: 35px 0;
 }
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   .alert-success {

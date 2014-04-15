@@ -135,7 +135,9 @@ $ ->
 
     # validation
     emailInput.keyup (event) -> validateEmail()
-    passwordInput.keyup (event) -> validatePassword()
+    passwordInput.keyup (event) ->
+        validatePassword()
+        validateCheckPassword() if passwordCheckInput.val() isnt ""
     passwordCheckInput.keyup (event) -> validateCheckPassword()
 
 

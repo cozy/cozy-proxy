@@ -94,14 +94,9 @@ p {
   font-size: 2em;
   background: #66c666;
   padding: 20px;
-  width: 530px;
+  width: 550px;
   color: #fff;
   margin: 35px 0;
-}
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  .alert-success {
-    width: 550px;
-  }
 }
 .additional-line {
   margin-top: 1em;

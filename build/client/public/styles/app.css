@@ -12,6 +12,8 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 html,
@@ -20,6 +22,8 @@ h1,
 p,
 input,
 div {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 body {
@@ -43,6 +47,7 @@ h1 {
 }
 button {
   font-size: 1.1em;
+  -webkit-border-radius: 0.4em;
   border-radius: 0.4em;
   padding: 0.6em 0.8em;
 }
@@ -53,14 +58,17 @@ select {
   height: 52px;
   width: 550px;
   padding: 4px 10px;
+  -webkit-border-radius: 0.4em;
   border-radius: 0.4em;
   color: #15a7c7;
+  -webkit-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
   border: 1px solid transparent;
 }
 input:focus,
 select {
   color: #ff850a;
+  -webkit-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
   border: 1px solid #ffb366;
   outline: none;
@@ -105,6 +113,7 @@ p {
 .alert-error,
 .alert-success {
   display: none;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 #header {
@@ -119,6 +128,7 @@ p {
 #submit-btn {
   margin-left: 5px;
   margin-bottom: 9px;
+  -webkit-border-radius: 0.4em;
   border-radius: 0.4em;
   border: 0;
   outline: 0;
@@ -152,8 +162,12 @@ p {
 #btn-wrapper .btn-container.right {
   text-align: right;
 }
+#btn-wrapper .btn-container.center {
+  text-align: center;
+}
 #btn-wrapper .btn-container #submit-btn {
   width: 250px;
+  font-family: main;
 }
 #btn-wrapper .btn-container.single {
   width: 100%;
@@ -166,6 +180,8 @@ p {
   width: 10px;
 }
 #expand-btn {
+  font-family: main;
+  font-size: 14px;
   display: inline-block;
   margin-left: 5px;
   margin-bottom: 9px;
@@ -190,6 +206,8 @@ p {
   height: 48px;
   width: 48px;
   opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
   background: url("/images/help.png") no-repeat center center;
 }
 .help .help-info {
@@ -201,6 +219,7 @@ p {
   background: #fff;
   padding: 5px;
   border: 3px solid #15a7c7;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
   font-family: main;
 }
@@ -218,6 +237,8 @@ p {
 .help.selected i.icon,
 .help:hover i.icon {
   opacity: 0.6;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+  filter: alpha(opacity=60);
 }
 .help.selected .help-info,
 .help:hover .help-info {
@@ -227,11 +248,14 @@ p {
   background: #ff850a;
 }
 #submit-btn:active {
+  -webkit-box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
   box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
   background: #eb7500;
 }
 #submit-btn:disabled {
   opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
 }
 #username {
   color: #11869f;
@@ -259,6 +283,7 @@ p {
   padding: 5px 10px;
   width: 750px;
   color: #fff;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 .proxy-form.error h1 {
@@ -280,6 +305,8 @@ p {
     padding-bottom: 1em;
   }
   .proxy-form p {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
   .proxy-form .input-wrapper {
@@ -300,6 +327,8 @@ p {
     width: 100%;
     padding: 0;
     display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: 26px;
   }
@@ -322,6 +351,8 @@ p {
   .alert-error,
   .alert-success {
     width: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
   .alert-success {
@@ -329,9 +360,13 @@ p {
   }
   #content {
     padding: 40px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
   #content div {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
   #logo {

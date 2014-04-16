@@ -152,8 +152,12 @@ p {
 #btn-wrapper .btn-container.right {
   text-align: right;
 }
+#btn-wrapper .btn-container.center {
+  text-align: center;
+}
 #btn-wrapper .btn-container #submit-btn {
   width: 250px;
+  font-family: main;
 }
 #btn-wrapper .btn-container.single {
   width: 100%;
@@ -166,6 +170,8 @@ p {
   width: 10px;
 }
 #expand-btn {
+  font-family: main;
+  font-size: 14px;
   display: inline-block;
   margin-left: 5px;
   margin-bottom: 9px;

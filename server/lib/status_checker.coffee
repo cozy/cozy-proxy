@@ -1,7 +1,7 @@
 async = require 'async'
 
 JsonClient = require('request-json').JsonClient
-userManager = require '../models/user'
+User = require '../models/user'
 
 couchUrl = "http://localhost:5984/"
 controllerUrl = "http://localhost:9002/"

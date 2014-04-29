@@ -1,62 +1,162 @@
-fs = require 'fs'
+{exec} = require 'child_process'
+fs     = require 'fs'
+logger = require('printit')
+            date: false
+            prefix: 'cake'
 
-# Grab test files
-walk = (dir, fileList) ->
-    list = fs.readdirSync(dir)
+option '-f', '--file [FILE*]' , 'List of test files to run'
+option '-d', '--dir [DIR*]' , 'Directory of test files to run'
+option '-e' , '--env [ENV]', 'Run tests with NODE_ENV=ENV. Default is test'
+option '' , '--use-js', 'If enabled, tests will run with the built files'
+
+options =  # defaults, will be overwritten by command line options
+    file        : no
+    dir         : no
+
+# Grab test files of a directory recursively
+walk = (dir, excludeElements = []) ->
+    fileList = []
+    list = fs.readdirSync dir
     if list
         for file in list
-            if file
-                filename = dir + '/' + file
-                stat = fs.statSync(filename)
+            if file and file not in excludeElements
+                filename = "#{dir}/#{file}"
+                stat = fs.statSync filename
                 if stat and stat.isDirectory()
-                    walk(filename, fileList)
-                else if filename.substr(-6) == "coffee"
-                    fileList.push(filename)
-    fileList
+                    fileList2 = walk filename, excludeElements
+                    fileList = fileList.concat fileList2
+                else if filename.substr(-6) is "coffee"
+                    fileList.push filename
+    return fileList
 
-{exec} = require 'child_process'
-testFiles = walk("test", [])
+taskDetails = '(default: ./tests, use -f or -d to specify files and directory)'
+task 'tests', "Run tests #{taskDetails}", (opts) ->
+    logger.options.prefix = 'cake:tests'
+    files = []
+    options = opts
 
-task 'tests', 'run tests through mocha', ->
-        runTests testFiles
+    if options.dir
+        dirList   = options.dir
+        files = walk(dir, files) for dir in dirList
+    if options.file
+        files  = files.concat options.file
+    unless options.dir or options.file
+        files = walk "test"
 
-runTests = (fileList) ->
-    console.log "Run tests with Mocha for " + fileList.join(" ")
-    command = "mocha " + fileList.join(" ") + " --reporter spec "
-    command += "--require should --compilers coffee:coffee-script/register --colors"
+
+    env = if options['env'] then "NODE_ENV=#{options.env}" else "NODE_ENV=test"
+    env += " USE_JS=true" if options['use-js']? and options['use-js']
+    env += " PORT=4444"
+    logger.info "Running tests with #{env}..."
+    command = "#{env} mocha " + files.join(" ") + " --reporter spec --colors "
+    command += "--compilers coffee:coffee-script/register"
     exec command, (err, stdout, stderr) ->
         console.log stdout
+        console.log stderr
         if err
-            console.log "Running mocha caught exception: \n" + err
+            err = err
+            logger.error "Running mocha caught exception:\n" + err
+            process.exit 1
+        else
+            logger.info "Tests succeeded!"
+            process.exit 0
+
+task "coverage", "Generate code coverage of tests", ->
+        logger.options.prefix = 'cake:coverage'
+        files = walk "test"
+
+        logger.info "Generating instrumented files..."
+        bin = "./node_modules/.bin/coffeeCoverage --path abbr"
+        command = "mkdir instrumented && " + \
+                  "#{bin} server.coffee instrumented/server.js && " + \
+                  "#{bin} server instrumented/server && " + \
+                  "cp -R client instrumented/"
+        exec command, (err, stdout, stderr) ->
+            if err
+                logger.error err
+                cleanCoverage -> process.exit 1
+            else
+                logger.info "Instrumented files generated."
+                env = "COVERAGE=true PORT=4444 NODE_ENV=test"
+                command = "#{env} mocha test/ " + \
+                          "--compilers coffee:coffee-script/register " + \
+                          "--reporter html-cov > coverage/coverage.html"
+                logger.info "Generating code coverage..."
+                exec command, (err, stdout, stderr) ->
+                    if err
+                        logger.error err
+                        cleanCoverage -> process.exit 1
+                    else
+                        cleanCoverage ->
+                            logger.info "Code coverage generation succeeded!"
+                            process.exit 0
+
+# use exec-sync npm module and use "invoke" in other tasks
+cleanCoverage = (callback) ->
+    logger.info "Cleaning..."
+    command = "rm -rf instrumented"
+    exec command, (err, stdout, stderr) ->
+        if err
+            logger.error err
+            callback err
+        else
+            logger.info "Cleaned!"
+            callback()
+
+task "clean-coverage", "Clean the files generated for coverage report", ->
+    cleanCoverage (err) ->
+        if err
             process.exit 1
         else
             process.exit 0
 
-option '-f', '--file [FILE]', 'test file to run'
 
-task 'tests:file', 'run test through mocha for a given file', (options) ->
-    file = options.file
-    console.log "Run tests with Mocha for " + file
-    command = "mocha " + file + " --reporter spec "
-    command += "--require should --compilers coffee:coffee-script/register --colors"
+task "lint", "Run Coffeelint", ->
+    process.env.TZ = "Europe/Paris"
+    command = "coffeelint "
+    command += " -f coffeelint.json -r server/"
+    logger.options.prefix = 'cake:lint'
+    logger.info 'Start linting...'
     exec command, (err, stdout, stderr) ->
         if err
-            console.log "Running mocha caught exception: \n" + err
-        console.log stdout
-
-task "convert", "Convert code to JS", ->
-    command = "coffee -cb *.coffee lib/*.coffee"
-    exec command, (err, stdout, stderr) ->
-        if err
-            console.log "Conversion to JS failed.\n" + err
+            logger.error err
         else
-            console.log "Conversion to JS succeeded."
+            console.log stdout
 
+task 'build', 'Build CoffeeScript to Javascript', ->
+    logger.options.prefix = 'cake:build'
+    logger.info "Start compilation..."
+    command = "coffee -cb --output build/server server && " + \
+              "coffee -cb --output build/ server.coffee && " + \
+              "rm -rf build/client && mkdir build/client && " + \
+              "coffee -cb --output build/client/locales/ client/locales && " + \
+              "cp -R client/views build/client/ && " + \
+              "cp -R client/public build/client/"
+    exec command, (err, stdout, stderr) ->
+        if err
+            logger.error "An error has occurred while compiling:\n" + err
+            process.exit 1
+        else
+            logger.info "Compilation succeeded."
+            process.exit 0
 
-task "lint", "Run coffeelint on proxy files", ->
-        process.env.TZ = "Europe/Paris"
-        command = "coffeelint "
-        command += "    -f coffeelint.json -r ./*.coffee lib/ test/"
-        exec command, (err, stdout, stderr) ->
-                console.log err
-                console.log stdout
+task 'check-build', 'Check if the compiled files are up to date', ->
+    logger.options.prefix = 'cake:check-build'
+    jsDate = fs.statSync('build/server.js').mtime
+
+    coffeeFiles = walk './server'
+    coffeeFiles.push './server.coffee'
+
+    coffeeDate = null
+    for file in coffeeFiles
+        fileDate = fs.statSync(file).mtime
+        coffeeDate = fileDate if  fileDate > coffeeDate or coffeeDate is null
+
+    if coffeeDate > jsDate
+        msg = "Javascript build doesn't seem to be up to date. Are you " + \
+              "sure you've built the sources? If, not please run 'cake build'."
+        logger.warn msg
+        process.exit 1
+    else
+        logger.info "Javascript build is up to date."
+        process.exit 0

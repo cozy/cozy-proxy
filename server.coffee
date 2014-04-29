@@ -1,23 +1,28 @@
-{CozyProxy} = require './proxy'
-
 process.env.NODE_ENV ?= "development"
+
 process.on 'uncaughtException', (err) ->
     console.error err.message
     console.error err.stack
 
-# Log all couples, routes/port.
-displayRoutes = (error) ->
-    if error
-        console.log error.message
-        console.log "Routes initializing failed"
-    else
-        console.log "Routes initialized"
-        for route of router.routes
-            console.log "#{route} => #{router.routes[route]}"
+# default value for the default port (home)
+unless process.env.DEFAULT_REDIRECT_PORT
+    process.env.DEFAULT_REDIRECT_PORT = 9103
+
+application = module.exports = (callback) ->
+
+    americano = require 'americano'
+    initialize = require './server/initialize'
+    errorMiddleware = require './server/middlewares/errors'
+
+    options =
+        name: 'proxy'
+        port: process.env.PORT or 9104
+        host: process.env.HOST or "127.0.0.1"
+        root: __dirname
+
+    americano.start options, (app, server) ->
+        app.use errorMiddleware
+        initialize app, server, callback
 
 if not module.parent
-    router = new CozyProxy()
-    router.start()
-    console.log "Proxy listen on port " + router.proxyPort
-    console.log "Initializing routes..."
-    router.resetRoutes displayRoutes
+    application()

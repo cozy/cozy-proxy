@@ -1,14 +1,15 @@
 bcrypt = require 'bcrypt'
-helpers = require '../helpers'
-
+helpersTest = require './helpers'
+helpers = require "#{helpersTest.prefix}server/lib/helpers"
+should = require('chai').Should()
 
 describe 'helpers', ->
 
-    describe 'checkMail', ->
-        it 'Check good mail', ->
-            helpers.checkMail("test@cozycloud.cc").should.be.ok
+    describe 'checkEmail', ->
+        it 'Check good email', ->
+            helpers.checkEmail("test@cozycloud.cc").should.be.ok
 
-        it 'Check wrong mail', ->
-            helpers.checkMail("testcozycloud.cc").should.not.be.ok
-            helpers.checkMail("test@cozycloudcc").should.not.be.ok
-            helpers.checkMail("testcozycloudcc").should.not.be.ok
+        it 'Check wrong email', ->
+            helpers.checkEmail("testcozycloud.cc").should.not.be.ok
+            helpers.checkEmail("test@cozycloudcc").should.not.be.ok
+            helpers.checkEmail("testcozycloudcc").should.not.be.ok

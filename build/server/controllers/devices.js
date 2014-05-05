@@ -42,7 +42,6 @@ module.exports.management = function(req, res) {
     }
   });
   _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
-  console.log(username, password);
   user = {};
   user.body = {
     password: password

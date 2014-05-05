@@ -33,7 +33,6 @@ module.exports.management = (req, res) ->
     [username, password] = extractCredentials req.headers['authorization']
 
     # Initialize user
-    console.log username, password
     user = {}
     user.body = password: password
 

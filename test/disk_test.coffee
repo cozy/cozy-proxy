@@ -24,7 +24,7 @@ describe "Disk space", ->
                     @id = body.id
                     setTimeout () =>
                         done()
-                    , 300
+                    , 500
 
             it "And I recover disk space", (done) =>
                 client.get "disk-space", (err, res, body) =>

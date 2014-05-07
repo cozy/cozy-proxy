@@ -68,7 +68,6 @@ module.exports.getSpace = (function(_this) {
   return function(req, res, next) {
     var error, password, username, _ref;
     _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
-    console.log(username, password);
     if (deviceManager.isAuthenticated(username, password)) {
       controllerClient.setToken(getAuthController());
       return controllerClient.get('diskinfo', function(err, resp, body) {

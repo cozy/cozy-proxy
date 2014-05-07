@@ -51,7 +51,6 @@ module.exports.getSpace = (req, res, next) =>
 
     # Authenticate the device
     [username, password] = extractCredentials req.headers['authorization']
-    console.log(username, password)
     if deviceManager.isAuthenticated username, password
         # Recover disk space with controller
         controllerClient.setToken getAuthController()

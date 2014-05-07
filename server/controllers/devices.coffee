@@ -4,9 +4,12 @@ deviceManager = require '../models/device'
 
 # helper functions
 extractCredentials = (header) ->
-    authDevice = header.replace 'Basic ', ''
-    authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
-    return authDevice.split ':'
+    if header?
+        authDevice = header.replace 'Basic ', ''
+        authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
+        return authDevice.split ':'
+    else        
+        return ["", ""]
 
 getCredentialsHeader = ->
     credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
@@ -14,7 +17,7 @@ getCredentialsHeader = ->
     return "Basic #{basicCredentials}"
 
 # controller actions
-module.exports.management = (req, res) ->
+module.exports.management = (req, res, next) ->
 
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
@@ -40,7 +43,7 @@ module.exports.management = (req, res) ->
     # Check if request is authenticated
     authenticator user, res
 
-module.exports.replication = (req, res) ->
+module.exports.replication = (req, res, next) ->
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']

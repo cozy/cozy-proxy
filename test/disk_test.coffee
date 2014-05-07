@@ -22,9 +22,7 @@ describe "Disk space", ->
                 client.post "device/", login:"device", (err,res, body) =>
                     @pwd = body.password
                     @id = body.id
-                    setTimeout () =>
-                        done()
-                    , 500
+                    done()
 
             it "And I recover disk space", (done) =>
                 client.get "disk-space", (err, res, body) =>

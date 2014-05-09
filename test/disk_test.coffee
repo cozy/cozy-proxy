@@ -3,6 +3,7 @@ should = require('chai').Should()
 async = require('async')
 
 helpers = require './helpers'
+passwordKeys = require "#{helpers.prefix}server/lib/password_keys"
 client = helpers.getClient()
 
 describe "Disk space", ->
@@ -17,7 +18,12 @@ describe "Disk space", ->
 
         describe "Unauthorized request", =>
 
-            it "When I send a request with authentication", (done) =>
+            it "When I initialize keys", (done) ->
+                passwordKeys.initializeKeys "password", (err) =>
+                    @err = err
+                    done()
+
+            it "And I add a device", (done) =>
                 client.setBasicAuth 'owner', 'user_pwd' 
                 client.post "device/", login:"device", (err,res, body) =>
                     @pwd = body.password
@@ -31,7 +37,7 @@ describe "Disk space", ->
                     @err = err
                     done()
 
-            it "Then disk space is returned", =>
+            it "Then error is returned", =>
                 should.exist @body.error
                 @res.statusCode.should.equal 401
 
@@ -45,7 +51,7 @@ describe "Disk space", ->
                     @err = err
                     done()
 
-            it "Then disk space is returned", =>
+            it "Then error is returned", =>
                 should.exist @body.error
                 @res.statusCode.should.equal 401
 

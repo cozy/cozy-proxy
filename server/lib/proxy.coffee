@@ -3,8 +3,8 @@ async = require 'async'
 passport = require 'passport'
 config = require '../config'
 logger = require('printit')
-            date: false
-            prefix: 'lib:proxy'
+    date: false
+    prefix: 'lib:proxy'
 
 router = require './router'
 localization = require './localization_manager'
@@ -22,6 +22,7 @@ module.exports.initializeProxy = (app, server) ->
     # proxy error handling
     proxy.on 'error', (err, req, res) ->
         logger.error err
+        console.log err
         polyglot = localization.getPolyglot()
         res.render "error.jade", polyglot: polyglot
 

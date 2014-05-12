@@ -11,15 +11,17 @@ module.exports = Device = americano.getModel 'Device',
 cache = {}
 
 Device.update = (callback) ->
-    cache = {}
     Device.request 'all', (err, devices) ->
-        if err then logger.error err
+        cache = {}
+        if err logger.error err
+            console.log err
+            callback err
+        else
+            if devices?
+                for device in devices
+                    cache[device.login] = device.password
 
-        if devices?
-            for device in devices
-                cache[device.login] = device.password
-
-        callback() if callback?
+            callback() if callback?
 
 Device.isAuthenticated = (login, password, callback) ->
     return cache[login]? and cache[login] is password

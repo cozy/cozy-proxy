@@ -17,20 +17,22 @@ module.exports = Device = americano.getModel('Device', {
 cache = {};
 
 Device.update = function(callback) {
-  cache = {};
   return Device.request('all', function(err, devices) {
     var device, _i, _len;
-    if (err) {
-      logger.error(err);
-    }
-    if (devices != null) {
-      for (_i = 0, _len = devices.length; _i < _len; _i++) {
-        device = devices[_i];
-        cache[device.login] = device.password;
+    cache = {};
+    if (err(logger.error(err))) {
+      console.log(err);
+      return callback(err);
+    } else {
+      if (devices != null) {
+        for (_i = 0, _len = devices.length; _i < _len; _i++) {
+          device = devices[_i];
+          cache[device.login] = device.password;
+        }
       }
-    }
-    if (callback != null) {
-      return callback();
+      if (callback != null) {
+        return callback();
+      }
     }
   });
 };

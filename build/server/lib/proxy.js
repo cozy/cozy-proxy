@@ -29,6 +29,7 @@ module.exports.initializeProxy = function(app, server) {
   proxy.on('error', function(err, req, res) {
     var polyglot;
     logger.error(err);
+    console.log(err);
     polyglot = localization.getPolyglot();
     return res.render("error.jade", {
       polyglot: polyglot

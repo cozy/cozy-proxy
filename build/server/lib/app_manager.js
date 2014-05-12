@@ -9,6 +9,8 @@ logger = require('printit')({
 });
 
 AppManager = (function() {
+  AppManager.prototype.isStarting = [];
+
   function AppManager() {
     var homePort;
     homePort = process.env.DEFAULT_REDIRECT_PORT;
@@ -40,17 +42,21 @@ AppManager = (function() {
       case 'installed':
         return callback(null, routes[slug].port);
       case 'stopped':
-        if (shouldStart) {
-          return this.startApp(slug, function(err, port) {
-            if (err != null) {
-              return callback({
-                code: 500,
-                msg: "cannot start app : " + err
-              });
-            } else {
-              return callback(null, port);
-            }
-          });
+        if (shouldStart && (this.isStarting[slug] == null)) {
+          this.isStarting[slug] = true;
+          return this.startApp(slug, (function(_this) {
+            return function(err, port) {
+              delete _this.isStarting[slug];
+              if (err != null) {
+                return callback({
+                  code: 500,
+                  msg: "cannot start app : " + err
+                });
+              } else {
+                return callback(null, port);
+              }
+            };
+          })(this));
         } else {
           return callback({
             code: 500,

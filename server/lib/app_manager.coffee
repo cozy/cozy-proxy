@@ -5,6 +5,8 @@ logger = require('printit')
 
 class AppManager
 
+    isStarting: []
+
     constructor: ->
         homePort = process.env.DEFAULT_REDIRECT_PORT
         @client = new Client "http://localhost:#{homePort}/"
@@ -25,8 +27,10 @@ class AppManager
             when 'installed'
                 callback null, routes[slug].port
             when 'stopped'
-                if shouldStart
-                    @startApp slug, (err, port) ->
+                if shouldStart and not @isStarting[slug]?
+                    @isStarting[slug] = true
+                    @startApp slug, (err, port) =>
+                        delete @isStarting[slug]
                         if err?
                             callback code: 500, msg: "cannot start app : #{err}"
                         else

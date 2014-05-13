@@ -8,6 +8,10 @@ logger = require('printit')({
 
 module.exports = function(err, req, res, next) {
   var header, message, statusCode, value, _ref;
+  if (err instanceof Error) {
+    logger.error(err.message);
+    logger.error(err.stack);
+  }
   statusCode = err.status || 500;
   message = err instanceof Error ? err.message : err.error;
   message = message || 'Server error occurred';
@@ -19,14 +23,10 @@ module.exports = function(err, req, res, next) {
     }
   }
   if (err.template != null) {
-    res.render("" + err.template.name + ".jade", err.template.params);
+    return res.render("" + err.template.name + ".jade", err.template.params);
   } else {
-    res.send(statusCode, {
+    return res.send(statusCode, {
       error: message
     });
-  }
-  if (err instanceof Error) {
-    logger.error(err.message);
-    return logger.error(err.stack);
   }
 };

@@ -21,12 +21,13 @@ getCredentialsHeader = function() {
   return "Basic " + basicCredentials;
 };
 
-module.exports.management = function(req, res) {
+module.exports.management = function(req, res, next) {
   var authenticator, password, user, username, _ref;
   authenticator = passport.authenticate('local', function(err, user) {
     var error;
     if (err) {
-      return next(new Error("Server error occured."));
+      console.log(err);
+      return next(err);
     } else if (user === void 0 || !user) {
       error = new Error("Bad credentials");
       error.status = 401;
@@ -50,7 +51,7 @@ module.exports.management = function(req, res) {
   return authenticator(user, res);
 };
 
-module.exports.replication = function(req, res) {
+module.exports.replication = function(req, res, next) {
   var error, password, username, _ref;
   _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
   if (deviceManager.isAuthenticated(username, password)) {
@@ -61,8 +62,8 @@ module.exports.replication = function(req, res) {
       target: "http://localhost:5984"
     });
   } else {
-    error = new Error("Request unauthorized");
     error.status = 401;
+    error = new Error("Request unauthorized");
     return next(error);
   }
 };

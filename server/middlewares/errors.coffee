@@ -4,6 +4,10 @@ logger = require('printit')
 
 module.exports = (err, req, res, next) ->
 
+    if err instanceof Error
+        logger.error err.message
+        logger.error err.stack
+
     statusCode = err.status or 500
     message = if err instanceof Error then err.message else err.error
     message = message or 'Server error occurred' # default message
@@ -15,7 +19,3 @@ module.exports = (err, req, res, next) ->
         res.render "#{err.template.name}.jade", err.template.params
     else
         res.send statusCode, error: message
-
-    if err instanceof Error
-        logger.error err.message
-        logger.error err.stack

@@ -14,11 +14,12 @@ getCredentialsHeader = ->
     return "Basic #{basicCredentials}"
 
 # controller actions
-module.exports.management = (req, res) ->
+module.exports.management = (req, res, next) ->
 
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
-            next new Error "Server error occured."
+            console.log err
+            next err
         else if user is undefined or not user
             error = new Error "Bad credentials"
             error.status = 401
@@ -40,7 +41,7 @@ module.exports.management = (req, res) ->
     # Check if request is authenticated
     authenticator user, res
 
-module.exports.replication = (req, res) ->
+module.exports.replication = (req, res, next) ->
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
@@ -59,6 +60,6 @@ module.exports.replication = (req, res) ->
         # (easy desktop/mobile clients)
         getProxy().web req, res, target: "http://localhost:5984"
     else
-        error = new Error "Request unauthorized"
         error.status = 401
+        error = new Error "Request unauthorized"
         next error

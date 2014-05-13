@@ -31,9 +31,7 @@ module.exports.initializeProxy = function(app, server) {
     logger.error(err);
     console.log(err);
     polyglot = localization.getPolyglot();
-    return res.render("error.jade", {
-      polyglot: polyglot
-    });
+    return res.send(err, 500);
   });
   return server.on('upgrade', function(req, socket, head) {
     var cookieParser, fakeRes, initialize, session, sessionParser, _ref;

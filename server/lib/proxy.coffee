@@ -24,7 +24,8 @@ module.exports.initializeProxy = (app, server) ->
         logger.error err
         console.log err
         polyglot = localization.getPolyglot()
-        res.render "error.jade", polyglot: polyglot
+        res.send err, 500
+        #res.render "error.jade", polyglot: polyglot
 
     # Manage socket.io's websocket
     server.on 'upgrade', (req, socket, head) ->

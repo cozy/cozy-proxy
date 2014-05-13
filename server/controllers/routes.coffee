@@ -1,6 +1,7 @@
 index = require './index'
 auth = require './authentication'
 devices = require './devices'
+disk = require './disk'
 apps = require './applications'
 experiment = require './experimental'
 
@@ -31,6 +32,9 @@ module.exports =
 
     'public/:name/*': all: apps.publicApp
     'public/:name*': all: apps.appWithSlash
+
+    'disk-space': get: disk.getSpace
+
     'device*':
         post: devices.management
         del: devices.management

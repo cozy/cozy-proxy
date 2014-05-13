@@ -9,9 +9,13 @@ getProxy = require('../lib/proxy').getProxy;
 
 extractCredentials = function(header) {
   var authDevice;
-  authDevice = header.replace('Basic ', '');
-  authDevice = new Buffer(authDevice, 'base64').toString('ascii');
-  return authDevice.split(':');
+  if (header != null) {
+    authDevice = header.replace('Basic ', '');
+    authDevice = new Buffer(authDevice, 'base64').toString('ascii');
+    return authDevice.split(':');
+  } else {
+    return ["", ""];
+  }
 };
 
 getCredentialsHeader = function() {
@@ -21,7 +25,7 @@ getCredentialsHeader = function() {
   return "Basic " + basicCredentials;
 };
 
-module.exports.management = function(req, res) {
+module.exports.management = function(req, res, next) {
   var authenticator, password, user, username, _ref;
   authenticator = passport.authenticate('local', function(err, user) {
     var error;
@@ -50,7 +54,7 @@ module.exports.management = function(req, res) {
   return authenticator(user, res);
 };
 
-module.exports.replication = function(req, res) {
+module.exports.replication = function(req, res, next) {
   var error, password, username, _ref;
   _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
   if (deviceManager.isAuthenticated(username, password)) {

@@ -8,6 +8,7 @@ logger = require('printit')
 
 router = require './router'
 localization = require './localization_manager'
+errorHandler = require '../middlewares/errors'
 
 # singleton variable
 proxy = null
@@ -21,9 +22,12 @@ module.exports.initializeProxy = (app, server) ->
 
     # proxy error handling
     proxy.on 'error', (err, req, res) ->
-        logger.error err
-        polyglot = localization.getPolyglot()
-        res.render "error.jade", polyglot: polyglot
+        err = new Error err
+        err.statusCode = 500
+        err.template =
+            name: 'error'
+            params: polyglot: localization.getPolyglot()
+        errorHandler err, req, res
 
     # Manage socket.io's websocket
     server.on 'upgrade', (req, socket, head) ->

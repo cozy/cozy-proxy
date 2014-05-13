@@ -7,7 +7,10 @@ logger = require('printit')({
 });
 
 module.exports = function(err, req, res, next) {
-  var header, message, statusCode, value, _ref;
+  var header, message, statusCode, templateName, value, _ref;
+  if (next == null) {
+    next = function() {};
+  }
   statusCode = err.status || 500;
   message = err instanceof Error ? err.message : err.error;
   message = message || 'Server error occurred';
@@ -18,8 +21,11 @@ module.exports = function(err, req, res, next) {
       res.set(header, value);
     }
   }
-  if (err.template != null) {
-    res.render("" + err.template.name + ".jade", err.template.params);
+  if ((err.template != null) && req.accepts('html') === 'html') {
+    templateName = "" + err.template.name + ".jade";
+    res.render(templateName, err.template.params, function(err, html) {
+      return res.send(statusCode, html);
+    });
   } else {
     res.send(statusCode, {
       error: message

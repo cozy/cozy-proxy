@@ -8,6 +8,9 @@ logger = require('printit')({
 
 module.exports = function(err, req, res, next) {
   var header, message, statusCode, templateName, value, _ref;
+  if (next == null) {
+    next = function() {};
+  }
   if (err instanceof Error) {
     logger.error(err.message);
     logger.error(err.stack);

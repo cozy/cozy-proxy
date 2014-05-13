@@ -2,7 +2,7 @@ logger = require('printit')
     date: true
     prefix: 'app:error'
 
-module.exports = (err, req, res, next) ->
+module.exports = (err, req, res, next = ->) ->
 
     if err instanceof Error
         logger.error err.message

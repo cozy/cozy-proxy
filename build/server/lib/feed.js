@@ -3,15 +3,7 @@ var Feed,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 module.exports = Feed = (function() {
-  var deleted_ids;
-
-  Feed.prototype.db = void 0;
-
-  Feed.prototype.feed = void 0;
-
   Feed.prototype.axonSock = void 0;
-
-  deleted_ids = {};
 
   function Feed() {
     this.publish = __bind(this.publish, this);
@@ -25,7 +17,6 @@ module.exports = Feed = (function() {
     this.startPublishingToAxon();
     return server.on('close', (function(_this) {
       return function() {
-        _this.stopListening();
         if (_this.axonSock != null) {
           return _this.axonSock.close();
         }
@@ -36,25 +27,16 @@ module.exports = Feed = (function() {
   Feed.prototype.startPublishingToAxon = function() {
     var axon, axonPort;
     axon = require('axon');
-    this.axonSock = axon.socket('pub-emitter');
+    this.axonSock = axon.socket('pub');
     axonPort = parseInt(process.env.AXON_PORT || 9105);
-    this.axonSock.bind(axonPort);
-    this.logger.info('Pub server started');
-    return this.axonSock.sock.on('connect', (function(_this) {
-      return function() {
-        return _this.logger.info("An application connected to the change feeds");
-      };
-    })(this));
+    this.axonSock.connect(axonPort);
+    return this.logger.info('Pub server started');
   };
 
   Feed.prototype.publish = function(event, id) {
-    return this._publish(event, id);
-  };
-
-  Feed.prototype._publish = function(event, id) {
     this.logger.info("Publishing " + event + " " + id);
     if (this.axonSock != null) {
-      return this.axonSock.emit(event, id);
+      return this.axonSock.send(event, id);
     }
   };
 

@@ -43,11 +43,9 @@ module.exports.app = function(req, res, next) {
       getProxy().web(req, res, {
         target: "http://localhost:" + port
       });
-      req.on('end', (function(_this) {
-        return function() {
-          return end = true;
-        };
-      })(this));
+      req.on('end', function() {
+        return end = true;
+      });
       return publishUsage(appName);
     }
   });

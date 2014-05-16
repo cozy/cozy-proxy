@@ -27,7 +27,7 @@ module.exports.app = (req, res, next) ->
             next error
         else
             getProxy().web req, res, target: "http://localhost:#{port}"
-            req.on 'end', () =>
+            req.on 'end', () ->
                 end = true
             publishUsage appName
 

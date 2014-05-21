@@ -40,7 +40,7 @@ module.exports = {
   "register public name info": "Votre nom public sera utilisé par votre Cozy et ses applications pour communiquer avec vous.",
   "register timezone info": "Le fuseau horaire est utilisé par Cozy et ses applications pour être toujours à la bonne heure !",
   "error title": "Oups, une erreur est survenue",
-  "error headline": "Il semble quelque chose se soit mal passé.",
+  "error headline": "Il semble que quelque chose se soit mal passé.",
   "error reinsurance": "Ne vous inquiétez pas, ce n'est probablement pas trop grave !",
   "error temporary issue": "Le problème devrait être temporaire, merci de réessayer dans 5 minutes.",
   "error try restart": "Si rien n'a changé après ça, essayez de redémarrer votre Cozy.",

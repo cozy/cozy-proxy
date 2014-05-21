@@ -57,7 +57,7 @@ module.exports =
 
     # error page
     "error title": "Oups, une erreur est survenue"
-    "error headline": "Il semble quelque chose se soit mal passé."
+    "error headline": "Il semble que quelque chose se soit mal passé."
     "error reinsurance": "Ne vous inquiétez pas, ce n'est probablement pas trop grave !"
     "error temporary issue": "Le problème devrait être temporaire, merci de réessayer dans 5 minutes."
     "error try restart": "Si rien n'a changé après ça, essayez de redémarrer votre Cozy."

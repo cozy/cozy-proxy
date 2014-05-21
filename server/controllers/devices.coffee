@@ -4,9 +4,12 @@ deviceManager = require '../models/device'
 
 # helper functions
 extractCredentials = (header) ->
-    authDevice = header.replace 'Basic ', ''
-    authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
-    return authDevice.split ':'
+    if header?
+        authDevice = header.replace 'Basic ', ''
+        authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
+        return authDevice.split ':'
+    else        
+        return ["", ""]
 
 getCredentialsHeader = ->
     credentials = "#{process.env.NAME}:#{process.env.TOKEN}"

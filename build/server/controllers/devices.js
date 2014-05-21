@@ -9,9 +9,13 @@ getProxy = require('../lib/proxy').getProxy;
 
 extractCredentials = function(header) {
   var authDevice;
-  authDevice = header.replace('Basic ', '');
-  authDevice = new Buffer(authDevice, 'base64').toString('ascii');
-  return authDevice.split(':');
+  if (header != null) {
+    authDevice = header.replace('Basic ', '');
+    authDevice = new Buffer(authDevice, 'base64').toString('ascii');
+    return authDevice.split(':');
+  } else {
+    return ["", ""];
+  }
 };
 
 getCredentialsHeader = function() {

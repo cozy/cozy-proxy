@@ -13,8 +13,8 @@ cache = {}
 Device.update = (callback) ->
     Device.request 'all', (err, devices) ->
         cache = {}
-        if err logger.error err
-            console.log err
+        if err?
+            logger.error err
             callback err
         else
             if devices?

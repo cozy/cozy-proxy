@@ -20,8 +20,8 @@ Device.update = function(callback) {
   return Device.request('all', function(err, devices) {
     var device, _i, _len;
     cache = {};
-    if (err(logger.error(err))) {
-      console.log(err);
+    if (err != null) {
+      logger.error(err);
       return callback(err);
     } else {
       if (devices != null) {

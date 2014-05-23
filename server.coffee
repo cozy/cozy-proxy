@@ -13,7 +13,7 @@ process.env.DATASYSTEM_URL = "http://#{process.env.DATASYSTEM_HOST}:#{process.en
 
 process.env.HOME_HOST ?= 'localhost'
 process.env.HOME_PORT ?= process.env.DEFAULT_REDIRECT_PORT
-process.env.DATASYSTEM_URL = "http://#{process.env.HOME_HOST}:#{process.env.HOME_PORT}"
+process.env.HOME_URL = "http://#{process.env.HOME_HOST}:#{process.env.HOME_PORT}"
 
 process.env.COUCH_HOST ?= 'localhost'
 process.env.COUCH_PORT ?= '5984'

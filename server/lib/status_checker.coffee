@@ -3,12 +3,11 @@ async = require 'async'
 JsonClient = require('request-json').JsonClient
 User = require '../models/user'
 
-couchUrl = "http://localhost:5984/"
+couchUrl = process.env.COUCH_URL
 controllerUrl = "http://localhost:9002/"
-dataSystemUrl = "http://localhost:9101/"
+dataSystemUrl = process.env.DATASYSTEM_URL
 indexerUrl = "http://localhost:9102/"
-homePort = process.env.DEFAULT_REDIRECT_PORT
-homeUrl = "http://localhost:#{homePort}/"
+homeUrl = process.env.HOME_URL
 proxyUrl = "http://localhost:9104/"
 
 # Class used to check the state of the main modules of the Cozy.

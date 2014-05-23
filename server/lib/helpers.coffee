@@ -23,7 +23,7 @@ module.exports.sendResetEmail = (instance, user, key, callback) ->
         content: localization.t 'reset password email text',
                     domain: instance.domain, key: key
 
-    client = new Client "http://localhost:9101/"
+    client = new Client process.env.DATASYSTEM_URL
     if process.env.NODE_ENV is "production"
         client.setBasicAuth process.env.NAME, process.env.TOKEN
     client.post "mail/to-user/", data, (err, res, body) ->

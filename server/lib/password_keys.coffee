@@ -3,7 +3,7 @@ Client = require("request-json").JsonClient
 class PasswordKeys
 
     constructor: ->
-        @client = new Client "http://localhost:9101/"
+        @client = new Client process.env.DATASYSTEM_URL
         @name = process.env.NAME
         @token = process.env.TOKEN
         if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"

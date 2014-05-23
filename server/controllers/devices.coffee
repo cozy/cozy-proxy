@@ -8,7 +8,7 @@ extractCredentials = (header) ->
         authDevice = header.replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
         return authDevice.split ':'
-    else        
+    else
         return ["", ""]
 
 getCredentialsHeader = ->
@@ -31,7 +31,7 @@ module.exports.management = (req, res, next) ->
             # Send request to the Data System
             req.headers['authorization'] = getCredentialsHeader()
             res.end = -> deviceManager.update()
-            getProxy().web req, res, target: "http://localhost:9101"
+            getProxy().web req, res, target: process.env.DATASYSTEM_URL
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
@@ -61,7 +61,7 @@ module.exports.replication = (req, res, next) ->
         # the Cozy itself which is awesome because it would be easy to
         # add a permission layer and makes Cozy a true open platform
         # (easy desktop/mobile clients)
-        getProxy().web req, res, target: "http://localhost:5984"
+        getProxy().web req, res, target: process.env.COUCH_URL
     else
         error.status = 401
         error = new Error "Request unauthorized"

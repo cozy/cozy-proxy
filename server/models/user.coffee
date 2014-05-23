@@ -4,7 +4,7 @@ Client = require('request-json').JsonClient
 helpers = require '../lib/helpers'
 timezones = require '../lib/timezones'
 
-client = new Client "http://localhost:9101/"
+client = new Client process.env.DATASYSTEM_URL
 if process.env.NODE_ENV in ['production', 'test']
     client.setBasicAuth process.env.NAME, process.env.TOKEN
 

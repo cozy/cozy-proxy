@@ -21,7 +21,7 @@ module.exports = ->
             done null, false
 
     # strategy to use to identify the user
-    # we actually only have the password field
+    # we currently only have the password field
     options = usernameField: 'password'
     passport.use new LocalStrategy options, (email, password, done) ->
         User.first (err, user) ->

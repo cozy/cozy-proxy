@@ -146,8 +146,6 @@ module.exports.resetPassword = (req, res) ->
 
 module.exports.logout = (req, res) ->
     req.logout()
-    # clear in-memory cache
-    passport.currentUser = null
     res.send 204
 
 module.exports.authenticated = (req, res) ->

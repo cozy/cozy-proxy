@@ -34,7 +34,11 @@ config =
             authSteps[3]
         ]
         set:
-            views: path.join __dirname, '/../client/views'
+            views: path.join __dirname, 'views'
+
+        engine:
+            js: (path, locales, callback) ->
+                callback null, require(path)(locales)
 
     development: [
         americano.logger 'dev'

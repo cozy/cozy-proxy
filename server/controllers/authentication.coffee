@@ -134,6 +134,7 @@ module.exports.resetPassword = (req, res) ->
                             passwordKeys.resetKeys (err) ->
                                 if err? then next new Error err
                                 else
+                                    passport.currentUser = null
                                     res.send 204
                 else
                     error = new Error validationErrors

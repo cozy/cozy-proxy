@@ -23,7 +23,7 @@ module.exports = function(err, req, res, next) {
     }
   }
   if ((err.template != null) && (req != null ? req.accepts('html') : void 0) === 'html') {
-    templateName = "" + err.template.name + ".jade";
+    templateName = "" + err.template.name + ".js";
     return res.render(templateName, err.template.params, function(err, html) {
       return res.send(statusCode, html);
     });

@@ -29,7 +29,7 @@ module.exports.registerIndex = function(req, res) {
       locales = new locale.Locales(req.headers['accept-language']);
       bestMatch = locales.best(supported).language;
       polyglot = localization.getPolyglotByLocale(bestMatch);
-      return res.render('register.jade', {
+      return res.render('register.js', {
         polyglot: polyglot,
         timezones: timezones
       });
@@ -103,7 +103,7 @@ module.exports.loginIndex = function(req, res) {
         }).join(' ');
       }
       polyglot = localization.getPolyglot();
-      return res.render('login.jade', {
+      return res.render('login.js', {
         polyglot: polyglot,
         name: name
       });
@@ -152,7 +152,7 @@ module.exports.resetPasswordIndex = function(req, res) {
   var polyglot;
   if (Instance.getResetKey() === req.params.key) {
     polyglot = localization.getPolyglot();
-    return res.render('reset.jade', {
+    return res.render('reset.js', {
       polyglot: polyglot,
       resetKey: req.params.key
     });

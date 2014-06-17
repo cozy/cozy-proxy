@@ -33,7 +33,12 @@ config = {
       }), americano["static"](path.join(__dirname, '/../client/public')), selectiveBodyParser, usetracker, authSteps[0], authSteps[1], authSteps[2], authSteps[3]
     ],
     set: {
-      views: path.join(__dirname, '/../client/views')
+      views: path.join(__dirname, 'views')
+    },
+    engine: {
+      js: function(path, locales, callback) {
+        return callback(null, require(path)(locales));
+      }
     }
   },
   development: [americano.logger('dev')],

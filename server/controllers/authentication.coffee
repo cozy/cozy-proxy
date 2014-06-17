@@ -18,7 +18,7 @@ module.exports.registerIndex = (req, res) ->
             locales = new locale.Locales req.headers['accept-language']
             bestMatch = locales.best(supported).language
             polyglot = localization.getPolyglotByLocale bestMatch
-            res.render 'register.jade', polyglot: polyglot, timezones: timezones
+            res.render 'register.js', polyglot: polyglot, timezones: timezones
         else
             res.redirect 'login'
 
@@ -75,7 +75,7 @@ module.exports.loginIndex = (req, res) ->
                 ).join ' '
 
             polyglot = localization.getPolyglot()
-            res.render 'login.jade', polyglot: polyglot, name: name
+            res.render 'login.js', polyglot: polyglot, name: name
         else
             res.redirect 'register'
 
@@ -106,7 +106,7 @@ module.exports.forgotPassword = (req, res, next) ->
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
         polyglot = localization.getPolyglot()
-        res.render 'reset.jade', polyglot: polyglot, resetKey: req.params.key
+        res.render 'reset.js', polyglot: polyglot, resetKey: req.params.key
     else
         res.redirect '/'
 

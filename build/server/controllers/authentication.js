@@ -192,6 +192,7 @@ module.exports.resetPassword = function(req, res) {
                 if (err != null) {
                   return next(new Error(err));
                 } else {
+                  passport.currentUser = null;
                   return res.send(204);
                 }
               });
@@ -213,7 +214,6 @@ module.exports.resetPassword = function(req, res) {
 
 module.exports.logout = function(req, res) {
   req.logout();
-  passport.currentUser = null;
   return res.send(204);
 };
 

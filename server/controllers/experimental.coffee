@@ -27,7 +27,7 @@ module.exports.webfingerHostMeta = (req, res) ->
 module.exports.webfingerAccount = (req, res) ->
 
     if req.params.module is 'caldav' or req.params.module is 'carddav'
-        res.redirect '/public/webdav/'
+        res.redirect '/public/sync/'
 
     else if req.params.module is 'webfinger'
 

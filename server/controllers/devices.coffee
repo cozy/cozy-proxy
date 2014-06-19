@@ -8,7 +8,7 @@ extractCredentials = (header) ->
         authDevice = header.replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
         return authDevice.split ':'
-    else        
+    else
         return ["", ""]
 
 getCredentialsHeader = ->

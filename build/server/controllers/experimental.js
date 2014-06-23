@@ -21,7 +21,7 @@ module.exports.webfingerHostMeta = function(req, res) {
 module.exports.webfingerAccount = function(req, res) {
   var OAUTH_VERSION, PROTOCOL_VERSION, accountInfo, host, link, routes;
   if (req.params.module === 'caldav' || req.params.module === 'carddav') {
-    return res.redirect('/public/webdav/');
+    return res.redirect('/public/sync/');
   } else if (req.params.module === 'webfinger') {
     host = 'https://' + req.get('host');
     OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';

@@ -12,7 +12,7 @@ authSteps = [
     americano.cookieParser randomstring.generate()
     americano.cookieSession
         secret: randomstring.generate()
-        cookie: maxAge: 30 * 86400 * 1000
+        cookie: maxAge: 60 * 60 * 24 * 7 # One week session
     passport.initialize()
     passport.session()
 ]

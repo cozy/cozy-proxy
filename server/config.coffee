@@ -1,5 +1,7 @@
 path = require 'path'
 americano = require 'americano'
+cookieParser = require 'cookie-parser'
+cookieSession = require 'cookie-session'
 passport = require 'passport'
 randomstring = require 'randomstring'
 usetracker = require './middlewares/usetracker'
@@ -9,8 +11,8 @@ selectiveBodyParser = require './middlewares/selectiveBodyParser'
 # Middlewares order matters to authenticate websockets
 # See ./server/lib/proxy.coffee
 authSteps = [
-    americano.cookieParser randomstring.generate()
-    americano.cookieSession
+    cookieParser randomstring.generate()
+    cookieSession
         secret: randomstring.generate()
         cookie: maxAge: 60 * 60 * 24 * 7 # One week session
     passport.initialize()

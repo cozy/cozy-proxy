@@ -22,6 +22,9 @@ client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serv
 process.env.HOST = helpers.options.serverHost
 process.env.PORT = helpers.options.serverPort
 
+# set the HOME PORT
+process.env.DEFAULT_REDIRECT_PORT = 4446
+
 # Returns a client if url is given, default app client otherwise
 helpers.getClient = (url = null) ->
     if url?

@@ -51,7 +51,7 @@ helpers.patchCookieJar = ->
     originalXHR = require('xmlhttprequest').XMLHttpRequest
     xhrPackage = 'socket.io-client/node_modules/xmlhttprequest'
     request = require 'request-json/node_modules/request'
-    @jar = jar = {}
+    @jar = jar = {cookies:[]}
 
     require(xhrPackage).XMLHttpRequest = ->
         originalXHR.apply @, arguments
@@ -60,8 +60,7 @@ helpers.patchCookieJar = ->
 
         @open = ->
             stdOpen.apply @, arguments
-            header = jar.authCookie
-            @setRequestHeader 'cookie', header
+            @setRequestHeader 'cookie', jar.cookies.join('; ')
         @
 
 helpers.patchSocketIO = ->
@@ -79,7 +78,7 @@ helpers.patchSocketIO = ->
             Socket = global.MozWebSocket or global.WebSocket
 
         url = @prepareUrl() + query
-        @websocket = new Socket url, headers: 'Cookie': jar.authCookie
+        @websocket = new Socket url, headers: 'Cookie': jar.cookies.join('; ')
 
         @websocket.onopen = ->
             self.onOpen()
@@ -99,9 +98,8 @@ helpers.login = (password) -> (done) ->
     client = helpers.getClient()
     client.post 'login', password: password, (err, res) =>
         if res.headers['set-cookie']
-            cookie = res.headers["set-cookie"][0]
-            values = cookie.split ';'
-            @jar.authCookie = values[0]
+            @jar.cookies = res.headers["set-cookie"].map (cookie) ->
+                cookie.split(';')[0]
         done()
 
 helpers.createAllRequests = (done) ->

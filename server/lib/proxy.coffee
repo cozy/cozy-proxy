@@ -41,26 +41,37 @@ module.exports.initializeProxy = (app, server) ->
             (callback) -> initialize req, fakeRes, callback
             (callback) -> session req, fakeRes, callback
         ], (err) ->
-            # public routes shouldn't be authenticated
-            isPublic = /^\/public\/(.*)/.test req.url
-            if (req.isAuthenticated() and not err) or isPublic
-                #console.log app._router.matchRequest.toString()
-                # this can break at any express upgrade
-                if slug = app._router.matchRequest(req).params.name
-                    if /^\/apps\/(.*)/.test req.url
-                        req.url = req.url.replace "/apps/#{slug}", ''
-                    else if isPublic
-                        req.url = req.url.replace "/public/#{slug}", '/public'
 
-                    routes = router.getRoutes()
-                    port = routes[slug].port
-                else
-                    port = process.env.DEFAULT_REDIRECT_PORT
-
+            proxyWS = (port) ->
                 proxy.ws req, socket, head,
                     target: "ws://localhost:#{port}"
                     ws: true
-            else
+
+            fail = (err) ->
                 logger.error err if err?
                 logger.error "Socket unauthorized"
+                socket.end "HTTP/1.1 400 Connection Refused \r\n" +
+                "Connection: close\r\n\r\n", 'ascii'
 
+            return fail err if err
+
+            # express doesn't expose its router, we do it manually
+            [_, publicOrPrivate, slug] = req.url.split '/'
+            routes = router.getRoutes()
+
+            # /public/XXXXXX
+            if publicOrPrivate is 'public'
+                req.url = req.url.replace "/public/#{slug}", '/public'
+                proxyWS routes[slug].port
+
+            # (AUTH) /apps/XXXXX
+            else if publicOrPrivate is 'apps' and req.isAuthenticated()
+                req.url = req.url.replace "/apps/#{slug}", ''
+                proxyWS routes[slug].port
+
+            # (AUTH) /XXXXX -> HOME
+            else if req.isAuthenticated()
+                proxyWS process.env.DEFAULT_REDIRECT_PORT
+
+            else
+                fail new Error('socket not authorized')

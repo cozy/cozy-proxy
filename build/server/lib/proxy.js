@@ -57,29 +57,35 @@ module.exports.initializeProxy = function(app, server) {
         return session(req, fakeRes, callback);
       }
     ], function(err) {
-      var isPublic, port, routes, slug;
-      isPublic = /^\/public\/(.*)/.test(req.url);
-      if ((req.isAuthenticated() && !err) || isPublic) {
-        if (slug = app._router.matchRequest(req).params.name) {
-          if (/^\/apps\/(.*)/.test(req.url)) {
-            req.url = req.url.replace("/apps/" + slug, '');
-          } else if (isPublic) {
-            req.url = req.url.replace("/public/" + slug, '/public');
-          }
-          routes = router.getRoutes();
-          port = routes[slug].port;
-        } else {
-          port = process.env.DEFAULT_REDIRECT_PORT;
-        }
+      var fail, proxyWS, publicOrPrivate, routes, slug, _, _ref1;
+      proxyWS = function(port) {
         return proxy.ws(req, socket, head, {
           target: "ws://localhost:" + port,
           ws: true
         });
-      } else {
+      };
+      fail = function(err) {
         if (err != null) {
           logger.error(err);
         }
-        return logger.error("Socket unauthorized");
+        logger.error("Socket unauthorized");
+        return socket.end("HTTP/1.1 400 Connection Refused \r\n" + "Connection: close\r\n\r\n", 'ascii');
+      };
+      if (err) {
+        return fail(err);
+      }
+      _ref1 = req.url.split('/'), _ = _ref1[0], publicOrPrivate = _ref1[1], slug = _ref1[2];
+      routes = router.getRoutes();
+      if (publicOrPrivate === 'public') {
+        req.url = req.url.replace("/public/" + slug, '/public');
+        return proxyWS(routes[slug].port);
+      } else if (publicOrPrivate === 'apps' && req.isAuthenticated()) {
+        req.url = req.url.replace("/apps/" + slug, '');
+        return proxyWS(routes[slug].port);
+      } else if (req.isAuthenticated()) {
+        return proxyWS(process.env.DEFAULT_REDIRECT_PORT);
+      } else {
+        return fail(new Error('socket not authorized'));
       }
     });
   });

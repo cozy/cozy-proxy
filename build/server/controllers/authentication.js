@@ -34,7 +34,7 @@ module.exports.registerIndex = function(req, res) {
         timezones: timezones
       });
     } else {
-      return res.redirect('login');
+      return res.redirect('/login');
     }
   });
 };
@@ -108,7 +108,7 @@ module.exports.loginIndex = function(req, res) {
         name: name
       });
     } else {
-      return res.redirect('register');
+      return res.redirect('/register');
     }
   });
 };

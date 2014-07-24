@@ -61,7 +61,7 @@ module.exports = {
   },
   'device*': {
     post: devices.management,
-    del: devices.management
+    "delete": devices.management
   },
   'apps/:name/*': {
     all: [utils.isAuthenticated, apps.app]

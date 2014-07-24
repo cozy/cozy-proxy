@@ -11,6 +11,7 @@ passwordKeys = require '../lib/password_keys'
 timezones = require '../lib/timezones'
 supportedLocales = require('../config').supportedLanguages
 
+
 module.exports.registerIndex = (req, res) ->
     User.first (err, user) ->
         unless user?
@@ -20,7 +21,8 @@ module.exports.registerIndex = (req, res) ->
             polyglot = localization.getPolyglotByLocale bestMatch
             res.render 'register.js', polyglot: polyglot, timezones: timezones
         else
-            res.redirect 'login'
+            res.redirect '/login'
+
 
 module.exports.register = (req, res, next) ->
 
@@ -62,6 +64,7 @@ module.exports.register = (req, res, next) ->
         error.status = 400
         next error
 
+
 module.exports.loginIndex = (req, res) ->
     User.first (err, user) ->
         if user?
@@ -77,7 +80,8 @@ module.exports.loginIndex = (req, res) ->
             polyglot = localization.getPolyglot()
             res.render 'login.js', polyglot: polyglot, name: name
         else
-            res.redirect 'register'
+            res.redirect '/register'
+
 
 module.exports.forgotPassword = (req, res, next) ->
 
@@ -103,12 +107,14 @@ module.exports.forgotPassword = (req, res, next) ->
                     else
                         res.send 204
 
+
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
         polyglot = localization.getPolyglot()
         res.render 'reset.js', polyglot: polyglot, resetKey: req.params.key
     else
         res.redirect '/'
+
 
 module.exports.resetPassword = (req, res) ->
     key = req.params.key
@@ -145,9 +151,11 @@ module.exports.resetPassword = (req, res) ->
                 error.status = 400
                 next error
 
+
 module.exports.logout = (req, res) ->
     req.logout()
     res.send 204
+
 
 module.exports.authenticated = (req, res) ->
     res.send 200, isAuthenticated: req.isAuthenticated()

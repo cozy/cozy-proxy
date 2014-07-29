@@ -22,38 +22,43 @@ module.exports.webfingerHostMeta = (req, res) ->
 # return the account file
 # @TODO : let the user add more information here
 # OpenID provider, public email, public tel, ...
-module.exports.webfingerAccount = (req, res) ->
+module.exports.webfingerAccount = (req, res, next) ->
 
     if req.params.module is 'caldav' or req.params.module is 'carddav'
         res.redirect '/public/sync/'
 
     else if req.params.module is 'webfinger'
 
-        host = 'https://' + req.get 'host'
-        OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
-        PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
+        CozyInstance.first (err, instance) ->
 
-        res.header 'Access-Control-Allow-Origin', '*'
-        res.header 'Access-Control-Allow-Credentials', true
-        res.header 'Access-Control-Allow-Methods', 'GET'
+            return next err if err
+            return next new Error('no instance') unless instance?.domain
 
-        accountInfo = links: []
-        routes = require('../lib/router').getRoutes()
-        if routes['remotestorage']
+            host = 'https://' + instance.domain
+            OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
+            PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
 
-            link =
-                href: "#{host}/public/remotestorage/storage"
-                rel: 'remotestorage'
-                type: PROTOCOL_VERSION
-                properties:
-                    'auth-method': OAUTH_VERSION
-                    'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
+            res.header 'Access-Control-Allow-Origin', '*'
+            res.header 'Access-Control-Allow-Credentials', true
+            res.header 'Access-Control-Allow-Methods', 'GET'
 
-            link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+            accountInfo = links: []
+            routes = require('../lib/router').getRoutes()
+            if routes['remotestorage']
 
-            accountInfo.links.push link
+                link =
+                    href: "#{host}/public/remotestorage/storage"
+                    rel: 'remotestorage'
+                    type: PROTOCOL_VERSION
+                    properties:
+                        'auth-method': OAUTH_VERSION
+                        'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
 
-        return res.send 200, accountInfo
+                link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+
+                accountInfo.links.push link
+
+            return res.send 200, accountInfo
 
     else
         res.send 404

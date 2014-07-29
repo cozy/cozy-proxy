@@ -32,7 +32,7 @@ module.exports.webfingerAccount = function(req, res) {
     accountInfo = {
       links: []
     };
-    routes = router.getRoutes();
+    routes = require('router').getRoutes();
     if (routes['remotestorage']) {
       link = {
         href: "" + host + "/public/remotestorage/storage",

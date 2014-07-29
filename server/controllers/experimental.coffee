@@ -11,14 +11,18 @@ module.exports.webfingerHostMeta = (req, res) ->
     res.header 'Access-Control-Allow-Credentials', true
     res.header 'Access-Control-Allow-Methods', 'GET'
 
-    host = 'https://' + req.get 'host'
-    template = "#{host}/webfinger/json?resource={uri}"
+    CozyInstance.first (err, instance) ->
+        return next err if err
+        return next new Error('no instance') unless instance?.domain
 
-    hostmeta = links:
-        rel: 'lrdd'
-        template: template
+        host = 'https://' + instance.domain
+        template = "#{host}/webfinger/json?resource={uri}"
 
-    res.send 200, hostmeta
+        hostmeta = links:
+            rel: 'lrdd'
+            template: template
+
+        res.send 200, hostmeta
 
 
 # return the account file

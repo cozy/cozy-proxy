@@ -4,22 +4,30 @@ var CozyInstance;
 CozyInstance = require('../models/instance');
 
 module.exports.webfingerHostMeta = function(req, res) {
-  var host, hostmeta, template;
   if (req.params.ext !== 'json') {
     return res.send(404);
   }
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET');
-  host = 'https://' + req.get('host');
-  template = "" + host + "/webfinger/json?resource={uri}";
-  hostmeta = {
-    links: {
-      rel: 'lrdd',
-      template: template
+  return CozyInstance.first(function(err, instance) {
+    var host, hostmeta, template;
+    if (err) {
+      return next(err);
     }
-  };
-  return res.send(200, hostmeta);
+    if (!(instance != null ? instance.domain : void 0)) {
+      return next(new Error('no instance'));
+    }
+    host = 'https://' + instance.domain;
+    template = "" + host + "/webfinger/json?resource={uri}";
+    hostmeta = {
+      links: {
+        rel: 'lrdd',
+        template: template
+      }
+    };
+    return res.send(200, hostmeta);
+  });
 };
 
 module.exports.webfingerAccount = function(req, res, next) {

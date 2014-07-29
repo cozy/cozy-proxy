@@ -1,5 +1,3 @@
-#router = require '../lib/router'
-
 # Return the host meta file
 # support only JSON format
 # @TODO : support xml
@@ -40,7 +38,7 @@ module.exports.webfingerAccount = (req, res) ->
         res.header 'Access-Control-Allow-Methods', 'GET'
 
         accountInfo = links: []
-        routes = router.getRoutes()
+        routes = require('router').getRoutes()
         if routes['remotestorage']
 
             link =

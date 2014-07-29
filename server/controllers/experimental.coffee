@@ -1,3 +1,5 @@
+CozyInstance = require '../models/instance'
+
 # Return the host meta file
 # support only JSON format
 # @TODO : support xml

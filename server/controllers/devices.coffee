@@ -63,6 +63,6 @@ module.exports.replication = (req, res, next) ->
         # (easy desktop/mobile clients)
         getProxy().web req, res, target: "http://localhost:5984"
     else
-        error.status = 401
         error = new Error "Request unauthorized"
+        error.status = 401
         next error

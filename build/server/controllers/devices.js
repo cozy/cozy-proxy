@@ -66,8 +66,8 @@ module.exports.replication = function(req, res, next) {
       target: "http://localhost:5984"
     });
   } else {
-    error.status = 401;
     error = new Error("Request unauthorized");
+    error.status = 401;
     return next(error);
   }
 };

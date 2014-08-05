@@ -61,6 +61,8 @@ module.exports.replication = function(req, res, next) {
   if (deviceManager.isAuthenticated(username, password)) {
     if (process.env.NODE_ENV === "production") {
       req.headers['authorization'] = getCredentialsHeader();
+    } else {
+      req.headers['authorization'] = null;
     }
     return getProxy().web(req, res, {
       target: "http://localhost:5984"

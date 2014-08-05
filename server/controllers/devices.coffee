@@ -52,6 +52,8 @@ module.exports.replication = (req, res, next) ->
         # Add his creadentials for CouchDB
         if process.env.NODE_ENV is "production"
             req.headers['authorization'] = getCredentialsHeader()
+        else
+            req.headers['authorization'] = null
 
         # Forward request to Couch
         # the request didn't go through the DS because for some unknown

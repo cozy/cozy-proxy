@@ -1,3 +1,4 @@
+http = require 'http'
 httpProxy = require 'http-proxy'
 async = require 'async'
 passport = require 'passport'

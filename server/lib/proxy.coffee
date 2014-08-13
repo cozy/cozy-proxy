@@ -1,4 +1,9 @@
 http = require 'http'
+# This requirement monkey patch the fs standard lib. That way it manages better
+# the fact that too many file descriptors are opened. It stops creating them
+# and create a waiting queue when the number of fd reaches the limit set by the
+# kernel.
+fs = require 'graceful-fs'
 httpProxy = require 'http-proxy'
 async = require 'async'
 passport = require 'passport'

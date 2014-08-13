@@ -22,6 +22,8 @@ module.exports.initializeProxy = (app, server) ->
 
     # proxy error handling
     proxy.on 'error', (err, req, res) ->
+        console.log err
+
         err = new Error err
         err.statusCode = 500
         err.template =

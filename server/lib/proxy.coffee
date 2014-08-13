@@ -18,7 +18,8 @@ module.exports.getProxy = -> return proxy
 module.exports.initializeProxy = (app, server) ->
 
     # create proxy server
-    proxy = httpProxy.createProxyServer()
+    proxy = httpProxy.createProxyServer
+        agent: new http.Agent()
 
     # proxy error handling
     proxy.on 'error', (err, req, res) ->

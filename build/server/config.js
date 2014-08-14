@@ -20,9 +20,7 @@ selectiveBodyParser = require('./middlewares/selective_body_parser');
 authSteps = [
   cookieParser(randomstring.generate()), cookieSession({
     secret: randomstring.generate(),
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7
-    },
+    maxage: 1000 * 60 * 60 * 24 * 7,
     secureProxy: true
   }), passport.initialize(), passport.session()
 ];

@@ -5,7 +5,7 @@ cookieSession = require 'cookie-session'
 passport = require 'passport'
 randomstring = require 'randomstring'
 usetracker = require './middlewares/usetracker'
-selectiveBodyParser = require './middlewares/selectiveBodyParser'
+selectiveBodyParser = require './middlewares/selective_body_parser'
 
 # /!\ CAREFUL /!\
 # Middlewares order matters to authenticate websockets

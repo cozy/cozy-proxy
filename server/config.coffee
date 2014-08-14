@@ -14,7 +14,7 @@ authSteps = [
     cookieParser randomstring.generate()
     cookieSession
         secret: randomstring.generate()
-        cookie: maxAge: 1000 * 60 * 60 * 24 * 7 # One week session
+        maxage: 1000 * 60 * 60 * 24 * 7 # One week session
         secureProxy: true
     passport.initialize()
     passport.session()

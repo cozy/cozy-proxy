@@ -15,7 +15,7 @@ randomstring = require('randomstring');
 
 usetracker = require('./middlewares/usetracker');
 
-selectiveBodyParser = require('./middlewares/selectiveBodyParser');
+selectiveBodyParser = require('./middlewares/selective_body_parser');
 
 authSteps = [
   cookieParser(randomstring.generate()), cookieSession({

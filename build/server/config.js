@@ -21,8 +21,9 @@ authSteps = [
   cookieParser(randomstring.generate()), cookieSession({
     secret: randomstring.generate(),
     cookie: {
-      maxAge: 60 * 60 * 24 * 7
-    }
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    },
+    secureProxy: true
   }), passport.initialize(), passport.session()
 ];
 

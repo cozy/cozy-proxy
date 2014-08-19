@@ -15,7 +15,7 @@ authSteps = [
     cookieSession
         secret: randomstring.generate()
         maxage: 1000 * 60 * 60 * 24 * 7 # One week session
-        secureProxy: true
+        secureProxy: process.env.NODE_ENV is 'production'
     passport.initialize()
     passport.session()
 ]

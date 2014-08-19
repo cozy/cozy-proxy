@@ -5,7 +5,7 @@ cookieSession = require 'cookie-session'
 passport = require 'passport'
 randomstring = require 'randomstring'
 usetracker = require './middlewares/usetracker'
-selectiveBodyParser = require './middlewares/selectiveBodyParser'
+selectiveBodyParser = require './middlewares/selective_body_parser'
 
 # /!\ CAREFUL /!\
 # Middlewares order matters to authenticate websockets
@@ -14,7 +14,8 @@ authSteps = [
     cookieParser randomstring.generate()
     cookieSession
         secret: randomstring.generate()
-        cookie: maxAge: 60 * 60 * 24 * 7 # One week session
+        maxage: 1000 * 60 * 60 * 24 * 7 # One week session
+        secureProxy: process.env.NODE_ENV is 'production'
     passport.initialize()
     passport.session()
 ]

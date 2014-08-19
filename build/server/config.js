@@ -15,14 +15,13 @@ randomstring = require('randomstring');
 
 usetracker = require('./middlewares/usetracker');
 
-selectiveBodyParser = require('./middlewares/selectiveBodyParser');
+selectiveBodyParser = require('./middlewares/selective_body_parser');
 
 authSteps = [
   cookieParser(randomstring.generate()), cookieSession({
     secret: randomstring.generate(),
-    cookie: {
-      maxAge: 60 * 60 * 24 * 7
-    }
+    maxage: 1000 * 60 * 60 * 24 * 7,
+    secureProxy: process.env.NODE_ENV === 'production'
   }), passport.initialize(), passport.session()
 ];
 

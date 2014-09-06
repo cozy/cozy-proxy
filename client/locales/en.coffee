@@ -16,7 +16,7 @@ module.exports =
     "reset instructions": "After a password reset, you must reconfigure your confidential data like your mailbox or your bank account."
     "reset password placeholder": "Your new password"
     "reset button": "Change my password"
-    "reset success message": "Password surcessfully reset."
+    "reset success message": "Password successfully reset."
 
     # register page
     "register title": "Cozy - Sign up"

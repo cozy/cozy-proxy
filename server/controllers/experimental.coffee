@@ -1,4 +1,5 @@
 CozyInstance = require '../models/instance'
+router = require '../lib/router'
 
 # Return the host meta file
 # support only JSON format
@@ -30,17 +31,20 @@ module.exports.webfingerHostMeta = (req, res) ->
 # OpenID provider, public email, public tel, ...
 module.exports.webfingerAccount = (req, res, next) ->
 
-    if req.params.module is 'caldav' or req.params.module is 'carddav'
-        res.redirect '/public/sync/'
+    CozyInstance.first (err, instance) ->
+        return next err if err?
+        return next new Error('no instance') unless instance?.domain
 
-    else if req.params.module is 'webfinger'
+        host = "https://#{instance.domain}"
+        if req.params.module in ['caldav', 'carddav']
+            routes = router.getRoutes()
+            if routes['sync']?
+                res.redirect "#{host}/public/sync/"
+            else
+                res.send 404
 
-        CozyInstance.first (err, instance) ->
+        else if req.params.module is 'webfinger'
 
-            return next err if err
-            return next new Error('no instance') unless instance?.domain
-
-            host = 'https://' + instance.domain
             OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2'
             PROTOCOL_VERSION = 'draft-dejong-remotestorage-01'
 
@@ -49,7 +53,7 @@ module.exports.webfingerAccount = (req, res, next) ->
             res.header 'Access-Control-Allow-Methods', 'GET'
 
             accountInfo = links: []
-            routes = require('../lib/router').getRoutes()
+            routes = router.getRoutes()
             if routes['remotestorage']
 
                 link =
@@ -60,11 +64,12 @@ module.exports.webfingerAccount = (req, res, next) ->
                         'auth-method': OAUTH_VERSION
                         'auth-endpoint': "#{host}/apps/remotestorage/oauth/"
 
-                link.properties[OAUTH_VERSION] = link.properties['auth-endpoint']
+                authEndPoint = link.properties['auth-endpoint']
+                link.properties[OAUTH_VERSION] = authEndPoint
 
                 accountInfo.links.push link
 
             return res.send 200, accountInfo
 
-    else
-        res.send 404
+        else
+            res.send 404

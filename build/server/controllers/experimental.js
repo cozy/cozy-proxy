@@ -33,45 +33,49 @@ module.exports.webfingerHostMeta = function(req, res) {
 };
 
 module.exports.webfingerAccount = function(req, res, next) {
-  var OAUTH_VERSION, PROTOCOL_VERSION, accountInfo, host, link, routes, _ref;
-  CozyInstance.first(function(err, instance) {
+  return CozyInstance.first(function(err, instance) {
+    var OAUTH_VERSION, PROTOCOL_VERSION, accountInfo, authEndPoint, host, link, routes, _ref;
     if (err != null) {
       return next(err);
     }
     if (!(instance != null ? instance.domain : void 0)) {
       return next(new Error('no instance'));
     }
-  });
-  if ((_ref = req.params.module) === 'caldav' || _ref === 'carddav') {
-    routes = router.getRoutes();
-    console.log(routes);
-    return res.redirect("https://" + instance.domain + "/public/sync/");
-  } else if (req.params.module === 'webfinger') {
-    host = 'https://' + instance.domain;
-    OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';
-    PROTOCOL_VERSION = 'draft-dejong-remotestorage-01';
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Methods', 'GET');
-    accountInfo = {
-      links: []
-    };
-    routes = require('../lib/router').getRoutes();
-    if (routes['remotestorage']) {
-      link = {
-        href: "" + host + "/public/remotestorage/storage",
-        rel: 'remotestorage',
-        type: PROTOCOL_VERSION,
-        properties: {
-          'auth-method': OAUTH_VERSION,
-          'auth-endpoint': "" + host + "/apps/remotestorage/oauth/"
-        }
+    host = "https://" + instance.domain;
+    if ((_ref = req.params.module) === 'caldav' || _ref === 'carddav') {
+      routes = router.getRoutes();
+      if (routes['sync'] != null) {
+        return res.redirect("" + host + "/public/sync/");
+      } else {
+        return res.send(404);
+      }
+    } else if (req.params.module === 'webfinger') {
+      OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';
+      PROTOCOL_VERSION = 'draft-dejong-remotestorage-01';
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Methods', 'GET');
+      accountInfo = {
+        links: []
       };
-      link.properties[OAUTH_VERSION] = link.properties['auth-endpoint'];
-      accountInfo.links.push(link);
+      routes = router.getRoutes();
+      if (routes['remotestorage']) {
+        link = {
+          href: "" + host + "/public/remotestorage/storage",
+          rel: 'remotestorage',
+          type: PROTOCOL_VERSION,
+          properties: {
+            'auth-method': OAUTH_VERSION,
+            'auth-endpoint': "" + host + "/apps/remotestorage/oauth/"
+          }
+        };
+        authEndPoint = link.properties['auth-endpoint'];
+        link.properties[OAUTH_VERSION] = authEndPoint;
+        accountInfo.links.push(link);
+      }
+      return res.send(200, accountInfo);
+    } else {
+      return res.send(404);
     }
-    return res.send(200, accountInfo);
-  } else {
-    return res.send(404);
-  }
+  });
 };

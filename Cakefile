@@ -125,14 +125,14 @@ task "lint", "Run Coffeelint", ->
 
 
 buildJade = ->
-    for file in fs.readdirSync './client/views/'
-        filename = "./client/views/#{file}"
+    jade = require 'jade'
+    for file in fs.readdirSync './server/views/'
+        filename = "./server/views/#{file}"
         template = fs.readFileSync filename, 'utf8'
-        output = "var jade = require('jade/runtime'); \n"
-        output += "module.exports = " + require('jade').compileClient template, {filename}
-        name = file.replace('.jade', '.js')
+        output = "var jade = require('jade/runtime');\n"
+        output += "module.exports = " + jade.compileClient template, {filename}
+        name = file.replace '.jade', '.js'
         fs.writeFileSync "./build/server/views/#{name}", output
-
 
 task 'build', 'Build CoffeeScript to Javascript', ->
     logger.options.prefix = 'cake:build'

@@ -13,8 +13,9 @@ module.exports.webfingerHostMeta = (req, res) ->
     res.header 'Access-Control-Allow-Methods', 'GET'
 
     CozyInstance.first (err, instance) ->
-        return next err if err
-        return next new Error('no instance') unless instance?.domain
+        return next err if err?
+        unless instance?.domain
+            return next new Error "Cozy's domain has not been registered"
 
         host = 'https://' + instance.domain
         template = "#{host}/webfinger/json?resource={uri}"
@@ -41,7 +42,7 @@ module.exports.webfingerAccount = (req, res, next) ->
             if routes['sync']?
                 res.redirect "#{host}/public/sync/"
             else
-                res.send 404
+                res.send 404, 'Application Sync is not installed.'
 
         else if req.params.module is 'webfinger'
 

@@ -14,11 +14,11 @@ module.exports.webfingerHostMeta = function(req, res) {
   res.header('Access-Control-Allow-Methods', 'GET');
   return CozyInstance.first(function(err, instance) {
     var host, hostmeta, template;
-    if (err) {
+    if (err != null) {
       return next(err);
     }
     if (!(instance != null ? instance.domain : void 0)) {
-      return next(new Error('no instance'));
+      return next(new Error("Cozy's domain has not been registered"));
     }
     host = 'https://' + instance.domain;
     template = "" + host + "/webfinger/json?resource={uri}";
@@ -47,7 +47,7 @@ module.exports.webfingerAccount = function(req, res, next) {
       if (routes['sync'] != null) {
         return res.redirect("" + host + "/public/sync/");
       } else {
-        return res.send(404);
+        return res.send(404, 'Application Sync is not installed.');
       }
     } else if (req.params.module === 'webfinger') {
       OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';

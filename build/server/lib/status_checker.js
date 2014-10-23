@@ -42,7 +42,7 @@ StatusChecker = (function() {
       value = _ref[field];
       this.status[field] = false;
     }
-    return async.series([this.getChecker("couchdb", couchUrl), this.getChecker("controller", controllerUrl, "version"), this.getChecker("datasystem", dataSystemUrl), this.getChecker("indexer", indexerUrl), this.getChecker("home", homeUrl), this.getChecker("proxy", proxyUrl, "routes")], (function(_this) {
+    return async.series([this.getChecker("couchdb", couchUrl), this.getChecker("controller", controllerUrl, "drones/running"), this.getChecker("datasystem", dataSystemUrl), this.getChecker("indexer", indexerUrl), this.getChecker("home", homeUrl), this.getChecker("proxy", proxyUrl, "routes")], (function(_this) {
       return function() {
         return User.first(function(err, user) {
           if ((user == null) || err) {

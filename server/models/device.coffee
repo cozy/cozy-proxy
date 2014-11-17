@@ -24,4 +24,9 @@ Device.update = (callback) ->
             callback() if callback?
 
 Device.isAuthenticated = (login, password, callback) ->
-    return cache[login]? and cache[login] is password
+    isPresent = cache[login]? and cache[login] is password
+    if isPresent
+        callback true
+    else
+        @update () ->
+            callback(cache[login]? and cache[login] is password)

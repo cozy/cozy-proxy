@@ -38,5 +38,13 @@ Device.update = function(callback) {
 };
 
 Device.isAuthenticated = function(login, password, callback) {
-  return (cache[login] != null) && cache[login] === password;
+  var isPresent;
+  isPresent = (cache[login] != null) && cache[login] === password;
+  if (isPresent) {
+    return callback(true);
+  } else {
+    return this.update(function() {
+      return callback((cache[login] != null) && cache[login] === password);
+    });
+  }
 };

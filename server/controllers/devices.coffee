@@ -48,25 +48,26 @@ module.exports.replication = (req, res, next) ->
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
-    if deviceManager.isAuthenticated username, password
-        # Add his creadentials for CouchDB
-        if process.env.NODE_ENV is "production"
-            req.headers['authorization'] = getCredentialsHeader()
-        else
-            # Do not forward 'authorization' header in other environments
-            # in order to avoid wrong authentications in CouchDB
-            req.headers['authorization'] = null
+    deviceManager.isAuthenticated username, password, (auth) ->
+        if auth
+            # Add his creadentials for CouchDB
+            if process.env.NODE_ENV is "production"
+                req.headers['authorization'] = getCredentialsHeader()
+            else
+                # Do not forward 'authorization' header in other environments
+                # in order to avoid wrong authentications in CouchDB
+                req.headers['authorization'] = null
 
-        # Forward request to Couch
-        # the request didn't go through the DS because for some unknown
-        # reason, the double proxy was failing. We should try again with
-        # the new node-http-proxy version.
-        # That would make a device an application that is not running on
-        # the Cozy itself which is awesome because it would be easy to
-        # add a permission layer and makes Cozy a true open platform
-        # (easy desktop/mobile clients)
-        getProxy().web req, res, target: "http://localhost:5984"
-    else
-        error = new Error "Request unauthorized"
-        error.status = 401
-        next error
+            # Forward request to Couch
+            # the request didn't go through the DS because for some unknown
+            # reason, the double proxy was failing. We should try again with
+            # the new node-http-proxy version.
+            # That would make a device an application that is not running on
+            # the Cozy itself which is awesome because it would be easy to
+            # add a permission layer and makes Cozy a true open platform
+            # (easy desktop/mobile clients)
+            getProxy().web req, res, target: "http://localhost:5984"
+        else
+            error = new Error "Request unauthorized"
+            error.status = 401
+            next error

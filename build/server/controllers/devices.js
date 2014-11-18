@@ -56,20 +56,23 @@ module.exports.management = function(req, res, next) {
 };
 
 module.exports.replication = function(req, res, next) {
-  var error, password, username, _ref;
+  var password, username, _ref;
   _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
-  if (deviceManager.isAuthenticated(username, password)) {
-    if (process.env.NODE_ENV === "production") {
-      req.headers['authorization'] = getCredentialsHeader();
+  return deviceManager.isAuthenticated(username, password, function(auth) {
+    var error;
+    if (auth) {
+      if (process.env.NODE_ENV === "production") {
+        req.headers['authorization'] = getCredentialsHeader();
+      } else {
+        req.headers['authorization'] = null;
+      }
+      return getProxy().web(req, res, {
+        target: "http://localhost:5984"
+      });
     } else {
-      req.headers['authorization'] = null;
+      error = new Error("Request unauthorized");
+      error.status = 401;
+      return next(error);
     }
-    return getProxy().web(req, res, {
-      target: "http://localhost:5984"
-    });
-  } else {
-    error = new Error("Request unauthorized");
-    error.status = 401;
-    return next(error);
-  }
+  });
 };

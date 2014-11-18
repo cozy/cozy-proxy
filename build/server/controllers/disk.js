@@ -66,36 +66,39 @@ getAuthController = function() {
 
 module.exports.getSpace = (function(_this) {
   return function(req, res, next) {
-    var error, password, username, _ref;
+    var password, username, _ref;
     _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
-    if (deviceManager.isAuthenticated(username, password)) {
-      controllerClient.setToken(getAuthController());
-      return controllerClient.get('diskinfo', function(err, resp, body) {
-        if (err || resp.statusCode !== 200) {
-          return recoverDiskSpace((function(_this) {
-            return function(err, body) {
-              var error;
-              if (err != null) {
-                error = new Error(err);
-                error.status = 500;
-                return next(error);
-              } else {
-                return res.send(200, {
-                  diskSpace: body
-                });
-              }
-            };
-          })(this));
-        } else {
-          return res.send(200, {
-            diskSpace: body
-          });
-        }
-      });
-    } else {
-      error = new Error("Request unauthorized");
-      error.status = 401;
-      return next(error);
-    }
+    return deviceManager.isAuthenticated(username, password, function(auth) {
+      var error;
+      if (auth != null) {
+        controllerClient.setToken(getAuthController());
+        return controllerClient.get('diskinfo', function(err, resp, body) {
+          if (err || resp.statusCode !== 200) {
+            return recoverDiskSpace((function(_this) {
+              return function(err, body) {
+                var error;
+                if (err != null) {
+                  error = new Error(err);
+                  error.status = 500;
+                  return next(error);
+                } else {
+                  return res.send(200, {
+                    diskSpace: body
+                  });
+                }
+              };
+            })(this));
+          } else {
+            return res.send(200, {
+              diskSpace: body
+            });
+          }
+        });
+      } else {
+        error = new Error("Request unauthorized");
+        error.status = 401;
+        return next(error);
+      }
+    });
   };
 })(this);

@@ -48,25 +48,25 @@ getAuthController = ->
 
 
 module.exports.getSpace = (req, res, next) =>
-
     # Authenticate the device
     [username, password] = extractCredentials req.headers['authorization']
-    if deviceManager.isAuthenticated username, password
-        # Recover disk space with controller
-        controllerClient.setToken getAuthController()
-        controllerClient.get 'diskinfo', (err, resp, body) ->
-            # If error, recover disk space with command df -H
-            if err or resp.statusCode isnt 200
-                recoverDiskSpace (err, body) =>
-                    if err?
-                        error = new Error err
-                        error.status = 500
-                        next error
-                    else
-                        res.send 200, diskSpace: body
-            else
-                res.send 200, diskSpace: body
-    else            
-        error = new Error "Request unauthorized"
-        error.status = 401
-        next error
+    deviceManager.isAuthenticated username, password, (auth) =>
+        if auth
+            # Recover disk space with controller
+            controllerClient.setToken getAuthController()
+            controllerClient.get 'diskinfo', (err, resp, body) ->
+                # If error, recover disk space with command df -H
+                if err or resp.statusCode isnt 200
+                    recoverDiskSpace (err, body) =>
+                        if err?
+                            error = new Error err
+                            error.status = 500
+                            next error
+                        else
+                            res.send 200, diskSpace: body
+                else
+                    res.send 200, diskSpace: body
+        else
+            error = new Error "Request unauthorized"
+            error.status = 401
+            next error

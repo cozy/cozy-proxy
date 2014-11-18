@@ -48,11 +48,10 @@ getAuthController = ->
 
 
 module.exports.getSpace = (req, res, next) =>
-
     # Authenticate the device
     [username, password] = extractCredentials req.headers['authorization']
-    deviceManager.isAuthenticated username, password, (auth) ->
-        if auth?
+    deviceManager.isAuthenticated username, password, (auth) =>
+        if auth
             # Recover disk space with controller
             controllerClient.setToken getAuthController()
             controllerClient.get 'diskinfo', (err, resp, body) ->

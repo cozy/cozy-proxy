@@ -70,7 +70,7 @@ module.exports.getSpace = (function(_this) {
     _ref = extractCredentials(req.headers['authorization']), username = _ref[0], password = _ref[1];
     return deviceManager.isAuthenticated(username, password, function(auth) {
       var error;
-      if (auth != null) {
+      if (auth) {
         controllerClient.setToken(getAuthController());
         return controllerClient.get('diskinfo', function(err, resp, body) {
           if (err || resp.statusCode !== 200) {

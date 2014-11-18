@@ -24,7 +24,7 @@ describe "Disk space", ->
                     done()
 
             it "And I add a device", (done) =>
-                client.setBasicAuth 'owner', 'user_pwd' 
+                client.setBasicAuth 'owner', 'user_pwd'
                 client.post "device/", login:"device", (err,res, body) =>
                     @pwd = body.password
                     @id = body.id
@@ -58,7 +58,7 @@ describe "Disk space", ->
         describe "Authorized request", =>
 
             it "And I recover disk space", (done) =>
-                client.setBasicAuth 'device', @pwd 
+                client.setBasicAuth 'device', @pwd
                 client.get "disk-space", (err, res, body) =>
                     @body = body
                     @res = res
@@ -73,7 +73,7 @@ describe "Disk space", ->
     describe 'Remove device', =>
 
         it "When I send a request with authentication", (done) =>
-            client.setBasicAuth 'owner', 'user_pwd' 
+            client.setBasicAuth 'owner', 'user_pwd'
             client.del "device/#{@id}/", (err,res, body) =>
                 @err = err
                 @res = res

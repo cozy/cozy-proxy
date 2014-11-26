@@ -67,7 +67,7 @@ StatusChecker = (function() {
           var code;
           if (res != null) {
             code = res.statusCode;
-            _this.status[app] = code === 200 || code === 403;
+            _this.status[app] = code === 200 || code === 401 || code === 403;
           } else {
             _this.status[app] = false;
           }

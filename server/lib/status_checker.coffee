@@ -55,7 +55,7 @@ class StatusChecker
             @client.get path, (err, res, body) =>
                 if res?
                     code = res.statusCode
-                    @status[app] = code is 200 or code is 403
+                    @status[app] = code in [200, 401, 403]
                 else
                     @status[app] = false
 

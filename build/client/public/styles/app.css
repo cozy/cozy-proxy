@@ -267,8 +267,22 @@ p {
   font-family: main;
 }
 #logo {
+  position: relative;
   float: right;
-  margin: 40px 40px;
+  margin: 40px 60px;
+  text-decoration: none;
+  font-family: styled;
+  font-size: 1.4em;
+  color: #15a7c7;
+}
+#logo span {
+  display: block;
+  position: absolute;
+  top: -0.2em;
+  right: -1em;
+  opacity: 0.65;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=65)";
+  filter: alpha(opacity=65);
 }
 .proxy-form.error {
   width: 750px;

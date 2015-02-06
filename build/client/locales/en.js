@@ -24,7 +24,7 @@ module.exports = {
   "register button separator": "or",
   "register button": "Send informations",
   "register success message": "Good, let's go to your Cozy homepage.",
-  "register email placeholder": "You email address",
+  "register email placeholder": "Email (to reset your password)",
   "register email info": "Your Cozy will use this email address if you lose your password or to send you various information like alerts or daily reports.",
   "register email valid": "The email address is valid.",
   "register email invalid": "Enter a valid email address, e.g. john.doe@example.com.",

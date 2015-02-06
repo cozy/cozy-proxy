@@ -24,7 +24,7 @@ module.exports = {
   "register button separator": "ou",
   "register button": "Terminer l'inscription",
   "register success message": "Parfait, vous allez être redirigé(é) vers l'accueil de votre Cozy.",
-  "register email placeholder": "Votre adresse email",
+  "register email placeholder": "Email (pour réinitialisation du mot de passe)",
   "register email info": "Votre Cozy utilisera cette adresse en cas de perte du mot de passe ou pour vous communiquer toute sorte d'information : alerte, rapport quotidien, etc.",
   "register email valid": "L'adresse email est valide.",
   "register email invalid": "Indiquez une adresse email valide, de la forme john.doe@example.com.",

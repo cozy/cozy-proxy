@@ -1,5 +1,6 @@
 @import "nib"
 
+
 shadow()
     -moz-box-shadow arguments
     -webkit-box-shadow arguments
@@ -10,14 +11,6 @@ text-shadow()
     -webkit-text-shadow arguments
     text-shadow arguments
 
-@font-face
-    font-family main
-    src url('/fonts/signika-regular.ttf')
-
-@font-face
-    font-family styled
-    src url('/fonts/maven-pro-light-200.otf')
-
 
 blue = #15a7c7
 darkblue = #363a46
@@ -25,6 +18,7 @@ darkred = #C66666
 darkgreen = #66C666
 orange = #C60
 orangewhite = #fcf9f5
+
 
 html, body
     height 100%
@@ -49,7 +43,7 @@ a:hover
 h1
     font-size 2.2em
     line-height 1.3em
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-weight normal
     color darkblue
     margin 0
@@ -61,7 +55,7 @@ button
 
 input
 select
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-size 26px
     height 52px
     width 550px
@@ -79,7 +73,7 @@ select
     outline none
 
 p
-    font-family: main
+    font-family 'Source Sans Pro', sans-serif
 
 .alert
     width 22em
@@ -87,7 +81,7 @@ p
     display none
 
 .alert-error
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-size 20px
     background darkred
     padding 5px 10px
@@ -95,7 +89,7 @@ p
     color white
 
 .alert-success
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-size 2em
     background darkgreen
     padding 20px
@@ -163,7 +157,7 @@ p
 
         #submit-btn
             width 250px
-            font-family main
+            font-family 'Source Sans Pro', sans-serif
         &.single
             width 100%
             #submit-btn
@@ -173,7 +167,7 @@ p
         width 10px
 
 #expand-btn
-    font-family main
+    font-family 'Source Sans Pro', sans-serif
     font-size 14px
     display inline-block
     margin-left 5px
@@ -185,7 +179,7 @@ p
 #reinsurance
     width 550px
     text-align center
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-size 16px
 
 .help
@@ -208,7 +202,7 @@ p
         padding 5px
         border 3px solid blue
         border-radius 5px
-        font-family main
+        font-family 'Source Sans Pro', sans-serif
 
         .valid
         .invalid
@@ -248,7 +242,7 @@ p
 
 #forgot-password
     display none
-    font-family main
+    font-family 'Source Sans Pro', sans-serif
 
 #logo
     position relative
@@ -256,7 +250,7 @@ p
     margin 40px 60px
 
     text-decoration none
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     font-size 1.4em
     color blue
 
@@ -273,7 +267,7 @@ p
     padding 5px 10px
     border-radius 5px
     font-size 20px
-    font-family styled
+    font-family 'Maven Pro', sans-serif
     color #eee
     background darkblue
 

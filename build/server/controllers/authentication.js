@@ -217,6 +217,7 @@ module.exports.resetPassword = function(req, res) {
 };
 
 module.exports.logout = function(req, res) {
+  return res.send(204);
   req.logout();
   return res.send(204);
 };

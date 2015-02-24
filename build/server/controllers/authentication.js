@@ -44,6 +44,7 @@ module.exports.registerIndex = function(req, res) {
 };
 
 module.exports.register = function(req, res, next) {
+  return res.redirect('/');
   var error, hash, instanceData, userData, validationErrors;
   hash = helpers.cryptPassword(req.body.password);
   userData = {
@@ -94,6 +95,7 @@ module.exports.register = function(req, res, next) {
 };
 
 module.exports.loginIndex = function(req, res) {
+  return res.redirect('/');
   return User.first(function(err, user) {
     var name, polyglot, words, _ref;
     if (user != null) {

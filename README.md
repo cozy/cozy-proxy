@@ -35,6 +35,14 @@ Each modification requires a new build, here is how to run a build:
 
     cake build
 
+### To hack cozy-proxy using the cozy vagrant
+
+- Forward a new port from the virtual machine (for example: `config.vm.network :forwarded_port, guest: 9555, host: 9555` in file Vagrantfile)
+- Go in the shared folder `cd /vagrant` and `cd your-cozy-proxy-folder`
+- `rm -rf node_modules/bcrypt && npm install`
+- Launch cozy-proxy `PORT=9555 HOST="0.0.0.0" coffee server.coffee`
+- You can now access the hacked proxy on `http://localhost:9555` with your navigator
+
 ## Tests
 
 ![Build

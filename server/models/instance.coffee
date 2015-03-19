@@ -34,3 +34,17 @@ CozyInstance.setResetKey = (key) ->
     setTimeout ->
         resetKey = null
     , 1 * 60 * 60 * 1000
+
+domain = null
+CozyInstance.getDomain = (callback) ->
+    if domain?
+        return callback null, domain
+
+    CozyInstance.first (err, instance) ->
+        domain = instance?.domain or null
+        callback err, domain
+
+
+CozyInstance.updateDomainCache = () ->
+    CozyInstance.first (err, instance) ->
+        domain = instance?.domain or null

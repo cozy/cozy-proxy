@@ -24,5 +24,11 @@ application = module.exports = (callback) ->
         app.use errorMiddleware
         initialize app, server, callback
 
+        axon = require 'axon'
+        socket = axon.socket 'sub-emitter'
+        socket.connect 9105
+        CozyInstance = require './server/models/instance'
+        socket.on 'cozyinstance.update', CozyInstance.updateDomainCache
+
 if not module.parent
     application()

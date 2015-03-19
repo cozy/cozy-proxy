@@ -1,6 +1,10 @@
 cozyInstance = require '../models/instance'
 application = require '../models/application'
-#for the moment this is a poc !
+# This midleware compare the hostname of the request with the domain registered
+# in cozyInstance. If domains aren't the same, it will check if an application
+# has the request domain on his document, and rewrite the request to be
+# correctly handled by the proxy.
+# If there isn't an app with the domain registered, the middleware do nothing
 
 module.exports = (req, res, next) ->
     if req.url.indexOf("socket.io") > -1

@@ -1,5 +1,7 @@
-cozyInstance = require '../models/instance'
-application = require '../models/application'
+path = require 'path'
+cozyInstance = require path.join __dirname, '../models/instance'
+application = require path.join __dirname, '../models/application'
+
 # This midleware compare the hostname of the request with the domain registered
 # in cozyInstance. If domains aren't the same, it will check if an application
 # has the request domain on his document, and rewrite the request to be

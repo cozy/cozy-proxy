@@ -9,7 +9,6 @@ cozyInstanceMock =
         getDomain: (callback) ->
             callback null, "cozy.cozycloud.cc"
         getLocale: (callback)->
-            console.log "getLocaleMock"
             callback null, "fr"
 
 
@@ -27,7 +26,6 @@ middleware = null
 describe "Middleware subdomain", =>
 
     before ->
-        console.log "before"
         mockery.enable(
             warnOnReplace: false
             warnOnUnregistered: false
@@ -37,7 +35,6 @@ describe "Middleware subdomain", =>
         middleware = require path.join __dirname, '../server/middlewares/subdomains'
 
     after ->
-        console.log "after"
         mockery.disable()
 
     it "do nothing if the request is normal", (done) ->
@@ -47,7 +44,6 @@ describe "Middleware subdomain", =>
                 host: "cozy.cozycloud.cc"
 
         middleware req, null, ->
-            console.log req
             req.url.should.be.equal "/public/blog/"
             done()
 

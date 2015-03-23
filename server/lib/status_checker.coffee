@@ -3,13 +3,20 @@ async = require 'async'
 JsonClient = require('request-json').JsonClient
 User = require '../models/user'
 
-couchUrl = "http://localhost:5984/"
+couchdbHost = process.env.COUCH_HOST or 'localhost'
+couchdbPort = process.env.COUCH_PORT or '5984'
+indexerHost = process.env.INDEXER_HOST or 'localhost'
+indexerPort = process.env.INDEXER_PORT or '9102'
+postfixHost = process.env.POSTFIX_HOST or 'localhost'
+postfixPort = process.env.POSTFIX_PORT or '25'
+
+couchUrl = "http://#{couchdbHost}:#{couchdbPort}/"
 controllerUrl = "http://localhost:9002/"
 dataSystemUrl = "http://localhost:9101/"
-indexerUrl = "http://localhost:9102/"
+indexerUrl = "http://#{indexerHost}:#{indexerPort}/"
 homePort = process.env.DEFAULT_REDIRECT_PORT
 homeUrl = "http://localhost:#{homePort}/"
-proxyUrl = "http://localhost:9104/"
+proxyUrl = "http://#{postfixHost}:#{postfixPort}/"
 
 # Class used to check the state of the main modules of the Cozy.
 class StatusChecker

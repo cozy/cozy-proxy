@@ -2,7 +2,7 @@
 # [Cozy](http://cozy.io) Proxy
 
 Cozy Proxy redirects requests properly to the right application of the Cozy
-platfomr depending on given path. It also handles authentication to the Cozy
+platform depending on given path. It also handles authentication to the Cozy
 for users and devices.
 
 ## Install

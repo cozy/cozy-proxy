@@ -75,6 +75,32 @@
 }
 
 /**
+ * Source Code Pro
+ *
+ * Use for: fixed-width text content (e.g pre, code, etc)
+ * Font-family: 'Source Code Pro', monospace
+ * Available styles:
+ * - font-style: normal / font-weight: normal
+ * - font-style: normal / font-weight: bold
+ */
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Source Code Pro'),
+         local('SourceCodePro-Regular'),
+         url('./sourcecodepro-regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Source Code Pro Bold'),
+         local('SourceCodePro-Bold'),
+         url('./sourcecodepro-bold.woff') format('woff');
+}
+
+/**
  * Font Awesome
  *
  * Use for: icons

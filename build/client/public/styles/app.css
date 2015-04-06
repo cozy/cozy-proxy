@@ -30,9 +30,9 @@ a:hover {
   color: #ff850a;
 }
 h1 {
-  font-size: 2.2em;
+  font-size: 1.8em;
   line-height: 1.3em;
-  font-family: 'Maven Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-weight: normal;
   color: #363a46;
   margin: 0;
@@ -45,7 +45,7 @@ button {
 }
 input,
 select {
-  font-family: 'Maven Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 26px;
   height: 52px;
   width: 550px;
@@ -67,6 +67,9 @@ select {
 }
 p {
   font-family: 'Source Sans Pro', sans-serif;
+}
+#timezone-input {
+  background: #fff;
 }
 .alert {
   width: 22em;
@@ -179,8 +182,8 @@ p {
 }
 #reinsurance {
   width: 550px;
-  text-align: center;
-  font-family: 'Maven Pro', sans-serif;
+  text-align: left;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 16px;
 }
 .help {
@@ -251,11 +254,14 @@ p {
   padding: 20px;
   padding-left: 60px;
 }
+#password-input {
+  padding-left: 10px;
+}
 #email-input {
   margin-bottom: 0px;
 }
 #forgot-password {
-  display: none;
+  display: none 0;
   font-family: 'Source Sans Pro', sans-serif;
 }
 #logo {
@@ -299,7 +305,7 @@ p {
 @media (max-width: 640px) {
   h1 {
     padding: 0 0;
-    font-size: 26px;
+    font-size: 21px;
   }
   .proxy-form {
     padding-top: 1em;
@@ -371,7 +377,14 @@ p {
     box-sizing: border-box;
   }
   #logo {
-    margin: 20px;
+    margin: 0 0 10px 0;
+    float: left;
+  }
+  #logo img {
+    width: 80px;
+  }
+  #logo span {
+    right: -1.4em;
   }
 }
 @media (max-width: 320px) {

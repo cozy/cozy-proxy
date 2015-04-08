@@ -3,20 +3,25 @@ async = require 'async'
 JsonClient = require('request-json').JsonClient
 User = require '../models/user'
 
-couchdbHost = process.env.COUCH_HOST or 'localhost'
-couchdbPort = process.env.COUCH_PORT or '5984'
-indexerHost = process.env.INDEXER_HOST or 'localhost'
-indexerPort = process.env.INDEXER_PORT or '9102'
-postfixHost = process.env.POSTFIX_HOST or 'localhost'
-postfixPort = process.env.POSTFIX_PORT or '25'
+couchdbHost    = process.env.COUCH_HOST or 'localhost'
+couchdbPort    = process.env.COUCH_PORT or '5984'
+indexerHost    = process.env.INDEXER_HOST or 'localhost'
+indexerPort    = process.env.INDEXER_PORT or '9102'
+postfixHost    = process.env.POSTFIX_HOST or 'localhost'
+postfixPort    = process.env.POSTFIX_PORT or '25'
+controllerHost = process.env.CONTROLLER_HOST or 'localhost'
+controllerPort = process.env.CONTROLLER_PORT or '9002'
+dataSystemHost = process.env.DATASYSTEM_HOST or 'localhost'
+dataSystemPort = process.env.DATASYSTEM_PORT or '9101'
+homeHost       = process.env.HOME_HOST or 'localhost'
+homePort       = process.env.DEFAULT_REDIRECT_PORT
 
-couchUrl = "http://#{couchdbHost}:#{couchdbPort}/"
-controllerUrl = "http://localhost:9002/"
-dataSystemUrl = "http://localhost:9101/"
-indexerUrl = "http://#{indexerHost}:#{indexerPort}/"
-homePort = process.env.DEFAULT_REDIRECT_PORT
-homeUrl = "http://localhost:#{homePort}/"
-proxyUrl = "http://#{postfixHost}:#{postfixPort}/"
+couchUrl      = "http://#{couchdbHost}:#{couchdbPort}/"
+controllerUrl = "http://#{controllerHost}:#{controllerPort}/"
+dataSystemUrl = "http://#{dataSystemHost}:#{dataSystemPort}/"
+indexerUrl    = "http://#{indexerHost}:#{indexerPort}/"
+homeUrl       = "http://#{homeHost}:#{homePort}/"
+proxyUrl      = "http://#{postfixHost}:#{postfixPort}/"
 
 # Class used to check the state of the main modules of the Cozy.
 class StatusChecker

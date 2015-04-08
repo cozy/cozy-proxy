@@ -7,7 +7,7 @@ module.exports =
     "login password placeholder" : "Votre mot de passe"
     "login button" : "Se connecter"
     "login forget password button" : "Avez-vous perdu votre mot de passe ?"
-    "login success message": "Connexion réussie, vous allez être redirigé(e) vers l'accueil de votre Cozy..."
+    "login success message": "Connexion réussie ! Vous allez être redirigé(e) vers l'accueil de votre Cozy…"
     "login reset success message": "Un email a été envoyé à votre adresse, suivez les instructions de ce dernier pour réinitialiser votre mot de passe."
 
     # reset password page
@@ -88,7 +88,7 @@ module.exports =
 
     # reset password email
     "reset password email from": "Votre Cozy <no-reply@%{domain}>"
-    "reset password email subject": "[Cozy] Procédure de réinitialisation du mot de passe"
+    "reset password email subject": "[Cozy] Réinitialiser votre mot de passe"
     "reset password email text": """
         Il semble que vous ayez oublié le mot de passe de votre Cozy.
         Ne vous inquiétez pas, suivez simplement le lien suivant pour en définir un nouveau :

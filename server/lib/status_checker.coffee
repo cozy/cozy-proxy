@@ -7,8 +7,8 @@ couchdbHost    = process.env.COUCH_HOST or 'localhost'
 couchdbPort    = process.env.COUCH_PORT or '5984'
 indexerHost    = process.env.INDEXER_HOST or 'localhost'
 indexerPort    = process.env.INDEXER_PORT or '9102'
-postfixHost    = process.env.POSTFIX_HOST or 'localhost'
-postfixPort    = process.env.POSTFIX_PORT or '25'
+proxyHost      = process.env.PROXY_HOST or 'localhost'
+proxyPort      = process.env.PROXY_PORT or '9104'
 controllerHost = process.env.CONTROLLER_HOST or 'localhost'
 controllerPort = process.env.CONTROLLER_PORT or '9002'
 dataSystemHost = process.env.DATASYSTEM_HOST or 'localhost'
@@ -21,7 +21,7 @@ controllerUrl = "http://#{controllerHost}:#{controllerPort}/"
 dataSystemUrl = "http://#{dataSystemHost}:#{dataSystemPort}/"
 indexerUrl    = "http://#{indexerHost}:#{indexerPort}/"
 homeUrl       = "http://#{homeHost}:#{homePort}/"
-proxyUrl      = "http://#{postfixHost}:#{postfixPort}/"
+proxyUrl      = "http://#{proxyHost}:#{proxyPort}/"
 
 # Class used to check the state of the main modules of the Cozy.
 class StatusChecker

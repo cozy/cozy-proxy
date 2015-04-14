@@ -6,6 +6,7 @@ passport = require 'passport'
 randomstring = require 'randomstring'
 usetracker = require './middlewares/usetracker'
 selectiveBodyParser = require './middlewares/selective_body_parser'
+subdomains = require './middlewares/subdomains'
 
 # /!\ CAREFUL /!\
 # Middlewares order matters to authenticate websockets
@@ -31,6 +32,7 @@ config =
             americano.static path.join __dirname, '/../client/public'
             selectiveBodyParser
             usetracker
+            subdomains
             authSteps[0]
             authSteps[1]
             authSteps[2]

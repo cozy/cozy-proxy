@@ -68,8 +68,10 @@ module.exports.register = (req, res, next) ->
 
 
 module.exports.loginIndex = (req, res) ->
+    # Retrieve polyglot
+    # Try 5 times if request is too early
     counter = 0
-    recoverPolyglot = (cb) =>
+    retrievePolyglot = (cb) =>
         if counter is 5
             cb "Cannot recover polyglot"
         else
@@ -92,7 +94,7 @@ module.exports.loginIndex = (req, res) ->
                 name = words.map((word) ->
                     return word.charAt(0).toUpperCase() + word.slice 1
                 ).join ' '
-            recoverPolyglot (err, polyglot) ->
+            retrievePolyglot (err, polyglot) ->
                 if err
                     res.send 500, error: err
                 else

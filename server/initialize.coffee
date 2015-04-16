@@ -15,9 +15,8 @@ module.exports = (app, server, callback) ->
     # initialize Proxy server
     initializeProxy app, server
 
-    # initialize device authentication
-    # reset (load) and display the routes
-    Device.update -> router.reset -> router.displayRoutes ->
-
-        # cache the localization object
-        localization.initialize -> callback app, server
+    # cache the localization object
+    localization.initialize ->
+        # initialize device authentication
+        # reset (load) and display the routes
+        Device.update -> router.reset -> router.displayRoutes -> callback app, server

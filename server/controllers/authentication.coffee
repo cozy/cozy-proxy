@@ -68,6 +68,20 @@ module.exports.register = (req, res, next) ->
 
 
 module.exports.loginIndex = (req, res) ->
+    counter = 0
+    recoverPolyglot = (cb) =>
+        if counter is 5
+            cb "Cannot recover polyglot"
+        else
+            polyglot = localization.getPolyglot()
+            if polyglot?.t?
+                cb null, polyglot
+            else
+                setTimeout () ->
+                    counter += 1
+                    recoverPolyglot cb
+                , 500
+
     User.first (err, user) ->
         if user?
             # display name management
@@ -78,9 +92,11 @@ module.exports.loginIndex = (req, res) ->
                 name = words.map((word) ->
                     return word.charAt(0).toUpperCase() + word.slice 1
                 ).join ' '
-
-            polyglot = localization.getPolyglot()
-            res.render "login.#{ext}", polyglot: polyglot, name: name
+            recoverPolyglot (err, polyglot) ->
+                if err
+                    res.send 500, error: err
+                else
+                    res.render "login.#{ext}", polyglot: polyglot, name: name
         else
             res.redirect '/register'
 
@@ -161,4 +177,3 @@ module.exports.logout = (req, res) ->
 
 module.exports.authenticated = (req, res) ->
     res.send 200, isAuthenticated: req.isAuthenticated()
-

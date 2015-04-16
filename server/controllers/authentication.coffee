@@ -73,7 +73,7 @@ module.exports.loginIndex = (req, res) ->
     counter = 0
     retrievePolyglot = (cb) =>
         if counter is 5
-            cb "Cannot recover polyglot"
+            cb "Cannot retrieve polyglot"
         else
             polyglot = localization.getPolyglot()
             if polyglot?.t?
@@ -81,7 +81,7 @@ module.exports.loginIndex = (req, res) ->
             else
                 setTimeout () ->
                     counter += 1
-                    recoverPolyglot cb
+                    retrievePolyglot cb
                 , 500
 
     User.first (err, user) ->

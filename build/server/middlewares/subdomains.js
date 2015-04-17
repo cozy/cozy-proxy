@@ -8,9 +8,6 @@ cozyInstance = require(path.join(__dirname, '../models/instance'));
 application = require(path.join(__dirname, '../models/application'));
 
 module.exports = function(req, res, next) {
-  if (req.url.indexOf("socket.io") > -1) {
-    req.url = req.url.substring("/public".length);
-  }
   return cozyInstance.getDomain(function(err, domain) {
     var hostname;
     if (!domain) {

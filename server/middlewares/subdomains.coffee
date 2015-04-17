@@ -9,10 +9,6 @@ application = require path.join __dirname, '../models/application'
 # If there isn't an app with the domain registered, the middleware do nothing
 
 module.exports = (req, res, next) ->
-    if req.url.indexOf("socket.io") > -1
-        #if is a socket route, remove /public at the beggining
-        req.url = req.url.substring "/public".length
-
     cozyInstance.getDomain (err, domain)->
         unless domain
             return next()

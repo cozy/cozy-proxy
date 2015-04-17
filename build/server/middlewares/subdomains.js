@@ -20,7 +20,9 @@ module.exports = function(req, res, next) {
       hostname = req.headers.host.split(':')[0];
       return application.domainSlug(hostname, function(err, appSlug) {
         if (!(appSlug === "")) {
-          req.url = "/public/" + appSlug + req.url;
+          if (!(req.url.indexOf("/public") > -1)) {
+            req.url = "/public/" + appSlug + req.url;
+          }
         }
         return next();
       });

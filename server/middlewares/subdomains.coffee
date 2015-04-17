@@ -24,7 +24,8 @@ module.exports = (req, res, next) ->
 
             application.domainSlug hostname, (err, appSlug) ->
                 unless (appSlug is "")
-                    req.url = "/public/#{appSlug}#{req.url}"
+                    unless req.url.indexOf("/public") > -1
+                        req.url = "/public/#{appSlug}#{req.url}"
                 next()
         else
             next()

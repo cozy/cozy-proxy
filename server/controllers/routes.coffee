@@ -43,7 +43,7 @@ module.exports =
     'apps/:name/*': all: [utils.isAuthenticated, apps.app]
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
-    'repo/:name*': all: git.serveRepo
+    'repo/:name*': all: [utils.authenticateWithEmail, git.serveRepo]
 
     'cozy/*': all: devices.replication
 

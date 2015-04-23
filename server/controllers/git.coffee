@@ -1,71 +1,68 @@
 fs = require 'fs-extra'
 async = require 'async'
 pushover = require 'pushover'
-gitListener = require 'git-emit'
+gitEmit = require 'git-emit'
 mkdirp = require 'mkdirp'
 exec = require('child_process').exec
+logger = require('printit')
+            date: false
+            prefix: 'git:server'
 
-User = require '../models/user'
-
-# Authenticate all the connections to the Git repository via Basic HTTP
-# authentication, so that the Git client prompt for username and password.
-#
-# We do not use passport in that case because we want the user to input the
-# email as its username (along with its Cozy password). Besides, the server
-# needs to send a response with a "WWW-Authenticate" header.
-authenticate = (header, callback) ->
-    if not header
-        return callback false
-
-    credentials = new Buffer(header.split(' ')[1], 'base64').toString 'ascii'
-    [email, password] = credentials.split ':'
-    User.first (err, user) ->
-        if err? or not user?
-            callback false
-        else
-            bcrypt.compare password, user.password, (err, result) ->
-                if err? or not result
-                    callback false
-                else
-                    callback user.email is email
-
+appsDir = '/usr/local/cozy/apps'
 
 # Handle HTTP requests to Git repositories via pushover
-appsDir = '/usr/local/cozy/apps'
 repos = pushover appsDir,
-  autocreate: true
-  checkout: true
+    autocreate: false
+    checkout: true
+
+# Initialize an array of stream for each repository
+resStreams = {}
 
 
-# Actions that will be triggered on the 'update' Git hook
+# Action that will be triggered on the 'update' Git hook
+updateRepo = (appName, callback) ->
+    appRepo = "#{appsDir}/#{appName}"
+    exec "git reset --hard", cwd: appRepo, (err, stdout, stderr) ->
+        callback err
+
+
+# Add a listener for an application that will trigger on 'update' hook
 # Client is waiting for an answer at this point, so we need to call
 # `update.accept()` at the end
-updateRepo = (update, appRepo) ->
-    exec "git reset --hard", cwd: appRepo, ->
-        update.accept() if update?
+addGitListener = (appName) ->
+    appRepo = "#{appsDir}/#{appName}"
+    logger.info "Adding Git hook listener for #{appRepo}"
+    listener = gitEmit("#{appRepo}/.git")
+    listener.on 'post-update', (update) ->
+        updateRepo appName, (err) ->
+            if err
+                logger.error err
+                update.reject()
+            else
+                update.accept()
 
 
 # Repo has already been created by pushover at this point.
 # We just need to configure it so that client won't receive an undesired error
 # Also, we need to remove ".git" from repository's path
-configureNewRepo = (appRepo) ->
+configureNewRepo = (appName, callback) ->
+    appRepo = "#{appsDir}/#{appName}"
     exec "git config receive.denyCurrentBranch ignore"
     , cwd: "#{appRepo}.git", ->
         fs.move "#{appRepo}.git", appRepo, (err) ->
-            callback err if err
-            updateRepo(null, appRepo)
-
-            # Ensure that a gitListener is active on this repository
-            gitListener("#{appRepo}/.git").on('update', updateRepo)
+            return callback err if err
+            addGitListener appName
+            updateRepo appName, callback
 
 
 # Add Git hook listeners for each app that already exists
 fs.readdir appsDir, (err, apps) ->
-    for app in apps
-        if fs.existsSync "#{appsDir}/#{app}/.git"
-            gitListener("#{appsDir}/#{app}/.git").on('update', updateRepo)
+    for appName in apps
+        appRepo = "#{appsDir}/#{appName}"
+        if fs.existsSync "#{appRepo}/.git"
+            addGitListener appName
             exec "git config receive.denyCurrentBranch ignore"
-            , cwd: "#{appsDir}/#{app}"
+            , cwd: "#{appsDir}/#{appName}"
 
 
 #
@@ -88,24 +85,30 @@ fs.readdir appsDir, (err, apps) ->
 #
 module.exports.serveRepo = (req, res, next) ->
 
-    authenticate req.headers['authorization'], (isAuthenticated) ->
-        unless isAuthenticated
-            res.statusCode = 401
-            res.setHeader "WWW-Authenticate", 'Basic realm="Secure Area"'
-            res.end "Request unauthorized"
-            next()
+    appName = req.params.name
+    appName = req.params.name.replace /\.git/, ""
 
-        appName = req.params.name
-        appName = req.params.name.replace /\.git/, ""
-        appRepo = "#{appsDir}/#{appName}"
+    # Check that the repository's name is not too long or too exotic
+    unless appName.match /^[a-zA-Z0-9-]{2,30}$/
+        res.statusCode = 400
+        return res.end "Bad request"
 
-        req.url = req.url.substring "/repo".length
-        req.url = req.url.replace /\.git/, ""
+    appRepo = "#{appsDir}/#{appName}"
 
-        if req.method is "POST"
-            repos.on 'push', (push) ->
-                repos.exists appName, (exists) ->
-                    configureNewRepo(appRepo) if not exists
+    req.url = req.url.substring "/repo".length
+    req.url = req.url.replace /\.git/, ""
+
+    if req.method is "POST"
+        repos.on 'push', (push) ->
+            repos.exists appName, (exists) ->
+                if not exists
+                    configureNewRepo appName, (err) ->
+                        if err
+                            push.reject()
+                            next err
+                        else
+                            push.accept()
+                else
                     push.accept()
 
-        repos.handle req, res
+    repos.handle req, res

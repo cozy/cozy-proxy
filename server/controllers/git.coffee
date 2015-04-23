@@ -1,23 +1,16 @@
-fs = require 'fs-extra'
-async = require 'async'
-pushover = require 'pushover'
+fs = require 'fs'
 gitEmit = require 'git-emit'
-mkdirp = require 'mkdirp'
+gitBackend = require 'git-http-backend'
 exec = require('child_process').exec
+spawn = require('child_process').spawn
 logger = require('printit')
             date: false
             prefix: 'git:server'
 
 appsDir = '/usr/local/cozy/apps'
 
-# Handle HTTP requests to Git repositories via pushover
-repos = pushover appsDir,
-    autocreate: false
-    checkout: true
-
 # Initialize an array of stream for each repository
 resStreams = {}
-
 
 # Action that will be triggered on the 'update' Git hook
 updateRepo = (appName, callback) ->
@@ -32,6 +25,7 @@ updateRepo = (appName, callback) ->
 addGitListener = (appName) ->
     appRepo = "#{appsDir}/#{appName}"
     logger.info "Adding Git hook listener for #{appRepo}"
+
     listener = gitEmit("#{appRepo}/.git")
     listener.on 'post-update', (update) ->
         updateRepo appName, (err) ->
@@ -42,14 +36,17 @@ addGitListener = (appName) ->
                 update.accept()
 
 
-# Repo has already been created by pushover at this point.
-# We just need to configure it so that client won't receive an undesired error
-# Also, we need to remove ".git" from repository's path
+# Create a directory, initialize a Git repository in it, then configure it to
+# be able to receive pushes even as a "non-bare" repository.
 configureNewRepo = (appName, callback) ->
     appRepo = "#{appsDir}/#{appName}"
-    exec "git config receive.denyCurrentBranch ignore"
-    , cwd: "#{appRepo}.git", ->
-        fs.move "#{appRepo}.git", appRepo, (err) ->
+
+    exec "git init -q #{appRepo}", (err) ->
+        return callback err if err
+
+        exec "git config receive.denyCurrentBranch ignore"
+        , cwd: appRepo
+        , (err) ->
             return callback err if err
             addGitListener appName
             updateRepo appName, callback
@@ -98,17 +95,23 @@ module.exports.serveRepo = (req, res, next) ->
     req.url = req.url.substring "/repo".length
     req.url = req.url.replace /\.git/, ""
 
-    if req.method is "POST"
-        repos.on 'push', (push) ->
-            repos.exists appName, (exists) ->
-                if not exists
-                    configureNewRepo appName, (err) ->
-                        if err
-                            push.reject()
-                            next err
-                        else
-                            push.accept()
-                else
-                    push.accept()
+    backend = gitBackend req.url, (err, service) ->
+        return res.end "#{err}\n" if err
 
-    repos.handle req, res
+        executeGitAction = ->
+            res.setHeader 'content-type', service.type
+            ps = spawn service.cmd, service.args.concat(appRepo)
+            ps.stdout.pipe(service.createStream()).pipe(ps.stdin)
+
+        console.log service.cmd
+        console.log service.action
+
+        if service.cmd is "git-receive-pack" \
+        and not fs.existsSync appRepo
+            configureNewRepo appName, (err) ->
+                return res.end "#{err}\n" if err
+                executeGitAction()
+        else
+            executeGitAction()
+
+    req.pipe(backend).pipe(res)

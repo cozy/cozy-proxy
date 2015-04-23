@@ -1,5 +1,4 @@
 fs = require 'fs'
-gitEmit = require 'git-emit'
 gitBackend = require 'git-http-backend'
 exec = require('child_process').exec
 spawn = require('child_process').spawn
@@ -9,31 +8,23 @@ logger = require('printit')
 
 appsDir = '/usr/local/cozy/apps'
 
-# Initialize an array of stream for each repository
-resStreams = {}
-
-# Action that will be triggered on the 'update' Git hook
-updateRepo = (appName, callback) ->
-    appRepo = "#{appsDir}/#{appName}"
-    exec "git reset --hard", cwd: appRepo, (err, stdout, stderr) ->
-        callback err
-
 
 # Add a listener for an application that will trigger on 'update' hook
 # Client is waiting for an answer at this point, so we need to call
 # `update.accept()` at the end
-addGitListener = (appName) ->
+addGitHook = (appName, callback) ->
     appRepo = "#{appsDir}/#{appName}"
-    logger.info "Adding Git hook listener for #{appRepo}"
+    logger.info "Adding Git `post-update` hook for #{appName}"
 
-    listener = gitEmit("#{appRepo}/.git")
-    listener.on 'post-update', (update) ->
-        updateRepo appName, (err) ->
-            if err
-                logger.error err
-                update.reject()
-            else
-                update.accept()
+    fs.writeFile "#{appRepo}/.git/hooks/post-update"
+    , """
+      #!/bin/sh
+      export GIT_DIR=#{appRepo}/.git/
+      export GIT_WORK_TREE=#{appRepo}/
+      git reset --hard > /dev/null
+      #exec cozy-monitor deploy #{appName}
+      """
+    , (err) -> callback err
 
 
 # Create a directory, initialize a Git repository in it, then configure it to
@@ -45,21 +36,25 @@ configureNewRepo = (appName, callback) ->
         return callback err if err
 
         exec "git config receive.denyCurrentBranch ignore"
-        , cwd: appRepo
-        , (err) ->
+        , cwd: appRepo , (err) ->
             return callback err if err
-            addGitListener appName
-            updateRepo appName, callback
+            addGitHook appName, callback
 
 
-# Add Git hook listeners for each app that already exists
+# Add Git hook listeners for each app that already exists at proxy startup
 fs.readdir appsDir, (err, apps) ->
+    logger.error err if err
+
     for appName in apps
         appRepo = "#{appsDir}/#{appName}"
         if fs.existsSync "#{appRepo}/.git"
-            addGitListener appName
+
             exec "git config receive.denyCurrentBranch ignore"
-            , cwd: "#{appsDir}/#{appName}"
+            , cwd: appRepo, (err) ->
+                logger.error err if err
+
+            addGitHook appName, (err) ->
+                logger.error err if err
 
 
 #
@@ -100,11 +95,9 @@ module.exports.serveRepo = (req, res, next) ->
 
         executeGitAction = ->
             res.setHeader 'content-type', service.type
+
             ps = spawn service.cmd, service.args.concat(appRepo)
             ps.stdout.pipe(service.createStream()).pipe(ps.stdin)
-
-        console.log service.cmd
-        console.log service.action
 
         if service.cmd is "git-receive-pack" \
         and not fs.existsSync appRepo

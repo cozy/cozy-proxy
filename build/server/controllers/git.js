@@ -28,7 +28,12 @@ addGitHook = function(appName, callback) {
   appRepo = appsDir + "/" + appName;
   logger.info("Adding Git `post-update` hook for " + appName);
   return fs.writeFile(appRepo + "/.git/hooks/post-update", "#!/bin/sh\nexport GIT_DIR=" + appRepo + "/.git/\nexport GIT_WORK_TREE=" + appRepo + "/\ngit reset --hard > /dev/null\ncozy-monitor deploy " + appName + "\n", function(err) {
-    return callback(err);
+    if (err) {
+      return callback(err);
+    }
+    return fs.chmod(appRepo + "/.git/hooks/post-update", "755", function(err) {
+      return callback(err);
+    });
   });
 };
 

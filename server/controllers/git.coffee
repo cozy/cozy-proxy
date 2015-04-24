@@ -29,8 +29,10 @@ addGitHook = (appName, callback) ->
       cozy-monitor deploy #{appName}
 
       """
-    , (err) -> callback err
-
+    , (err) ->
+        return callback err if err
+        fs.chmod "#{appRepo}/.git/hooks/post-update", "755", (err) ->
+            callback err
 
 # Create a directory, initialize a Git repository in it, then configure it to
 # be able to receive pushes even as a "non-bare" repository.

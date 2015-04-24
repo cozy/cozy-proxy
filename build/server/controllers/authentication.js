@@ -94,8 +94,28 @@ module.exports.register = function(req, res, next) {
 };
 
 module.exports.loginIndex = function(req, res) {
+  var counter, retrievePolyglot;
+  counter = 0;
+  retrievePolyglot = (function(_this) {
+    return function(cb) {
+      var polyglot;
+      if (counter === 5) {
+        return cb("Cannot retrieve polyglot");
+      } else {
+        polyglot = localization.getPolyglot();
+        if ((polyglot != null ? polyglot.t : void 0) != null) {
+          return cb(null, polyglot);
+        } else {
+          return setTimeout(function() {
+            counter += 1;
+            return retrievePolyglot(cb);
+          }, 500);
+        }
+      }
+    };
+  })(this);
   return User.first(function(err, user) {
-    var name, polyglot, words, _ref;
+    var name, words, _ref;
     if (user != null) {
       if (((_ref = user.public_name) != null ? _ref.length : void 0) > 0) {
         name = user.public_name;
@@ -106,10 +126,17 @@ module.exports.loginIndex = function(req, res) {
           return word.charAt(0).toUpperCase() + word.slice(1);
         }).join(' ');
       }
-      polyglot = localization.getPolyglot();
-      return res.render("login." + ext, {
-        polyglot: polyglot,
-        name: name
+      return retrievePolyglot(function(err, polyglot) {
+        if (err) {
+          return res.send(500, {
+            error: err
+          });
+        } else {
+          return res.render("login." + ext, {
+            polyglot: polyglot,
+            name: name
+          });
+        }
       });
     } else {
       return res.redirect('/register');

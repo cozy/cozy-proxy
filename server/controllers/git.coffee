@@ -1,5 +1,6 @@
-fs = require 'fs'
+fs = require 'fs-extra'
 gitBackend = require 'git-http-backend'
+pushover = require 'pushover'
 exec = require('child_process').exec
 spawn = require('child_process').spawn
 logger = require('printit')
@@ -8,6 +9,9 @@ logger = require('printit')
 
 appsDir = '/usr/local/cozy/apps'
 
+repos = pushover appsDir,
+    autocreate: false
+    checkout: true
 
 # Add a listener for an application that will trigger on 'update' hook
 # Client is waiting for an answer at this point, so we need to call
@@ -22,7 +26,8 @@ addGitHook = (appName, callback) ->
       export GIT_DIR=#{appRepo}/.git/
       export GIT_WORK_TREE=#{appRepo}/
       git reset --hard > /dev/null
-      #exec cozy-monitor deploy #{appName}
+      cozy-monitor deploy #{appName}
+
       """
     , (err) -> callback err
 
@@ -32,7 +37,7 @@ addGitHook = (appName, callback) ->
 configureNewRepo = (appName, callback) ->
     appRepo = "#{appsDir}/#{appName}"
 
-    exec "git init -q #{appRepo}", (err) ->
+    fs.move "#{appRepo}.git", appRepo, (err)->
         return callback err if err
 
         exec "git config receive.denyCurrentBranch ignore"
@@ -46,6 +51,8 @@ fs.readdir appsDir, (err, apps) ->
     logger.error err if err
 
     for appName in apps
+        continue if appName in [ "home", "data-system", "proxy" ]
+
         appRepo = "#{appsDir}/#{appName}"
         if fs.existsSync "#{appRepo}/.git"
 
@@ -90,21 +97,13 @@ module.exports.serveRepo = (req, res, next) ->
     req.url = req.url.substring "/repo".length
     req.url = req.url.replace /\.git/, ""
 
-    backend = gitBackend req.url, (err, service) ->
-        return res.end "#{err}\n" if err
+    if req.method is "POST"
+        repos.on "push", (push) ->
+            if not fs.existsSync appRepo
+                configureNewRepo appName, (err) ->
+                    if err then push.reject()
+                    else push.accept()
+            else
+                push.accept()
 
-        executeGitAction = ->
-            res.setHeader 'content-type', service.type
-
-            ps = spawn service.cmd, service.args.concat(appRepo)
-            ps.stdout.pipe(service.createStream()).pipe(ps.stdin)
-
-        if service.cmd is "git-receive-pack" \
-        and not fs.existsSync appRepo
-            configureNewRepo appName, (err) ->
-                return res.end "#{err}\n" if err
-                executeGitAction()
-        else
-            executeGitAction()
-
-    req.pipe(backend).pipe(res)
+    repos.handle req, res

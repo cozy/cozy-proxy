@@ -6,6 +6,9 @@ $ ->
     errorAlert = $ '.alert-error'
     successAlert = $ '.alert-success'
     forgotPassword = $ '#forgot-password'
+    $('#proxy-form').submit (e) ->
+        e.preventDefault()
+        false
     submitPassword = ->
         button.spin 'small'
         loader.spin 'small'

@@ -42,7 +42,9 @@ module.exports =
     'apps/:name/*': all: [utils.isAuthenticated, apps.app]
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
-    'cozy/*': all: devices.replication
+    'replaction/*': all: devices.replication
+    # Temporary - 01/05/14
+    'cozy/*': all: devices.oldReplication
 
     '.well-known/host-meta.?:ext': get: experiment.webfingerHostMeta
     '.well-known/:module': all: experiment.webfingerAccount

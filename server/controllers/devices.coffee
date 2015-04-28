@@ -1,9 +1,19 @@
+Client = require('request-json').JsonClient
 passport = require 'passport'
 deviceManager = require '../models/device'
 {getProxy} = require '../lib/proxy'
 
+
 couchdbHost = process.env.COUCH_HOST or 'localhost'
 couchdbPort = process.env.COUCH_PORT or '5984'
+
+hostDS = 'http://localhost'
+portDS = '9101'
+clientDS = new Client "http://localhost:9101/"
+
+if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
+    clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
+
 
 # helper functions
 extractCredentials = (header) ->
@@ -21,7 +31,6 @@ getCredentialsHeader = ->
 
 # controller actions
 module.exports.management = (req, res, next) ->
-
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
             console.log err
@@ -32,9 +41,45 @@ module.exports.management = (req, res, next) ->
             next error
         else
             # Send request to the Data System
-            req.headers['authorization'] = getCredentialsHeader()
-            res.end = -> deviceManager.update()
-            getProxy().web req, res, target: "http://localhost:9101"
+            device = req.body
+            # Check if name is correctly declared
+            if not device?.login?
+                error = new Error "Name isn't defined in req.body.login"
+                error.status = 400
+                next error
+            else
+                # Create device
+                device.docType = "Device"
+
+                # Check if an other device hasn't the same name
+                clientDS.post "request/device/byLogin/", key: device.login, (err, res, body) ->
+                    if err
+                        next err
+                    else if body.length isnt 0
+                        error = new Error "This name is already used"
+                        error.status = 400
+                        next error
+                    else
+                        # Create device
+                        device.docType = "Device"
+                        clientDS.post "data/", device, (err, res, docInfo) ->
+                            if err
+                                next err
+                            else
+                                # Create access for this device
+                                access =
+                                    login: device.login
+                                    password: randomString 32
+                                    app: docInfo._id
+                                    permissions: defaultPermissions
+                                clientDS.post 'access/', access, (err, res, body) ->
+                                    console.log err if err?
+                                    data =
+                                        token: access.password
+                                        login: device.login
+                                        permissions: access.permissions
+                                    # Return access to device
+                                    res.send 201, data
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
@@ -48,6 +93,21 @@ module.exports.management = (req, res, next) ->
     authenticator user, res
 
 module.exports.replication = (req, res, next) ->
+
+    # Authenticate the request
+    [username, password] = extractCredentials req.headers['authorization']
+    deviceManager.isAuthenticated username, password, (auth) ->
+        if auth
+            # Forward request for DS.
+            getProxy().web req, res, target: "http://#{hostDS}:#{portDS}"
+        else
+            error = new Error "Request unauthorized"
+            error.status = 401
+            next error
+
+# Old replication
+# Patch : 01/05/14
+module.exports.oldReplication = (req, res, next) ->
 
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']

@@ -65,7 +65,7 @@ module.exports.management = (req, res, next) ->
                 device.docType = "Device"
 
                 # Check if an other device hasn't the same name
-                clientDS.post "request/device/byLogin/", key: device.login, (err, resuult, body) ->
+                clientDS.post "request/device/byLogin/", key: device.login, (err, result, body) ->
                     if err
                         next err
                     else if body.length isnt 0
@@ -88,7 +88,7 @@ module.exports.management = (req, res, next) ->
                                 clientDS.post 'access/', access, (err, result, body) ->
                                     console.log err if err?
                                     data =
-                                        token: access.password
+                                        password: access.password
                                         login: device.login
                                         permissions: access.permissions
                                     # Return access to device

@@ -14,6 +14,19 @@ clientDS = new Client "http://localhost:9101/"
 if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
     clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
 
+defaultPermissions =
+    'file': 'Usefull to synchronize your files',
+    'folder': 'Usefull to synchronize your folder',
+    'notification': 'Usefull to synchronize your notification'
+    'binary': 'Usefull to synchronize your files'
+
+
+# Define random function for application's token
+randomString = (length) ->
+    string = ""
+    while (string.length < length)
+        string = string + Math.random().toString(36).substr(2)
+    return string.substr 0, length
 
 # helper functions
 extractCredentials = (header) ->
@@ -52,7 +65,7 @@ module.exports.management = (req, res, next) ->
                 device.docType = "Device"
 
                 # Check if an other device hasn't the same name
-                clientDS.post "request/device/byLogin/", key: device.login, (err, res, body) ->
+                clientDS.post "request/device/byLogin/", key: device.login, (err, resuult, body) ->
                     if err
                         next err
                     else if body.length isnt 0
@@ -62,7 +75,7 @@ module.exports.management = (req, res, next) ->
                     else
                         # Create device
                         device.docType = "Device"
-                        clientDS.post "data/", device, (err, res, docInfo) ->
+                        clientDS.post "data/", device, (err, result, docInfo) ->
                             if err
                                 next err
                             else
@@ -72,7 +85,7 @@ module.exports.management = (req, res, next) ->
                                     password: randomString 32
                                     app: docInfo._id
                                     permissions: defaultPermissions
-                                clientDS.post 'access/', access, (err, res, body) ->
+                                clientDS.post 'access/', access, (err, result, body) ->
                                     console.log err if err?
                                     data =
                                         token: access.password

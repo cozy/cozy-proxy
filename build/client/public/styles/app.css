@@ -77,21 +77,21 @@ p {
   display: none;
 }
 .alert-error {
-  font-family: 'Maven Pro', sans-serif;
-  font-size: 20px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1.5em;
   background: #c66666;
   padding: 5px 10px;
   width: 550px;
   color: #fff;
 }
 .alert-success {
-  font-family: 'Maven Pro', sans-serif;
-  font-size: 2em;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1.5em;
   background: #66c666;
   padding: 20px;
   width: 550px;
   color: #fff;
-  margin: 35px 0;
+  margin: 5px 0 35px 0;
 }
 .additional-line {
   margin-top: 1em;

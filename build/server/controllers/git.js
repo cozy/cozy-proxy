@@ -27,7 +27,7 @@ addGitHook = function(appName, callback) {
   var appRepo;
   appRepo = appsDir + "/" + appName;
   logger.info("Adding Git `post-update` hook for " + appName);
-  return fs.writeFile(appRepo + "/.git/hooks/post-update", "#!/bin/sh\nexport GIT_DIR=" + appRepo + "/.git/\nexport GIT_WORK_TREE=" + appRepo + "/\ngit reset --hard > /dev/null\ncozy-monitor deploy " + appName + "\n", function(err) {
+  return fs.writeFile(appRepo + "/.git/hooks/post-update", "#!/bin/sh\nexport GIT_DIR=/usr/local/cozy/apps/" + appName + "/.git/\nexport GIT_WORK_TREE=/usr/local/cozy/apps/" + appName + "/\ngit reset --hard > /dev/null\ngit submodule update --init --recursive\ncozy-monitor versions | grep -q \"" + appName + ":\"\nif [ $? -eq 0 ];\nthen\n    cozy-monitor update " + appName + "\nelse\n    cozy-monitor deploy " + appName + "\n    git remote add origin $GIT_DIR\nfi", function(err) {
     if (err) {
       return callback(err);
     }

@@ -23,11 +23,18 @@ addGitHook = (appName, callback) ->
     fs.writeFile "#{appRepo}/.git/hooks/post-update"
     , """
       #!/bin/sh
-      export GIT_DIR=#{appRepo}/.git/
-      export GIT_WORK_TREE=#{appRepo}/
+      export GIT_DIR=/usr/local/cozy/apps/#{appName}/.git/
+      export GIT_WORK_TREE=/usr/local/cozy/apps/#{appName}/
       git reset --hard > /dev/null
-      cozy-monitor deploy #{appName}
-
+      git submodule update --init --recursive
+      cozy-monitor versions | grep -q "#{appName}:"
+      if [ $? -eq 0 ];
+      then
+          cozy-monitor update #{appName}
+      else
+          cozy-monitor deploy #{appName}
+          git remote add origin $GIT_DIR
+      fi
       """
     , (err) ->
         return callback err if err

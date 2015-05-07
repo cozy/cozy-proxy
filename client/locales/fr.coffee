@@ -63,7 +63,6 @@ module.exports =
     "error try restart": "Si rien n'a changé après ça, essayez de redémarrer votre Cozy."
     "error contact cozy team": "Si le problème persiste, n'hésitez pas à contacter l'équipe Cozy :"
     "error contact forum": 'Demandez de l\'aide sur  <a href="https://forum.cozy.io">notre forum</a>'
-    "error contact forum label": "notre forum"
     "error contact email": "Envoyez un email à contact@cozycloud.cc"
     "error contact irc": "Reportez le problème sur IRC, canal #cozycloud sur irc.freenode.net"
     "error wait a bit": "Attendre 5 minutes"

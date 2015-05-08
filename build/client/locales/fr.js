@@ -2,7 +2,7 @@
 module.exports = {
   "login title": "Cozy - Connexion",
   "login headline": "Bienvenue",
-  "login connection invitation": "Veuillez renseigner votre mot de passe pour vous connecter :",
+  "login connection invitation": "Renseignez votre mot de passe pour vous connecter :",
   "login password placeholder": "Votre mot de passe",
   "login button": "Se connecter",
   "login forget password button": "Avez-vous perdu votre mot de passe ?",

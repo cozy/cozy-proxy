@@ -11,13 +11,20 @@ text-shadow()
     -webkit-text-shadow arguments
     text-shadow arguments
 
+*
+    outline 0
+
+    &:hover
+        outline 0
 
 blue = #15a7c7
-darkblue = #363a46
+darkgrey = #6A6666
 darkred = #C66666
 darkgreen = #66C666
 orange = #C60
 orangewhite = #fcf9f5
+darkblue = #405077
+darkblue = #338CF7 - 30%
 
 
 html, body
@@ -27,11 +34,13 @@ html, body
     margin 0
     box-sizing border-box
 
+
 html, body, h1, p, input, div
     box-sizing border-box
 
 body
-    background orangewhite
+    text-align center
+    background orangewhite - 5%
 
 a, a:hover
     color blue
@@ -41,11 +50,11 @@ a:hover
     color orange + 20%
 
 h1
-    font-size 1.8em
+    font-size 1.7em
     line-height 1.3em
     font-family 'Source Sans Pro', sans-serif
     font-weight normal
-    color darkblue
+    color darkgrey
     margin 0
 
 button
@@ -66,7 +75,6 @@ select
     border 1px solid transparent
 
 input:focus
-select
     color orange + 20%
     box-shadow 0 0 0 0
     border 1px solid orange + 50%
@@ -74,6 +82,9 @@ select
 
 p
     font-family 'Source Sans Pro', sans-serif
+
+.hidden
+    display none
 
 #timezone-input
     background white
@@ -85,21 +96,22 @@ p
     display none
 
 .alert-error
+.alert-success
+    box-sizing border-box
     font-family 'Source Sans Pro', sans-serif
-    font-size 1.5em
-    background darkred
-    padding 5px 10px
-    width 550px
+    font-size 1.3em
+    width 100%
     color white
+    display none
+    border-radius 5px
+    padding 5px 10px
+    margin 5px 0 35px 0
+
+.alert-error
+    background darkred
 
 .alert-success
-    font-family 'Source Sans Pro', sans-serif
-    font-size 1.5em
     background darkgreen
-    padding 20px
-    width 550px
-    color white
-    margin 5px 0 35px 0
 
 .additional-line
     margin-top 1em
@@ -108,14 +120,20 @@ p
     width 30px
     margin-bottom 0px
 
-.alert-error
-.alert-success
-    display none
-    border-radius 5px
-
 #header
     width 100%
     clear both
+    margin auto
+    text-align center
+    margin-bottom 40px
+    margin-top 70px
+    background orangewhite
+    width 160px
+    border-radius 200px
+    padding-top 5px
+
+    img 
+        width 140px
 
 #header:after
     content ""
@@ -131,14 +149,28 @@ p
     padding 7px
     color white
     margin-left 0px
-    width 570px
     width 100%
     cursor pointer
     background blue
+    transition background 0.6 ease
+
+    &.btn-success
+        background darkgreen
+
+.proxy-form
+    background orangewhite
+    margin auto
+    max-width 550px
+    padding 40px
+    border-radius 20px
 
 .proxy-form.register
-    margin-top -40px
+    padding 20px
 
+    input
+    select
+        border 1px solid blue
+        width 460px
 
 .input-wrapper
     margin 1em 0
@@ -178,10 +210,9 @@ p
     margin-bottom 9px
     color blue
     &:hover
-        color orange
+        color orange + 20%
 
 #reinsurance
-    width 550px
     text-align left
     font-family 'Source Sans Pro', sans-serif
     font-size 16px
@@ -204,7 +235,7 @@ p
         width 300px
         background #fff
         padding 5px
-        border 3px solid blue
+        border 3px solid orangewhite - 20%
         border-radius 5px
         font-family 'Source Sans Pro', sans-serif
 
@@ -234,15 +265,15 @@ p
 #submit-btn:disabled
     opacity 0.5
 
-#username
-    color blue - 20%
-
-#content
-    padding 20px
-    padding-left 60px
-
 #password-input
     padding-left 10px
+
+#password-input:hover
+    border 1px solid blue
+
+    &:active
+    &:focus
+        border 1px solid orange + 20%
 
 #email-input
     margin-bottom 0px
@@ -252,31 +283,27 @@ p
     font-family 'Source Sans Pro', sans-serif
 
 #logo
-    position relative
-    float right
-    margin 40px 60px
-
     text-decoration none
-    font-family 'Maven Pro', sans-serif
+    font-family 'Source Sans Pro', sans-serif
     font-size 1.4em
     color blue
+    margin-bottom 60px
 
     span
-        display: block;
-        position: absolute;
-        top: -0.2em;
-        right: -1em;
-        opacity 0.65
+        display none
+        position absolute
+        top 0em
+        right 1em
+        color darkgrey
 
 .proxy-form.error
-    width 750px
+    width 550px
     margin-top -40px
     padding 5px 10px
     border-radius 5px
     font-size 20px
-    font-family 'Maven Pro', sans-serif
-    color #eee
-    background darkblue
+    font-family 'Source Sans Pro', sans-serif
+    color darkgrey
 
     h1
         color white
@@ -287,15 +314,15 @@ p
         &:hover
             color blue
 
-@media(max-width: 640px)
+@media(max-width: 840px)
 
     h1
-        padding 0 0
+        padding 10px 0
         font-size 21px
+        line-height 22px
 
     .proxy-form
-        padding-top 1em
-        padding-bottom 1em
+        padding 20px
 
 
         p
@@ -304,12 +331,18 @@ p
         .input-wrapper
             padding 0
 
+            input
+            select
+                width 100%
+
             .help
+                position static
+                box-sizing border-box
                 i.icon
                     display none
                 .help-info
-                    position relative
-                    left 0
+                    position static
+                    box-sizing border-box
                     top 5px
                     width 100%
                     font-size 14px
@@ -317,10 +350,9 @@ p
         input
         select
             width 100%
-            padding 0
             display block
             box-sizing border-box
-            font-size 26px
+            font-size 22px
 
         #reinsurance
         #btn-wrapper
@@ -337,38 +369,40 @@ p
 
     .alert-error
     .alert-success
-        width auto
+        width 100%
         box-sizing border-box
 
     .alert-success
         font-size 20px
 
     #content
-        padding 40px
+        padding 10px
         box-sizing border-box
 
         div
             box-sizing border-box
 
+    #header
+        width 90px
+        height 90px
+        padding 5px
+
     #logo
-        margin 0 0 10px 0
+        margin 0
         float left
 
         img
             width 80px
+            height 80px
 
         span
             right -1.4em
 
+@media(max-width: 500px)
 
-@media(max-width: 320px)
+    #header
+        margin 10px auto
 
-    #logo
-        margin 10px
-
-    h1
-        padding 0 0
-        font-size 20px
-
-    .help
-        display none
+    .proxy-form
+        h1
+            font-size 18px

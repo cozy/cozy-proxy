@@ -31,8 +31,9 @@ html(lang="en")
     link(rel="icon", type="image/x-icon", href="/favicon.png")
   body
     #content
+      img.hidden(src='/images/spinner-white.svg')
       div#header
-          a#logo(href="http://cozy.io")
+         a#logo(href="http://cozy.io", target="_blank")
             img(src="/images/happycloud.png")
             span beta
       block content

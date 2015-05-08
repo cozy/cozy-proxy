@@ -7,7 +7,7 @@ module.exports =
     "login password placeholder" : "Votre mot de passe"
     "login button" : "Se connecter"
     "login forget password button" : "Avez-vous perdu votre mot de passe ?"
-    "login success message": "Connexion réussie ! Vous allez être redirigé(e) vers l'accueil de votre Cozy…"
+    "login success message": "Connexion réussie !"
     "login reset success message": "Un email a été envoyé à votre adresse, suivez les instructions de ce dernier pour réinitialiser votre mot de passe."
 
     # reset password page
@@ -21,17 +21,18 @@ module.exports =
     # register page
     "register title": "Cozy - Ouverture de votre compte"
     "register headline": "Bienvenue sur votre Cozy !"
+    "register timezone placeholder": "Votre fuseau horaire"
     "register informations": "C'est la première fois que vous vous connectez."
-    "register instructions": "Avant d'aller plus loin, quelques informations sont requises :"
+    "register instructions": "Avant d'aller plus loin, votre Cozy requiert quelques informations :"
     "register reinsurance modification": "Ces informations sont modifiables à tout moment depuis l'écran de configuration."
-    "register reinsurance share": "Votre Cozy ne partagera JAMAIS vos données sans votre accord."
+    "register reinsurance share": "Et bien sûr, votre Cozy ne partagera pas vos données sans votre accord."
     "register button moreinfo": "Saisir des informations complémentaires"
     "register button separator": "ou"
     "register button": "Terminer l'inscription"
-    "register success message": "Parfait, vous allez être redirigé(é) vers l'accueil de votre Cozy."
+    "register success message": "L'inscription a fonctionné !"
 
     # register - email field
-    "register email placeholder": "Email (pour réinitialisation du mot de passe)"
+    "register email placeholder": "Votre email"
     "register email info": "Votre Cozy utilisera cette adresse en cas de perte du mot de passe ou pour vous communiquer toute sorte d'information : alerte, rapport quotidien, etc."
     "register email valid": "L'adresse email est valide."
     "register email invalid": "Indiquez une adresse email valide, de la forme john.doe@example.com."
@@ -43,13 +44,13 @@ module.exports =
     "register password invalid": "Le mot de passe doit être composé d'au moins 5 caractères."
 
     # register -  check password field
-    "register check password placeholder": "Tapez votre mot de passe une seconde fois"
+    "register check password placeholder": "Confirmez votre mot de passe"
     "register check password info": "Confirmez votre mot de passe."
     "register check password valid": "Mot de passe confirmé avec succès."
     "register check password invalid": "Les deux mots de passes sont différents."
 
     # register - public name field
-    "register public name placeholder": "Votre nom public sur votre Cozy"
+    "register public name placeholder": "Votre nom"
     "register public name info": "Votre nom public sera utilisé par votre Cozy et ses applications pour communiquer avec vous."
 
     # register - timezone field

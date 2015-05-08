@@ -1,6 +1,5 @@
 $ ->
     wait = require('helpers').wait
-    loader = $ '.loading'
     button = $ '#submit-btn'
     passwordInput = $ '#password-input'
     errorAlert = $ '.alert-error'
@@ -10,18 +9,13 @@ $ ->
         e.preventDefault()
         false
     submitPassword = ->
-        button.spin 'small'
-        loader.spin 'small'
+        button.spin true
         client.post "/login", { password: passwordInput.val() },
             success: ->
                 errorAlert.hide()
-                forgotPassword.hide()
 
-                successAlert.html LOGIN_SUCCESS_MESSAGE
-                successAlert.fadeIn()
-                loader.spin()
-                button.spin()
-                button.html
+                button.html LOGIN_SUCCESS_MESSAGE
+                button.addClass 'btn-success'
 
                 wait 1000, ->
                     $('#content').fadeOut ->
@@ -31,15 +25,12 @@ $ ->
 
             error: (err) ->
                 msg = JSON.parse(err.responseText).error
-                successAlert.fadeOut()
+                successAlert.hide()
                 errorAlert.hide()
                 errorAlert.html msg
-                errorAlert.fadeIn()
+                errorAlert.show()
 
-                loader.spin()
-                button.spin()
                 button.html LOGIN_BUTTON_LABEL
-                forgotPassword.fadeIn()
 
     passwordInput.keyup (event) ->
         submitPassword() if event.which is 13

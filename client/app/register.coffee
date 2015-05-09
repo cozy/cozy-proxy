@@ -32,7 +32,7 @@ $ ->
             password: passwordInput.val()
             email: emailInput.val()
             public_name: publicNameInput.val()
-            timezone: timezoneInput.val()
+            timezone: timezoneInput.val() or 'GMT'
             locale: localeField.val()
         ,
             success: ->

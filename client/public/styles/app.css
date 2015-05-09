@@ -69,12 +69,11 @@ select {
   color: #15a7c7;
   -webkit-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
-  border: 1px solid transparent;
+  border: 1px solid #15a7c7;
 }
+input:hover,
 input:focus {
   color: #ff850a;
-  -webkit-box-shadow: 0 0 0 0;
-  box-shadow: 0 0 0 0;
   border: 1px solid #ffb366;
   outline: none;
 }
@@ -182,6 +181,14 @@ p {
 .proxy-form.register select {
   border: 1px solid #15a7c7;
   width: 460px;
+}
+.proxy-form.register input:hover,
+.proxy-form.register select:hover,
+.proxy-form.register input:focus,
+.proxy-form.register select:focus {
+  color: #ff850a;
+  border: 1px solid #ffb366;
+  outline: none;
 }
 .input-wrapper {
   margin: 1em 0;
@@ -298,9 +305,6 @@ p {
 }
 #password-input {
   padding-left: 10px;
-}
-#password-input:hover {
-  border: 1px solid #15a7c7;
 }
 #password-input:hover:active,
 #password-input:hover:focus {

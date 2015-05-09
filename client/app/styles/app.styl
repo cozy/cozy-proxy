@@ -77,11 +77,11 @@ select
     border-radius 0.4em
     color blue
     box-shadow 0 0 0 0
-    border 1px solid transparent
+    border 1px solid blue
 
+input:hover
 input:focus
     color orange + 20%
-    box-shadow 0 0 0 0
     border 1px solid orange + 50%
     outline none
 
@@ -180,6 +180,14 @@ p
     select
         border 1px solid blue
         width 460px
+        
+        &:hover
+        &:focus
+            color orange + 20%
+            border 1px solid orange + 50%
+            outline none
+
+
 
 .input-wrapper
     margin 1em 0
@@ -278,7 +286,6 @@ p
     padding-left 10px
 
 #password-input:hover
-    border 1px solid blue
 
     &:active
     &:focus

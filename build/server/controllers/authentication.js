@@ -35,7 +35,8 @@ module.exports.registerIndex = function(req, res) {
       polyglot = localization.getPolyglotByLocale(bestMatch);
       return res.render("register." + ext, {
         polyglot: polyglot,
-        timezones: timezones
+        timezones: timezones,
+        className: "intro"
       });
     } else {
       return res.redirect('/login');
@@ -134,7 +135,8 @@ module.exports.loginIndex = function(req, res) {
         } else {
           return res.render("login." + ext, {
             polyglot: polyglot,
-            name: name
+            name: name,
+            className: "intro"
           });
         }
       });
@@ -192,16 +194,17 @@ module.exports.resetPasswordIndex = function(req, res) {
   }
 };
 
-module.exports.resetPassword = function(req, res) {
-  var key, newPassword;
+module.exports.resetPassword = function(req, res, next) {
+  var key, newPassword, polyglot;
   key = req.params.key;
   newPassword = req.body.password;
+  polyglot = localization.getPolyglot();
   return User.first(function(err, user) {
     var data, error, validationErrors;
     if (err != null) {
       return next(new Error(err));
     } else if (user == null) {
-      err = new Error("No user registered.");
+      err = new Error(polyglot.t("reset error no user"));
       err.status = 400;
       err.headers = {
         'Location': '/register/'
@@ -235,7 +238,7 @@ module.exports.resetPassword = function(req, res) {
           return next(error);
         }
       } else {
-        error = new Error("Key is invalid");
+        error = new Error(polyglot.t("reset error invalid key"));
         error.status = 400;
         return next(error);
       }

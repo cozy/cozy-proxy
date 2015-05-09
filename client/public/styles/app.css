@@ -26,7 +26,14 @@ div {
 }
 body {
   text-align: center;
-  background: #f6eee2;
+  background-color: #f6eee2;
+  padding-top: 70px;
+}
+body.intro {
+  background: url("/images/background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
 }
 a,
 a:hover {
@@ -119,12 +126,11 @@ p {
   margin: auto;
   text-align: center;
   margin-bottom: 40px;
-  margin-top: 70px;
   background: #fcf9f5;
   width: 160px;
   -webkit-border-radius: 200px;
   border-radius: 200px;
-  padding-top: 5px;
+  padding-top: 8px;
 }
 #header img {
   width: 140px;
@@ -163,6 +169,11 @@ p {
   padding: 40px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
+}
+.proxy-form input,
+.proxy-form button,
+.proxy-form #btn-wrapper {
+  width: 100%;
 }
 .proxy-form.register {
   padding: 20px;
@@ -317,23 +328,21 @@ p {
   color: #6a6666;
 }
 .proxy-form.error {
-  width: 550px;
-  margin-top: -40px;
-  padding: 5px 10px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  font-size: 20px;
+  text-align: left;
+  font-size: 22px;
+  width: 100%;
+  max-width: 720px;
   font-family: 'Source Sans Pro', sans-serif;
   color: #6a6666;
 }
 .proxy-form.error h1 {
-  color: #fff;
+  color: #6a6666;
 }
 .proxy-form.error a {
-  color: #fff;
+  color: #15a7c7;
 }
 .proxy-form.error a:hover {
-  color: #15a7c7;
+  color: #c60;
 }
 @media (max-width: 840px) {
   h1 {
@@ -435,8 +444,11 @@ p {
   }
 }
 @media (max-width: 500px) {
+  body {
+    padding-top: 10px;
+  }
   #header {
-    margin: 10px auto;
+    margin-bottom: 10px;
   }
   .proxy-form {
     padding: 10px;

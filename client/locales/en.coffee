@@ -29,6 +29,8 @@ module.exports =
     "register button separator": "or"
     "register button": "Finish registration"
     "register success message": "Registration succeeded!"
+    "reset error no user": "No user is registered, it can't reset the password."
+    "reset error invalid key": "Security key is invalid, you should restart the reset process by asking a new password on the login page again."
 
     # register - email field
     "register email placeholder": "Your email"
@@ -62,7 +64,7 @@ module.exports =
     "error temporary issue": "The problem should be temporary, please try again in 5 minutes."
     "error try restart": "If nothing has changed despite that, try to restart your Cozy."
     "error contact cozy team": "If the problem persists, feel free to contact the Cozy team:"
-    "error contact forum": 'Ask for help on <a href="https://forum.cozy.io">our forum</a>'
+    "error contact forum": 'Ask for help on our forum:'
     "error contact email": "Send an email to contact@cozycloud.cc"
     "error contact irc": "Report the issue on IRC, #cozycloud on irc.freenode.net"
     "error wait a bit": "Wait for 5 minutes"

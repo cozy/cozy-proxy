@@ -21,7 +21,10 @@ module.exports.registerIndex = (req, res) ->
             locales = new locale.Locales req.headers['accept-language']
             bestMatch = locales.best(supported).language
             polyglot = localization.getPolyglotByLocale bestMatch
-            res.render "register.#{ext}", polyglot: polyglot, timezones: timezones
+            res.render "register.#{ext}",
+                polyglot: polyglot
+                timezones: timezones
+                className: "intro"
         else
             res.redirect '/login'
 
@@ -98,7 +101,10 @@ module.exports.loginIndex = (req, res) ->
                 if err
                     res.send 500, error: err
                 else
-                    res.render "login.#{ext}", polyglot: polyglot, name: name
+                    res.render "login.#{ext}",
+                        polyglot: polyglot
+                        name: name
+                        className: "intro"
         else
             res.redirect '/register'
 

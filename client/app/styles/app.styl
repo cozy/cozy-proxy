@@ -41,6 +41,9 @@ html, body, h1, p, input, div
 body
     text-align center
     background orangewhite - 5%
+    background url('/images/background.jpg') no-repeat center center fixed; 
+    background-size cover
+    padding-top 70px
 
 a, a:hover
     color blue
@@ -126,11 +129,10 @@ p
     margin auto
     text-align center
     margin-bottom 40px
-    margin-top 70px
     background orangewhite
     width 160px
     border-radius 200px
-    padding-top 5px
+    padding-top 8px
 
     img 
         width 140px
@@ -163,6 +165,11 @@ p
     max-width 550px
     padding 40px
     border-radius 20px
+
+    input
+    button
+    #btn-wrapper
+        width 100%
 
 .proxy-form.register
     padding 20px
@@ -397,8 +404,11 @@ p
 
 @media(max-width: 500px)
 
+    body
+        padding-top 10px
+
     #header
-        margin 10px auto
+        margin-bottom 10px
 
     .proxy-form
         padding 10px

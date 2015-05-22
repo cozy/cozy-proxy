@@ -7,7 +7,7 @@ deviceManager = require '../models/device'
 couchdbHost = process.env.COUCH_HOST or 'localhost'
 couchdbPort = process.env.COUCH_PORT or '5984'
 
-hostDS = 'http://localhost'
+hostDS = 'localhost'
 portDS = '9101'
 clientDS = new Client "http://localhost:9101/"
 

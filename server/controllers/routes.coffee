@@ -35,9 +35,11 @@ module.exports =
 
     'disk-space': get: disk.getSpace
 
-    'device*':
-        post: devices.management
-        delete: devices.management
+    'device':
+        post: devices.create
+    'device/:login':
+        put: devices.update
+        delete: devices.remove
 
     'apps/:name/*': all: [utils.isAuthenticated, apps.app]
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]

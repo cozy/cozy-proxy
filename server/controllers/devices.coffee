@@ -15,10 +15,14 @@ if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
     clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
 
 defaultPermissions =
-    'file': 'Usefull to synchronize your files',
-    'folder': 'Usefull to synchronize your folder',
-    'notification': 'Usefull to synchronize your notification'
-    'binary': 'Usefull to synchronize your files'
+    'File':
+        'description': 'Usefull to synchronize your files'
+    'Folder':
+        'description': 'Usefull to synchronize your folder'
+    'Notification':
+        'description': 'Usefull to synchronize your notification'
+    'Binary':
+        'description': 'Usefull to synchronize the content of your files'
 
 
 # Define random function for application's token

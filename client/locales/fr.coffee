@@ -17,6 +17,7 @@ module.exports =
     "reset password placeholder": "Votre nouveau mot de passe"
     "reset button": "Réinitialiser mon mot de passe"
     "reset success message": "Mot de passe réinitialisé avec succès."
+    "reset error message": "La réinitialisation du mot de passe a échoué. Votre nouveau mot de passe est trop court ou une erreur serveur est survenue."
 
     # register page
     "register title": "Cozy - Ouverture de votre compte"

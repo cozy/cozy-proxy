@@ -5,9 +5,11 @@ $ ->
     errorAlert = $ '.alert-error'
     successAlert = $ '.alert-success'
     forgotPassword = $ '#forgot-password'
+
     $('#proxy-form').submit (e) ->
         e.preventDefault()
         false
+
     submitPassword = ->
         button.spin true
         client.post "/login", { password: passwordInput.val() },
@@ -29,6 +31,7 @@ $ ->
                 errorAlert.hide()
                 errorAlert.html msg
                 errorAlert.show()
+                passwordInput.select()
 
                 button.html LOGIN_BUTTON_LABEL
 
@@ -51,3 +54,4 @@ $ ->
                 errorAlert.fadeIn()
 
     passwordInput.focus()
+    passwordInput.select()

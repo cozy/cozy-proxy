@@ -129,7 +129,7 @@ describe "Devices", =>
                 @res.statusCode.should.equal 401
                 @body.error.should.equal 'Bad credentials'
 
-        describe 'Modify a uncorrect device', =>
+        describe 'Modify an uncorrect device', =>
 
             it "Try to modify a uncorrect device", (done) =>
                 client.setBasicAuth 'owner', 'user_pwd'

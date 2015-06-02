@@ -23,6 +23,8 @@ defaultPermissions =
         'description': 'Usefull to synchronize your folder'
     'Binary':
         'description': 'Usefull to synchronize the content of your files'
+    'Notification':
+        'description': 'Usefull to synchronize cozy notifications'
 
 
 # Define random function for application's token

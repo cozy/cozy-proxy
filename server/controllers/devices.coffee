@@ -7,20 +7,20 @@ deviceManager = require '../models/device'
 couchdbHost = process.env.COUCH_HOST or 'localhost'
 couchdbPort = process.env.COUCH_PORT or '5984'
 
-hostDS = 'localhost'
-portDS = '9101'
-clientDS = new Client "http://localhost:9101/"
+dsHost = 'localhost'
+dsPort = '9101'
+clientDS = new Client "http://#{dsHost}:#{dsPort}/"
 
 if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
     clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
 
+
+# If device doesn't precise its permissions, use default permissions.
 defaultPermissions =
     'File':
         'description': 'Usefull to synchronize your files'
     'Folder':
         'description': 'Usefull to synchronize your folder'
-    'Notification':
-        'description': 'Usefull to synchronize your notification'
     'Binary':
         'description': 'Usefull to synchronize the content of your files'
 
@@ -41,13 +41,58 @@ extractCredentials = (header) ->
     else
         return ["", ""]
 
+# Get proxy crededntials : usefull for device creation
 getCredentialsHeader = ->
     credentials = "#{process.env.NAME}:#{process.env.TOKEN}"
     basicCredentials = new Buffer(credentials).toString 'base64'
     return "Basic #{basicCredentials}"
 
-# controller actions
+# Check if device with <login> already exists
+deviceExists = (login, cb) ->
+    clientDS.post "request/device/byLogin/", key: login, (err, result, body) ->
+        if err
+            cb err
+        else if body.length is 0
+            cb null, false
+        else
+            cb null, body[0]
+
+initAuth = (req, cb) ->
+    # Authenticate the request
+    [username, password] = extractCredentials req.headers['authorization']
+    # Initialize user
+    user = {}
+    user.body = password: password
+    req.headers['authorization'] = undefined
+    cb user
+
+## Controller actions
+
 module.exports.create = (req, res, next) ->
+    # Create device :
+    #       * create device document
+    #       * create device access
+    createDevice = (device, cb) =>
+        device.docType = "Device"
+        # Create device document
+        clientDS.post "data/", device, (err, result, docInfo) ->
+            return cb(err) if err?
+            # Create access for this device
+            access =
+                login: device.login
+                password: randomString 32
+                app: docInfo._id
+                permissions: device.permissions or defaultPermissions
+            clientDS.post 'access/', access, (err, result, body) ->
+                return cb(err) if err?
+                data =
+                    password: access.password
+                    login: device.login
+                    permissions: access.permissions
+                # Return access to device
+                cb null, data
+
+    # Check if user is authenticated
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
             console.log err
@@ -57,9 +102,8 @@ module.exports.create = (req, res, next) ->
             error.status = 401
             next error
         else
-            # Send request to the Data System
-            device = req.body
             # Check if name is correctly declared
+            device = req.body
             if not device?.login?
                 error = new Error "Name isn't defined in req.body.login"
                 error.status = 400
@@ -69,48 +113,54 @@ module.exports.create = (req, res, next) ->
                 device.docType = "Device"
 
                 # Check if an other device hasn't the same name
-                clientDS.post "request/device/byLogin/", key: device.login, (err, result, body) ->
+                deviceExists device.login, (err, exist) ->
                     if err
                         next err
-                    else if body.length isnt 0
+                    else if exist
                         error = new Error "This name is already used"
                         error.status = 400
                         next error
                     else
                         # Create device
-                        device.docType = "Device"
-                        clientDS.post "data/", device, (err, result, docInfo) ->
-                            if err
+                        createDevice device, (err, data) ->
+                            if err?
                                 next err
                             else
-                                # Create access for this device
-                                access =
-                                    login: device.login
-                                    password: randomString 32
-                                    app: docInfo._id
-                                    permissions: device.permissions or defaultPermissions
-                                clientDS.post 'access/', access, (err, result, body) ->
-                                    console.log err if err?
-                                    data =
-                                        password: access.password
-                                        login: device.login
-                                        permissions: access.permissions
-                                    # Return access to device
-                                    res.send 201, data
+                                res.send 201, data
 
-    # Authenticate the request
-    [username, password] = extractCredentials req.headers['authorization']
 
-    # Initialize user
-    user = {}
-    user.body = password: password
-
-    req.headers['authorization'] = undefined
-    # Check if request is authenticated
-    authenticator user, res
+    initAuth req, (user) ->
+        # Check if request is authenticated
+        authenticator user, res
 
 
 module.exports.update = (req, res, next) ->
+    console.log "update"
+    # Update device :
+    #       * update device access
+    updateDevice = (oldDevice, device, cb) =>
+        path = "request/access/byApp/"
+        clientDS.post path, key: oldDevice.id, (err, result, accesses) ->
+            # Update access for this device
+            access =
+                login: device.login
+                password: randomString 32
+                app: oldDevice.id
+                permissions: device.permissions or defaultPermissions
+            path = "access/#{accesses[0].id}/"
+            clientDS.put path, access, (err, result, body) ->
+                if err?
+                    console.log err
+                    error = new Error err
+                    cb error
+                else
+                    data =
+                        password: access.password
+                        login: device.login
+                        permissions: access.permissions
+                    # Return access to device
+                    cb null, data
+
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
             console.log err
@@ -131,44 +181,49 @@ module.exports.update = (req, res, next) ->
             else
                 # Create device
                 device.docType = "Device"
-
                 # Check if an other device hasn't the same name
-                clientDS.post "request/device/byLogin/", key: login, (err, result, body) ->
+                deviceExists login, (err, oldDevice) ->
                     if err
                         next err
-                    else if body.length is 0
+                    else if not oldDevice
                         error = new Error "This device doesn't exist"
                         error.status = 400
                         next error
                     else
-                        clientDS.post "request/access/byApp/", key: body[0].id, (err, result, accesses) ->
-                            # Update access for this device
-                            access =
-                                login: device.login
-                                password: randomString 32
-                                app: body[0]._id
-                                permissions: device.permissions or defaultPermissions
-                            clientDS.put "access/#{accesses[0].id}/", access, (err, result, body) ->
-                                console.log err if err?
-                                data =
-                                    password: access.password
-                                    login: device.login
-                                    permissions: access.permissions
-                                # Return access to device
+                        # Update device
+                        updateDevice oldDevice, device, (err, data) ->
+                            if err?
+                                next err
+                            else
                                 res.send 200, data
 
-    # Authenticate the request
-    [username, password] = extractCredentials req.headers['authorization']
+    initAuth req, (user) ->
+        # Check if request is authenticated
+        authenticator user, res
 
-    # Initialize user
-    user = {}
-    user.body = password: password
 
-    req.headers['authorization'] = undefined
-    # Check if request is authenticated
-    authenticator user, res
+module.exports.remove = (req, res, next) ->
+    # Remove device :
+    #       * remove device access
+    #       * remove device document
+    removeDevice = (device, cb) =>
+        id = device.id
+        # Remove Access
+        clientDS.del "access/#{id}/", (err, result, body) ->
+            if err?
+                error = new Error err
+                error.status = 400
+                cd error
+            else
+                # Remove Device
+                clientDS.del "data/#{id}/", (err, result, body) ->
+                    if err?
+                        error = new Error err
+                        error.status = 400
+                        cd error
+                    else
+                        cb null
 
-module.exports.remove = (req, res , next) ->
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
             console.log err
@@ -181,57 +236,52 @@ module.exports.remove = (req, res , next) ->
             # Send request to the Data System
             login = req.params.login
             # Check if an other device hasn't the same name
-            clientDS.post "request/device/byLogin/", key: login, (err, result, body) ->
+            deviceExists login, (err, device) ->
                 if err
                     next err
-                else if body.length is 0
+                else if not device
                     error = new Error "This device doesn't exist"
                     error.status = 400
                     next error
                 else
-                    id = body[0].id
-                    # Remove Access
-                    console.log 'remove Access'
-                    clientDS.del "access/#{id}/", (err, result, body) ->
+                    # Remove device
+                    removeDevice device, (err) ->
                         if err?
-                            error = new Error err
-                            error.status = 400
-                            next error
+                            next err
                         else
-                            console.log 'remove Device'
-                            # Remove Device
-                            clientDS.del "data/#{id}/", (err, result, body) ->
-                                if err?
-                                    error = new Error err
-                                    error.status = 400
-                                    next error
-                                else
-                                    console.log 'end'
-                                    res.send 200
+                            res.send 200
 
-    # Authenticate the request
-    [username, password] = extractCredentials req.headers['authorization']
+    initAuth req, (user) ->
+        # Check if request is authenticated
+        authenticator user, res
 
-    # Initialize user
-    user = {}
-    user.body = password: password
-
-    req.headers['authorization'] = undefined
-    # Check if request is authenticated
-    authenticator user, res
 
 module.exports.replication = (req, res, next) ->
-
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
     deviceManager.isAuthenticated username, password, (auth) ->
         if auth
             # Forward request for DS.
-            getProxy().web req, res, target: "http://#{hostDS}:#{portDS}"
+            getProxy().web req, res, target: "http://#{dsHost}:#{dsPort}"
         else
             error = new Error "Request unauthorized"
             error.status = 401
             next error
+
+
+module.exports.dsApi = (req, res, next) ->
+    # Authenticate the request
+    [username, password] = extractCredentials req.headers['authorization']
+    deviceManager.isAuthenticated username, password, (auth) ->
+        if auth
+            # Forward request for DS.
+            req.url = req.url.replace 'ds-api/', ''
+            getProxy().web req, res, target: "http://#{dsHost}:#{dsPort}"
+        else
+            error = new Error "Request unauthorized"
+            error.status = 401
+            next error
+
 
 # Old replication
 # Patch : 01/05/14

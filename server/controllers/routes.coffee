@@ -45,6 +45,7 @@ module.exports =
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
     'replication/*': all: devices.replication
+    'ds-api/*': all: devices.dsApi
     # Temporary - 01/05/14
     'cozy/*': all: devices.oldReplication
 

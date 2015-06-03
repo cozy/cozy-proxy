@@ -192,7 +192,7 @@ describe "Devices", =>
                     @body = body
                     done()
 
-            it "Then error is returned", ->
+            it "Then 200 is returned as status code", ->
                 should.not.exist @body.error
                 @res.statusCode.should.equal 200
 
@@ -205,6 +205,6 @@ describe "Devices", =>
                     @body = body
                     done()
 
-            it "Then error is returned", ->
+            it "Then 200 is returned as status code", ->
                 should.not.exist @body.error
                 @res.statusCode.should.equal 200

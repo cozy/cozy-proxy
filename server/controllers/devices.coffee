@@ -59,6 +59,31 @@ deviceExists = (login, cb) ->
         else
             cb null, body[0]
 
+checkLogin = (login, wantExist, cb)->
+    if not login?
+        error = new Error "Name isn't defined in req.body.login"
+        error.status = 400
+        cb error
+    else
+        # Check if an other device hasn't the same name
+        deviceExists login, (err, device) ->
+            if err
+                next err
+            else if device
+                if wantExist
+                    cb null, device
+                else
+                    error = new Error "This name is already used"
+                    error.status = 400
+                    cb error
+            else
+                if wantExist
+                    error = new Error "This device doesn't exist"
+                    error.status = 400
+                    cb error
+                else
+                    cb()
+
 initAuth = (req, cb) ->
     # Authenticate the request
     [username, password] = extractCredentials req.headers['authorization']
@@ -68,31 +93,85 @@ initAuth = (req, cb) ->
     req.headers['authorization'] = undefined
     cb user
 
-## Controller actions
 
-module.exports.create = (req, res, next) ->
-    # Create device :
-    #       * create device document
-    #       * create device access
-    createDevice = (device, cb) =>
-        device.docType = "Device"
-        # Create device document
-        clientDS.post "data/", device, (err, result, docInfo) ->
+
+# Create device :
+#       * create device document
+#       * create device access
+createDevice = (device, cb) =>
+    device.docType = "Device"
+    # Create device document
+    clientDS.post "data/", device, (err, result, docInfo) ->
+        return cb(err) if err?
+        # Create access for this device
+        access =
+            login: device.login
+            password: randomString 32
+            app: docInfo._id
+            permissions: device.permissions or defaultPermissions
+        clientDS.post 'access/', access, (err, result, body) ->
             return cb(err) if err?
-            # Create access for this device
-            access =
+            data =
+                password: access.password
                 login: device.login
-                password: randomString 32
-                app: docInfo._id
-                permissions: device.permissions or defaultPermissions
-            clientDS.post 'access/', access, (err, result, body) ->
-                return cb(err) if err?
+                permissions: access.permissions
+            # Return access to device
+            cb null, data
+
+
+# Update device :
+#       * update device access
+updateDevice = (oldDevice, device, cb) =>
+    path = "request/access/byApp/"
+    clientDS.post path, key: oldDevice.id, (err, result, accesses) ->
+        # Update access for this device
+        access =
+            login: device.login
+            password: randomString 32
+            app: oldDevice.id
+            permissions: device.permissions or defaultPermissions
+        path = "access/#{accesses[0].id}/"
+        clientDS.put path, access, (err, result, body) ->
+            if err?
+                console.log err
+                error = new Error err
+                cb error
+            else
                 data =
                     password: access.password
                     login: device.login
                     permissions: access.permissions
                 # Return access to device
                 cb null, data
+
+
+# Remove device :
+#       * remove device access
+#       * remove device document
+removeDevice = (device, cb) =>
+    id = device.id
+    # Remove Access
+    clientDS.del "access/#{id}/", (err, result, body) ->
+        if err?
+            error = new Error err
+            error.status = 400
+            cd error
+        else
+            # Remove Device
+            clientDS.del "data/#{id}/", (err, result, body) ->
+                if err?
+                    error = new Error err
+                    error.status = 400
+                    cd error
+                else
+                    cb null
+
+
+
+
+## Controller actions
+
+module.exports.create = (req, res, next) ->
 
     # Check if user is authenticated
     authenticator = passport.authenticate 'local', (err, user) ->
@@ -104,31 +183,17 @@ module.exports.create = (req, res, next) ->
             error.status = 401
             next error
         else
-            # Check if name is correctly declared
+            # Check if name is correctly declared and device doesn't exist
             device = req.body
-            if not device?.login?
-                error = new Error "Name isn't defined in req.body.login"
-                error.status = 400
-                next error
-            else
+            checkLogin device.login, false, (err) ->
+                return next err if err?
                 # Create device
                 device.docType = "Device"
-
-                # Check if an other device hasn't the same name
-                deviceExists device.login, (err, exist) ->
-                    if err
+                createDevice device, (err, data) ->
+                    if err?
                         next err
-                    else if exist
-                        error = new Error "This name is already used"
-                        error.status = 400
-                        next error
                     else
-                        # Create device
-                        createDevice device, (err, data) ->
-                            if err?
-                                next err
-                            else
-                                res.send 201, data
+                        res.send 201, data
 
 
     initAuth req, (user) ->
@@ -137,31 +202,6 @@ module.exports.create = (req, res, next) ->
 
 
 module.exports.update = (req, res, next) ->
-    console.log "update"
-    # Update device :
-    #       * update device access
-    updateDevice = (oldDevice, device, cb) =>
-        path = "request/access/byApp/"
-        clientDS.post path, key: oldDevice.id, (err, result, accesses) ->
-            # Update access for this device
-            access =
-                login: device.login
-                password: randomString 32
-                app: oldDevice.id
-                permissions: device.permissions or defaultPermissions
-            path = "access/#{accesses[0].id}/"
-            clientDS.put path, access, (err, result, body) ->
-                if err?
-                    console.log err
-                    error = new Error err
-                    cb error
-                else
-                    data =
-                        password: access.password
-                        login: device.login
-                        permissions: access.permissions
-                    # Return access to device
-                    cb null, data
 
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
@@ -172,32 +212,18 @@ module.exports.update = (req, res, next) ->
             error.status = 401
             next error
         else
-            # Send request to the Data System
+            # Check if name is correctly declared and device exists
             login = req.params.login
             device = req.body
-            # Check if name is correctly declared
-            if not login?
-                error = new Error "Name isn't defined in req.body.login"
-                error.status = 400
-                next error
-            else
-                # Create device
+            checkLogin login, true, (err, oldDevice) ->
+                return next err if err?
+                # Update device
                 device.docType = "Device"
-                # Check if an other device hasn't the same name
-                deviceExists login, (err, oldDevice) ->
-                    if err
+                updateDevice oldDevice, device, (err, data) ->
+                    if err?
                         next err
-                    else if not oldDevice
-                        error = new Error "This device doesn't exist"
-                        error.status = 400
-                        next error
                     else
-                        # Update device
-                        updateDevice oldDevice, device, (err, data) ->
-                            if err?
-                                next err
-                            else
-                                res.send 200, data
+                        res.send 200, data
 
     initAuth req, (user) ->
         # Check if request is authenticated
@@ -205,26 +231,6 @@ module.exports.update = (req, res, next) ->
 
 
 module.exports.remove = (req, res, next) ->
-    # Remove device :
-    #       * remove device access
-    #       * remove device document
-    removeDevice = (device, cb) =>
-        id = device.id
-        # Remove Access
-        clientDS.del "access/#{id}/", (err, result, body) ->
-            if err?
-                error = new Error err
-                error.status = 400
-                cd error
-            else
-                # Remove Device
-                clientDS.del "data/#{id}/", (err, result, body) ->
-                    if err?
-                        error = new Error err
-                        error.status = 400
-                        cd error
-                    else
-                        cb null
 
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
@@ -237,21 +243,14 @@ module.exports.remove = (req, res, next) ->
         else
             # Send request to the Data System
             login = req.params.login
-            # Check if an other device hasn't the same name
-            deviceExists login, (err, device) ->
-                if err
-                    next err
-                else if not device
-                    error = new Error "This device doesn't exist"
-                    error.status = 400
-                    next error
-                else
-                    # Remove device
-                    removeDevice device, (err) ->
-                        if err?
-                            next err
-                        else
-                            res.send 200
+
+            checkLogin login, true, (err, device) ->
+                # Remove device
+                removeDevice device, (err) ->
+                    if err?
+                        next err
+                    else
+                        res.send 200
 
     initAuth req, (user) ->
         # Check if request is authenticated

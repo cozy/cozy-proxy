@@ -41,6 +41,7 @@ module.exports =
 
     # register - password field
     "register password placeholder": "A new password"
+    "register check password placeholder": "Your new password again"
     "register password info": "Pick a unique password, made of numbers and letters, uppercase and lowercase: it's the shield that keeps your data private!"
     "register password valid": "Password is long enough."
     "register password invalid": "The password should be at least 5 characters long."

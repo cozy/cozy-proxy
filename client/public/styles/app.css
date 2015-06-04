@@ -1,7 +1,9 @@
 * {
   outline: 0;
 }
-*:hover {
+*:hover,
+*:active,
+*:focus {
   outline: 0;
 }
 html,
@@ -160,6 +162,10 @@ p {
 }
 #submit-btn.btn-success {
   background: #66c666;
+}
+#submit-btn:active,
+#submit-btn:focus {
+  outline: none;
 }
 .proxy-form {
   background: #fcf9f5;

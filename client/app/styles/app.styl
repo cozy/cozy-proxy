@@ -1,21 +1,14 @@
 @import "nib"
 
 
-shadow()
-    -moz-box-shadow arguments
-    -webkit-box-shadow arguments
-    box-shadow arguments
-
-text-shadow()
-    -moz-text-shadow arguments
-    -webkit-text-shadow arguments
-    text-shadow arguments
-
 *
     outline 0
 
     &:hover
+    &:active
+    &:focus
         outline 0
+
 
 blue = #15a7c7
 darkgrey = #6A6666
@@ -33,7 +26,6 @@ html, body
     padding 0
     margin 0
     box-sizing border-box
-
 
 html, body, h1, p, input, div
     box-sizing border-box
@@ -160,6 +152,10 @@ p
 
     &.btn-success
         background darkgreen
+
+    &:active
+    &:focus
+        outline none
 
 .proxy-form
     background orangewhite

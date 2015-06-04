@@ -1,6 +1,4 @@
 $ ->
-    {progFadeIn, progFadeOut, wait} = require 'helpers'
-
 
     inputFields = $ '.input-wrapper'
     emailField = $ inputFields[0]
@@ -25,9 +23,10 @@ $ ->
     buttonSeparator = $ '#btn-separator'
     reinsurance = $ '#reinsurance'
 
+
     submitCredentials = ->
         errorAlert.fadeOut()
-        button.spin 'small'
+        button.spin true
         client.post "register/",
             password: passwordInput.val()
             email: emailInput.val()
@@ -40,7 +39,9 @@ $ ->
                 button.html REGISTRATION_SUCCEEDED
                 button.addClass 'btn-success'
                 successAlert.fadeIn()
-                wait 1000, -> window.location = "/"
+                setTimeout ->
+                    window.location = "/"
+                , 1000
 
             error: (err) ->
                 button.spin()
@@ -149,24 +150,8 @@ $ ->
 
     passwordCheckInput.keydown (event) ->
         $('.btn-container.single').removeClass 'single'
-        #progFadeIn [
-            #expandButton
-            #buttonSeparator
-        #]
-
-    # bind the "enter more info" button
-    expandButton.click ->
-        progFadeIn [
-            publicNameField
-            timezoneField
-        ], ->
-            expandButton.hide()
-            buttonSeparator.hide()
-            $('.btn-container.right').addClass 'single'
-            publicNameInput.focus()
 
     # bind the submit button
     button.click submitCredentials
-
 
     emailInput.focus()

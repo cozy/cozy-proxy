@@ -28,7 +28,7 @@ div {
 }
 body {
   text-align: center;
-  background-color: #f6eee2;
+  background-color: #fff;
   padding-top: 70px;
 }
 body.intro {
@@ -39,11 +39,11 @@ body.intro {
 }
 a,
 a:hover {
-  color: #15a7c7;
+  color: #5ca3f9;
   cursor: pointer;
 }
 a:hover {
-  color: #ff850a;
+  color: #ff9d3b;
 }
 h1 {
   font-size: 1.5em;
@@ -55,8 +55,6 @@ h1 {
 }
 button {
   font-size: 1.1em;
-  -webkit-border-radius: 0.4em;
-  border-radius: 0.4em;
   padding: 0.6em 0.8em;
 }
 input,
@@ -66,17 +64,22 @@ select {
   height: 52px;
   width: 550px;
   padding: 4px 10px;
-  -webkit-border-radius: 0.4em;
-  border-radius: 0.4em;
-  color: #15a7c7;
+  border: 0;
+  color: #5ca3f9;
   -webkit-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
-  border: 1px solid #15a7c7;
+  border-bottom: 1px solid #5ca3f9;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 input:hover,
 input:focus {
   color: #ff850a;
-  border: 1px solid #ffb366;
+  border-left: 3px solid #ff850a;
+  border-bottom: 1px solid #ff850a;
   outline: none;
 }
 p {
@@ -116,6 +119,7 @@ p {
 }
 .additional-line {
   margin-top: 1em;
+  margin-bottom: 0;
 }
 .loading {
   width: 30px;
@@ -127,7 +131,7 @@ p {
   margin: auto;
   text-align: center;
   margin-bottom: 40px;
-  background: #fcf9f5;
+  background: #fff;
   width: 160px;
   -webkit-border-radius: 200px;
   border-radius: 200px;
@@ -144,8 +148,6 @@ p {
 #submit-btn {
   margin-left: 5px;
   margin-bottom: 9px;
-  -webkit-border-radius: 0.4em;
-  border-radius: 0.4em;
   border: 0;
   outline: 0;
   padding: 7px;
@@ -153,12 +155,14 @@ p {
   margin-left: 0px;
   width: 100%;
   cursor: pointer;
-  background: #15a7c7;
+  background: #5ca3f9;
   -webkit-transition: background 0.6 ease;
   -moz-transition: background 0.6 ease;
   -o-transition: background 0.6 ease;
   -ms-transition: background 0.6 ease;
   transition: background 0.6 ease;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 #submit-btn.btn-success {
   background: #66c666;
@@ -168,12 +172,12 @@ p {
   outline: none;
 }
 .proxy-form {
-  background: #fcf9f5;
+  background: rgba(255,255,255,0.95);
   margin: auto;
   max-width: 550px;
   padding: 40px;
-  -webkit-border-radius: 20px;
-  border-radius: 20px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
 }
 .proxy-form input,
 .proxy-form button,
@@ -185,16 +189,7 @@ p {
 }
 .proxy-form.register input,
 .proxy-form.register select {
-  border: 1px solid #15a7c7;
   width: 460px;
-}
-.proxy-form.register input:hover,
-.proxy-form.register select:hover,
-.proxy-form.register input:focus,
-.proxy-form.register select:focus {
-  color: #ff850a;
-  border: 1px solid #ffb366;
-  outline: none;
 }
 .input-wrapper {
   margin: 1em 0;
@@ -238,10 +233,10 @@ p {
   display: inline-block;
   margin-left: 5px;
   margin-bottom: 9px;
-  color: #15a7c7;
+  color: #5ca3f9;
 }
 #expand-btn:hover {
-  color: #ff850a;
+  color: #ff9d3b;
 }
 #reinsurance {
   text-align: left;
@@ -269,8 +264,8 @@ p {
   left: 100%;
   width: 300px;
   background: #fff;
-  padding: 5px;
-  border: 3px solid #e5cba9;
+  padding: 10px;
+  border: 1px solid #ccc;
   -webkit-border-radius: 5px;
   border-radius: 5px;
   font-family: 'Source Sans Pro', sans-serif;
@@ -302,7 +297,7 @@ p {
 #submit-btn:active {
   -webkit-box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
   box-shadow: 1px 3px 2px rgba(0,0,0,0.4) inset;
-  background: #eb7500;
+  background: #ef7800;
 }
 #submit-btn:disabled {
   opacity: 0.5;
@@ -312,9 +307,13 @@ p {
 #password-input {
   padding-left: 10px;
 }
-#password-input:hover:active,
-#password-input:hover:focus {
-  border: 1px solid #ff850a;
+#password-input:hover {
+  border-left: 0;
+  border-bottom: 1px solid #ff9d3b;
+}
+#password-input:focus {
+  border-left: 0;
+  border-left: 3px solid #ff9d3b;
 }
 #email-input {
   margin-bottom: 0px;
@@ -327,7 +326,7 @@ p {
   text-decoration: none;
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 1.4em;
-  color: #15a7c7;
+  color: #5ca3f9;
   margin-bottom: 60px;
 }
 #logo span {
@@ -349,10 +348,10 @@ p {
   color: #6a6666;
 }
 .proxy-form.error a {
-  color: #15a7c7;
+  color: #5ca3f9;
 }
 .proxy-form.error a:hover {
-  color: #c60;
+  color: #ff850a;
 }
 @media (max-width: 840px) {
   h1 {

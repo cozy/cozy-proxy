@@ -10,11 +10,11 @@
         outline 0
 
 
-blue = #15a7c7
+blue = #5CA3F9
 darkgrey = #6A6666
 darkred = #C66666
 darkgreen = #66C666
-orange = #C60
+orange = #C60 + 20%
 orangewhite = #fcf9f5
 darkblue = #405077
 darkblue = #338CF7 - 30%
@@ -32,7 +32,7 @@ html, body, h1, p, input, div
 
 body
     text-align center
-    background-color orangewhite - 5%
+    background-color white
     padding-top 70px
 
 body.intro
@@ -56,7 +56,6 @@ h1
 
 button
     font-size 1.1em
-    border-radius 0.4em
     padding 0.6em 0.8em
 
 input
@@ -66,15 +65,17 @@ select
     height 52px
     width 550px
     padding 4px 10px
-    border-radius 0.4em
+    border 0
     color blue
     box-shadow 0 0 0 0
-    border 1px solid blue
+    border-bottom 1px solid blue
+    transition all 0.2s ease
 
 input:hover
 input:focus
-    color orange + 20%
-    border 1px solid orange + 50%
+    color orange
+    border-left 3px solid orange
+    border-bottom 1px solid orange
     outline none
 
 p
@@ -112,6 +113,7 @@ p
 
 .additional-line
     margin-top 1em
+    margin-bottom 0
 
 .loading
     width 30px
@@ -123,7 +125,7 @@ p
     margin auto
     text-align center
     margin-bottom 40px
-    background orangewhite
+    background white
     width 160px
     border-radius 200px
     padding-top 8px
@@ -139,7 +141,6 @@ p
 #submit-btn
     margin-left 5px
     margin-bottom 9px
-    border-radius 0.4em
     border 0
     outline 0
     padding 7px
@@ -149,6 +150,7 @@ p
     cursor pointer
     background blue
     transition background 0.6 ease
+    border-radius 4px
 
     &.btn-success
         background darkgreen
@@ -158,11 +160,11 @@ p
         outline none
 
 .proxy-form
-    background orangewhite
+    background rgba(255, 255, 255, 0.95)
     margin auto
     max-width 550px
     padding 40px
-    border-radius 20px
+    border-radius 10px
 
     input
     button
@@ -174,16 +176,8 @@ p
 
     input
     select
-        border 1px solid blue
         width 460px
         
-        &:hover
-        &:focus
-            color orange + 20%
-            border 1px solid orange + 50%
-            outline none
-
-
 
 .input-wrapper
     margin 1em 0
@@ -247,8 +241,8 @@ p
         left 100%
         width 300px
         background #fff
-        padding 5px
-        border 3px solid orangewhite - 20%
+        padding 10px
+        border 1px solid #CCC
         border-radius 5px
         font-family 'Source Sans Pro', sans-serif
 
@@ -269,11 +263,11 @@ p
             display block
 
 #submit-btn:hover
-    background orange + 20%
+    background orange
 
 #submit-btn:active
     box-shadow 1px 3px 2px rgba(0, 0, 0, 0.4) inset
-    background orange + 10%
+    background orange - 10%
 
 #submit-btn:disabled
     opacity 0.5
@@ -281,11 +275,13 @@ p
 #password-input
     padding-left 10px
 
-#password-input:hover
+    &:hover
+        border-left 0
+        border-bottom 1px solid orange + 20%
 
-    &:active
     &:focus
-        border 1px solid orange + 20%
+        border-left 0
+        border-left 3px solid orange + 20%
 
 #email-input
     margin-bottom 0px

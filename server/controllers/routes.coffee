@@ -46,6 +46,7 @@ module.exports =
 
     'replication/*': all: devices.replication
     'ds-api/*': all: devices.dsApi
+    'versions': get: devices.getVersions
     # Temporary - 01/05/14
     'cozy/*': all: devices.oldReplication
 

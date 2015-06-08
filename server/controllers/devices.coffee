@@ -1,6 +1,7 @@
 Client = require('request-json').JsonClient
 passport = require 'passport'
 deviceManager = require '../models/device'
+appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
 
 
@@ -278,6 +279,25 @@ module.exports.dsApi = (req, res, next) ->
             # Forward request for DS.
             req.url = req.url.replace 'ds-api/', ''
             getProxy().web req, res, target: "http://#{dsHost}:#{dsPort}"
+        else
+            error = new Error "Request unauthorized"
+            error.status = 401
+            next error
+
+
+module.exports.getVersions = (req, res, next) ->
+    # Authenticate the request
+    [username, password] = extractCredentials req.headers['authorization']
+    deviceManager.isAuthenticated username, password, (auth) ->
+        if auth
+            # Forward request for DS.
+            appManager.versions (err, apps) ->
+                if err?
+                    error = new Error err
+                    error.status = 400
+                    next error
+                else
+                    res.send apps, 200
         else
             error = new Error "Request unauthorized"
             error.status = 401

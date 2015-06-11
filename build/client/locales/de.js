@@ -61,5 +61,5 @@ module.exports = {
   "error login failed": "Anmeldung fehlgeschlagen.",
   "reset password email from": "Ihr Cozy <no-reply@%{domain}>",
   "reset password email subject": "[Cozy] Rücksetzen Sie Ihr Passwort",
-  "reset password email text": "        Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\n        Keine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\n        https://%{domain}/password/reset/%{key}\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!        "
+  "reset password email text": "Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\nKeine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\nhttps://%{domain}/password/reset/%{key}\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!"
 };

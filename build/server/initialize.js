@@ -17,10 +17,10 @@ module.exports = function(app, server, callback) {
   }
   configurePassport();
   initializeProxy(app, server);
-  return Device.update(function() {
-    return router.reset(function() {
-      return router.displayRoutes(function() {
-        return localization.initialize(function() {
+  return localization.initialize(function() {
+    return Device.update(function() {
+      return router.reset(function() {
+        return router.displayRoutes(function() {
           return callback(app, server);
         });
       });

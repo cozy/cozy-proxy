@@ -1,7 +1,4 @@
 $ ->
-    {progFadeIn, progFadeOut, wait} = require 'helpers'
-
-    loader = $ '.loading'
 
     inputFields = $ '.input-wrapper'
     emailField = $ inputFields[0]
@@ -26,35 +23,27 @@ $ ->
     buttonSeparator = $ '#btn-separator'
     reinsurance = $ '#reinsurance'
 
+
     submitCredentials = ->
         errorAlert.fadeOut()
-        loader.spin 'small'
-        button.spin 'small'
+        button.spin true
         client.post "register/",
             password: passwordInput.val()
             email: emailInput.val()
             public_name: publicNameInput.val()
-            timezone: timezoneInput.val()
+            timezone: timezoneInput.val() or 'GMT'
             locale: localeField.val()
         ,
             success: ->
-                loader.spin()
                 button.spin()
-                button.html REGISTER_BUTTON
-                progFadeOut [
-                    emailField
-                    passwordField
-                    passwordCheckField
-                    publicNameField
-                    timezoneField
-                    reinsurance
-                    buttonField
-                ], ->
-                    successAlert.fadeIn()
-                    wait 1000, -> window.location = "/"
+                button.html REGISTRATION_SUCCEEDED
+                button.addClass 'btn-success'
+                successAlert.fadeIn()
+                setTimeout ->
+                    window.location = "/"
+                , 1000
 
             error: (err) ->
-                loader.spin()
                 button.spin()
                 button.html REGISTER_BUTTON
                 msg = JSON.parse(err.responseText).msg
@@ -134,12 +123,22 @@ $ ->
             button.removeAttr 'disabled'
 
     # validation
-    emailInput.keyup (event) -> validateEmail()
+    emailInput.keyup (event) ->
+        if event.which is 13
+            validateEmail()
+    emailInput.blur validateEmail
     passwordInput.keyup (event) ->
+        if event.which is 13
+            validatePassword()
+            validateCheckPassword() if passwordCheckInput.val() isnt ""
+    passwordInput.blur ->
         validatePassword()
         validateCheckPassword() if passwordCheckInput.val() isnt ""
-    passwordCheckInput.keyup (event) -> validateCheckPassword()
 
+    passwordCheckInput.keyup (event) ->
+        if event.which is 13
+            validateCheckPassword()
+    passwordCheckInput.blur validateCheckPassword
 
     # chain the display of form fields
     emailInput.keydown (event) ->
@@ -151,39 +150,8 @@ $ ->
 
     passwordCheckInput.keydown (event) ->
         $('.btn-container.single').removeClass 'single'
-        progFadeIn [
-            expandButton
-            buttonSeparator
-        ]
-
-    # bind the "enter more info" button
-    expandButton.click ->
-        progFadeIn [
-            publicNameField
-            timezoneField
-        ], ->
-            expandButton.hide()
-            buttonSeparator.hide()
-            $('.btn-container.right').addClass 'single'
-            publicNameInput.focus()
 
     # bind the submit button
     button.click submitCredentials
 
-
-    $('h1').hide()
-    inputFields.hide()
-    buttonField.hide()
-    expandButton.hide()
-    buttonSeparator.hide()
-    reinsurance.hide()
-    progFadeIn [
-        $($('h1')[0])
-        $($('h1')[1])
-        $($('h1')[2])
-        emailField
-        passwordField
-        reinsurance
-        buttonField
-    ], ->
-        emailInput.focus()
+    emailInput.focus()

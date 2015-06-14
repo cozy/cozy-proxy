@@ -22,7 +22,7 @@ $ ->
                 button.html RESET_BUTTON
                 successAlert.fadeOut()
                 msg = JSON.parse(err.responseText).error
-                errorAlert.html msg
+                successAlert.html RESET_ERROR_MESSAGE
                 errorAlert.fadeIn()
 
     passwordInput.keyup (event) ->

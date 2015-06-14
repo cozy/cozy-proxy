@@ -1,4 +1,10 @@
 module.exports = [
+    "Europe/Paris"
+    "Europe/Berlin"
+    "Europe/Madrid"
+    "Europe/Rome"
+    "America/Los_Angeles"
+    "America/New_York"
     "Africa/Abidjan"
     "Africa/Accra"
     "Africa/Addis_Ababa"

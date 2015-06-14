@@ -1,49 +1,50 @@
 $ ->
-    wait = require('helpers').wait
-    loader = $ '.loading'
     button = $ '#submit-btn'
     passwordInput = $ '#password-input'
     errorAlert = $ '.alert-error'
     successAlert = $ '.alert-success'
     forgotPassword = $ '#forgot-password'
-    submitPassword = ->
-        button.spin 'small'
-        loader.spin 'small'
+
+    # Remove default behavior from form.
+    $('#proxy-form').submit (e) ->
+        e.preventDefault()
+        false
+
+    # When password is submitted, it sends it to the server for logging in.
+    # If it's a success, a success message is displayed on the button. Then
+    # it redirects the user to the home by changing the document path to "/".
+    # It it's a failure, it displays an error message below the login button.
+    onPasswordSubmitted = ->
+        button.spin true
         client.post "/login", { password: passwordInput.val() },
             success: ->
                 errorAlert.hide()
-                forgotPassword.hide()
 
-                successAlert.html LOGIN_SUCCESS_MESSAGE
-                successAlert.fadeIn()
-                loader.spin()
-                button.spin()
-                button.html
+                button.html LOGIN_SUCCESS_MESSAGE
+                button.addClass 'btn-success'
 
-                wait 1000, ->
+                setTimeout ->
                     $('#content').fadeOut ->
-                        wait 500, ->
+                        setTimeout ->
                             newpath = window.location.pathname.substring 6
                             window.location.pathname = newpath
+                        , 500
+                , 1000
 
             error: (err) ->
                 msg = JSON.parse(err.responseText).error
-                successAlert.fadeOut()
+                successAlert.hide()
                 errorAlert.hide()
                 errorAlert.html msg
-                errorAlert.fadeIn()
+                errorAlert.show()
+                passwordInput.select()
 
-                loader.spin()
-                button.spin()
                 button.html LOGIN_BUTTON_LABEL
-                forgotPassword.fadeIn()
 
-    passwordInput.keyup (event) ->
-        submitPassword() if event.which is 13
-
-    button.click submitPassword
-
-    forgotPassword.click (event) ->
+    # When forgotten password is clicked, it sends a request that will
+    # run the reset procedure (send an email with an hidden link to reset the
+    # password).
+    onForgotPasswordClicked = (event) ->
         client.post "/login/forgot", {},
             success: ->
                 errorAlert.fadeOut()
@@ -56,4 +57,15 @@ $ ->
                 errorAlert.html msg
                 errorAlert.fadeIn()
 
+    # Submit password if upped key is enter (key code is 13).
+    onPasswordKeyUp = (event) ->
+        submitPassword() if event.which is 13
+
+    # Bind listeners to events
+    passwordInput.keyup onPasswordKeyUp
+    button.click onPasswordSubmitted
+    forgotPassword.click onForgotPasswordClicked
+
+    # Put the focus on the password field.
     passwordInput.focus()
+    passwordInput.select()

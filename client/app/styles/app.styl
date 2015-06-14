@@ -1,23 +1,23 @@
 @import "nib"
 
 
-shadow()
-    -moz-box-shadow arguments
-    -webkit-box-shadow arguments
-    box-shadow arguments
+*
+    outline 0
 
-text-shadow()
-    -moz-text-shadow arguments
-    -webkit-text-shadow arguments
-    text-shadow arguments
+    &:hover
+    &:active
+    &:focus
+        outline 0
 
 
-blue = #15a7c7
-darkblue = #363a46
+blue = #5CA3F9
+darkgrey = #6A6666
 darkred = #C66666
 darkgreen = #66C666
-orange = #C60
+orange = #C60 + 20%
 orangewhite = #fcf9f5
+darkblue = #405077
+darkblue = #338CF7 - 30%
 
 
 html, body
@@ -31,7 +31,13 @@ html, body, h1, p, input, div
     box-sizing border-box
 
 body
-    background orangewhite
+    text-align center
+    background-color white
+    padding-top 70px
+
+body.intro
+    background url('/images/background.jpg') no-repeat center center fixed; 
+    background-size cover
 
 a, a:hover
     color blue
@@ -41,16 +47,15 @@ a:hover
     color orange + 20%
 
 h1
-    font-size 1.8em
+    font-size 1.5em
     line-height 1.3em
     font-family 'Source Sans Pro', sans-serif
     font-weight normal
-    color darkblue
+    color darkgrey
     margin 0
 
 button
     font-size 1.1em
-    border-radius 0.4em
     padding 0.6em 0.8em
 
 input
@@ -60,20 +65,24 @@ select
     height 52px
     width 550px
     padding 4px 10px
-    border-radius 0.4em
+    border 0
     color blue
     box-shadow 0 0 0 0
-    border 1px solid transparent
+    border-bottom 1px solid blue
+    transition all 0.2s ease
 
+input:hover
 input:focus
-select
-    color orange + 20%
-    box-shadow 0 0 0 0
-    border 1px solid orange + 50%
+    color orange
+    border-left 3px solid orange
+    border-bottom 1px solid orange
     outline none
 
 p
     font-family 'Source Sans Pro', sans-serif
+
+.hidden
+    display none
 
 #timezone-input
     background white
@@ -85,37 +94,44 @@ p
     display none
 
 .alert-error
+.alert-success
+    box-sizing border-box
     font-family 'Source Sans Pro', sans-serif
-    font-size 1.5em
-    background darkred
-    padding 5px 10px
-    width 550px
+    font-size 1.3em
+    width 100%
     color white
+    display none
+    border-radius 5px
+    padding 5px 10px
+    margin 5px 0 35px 0
+
+.alert-error
+    background darkred
 
 .alert-success
-    font-family 'Source Sans Pro', sans-serif
-    font-size 1.5em
     background darkgreen
-    padding 20px
-    width 550px
-    color white
-    margin 5px 0 35px 0
 
 .additional-line
     margin-top 1em
+    margin-bottom 0
 
 .loading
     width 30px
     margin-bottom 0px
 
-.alert-error
-.alert-success
-    display none
-    border-radius 5px
-
 #header
     width 100%
     clear both
+    margin auto
+    text-align center
+    margin-bottom 40px
+    background white
+    width 160px
+    border-radius 200px
+    padding-top 8px
+
+    img 
+        width 140px
 
 #header:after
     content ""
@@ -125,20 +141,43 @@ p
 #submit-btn
     margin-left 5px
     margin-bottom 9px
-    border-radius 0.4em
     border 0
     outline 0
     padding 7px
     color white
     margin-left 0px
-    width 570px
     width 100%
     cursor pointer
     background blue
+    transition background 0.6 ease
+    border-radius 4px
+
+    &.btn-success
+        background darkgreen
+
+    &:active
+    &:focus
+        outline none
+
+.proxy-form
+    background rgba(255, 255, 255, 0.95)
+    margin auto
+    max-width 550px
+    padding 40px
+    border-radius 10px
+
+    input
+    button
+    #btn-wrapper
+        width 100%
 
 .proxy-form.register
-    margin-top -40px
+    padding 20px
 
+    input
+    select
+        width 460px
+        
 
 .input-wrapper
     margin 1em 0
@@ -178,10 +217,9 @@ p
     margin-bottom 9px
     color blue
     &:hover
-        color orange
+        color orange + 20%
 
 #reinsurance
-    width 550px
     text-align left
     font-family 'Source Sans Pro', sans-serif
     font-size 16px
@@ -203,8 +241,8 @@ p
         left 100%
         width 300px
         background #fff
-        padding 5px
-        border 3px solid blue
+        padding 10px
+        border 1px solid #CCC
         border-radius 5px
         font-family 'Source Sans Pro', sans-serif
 
@@ -225,24 +263,25 @@ p
             display block
 
 #submit-btn:hover
-    background orange + 20%
+    background orange
 
 #submit-btn:active
     box-shadow 1px 3px 2px rgba(0, 0, 0, 0.4) inset
-    background orange + 10%
+    background orange - 10%
 
 #submit-btn:disabled
     opacity 0.5
 
-#username
-    color blue - 20%
-
-#content
-    padding 20px
-    padding-left 60px
-
 #password-input
     padding-left 10px
+
+    &:hover
+        border-left 0
+        border-bottom 1px solid orange + 20%
+
+    &:focus
+        border-left 0
+        border-left 3px solid orange + 20%
 
 #email-input
     margin-bottom 0px
@@ -252,50 +291,45 @@ p
     font-family 'Source Sans Pro', sans-serif
 
 #logo
-    position relative
-    float right
-    margin 40px 60px
-
     text-decoration none
-    font-family 'Maven Pro', sans-serif
+    font-family 'Source Sans Pro', sans-serif
     font-size 1.4em
     color blue
+    margin-bottom 60px
 
     span
-        display: block;
-        position: absolute;
-        top: -0.2em;
-        right: -1em;
-        opacity 0.65
+        display none
+        position absolute
+        top 0em
+        right 1em
+        color darkgrey
 
 .proxy-form.error
-    width 750px
-    margin-top -40px
-    padding 5px 10px
-    border-radius 5px
-    font-size 20px
-    font-family 'Maven Pro', sans-serif
-    color #eee
-    background darkblue
+    text-align left
+    font-size 22px
+    width 100%
+    max-width 720px
+    font-family 'Source Sans Pro', sans-serif
+    color darkgrey
 
     h1
-        color white
+        color darkgrey
 
     a
-        color white
+        color blue
 
         &:hover
-            color blue
+            color orange
 
-@media(max-width: 640px)
+@media(max-width: 840px)
 
     h1
-        padding 0 0
+        padding 10px 0
         font-size 21px
+        line-height 22px
 
     .proxy-form
-        padding-top 1em
-        padding-bottom 1em
+        padding 20px
 
 
         p
@@ -304,12 +338,18 @@ p
         .input-wrapper
             padding 0
 
+            input
+            select
+                width 100%
+
             .help
+                position static
+                box-sizing border-box
                 i.icon
                     display none
                 .help-info
-                    position relative
-                    left 0
+                    position static
+                    box-sizing border-box
                     top 5px
                     width 100%
                     font-size 14px
@@ -317,10 +357,9 @@ p
         input
         select
             width 100%
-            padding 0
             display block
             box-sizing border-box
-            font-size 26px
+            font-size 22px
 
         #reinsurance
         #btn-wrapper
@@ -337,38 +376,58 @@ p
 
     .alert-error
     .alert-success
-        width auto
+        width 100%
         box-sizing border-box
 
     .alert-success
         font-size 20px
 
     #content
-        padding 40px
+        padding 10px
         box-sizing border-box
 
         div
             box-sizing border-box
 
+    #header
+        width 90px
+        height 90px
+        padding 5px
+
     #logo
-        margin 0 0 10px 0
+        margin 0
         float left
 
         img
             width 80px
+            height 80px
 
-        span
-            right -1.4em
+@media(max-width: 500px)
 
+    body
+        padding-top 10px
 
-@media(max-width: 320px)
+    #header
+        margin-bottom 10px
+
+    .proxy-form
+        padding 10px
+
+        h1
+            font-size 18px
+            padding 0
+
+    #header
+        width 60px
+        height 60px
+        padding 5px
+        margin 0 auto 10px auto
 
     #logo
-        margin 10px
+        margin 0
+        float left
 
-    h1
-        padding 0 0
-        font-size 20px
+        img
+            width 50px
+            height 50px
 
-    .help
-        display none

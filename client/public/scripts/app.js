@@ -206,7 +206,7 @@ progFadeOut = module.exports.progFadeOut = function(objs, callback) {
 
 ;require.register("login", function(exports, require, module) {
 $(function() {
-  var button, errorAlert, forgotPassword, onForgotPasswordClicked, onPasswordKeyUp, onPasswordSubmitted, passwordInput, successAlert;
+  var button, errorAlert, forgotPassword, onForgotPasswordClicked, onPasswordSubmitted, passwordInput, successAlert;
   button = $('#submit-btn');
   passwordInput = $('#password-input');
   errorAlert = $('.alert-error');
@@ -263,11 +263,6 @@ $(function() {
         return errorAlert.fadeIn();
       }
     });
-  };
-  onPasswordKeyUp = function(event) {
-    if (event.which === 13) {
-      return submitPassword();
-    }
   };
   passwordInput.keyup(onPasswordKeyUp);
   button.click(onPasswordSubmitted);

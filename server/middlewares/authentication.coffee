@@ -28,6 +28,7 @@ module.exports.authenticate = (req, res, next) ->
     passport.authenticate('local', process)(req, res, next)
 
 module.exports.isAuthenticated = (req, res, next) ->
+    next()
     if req.isAuthenticated()
         next()
     else

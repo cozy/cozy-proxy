@@ -45,7 +45,6 @@ module.exports.registerIndex = function(req, res) {
 };
 
 module.exports.register = function(req, res, next) {
-  return res.redirect('/');
   var error, hash, instanceData, userData, validationErrors;
   hash = helpers.cryptPassword(req.body.password);
   userData = {
@@ -96,7 +95,26 @@ module.exports.register = function(req, res, next) {
 };
 
 module.exports.loginIndex = function(req, res) {
-  return res.redirect('/');
+  var counter, retrievePolyglot;
+  counter = 0;
+  retrievePolyglot = (function(_this) {
+    return function(cb) {
+      var polyglot;
+      if (counter === 5) {
+        return cb("Cannot retrieve polyglot");
+      } else {
+        polyglot = localization.getPolyglot();
+        if ((polyglot != null ? polyglot.t : void 0) != null) {
+          return cb(null, polyglot);
+        } else {
+          return setTimeout(function() {
+            counter += 1;
+            return retrievePolyglot(cb);
+          }, 500);
+        }
+      }
+    };
+  })(this);
   return User.first(function(err, user) {
     var name, words, _ref;
     if (user != null) {
@@ -229,7 +247,6 @@ module.exports.resetPassword = function(req, res, next) {
 };
 
 module.exports.logout = function(req, res) {
-  return res.send(204);
   req.logout();
   return res.send(204);
 };

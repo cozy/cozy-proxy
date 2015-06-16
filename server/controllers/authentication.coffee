@@ -15,7 +15,7 @@ getTemplateExt = require '../helpers/get_template_ext'
 ext = getTemplateExt()
 
 module.exports.registerIndex = (req, res) ->
-    res.redirect '/'
+    return res.redirect '/'
     User.first (err, user) ->
         unless user?
             supported = new locale.Locales supportedLocales
@@ -72,7 +72,7 @@ module.exports.register = (req, res, next) ->
 
 
 module.exports.loginIndex = (req, res) ->
-    res.redirect '/'
+    return res.redirect '/'
     # Retrieve polyglot
     # Try 5 times if request is too early
     counter = 0

@@ -30,7 +30,7 @@ module.exports.authenticate = (req, res, next) ->
 
 
 module.exports.isAuthenticated = (req, res, next) ->
-    next()
+    return next()
     if req.isAuthenticated()
         next()
     else

@@ -44,6 +44,7 @@ module.exports.authenticate = function(req, res, next) {
 
 module.exports.isAuthenticated = function(req, res, next) {
   var url;
+  next();
   if (req.isAuthenticated()) {
     return next();
   } else {

@@ -26,6 +26,7 @@ getTemplateExt = require('../helpers/get_template_ext');
 ext = getTemplateExt();
 
 module.exports.registerIndex = function(req, res) {
+  res.redirect('/');
   return User.first(function(err, user) {
     var bestMatch, locales, polyglot, supported;
     if (user == null) {
@@ -96,6 +97,7 @@ module.exports.register = function(req, res, next) {
 
 module.exports.loginIndex = function(req, res) {
   var counter, retrievePolyglot;
+  res.redirect('/');
   counter = 0;
   retrievePolyglot = (function(_this) {
     return function(cb) {

@@ -4,6 +4,7 @@ qs = require 'querystring'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 
+
 # customize passport authenticate
 module.exports.authenticate = (req, res, next) ->
     process = (err, user) ->
@@ -26,6 +27,7 @@ module.exports.authenticate = (req, res, next) ->
                         else
                             res.send 200, success: true
     passport.authenticate('local', process)(req, res, next)
+
 
 module.exports.isAuthenticated = (req, res, next) ->
     next()

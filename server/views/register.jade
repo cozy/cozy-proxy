@@ -7,6 +7,7 @@ block js
     script.
         require('register');
         var REGISTER_BUTTON = "#{polyglot.t('register button')}";
+        var REGISTRATION_SUCCEEDED = "#{polyglot.t('register success message')}"
 
 block content
     .proxy-form.register
@@ -48,11 +49,9 @@ block content
                     .info #{polyglot.t('register public name info')}
         .input-wrapper
             select#timezone-input
+                option(value="", disabled='', selected='') #{polyglot.t('register timezone placeholder')}
                 for timezone in timezones
-                    if timezone === "GMT"
-                        option(value="#{timezone}", selected="selected")= timezone
-                    else
-                        option(value="#{timezone}")= timezone
+                    option(value="#{timezone}")= timezone
 
             span.help
                 i.icon
@@ -62,15 +61,8 @@ block content
         input#locale-input(type="hidden", value="#{polyglot.currentLocale}")
         p#reinsurance
             | #{polyglot.t('register reinsurance modification')}
-            br
             | #{polyglot.t('register reinsurance share')}
 
-        #btn-wrapper
-            .btn-container.center
-                a#expand-btn #{polyglot.t('register button moreinfo')}
-            #btn-separator #{polyglot.t('register button separator')}
-            .btn-container.right.single
-                button#submit-btn(disabled="disabled") #{polyglot.t('register button')}
+        button#submit-btn(disabled="disabled") #{polyglot.t('register button')}
 
         .alert-error &nbsp;
-        .alert-success #{polyglot.t('register success message')}

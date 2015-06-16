@@ -2,6 +2,9 @@ passport = require 'passport'
 deviceManager = require '../models/device'
 {getProxy} = require '../lib/proxy'
 
+couchdbHost = process.env.COUCH_HOST or 'localhost'
+couchdbPort = process.env.COUCH_PORT or '5984'
+
 # helper functions
 extractCredentials = (header) ->
     if header?
@@ -66,7 +69,7 @@ module.exports.replication = (req, res, next) ->
             # the Cozy itself which is awesome because it would be easy to
             # add a permission layer and makes Cozy a true open platform
             # (easy desktop/mobile clients)
-            getProxy().web req, res, target: "http://localhost:5984"
+            getProxy().web req, res, target: "http://#{couchdbHost}:#{couchdbPort}"
         else
             error = new Error "Request unauthorized"
             error.status = 401

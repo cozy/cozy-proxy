@@ -1,0 +1,13 @@
+extends layouts/_base
+
+block title
+    title Cozy Cloud
+
+
+block content
+    main#app
+
+
+block js
+    script(src="scripts/vendor.js")
+    script(src="scripts/app.js", onload="require('initialize');")

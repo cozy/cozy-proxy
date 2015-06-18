@@ -2,3 +2,5 @@ node_modules
 *.swp
 *.log
 *.transifex.coffee
+
+client/public

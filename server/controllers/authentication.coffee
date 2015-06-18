@@ -1,18 +1,12 @@
-passport = require 'passport'
+passport     = require 'passport'
 randomstring = require 'randomstring'
-locale = require 'locale'
 
-User = require '../models/user'
-Instance = require '../models/instance'
-helpers = require '../lib/helpers'
+User         = require '../models/user'
+Instance     = require '../models/instance'
+helpers      = require '../lib/helpers'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 
-timezones = require '../lib/timezones'
-supportedLocales = require('../config').supportedLanguages
-
-getTemplateExt = require '../helpers/get_template_ext'
-ext = getTemplateExt()
 
 module.exports.registerIndex = (req, res) ->
     User.first (err, user) ->
@@ -21,10 +15,8 @@ module.exports.registerIndex = (req, res) ->
             locales = new locale.Locales req.headers['accept-language']
             bestMatch = locales.best(supported).language
             polyglot = localization.getPolyglotByLocale bestMatch
-            res.render "register.#{ext}",
+            res.render "index.jade",
                 polyglot: polyglot
-                timezones: timezones
-                className: "intro"
         else
             res.redirect '/login'
 
@@ -101,10 +93,9 @@ module.exports.loginIndex = (req, res) ->
                 if err
                     res.send 500, error: err
                 else
-                    res.render "login.#{ext}",
+                    res.render "index.jade",
                         polyglot: polyglot
                         name: name
-                        className: "intro"
         else
             res.redirect '/register'
 
@@ -137,7 +128,9 @@ module.exports.forgotPassword = (req, res, next) ->
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
         polyglot = localization.getPolyglot()
-        res.render "reset.#{ext}", polyglot: polyglot, resetKey: req.params.key
+        res.render "index.jade",
+            polyglot: polyglot
+            resetKey: req.params.key
     else
         res.redirect '/'
 

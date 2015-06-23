@@ -1,19 +1,19 @@
 extends _base
 
 block title
-    title #{polyglot.t('error title')}
+    title #{t('error title')}
 
 
 block content
-    h1= polyglot.t('error headline')
+    h1= t('error headline')
 
     block error-content
 
     block error-contact
         ul
             li
-                = polyglot.t('error contact forum')
+                = t('error contact forum')
                 br
                 a(href="https://forum.cozy.io") https://forum.cozy.io
-            li= polyglot.t('error contact email')
-            li= polyglot.t('error contact irc')
+            li= t('error contact email')
+            li= t('error contact irc')

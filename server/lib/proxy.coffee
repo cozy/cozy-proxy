@@ -13,7 +13,6 @@ logger = require('printit')
     prefix: 'lib:proxy'
 
 router = require './router'
-localization = require './localization_manager'
 errorHandler = require '../middlewares/errors'
 
 # singleton variable
@@ -35,7 +34,6 @@ module.exports.initializeProxy = (app, server) ->
         err.statusCode = 500
         err.template =
             name: 'error'
-            params: polyglot: localization.getPolyglot()
         errorHandler err, req, res
 
     # Manage socket.io's websocket

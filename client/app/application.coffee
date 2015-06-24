@@ -3,6 +3,7 @@ AppLayout = require 'views/layouts/app_layout'
 
 
 class Application extends Backbone.Marionette.Application
+
     initialize: ->
         @on 'start', (options) =>
             @router = new Router app: @

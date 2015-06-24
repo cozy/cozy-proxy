@@ -1,44 +1,47 @@
-label(for="register-email", aria-describedby="register-email-tip")
-    span email
-    input#register-email(type="text")
+label(for="preset-email", aria-describedby="preset-email-tip")
+    span= t('preset email')
+    input#preset-email(type="text")
     span.indicator
         i.fa.fa-check
-p#register-email-tip
-    = t('it will be used to contact you if you loose your password')
+p#preset-email-tip
+    = t('preset email tip')
 
 
-label(for="register-name", aria-describedby="register-name-tip")
-    span name
-    input#register-name(type="text")
+label(for="preset-name", aria-describedby="preset-name-tip")
+    span= t('preset name')
+    input#preset-name(type="text")
     span.indicator
         i.fa.fa-check
-p#register-name-tip
-    = t('it will be used to contact you if you loose your password')
+p#preset-name-tip
+    = t('preset name tip')
 
 
-label(for="register-password", aria-describedby="register-password-tip")
-    span password
-    input#register-password(type="password")
+label(for="preset-password", aria-describedby="preset-password-tip")
+    span= t('preset password')
+    input#preset-password(type="password")
     span.indicator
         i.fa.fa-times
-p#register-email-tip
-    = t('it will be used to contact you if you loose your password')
+p#preset-email-tip
+    = t('preset password tip')
 
 
-label(for="register-timezone", aria-describedby="register-timezone-tip")
-    span timezone
-    input#register-timezone(type="text")
+label(for="preset-timezone", aria-describedby="preset-timezone-tip")
+    span= t('preset timezone')
+    input#preset-timezone(type="text", list="preset-timezone-datalist")
+    datalist#preset-timezone-datalist
+        each timezone in timezones
+            option(value=timezone)
     span.indicator
         i.fa.fa-check
-p#register-timezone-tip
-    = t('it will be used to contact you if you loose your password')
+p#preset-timezone-tip
+    = t('preset timezone tip')
 
 
 .checkboxes
-    label(for="register-help-us")
-        input(type="checkbox")
-        span= t('help us to improve cozy')
+    label(for="preset-help-us")
+        input(type="checkbox", checked="true")
+        span= t('preset opt-in help')
 
-    label(for="register-mailing")
-        input(type="checkbox")
-        span= t('subscribe to cozy newsletter')
+    label(for="preset-mailing")
+        input(type="checkbox", checked="false")
+        span= t('preset opt-out newsletter')

@@ -16,6 +16,7 @@
   "dependencies": {
     "marionette": "~2.4.2",
     "bacon": "~0.7.65",
-    "polyglot": "~0.4.2"
+    "polyglot": "~0.4.2",
+    "normalize.css": "~3.0.3"
   }
 }

@@ -5,4 +5,4 @@ module.exports = class AppLayout extends Backbone.Marionette.LayoutView
     el: '#app'
 
     regions:
-        content:  '#popup .content'
+        content: '#popup .content'

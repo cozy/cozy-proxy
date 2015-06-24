@@ -7,12 +7,20 @@ module.exports = class RegisterStepLayout extends Backbone.Marionette.LayoutView
     template: require 'views/templates/layout_register'
 
     regions:
-        form:     'form'
+        content:  '.step'
         controls: '.controls'
         feedback: '.feedback'
 
     events:
         'click a': 'navigate'
+
+    modelEvents:
+        'change:step': 'swapStep'
+
+
+    onBeforeShow: ->
+        @showChildView 'controls', new ControlsView model: @model
+        @showChildView 'feedback', new FeedbackView model: @model
 
 
     navigate: (event) ->
@@ -22,16 +30,6 @@ module.exports = class RegisterStepLayout extends Backbone.Marionette.LayoutView
         app.router.navigate href, trigger: true
 
 
-    initialize: ->
-        @on 'before:show', @showFooter
-        @listenTo @model, 'change:step', @swapStep
-
-
     swapStep: ->
         StepView = require "views/register/#{@model.get 'step'}"
-        @showChildView 'form', new StepView model: @model
-
-
-    showFooter: ->
-        @showChildView 'controls', new ControlsView model: @model
-        @showChildView 'feedback', new FeedbackView model: @model
+        @showChildView 'content', new StepView model: @model

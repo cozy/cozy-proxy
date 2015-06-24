@@ -1,5 +1,5 @@
 Router    = require 'routes'
-AppLayout = require 'views/layouts/app_layout'
+AppLayout = require 'views/app_layout'
 
 
 class Application extends Backbone.Marionette.Application

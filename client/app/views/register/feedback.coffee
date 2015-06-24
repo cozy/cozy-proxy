@@ -1,4 +1,4 @@
-module.exports = class RegisterFeedbackView extends Backbone.Marionette.ItemView
+module.exports = class RegisterFeedbackView extends Mn.ItemView
 
     template: require 'views/templates/view_register_feedback'
 

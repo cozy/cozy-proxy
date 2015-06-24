@@ -1,4 +1,4 @@
-module.exports = class RegisterPresetView extends Backbone.Model
+module.exports = class Registration extends Backbone.Model
 
     _steps: [
         'preset',

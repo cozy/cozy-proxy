@@ -2,14 +2,16 @@ ControlsView = require 'views/register/controls'
 FeedbackView = require 'views/register/feedback'
 
 
-module.exports = class RegisterStepLayout extends Backbone.Marionette.LayoutView
+module.exports = class RegisterView extends Mn.LayoutView
 
-    template: require 'views/templates/layout_register'
+    className: 'step'
+
+    template: require 'views/templates/view_register'
 
     regions:
-        content:  '.step'
-        controls: '.controls'
-        feedback: '.feedback'
+        'content':  '[role=region]'
+        'controls': '.controls'
+        'feedback': '.feedback'
 
     events:
         'click a': 'navigate'

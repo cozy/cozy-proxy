@@ -1,4 +1,4 @@
-module.exports = class RegisterPresetView extends Backbone.Marionette.ItemView
+module.exports = class RegisterPresetView extends Mn.ItemView
 
     tagName: 'form'
 

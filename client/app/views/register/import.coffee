@@ -1,4 +1,4 @@
-module.exports = class RegisterImportView extends Backbone.Marionette.ItemView
+module.exports = class RegisterImportView extends Mn.ItemView
 
     className: 'import'
 

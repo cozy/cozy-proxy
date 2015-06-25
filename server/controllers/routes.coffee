@@ -35,14 +35,20 @@ module.exports =
 
     'disk-space': get: disk.getSpace
 
-    'device*':
-        post: devices.management
-        delete: devices.management
+    'device':
+        post: devices.create
+    'device/:login':
+        put: devices.update
+        delete: devices.remove
 
     'apps/:name/*': all: [utils.isAuthenticated, apps.app]
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
-    'cozy/*': all: devices.replication
+    'replication/*': all: devices.replication
+    'ds-api/*': all: devices.dsApi
+    'versions': get: devices.getVersions
+    # Temporary - 01/05/14
+    'cozy/*': all: devices.oldReplication
 
     '.well-known/host-meta.?:ext': get: experiment.webfingerHostMeta
     '.well-known/:module': all: experiment.webfingerAccount

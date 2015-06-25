@@ -8,8 +8,8 @@ describe "Models", ->
     before helpers.deleteAllUsers
     after  helpers.deleteAllUsers
 
-    describe "creation", ->
-        it "When I create an user", (done) ->
+    describe "creation", =>
+        it "When I create an user", (done) =>
 
             user =
                 email: "test@cozycloud.cc"
@@ -22,22 +22,22 @@ describe "Models", ->
                 @user = user
                 done()
 
-        it "Then I got no error", ->
+        it "Then I got no error", =>
             should.not.exist @err
             should.exist @user
 
-        it "When I request for users", (done) ->
+        it "When I request for users", (done) =>
             User.request 'all', (err, users) =>
                 @users = users
                 done()
 
-        it "Then I find my new user", ->
+        it "Then I find my new user", =>
             should.exist @users
             @users.length.should.equal 1
             @user.id.should.equal @users[0].id
 
-    describe "update", ->
-        it "When I modify this user", (done) ->
+    describe "update", =>
+        it "When I modify this user", (done) =>
             email = "new@cozycloud.cc"
             @user.updateAttributes email: email, (err) =>
                 @err = err
@@ -46,12 +46,12 @@ describe "Models", ->
         it "Then I got no error", ->
             should.not.exist @err
 
-        it "When I request for users", (done) ->
+        it "When I request for users", (done) =>
             User.request 'all', (err, users) =>
                 @users = users
                 done()
 
-        it "Then I find my user modified", ->
+        it "Then I find my user modified", =>
             should.exist @users
             @users.length.should.equal 1
             @user.email.should.equal @users[0].email

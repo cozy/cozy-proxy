@@ -1,6 +1,6 @@
 label.with-input(for="preset-email", aria-describedby="preset-email-tip")
     span= t('preset email')
-    input#preset-email(type="text")
+    input#preset-email(type="email")
     span.indicator
         i.fa.fa-check
 p#preset-email-tip.tips
@@ -39,9 +39,9 @@ p#preset-timezone-tip.tips
 
 .checkboxes
     label(for="preset-help-us")
-        input(type="checkbox", checked="true")
+        input#preset-help-us(type="checkbox", checked=true)
         span= t('preset opt-in help')
 
     label(for="preset-mailing")
-        input(type="checkbox", checked="false")
+        input#preset-mailing(type="checkbox")
         span= t('preset opt-out newsletter')

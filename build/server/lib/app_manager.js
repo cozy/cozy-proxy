@@ -97,6 +97,22 @@ AppManager = (function() {
     })(this));
   };
 
+  AppManager.prototype.versions = function(callback) {
+    return this.client.get("api/applications/stack", function(error, res, apps) {
+      if (error != null) {
+        return callback(error);
+      }
+      return callback(null, apps.rows.map(function(app) {
+        var obj;
+        return (
+          obj = {},
+          obj["" + app.name] = app.version,
+          obj
+        );
+      }));
+    });
+  };
+
   return AppManager;
 
 })();

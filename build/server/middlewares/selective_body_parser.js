@@ -5,6 +5,7 @@ module.exports = function(req, res, next) {
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/login") !== 0;
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/password") !== 0;
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/register") !== 0;
+  isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/device") !== 0;
   if (isNoAuthRoute) {
     return next();
   } else {

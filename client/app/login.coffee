@@ -57,10 +57,6 @@ $ ->
                 errorAlert.html msg
                 errorAlert.fadeIn()
 
-    # Submit password if upped key is enter (key code is 13).
-    onPasswordKeyUp = (event) ->
-        submitPassword() if event.which is 13
-
     # Bind listeners to events
     passwordInput.keyup onPasswordKeyUp
     button.click onPasswordSubmitted

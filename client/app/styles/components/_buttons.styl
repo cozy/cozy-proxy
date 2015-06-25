@@ -8,18 +8,23 @@
     text-transform uppercase
     @extend $transition-sexy
 
-    &:hover
-        background-color darken($blue, 20%)
-
 .btn-primary
     @extend          $full-width-percentage
     background-color $blue
     color            #fff
 
+    &:hover
+        background-color darken($blue, 20%)
+
 .btn-secondary
     background-color transparent
     border           2px solid $grey-03
     color            $grey-05
+
+    &:hover
+        background-color $grey-04
+        border-color     $grey-04
+        color            #ffffff
 
 .btn-group
     display         flex

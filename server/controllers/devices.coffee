@@ -10,7 +10,10 @@ extractCredentials = (header) ->
     if header?
         authDevice = header.replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
-        return authDevice.split ':'
+        # username should be 'owner'
+        username = authDevice.substr(0, authDevice.indexOf(':'))
+        password = authDevice.substr(authDevice.indexOf(':') + 1)
+        return [username, password]
     else
         return ["", ""]
 

@@ -1,5 +1,32 @@
 .popup
-	@extend .padded-02
-	background #ffff
-	@extend .shadow-depth-03
-	@extend .border-radius-04
+    position   relative
+    background #ffffff
+    max-width  30em
+    @extend    $padded-02
+    @extend    $padded-top-04
+    @extend    $marged-vt-05
+    @extend    $full-width-percentage
+    @extend    $shadow-depth-03
+    @extend    $border-radius-04
+
+    @media (max-width: 380px)
+        padding       10em 1em 2em
+        margin        0
+        border-radius 0
+
+$header-size = 96px
+header
+    position            absolute
+    top                 -($header-size/2)
+    left                50%
+    margin-left         -($header-size/2)
+    width               $header-size
+    height              $header-size
+    border-radius       100%
+    background-color    #ffffff
+    background-image    url('/img/sprites/cozy-icons-sprite.svg')
+    background-position 0 0
+    @extend             $shadow-depth-01
+
+    @media (max-width: 380px)
+        top 2em

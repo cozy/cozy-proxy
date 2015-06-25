@@ -1,0 +1,30 @@
+.btn
+    display        block
+    @extend        $reset-link
+    @extend        $padded-01
+    @extend        $border-radius-01
+    border         none
+    text-align     center
+    text-transform uppercase
+    @extend $transition-sexy
+
+    &:hover
+        background-color darken($blue, 20%)
+
+.btn-primary
+    @extend          $full-width-percentage
+    background-color $blue
+    color            #fff
+
+.btn-secondary
+    background-color transparent
+    border           2px solid $grey-03
+    color            $grey-05
+
+.btn-group
+    display         flex
+    justify-content space-between
+
+.btn-group-02
+    .btn
+        width 48%

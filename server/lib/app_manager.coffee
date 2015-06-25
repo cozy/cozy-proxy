@@ -59,4 +59,9 @@ class AppManager
                     state: data.app.state
                 callback null, data.app.port
 
+    versions: (callback) ->
+        @client.get "api/applications/stack", (error, res, apps) ->
+            return callback error if error?
+            callback null, apps.rows.map (app) -> return "#{app.name}": app.version
+
 module.exports = new AppManager()

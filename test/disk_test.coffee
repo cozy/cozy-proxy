@@ -70,17 +70,3 @@ describe "Disk space", ->
                 @res.statusCode.should.equal 200
                 should.exist @body.diskSpace
 
-    describe 'Remove device', =>
-
-        it "When I send a request with authentication", (done) =>
-            client.setBasicAuth 'owner', 'user_pwd'
-            client.del "device/#{@id}/", (err,res, body) =>
-                @err = err
-                @res = res
-                @body = body
-                done()
-
-        it "Then 200 is return as status code", =>
-            should.not.exist @body.error
-            @res.statusCode.should.equal 200
-

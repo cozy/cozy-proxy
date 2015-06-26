@@ -13,20 +13,12 @@ module.exports = class RegisterView extends Mn.LayoutView
         'controls': '.controls'
         'feedback': '.feedback'
 
-    ui:
-        next: '.controls a.btn'
-
 
     onRender: ->
         @showChildView 'controls', new ControlsView model: @model
         @showChildView 'feedback', new FeedbackView model: @model
 
-
-    onBeforeShow: ->
         @model.get('step').onValue @swapStep
-        @model.setStepBus.plug @$el.asEventStream 'click', @ui.next, (event) ->
-            event.preventDefault()
-            event.target.href.split('=')[1]
 
 
     swapStep: (step) =>

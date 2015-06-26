@@ -1,15 +1,20 @@
 label.with-input
-    position relative
+    display    block
+    position   relative
+    margin-top 1.2em
 
     input[type=text]
+    input[type=email]
+    input[type=number]
     input[type=password]
-        @extend $reset-input
-        @extend $full-width-percentage
-        @extend $input-background
-        @extend $border-radius-01
-        @extend $box-border-bottom
-        @extend $transition-sexy
-        padding 1.8em 0.8em 0.8em
+        @extend   $reset-input
+        @extend   $full-width-percentage
+        @extend   $input-background
+        @extend   $border-radius-01
+        @extend   $box-border-bottom
+        @extend   $transition-sexy
+        padding   1.8em 0.8em 0.6em
+        font-size 1.1em
 
         &:hover
             border-color $grey-04
@@ -20,16 +25,15 @@ label.with-input
 
     span:first-child
         position  absolute
-        top       -1.4em
+        top       0.8em
         left      0.8em
-        min-width 20em      // content too short without it
         @extend   $headings-04
 
     .indicator
         position   absolute
         right      1em
         top        50%
-        margin-top -1.1em
+        margin-top -0.8em
 
 .checkboxes
     margin-bottom  1em
@@ -38,5 +42,26 @@ label.with-input
         display        block
         padding-bottom 0.2em
 
-    input
-        margin-right 0.5em
+input[type=checkbox]
+    margin-right 0.5em
+
+// Group of inputs
+.input-group
+    display         flex
+    justify-content space-between
+
+    @media (max-width: 380px)
+        display block
+
+.input-group-02-third
+    .with-input:first-child
+        width 64%
+
+        @media (max-width: 380px)
+            width 100%
+
+    .with-input:last-child
+        width 33%
+
+        @media (max-width: 380px)
+            width 100%

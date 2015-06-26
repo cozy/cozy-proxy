@@ -7,12 +7,10 @@ module.exports = class RegisterControlsView extends Mn.ItemView
 
 
     onBeforeRender: ->
-        @model.setStepBus.plug @$el.asEventStream 'click', @ui.next, (event) ->
-            event.preventDefault()
-            el = event.target
-
-            return if el.getAttribute('aria-disabled') is 'true'
-            el.href.split('=')[1]
+        clickStream = @$el.asEventStream('click', @ui.next)
+                          .doAction('.preventDefault')
+                          .map (e) -> e.target.href.split('=')[1]
+        @model.setStepBus.plug clickStream
 
 
     onRender: ->
@@ -21,5 +19,5 @@ module.exports = class RegisterControlsView extends Mn.ItemView
             .assign @ui.next, 'attr', 'aria-disabled'
 
         @model.get('nextStep')
-            .map (step) => "#{@ui.next.attr('href').split('=')[0]}=#{step}"
+            .map (step) => "register?step=#{step}"
             .assign @ui.next, 'attr', 'href'

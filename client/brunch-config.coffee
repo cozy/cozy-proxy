@@ -7,6 +7,7 @@ exports.config =
             order:
                 before: [
                     'bower_components/jquery/dist/jquery.js'
+                    'bower_components/bacon/dist/Bacon.js'
                 ]
 
         stylesheets:

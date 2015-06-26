@@ -1,7 +1,7 @@
 ul
-    li(aria-selected=(step == 'preset'? 'true' : 'false'))
+    li.preset(aria-selected=false)
         = t('step preset')
-    li(aria-selected=(step == 'import'? 'true' : 'false'))
+    li.import(aria-selected=false)
         = t('step import')
-    li(aria-selected=(step == 'email' ? 'true' : 'false'))
+    li.email(aria-selected=false)
         = t('step email settings')

@@ -13,25 +13,23 @@ module.exports = class RegisterView extends Mn.LayoutView
         'controls': '.controls'
         'feedback': '.feedback'
 
-    events:
-        'click a': 'navigate'
-
-    modelEvents:
-        'change:step': 'swapStep'
+    ui:
+        next: '.controls a.btn'
 
 
-    onBeforeShow: ->
+    onRender: ->
         @showChildView 'controls', new ControlsView model: @model
         @showChildView 'feedback', new FeedbackView model: @model
 
 
-    navigate: (event) ->
-        event.preventDefault()
-        app = require 'application'
-        href = event.currentTarget.getAttribute 'href'
-        app.router.navigate href, trigger: true
+    onBeforeShow: ->
+        @model.get('step').onValue @swapStep
+        @model.setStepBus.plug @$el.asEventStream 'click', @ui.next, (event) ->
+            event.preventDefault()
+            event.target.href.split('=')[1]
 
 
-    swapStep: ->
-        StepView = require "views/register/#{@model.get 'step'}"
+    swapStep: (step) =>
+        return unless step
+        StepView = require "views/register/#{step}"
         @showChildView 'content', new StepView model: @model

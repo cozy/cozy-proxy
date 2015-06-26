@@ -1,4 +1,35 @@
+*
+    box-sizing border-box
+
+body
+    @extend $body-background
+    @extend $font
+
 main
-	@extend .center-div
-	@extend .full-height
-	@extend .body-background
+    @extend $center-div
+    @extend $full-height-vp
+
+h2
+    margin  0
+    @extend $headings-02
+
+.tips
+    margin-top 0.2em
+    @extend $low-spot
+
+.content-block
+    margin-bottom 2em
+
+.content-illustration
+    display block
+    height  96px
+    width   120px
+    margin  auto
+
+    &.google-services
+        background-image    url('/img/sprites/google-services-sprite.png')
+        background-position 0 0
+
+    &.calendar-contacts
+        background-image    url('/img/sprites/cozy-icons-sprite.svg')
+        background-position -384px 0

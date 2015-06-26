@@ -16,13 +16,13 @@ module.exports = function(app, server, callback) {
     callback = function() {};
   }
   configurePassport();
+  app.locals.t = localization.t;
+  app.locals.getLocale = localization.getLocale;
   initializeProxy(app, server);
-  return localization.initialize(function() {
-    return Device.update(function() {
-      return router.reset(function() {
-        return router.displayRoutes(function() {
-          return callback(app, server);
-        });
+  return Device.update(function() {
+    return router.reset(function() {
+      return router.displayRoutes(function() {
+        return callback(app, server);
       });
     });
   });

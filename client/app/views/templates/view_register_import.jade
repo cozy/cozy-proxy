@@ -1,8 +1,9 @@
-#import-google
-    img(src="_blank")
+#import-google.content-block
+    .content-illustration.google-services
     h2= t('import google account')
+
     p= t('import google account tip')
-    button#import-google(type="button")= t('import google account sign in')
+    button#import-google.btn.btn-primary(type="button")= t('import google account sign in')
 
     form
         input#auth_code(type="text", name="auth_code",
@@ -22,9 +23,10 @@
 
 
 
-#import-datas
-    img(src="_blank")
+#import-datas.content-block
+    .content-illustration.calendar-contacts
     h2= t('import datas')
-    p= t('import datas tip')
-    button#import-data-calendar(type="button")= t('import datas calendar')
-    button#import-data-contacts(type="button")= t('import datas contacts')
+    p.tips= t('import datas tip')
+    .btn-group.btn-group-02
+        button#import-data-calendar.btn.btn-secondary(type="button")= t('import datas calendar')
+        button#import-data-contacts.btn.btn-secondary(type="button")= t('import datas contacts')

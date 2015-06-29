@@ -10,13 +10,16 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         clickStream = @$el.asEventStream('click', @ui.next)
                           .doAction('.preventDefault')
                           .map (e) -> e.target.href.split('=')[1]
-        @model.setStepBus.plug clickStream
+                          .filter @model.buttonEnabled.toProperty()
+        @model.setStepBus.plug @model.nextClickStream = clickStream
 
 
     onRender: ->
-        @model.get('nextButtonEnabled')
-            .not()
-            .assign @ui.next, 'attr', 'aria-disabled'
+        @model.buttonEnabled.toProperty().not()
+              .assign @ui.next, 'attr', 'aria-disabled'
+
+        @model.buttonBusy.toProperty()
+              .assign @ui.next, 'attr', 'aria-busy'
 
         @model.get('nextStep')
             .map (step) => "register?step=#{step}"

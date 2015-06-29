@@ -13,19 +13,40 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         timezone: '#preset-timezone'
 
 
+    initialize: ->
+        @model.isRegistered.push false
+
+
     onRender: ->
         inputs = _.map @ui, ($el, name) =>
-            property = $el.asEventStream('keyup')
-                       .map (event) -> event.target.value
-                       .toProperty()
-            @model.add name, property
+            $el.asEventStream('keyup')
+               .map '.target.value'
+               .toProperty('')
 
         allFieldsFull = _.reduce inputs, (memo, property) ->
             memo.and property.map (value) -> value.length > 0
-        , Bacon.constant false
-        @model.setButtonEnableBus.plug allFieldsFull.changes()
+        , Bacon.constant true
+        @model.buttonEnabled.plug allFieldsFull.changes()
+
+        Bacon.combineAsArray inputs
+             .filter (v) -> _.compact(v).length is v.length
+             .sampledBy @model.nextClickStream
+             .onValues @onSubmit
 
 
     serializeData: ->
         res =
             timezones: require 'lib/timezones'
+
+
+    onSubmit: (email, name, password, timezone) =>
+        @model.buttonBusy.push true
+        data =
+            email:       email
+            public_name: name
+            timezone:    timezone
+            password:    password
+        req = Bacon.fromPromise $.post '/register', JSON.stringify data
+
+        @model.isRegistered.plug req.map(true)
+        @model.buttonBusy.plug req.mapEnd(false)

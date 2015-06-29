@@ -14,15 +14,15 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
 
     onRender: ->
-        props = _.map @ui, ($el, name) =>
+        inputs = _.map @ui, ($el, name) =>
             property = $el.asEventStream('keyup')
                        .map (event) -> event.target.value
                        .toProperty()
             @model.add name, property
 
-        allFieldsFull = _.reduce props, (memo, property) ->
+        allFieldsFull = _.reduce inputs, (memo, property) ->
             memo.and property.map (value) -> value.length > 0
-        , Bacon.constant true
+        , Bacon.constant false
         @model.setButtonEnableBus.plug allFieldsFull.changes()
 
 

@@ -29,6 +29,7 @@ module.exports = class Registration
     steps: [
         'preset',
         'import',
+        'import_google',
         'email',
         'setup',
         'welcome'

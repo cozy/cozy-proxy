@@ -1,0 +1,23 @@
+#import-google.content-block
+    .content-illustration.google-services
+    section.step#step-pastecode
+        .step-number 2
+        p=t("leave google step2 title")
+        form
+            input#auth_code(type="text", name="auth_code",
+                  placeholder="google auth_code", required)
+            button#step-pastecode-ok.btn= t('confirm')
+
+    section.step#step-pickscope
+        .step-number 3
+
+        p=t('leave google choice title')
+        label=t("leave google choice photo")
+            input(type="checkbox", name="photos", value="photos", checked)
+        label=t("leave google choice calendar")
+            input(type="checkbox", name="calendars", value="calendars", checked)
+        label=t("leave google choice contact")
+            input(type="checkbox", name="contacts", value="contacts", checked)
+        label=t("leave google choice sync gmail")
+            input(type="checkbox", name="sync_gmail", value="sync_gmail", checked)
+        button#lg-ok.btn=t('leave google title')

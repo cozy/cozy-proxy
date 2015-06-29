@@ -24,3 +24,4 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         @model.get('nextStep')
             .map (step) => "register?step=#{step}"
             .assign @ui.next, 'attr', 'href'
+

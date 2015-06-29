@@ -46,4 +46,4 @@ module.exports = class RegisterImportView extends Mn.ItemView
             contacts: @$("input:checkbox[name=contacts]").prop("checked")
             sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")
 
-        $.post "lg", {auth_code: @auth_code, scope: scope}
+        $.post "/apps/leave-google/lg", {auth_code: @auth_code, scope: scope}

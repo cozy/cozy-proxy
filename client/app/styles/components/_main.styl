@@ -1,6 +1,30 @@
 *
     box-sizing border-box
 
+[aria-disabled="true"]
+    opacity 0.4
+    cursor not-allowed
+
+// remove transition to text intend when the spinner is coming
+[aria-busy="true"]
+[aria-busy="false"]
+    transition text-indent 0s
+
+[aria-busy="true"]
+    display         flex
+    align-items     center
+    justify-content center
+    text-indent     -100em
+
+    &:after
+        content           ''
+        display           block
+        width             1.4em
+        height            1.4em
+        background-image  url('/img/spinner-white.svg')
+        background-repeat no-repeat
+        background-size   cover
+
 body
     @extend $body-background
     @extend $font
@@ -33,3 +57,25 @@ h2
     &.calendar-contacts
         background-image    url('/img/sprites/cozy-icons-sprite.svg')
         background-position -384px 0
+
+.feedback ul
+    display         flex
+    justify-content center
+    margin          1em 0
+    padding         0
+    list-style      none
+
+    li
+        width            12px
+        height           12px
+        margin           0 0.1em
+        background-color $grey-02
+        @extend          $border-radius-round
+        text-indent      -100em
+
+        &[aria-selected=true]
+            background-color $grey-04
+
+        &[aria-selected=true] ~ [aria-selected=false]
+            background-color transparent
+            border 1px solid $grey-04

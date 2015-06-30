@@ -8,7 +8,7 @@
 // remove transition to text intend when the spinner is coming
 [aria-busy="true"]
 [aria-busy="false"]
-    transition text-indent 0s
+    transition text-indent 0s 0s
 
 [aria-busy="true"]
     display         flex
@@ -33,9 +33,19 @@ main
     @extend $center-div
     @extend $full-height-vp
 
+h1
+    margin      0.5em 0 0.3em
+    font-size   1.8em
+    font-weight normal
+    text-align  center
+
 h2
     margin  0
     @extend $headings-02
+
+a
+    color           $blue
+    text-decoration none
 
 .tips
     margin-top 0.2em
@@ -70,3 +80,14 @@ h2
         &[aria-selected=true] ~ [aria-selected=false]
             background-color transparent
             border 1px solid $grey-04
+
+// login Section
+.login
+    .help
+        margin-top 0
+        color      $grey-05
+        font-size  1.1em
+        text-align center
+
+    .recover
+        margin-top 1em

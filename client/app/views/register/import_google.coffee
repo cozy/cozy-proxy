@@ -37,7 +37,6 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         @$('#auth_code').focus() if step is 'pastecode'
 
     onRender: ->
-        console.log "after render import google"
         @changeStep 'pastecode'
         opts = [
             'toolbars=0'

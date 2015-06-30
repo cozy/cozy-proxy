@@ -6,6 +6,7 @@ passwordKeys = require '../lib/password_keys'
 
 # customize passport authenticate
 module.exports.authenticate = (req, res, next) ->
+    console.log 'authenticate'
     process = (err, user) ->
         if err
             next new Error localization.t 'error server'
@@ -31,6 +32,7 @@ module.exports.isAuthenticated = (req, res, next) ->
     if req.isAuthenticated()
         next()
     else
-        url = "/login#{req.url}"
-        url += "?#{qs.stringify req.query}" if req.query.length
+        url = "/login"
+        url += "?next=#{req.url}" unless req.url is '/'
+        url += "&#{qs.stringify req.query}" if req.query.length
         res.redirect url

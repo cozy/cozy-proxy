@@ -1,0 +1,8 @@
+if alert
+    .alert
+        p: strong= t(alert.title)
+        p= t(alert.message)
+
+.recover
+    - label = recover.label? 'login recover again' : 'login recover'
+    a.forgot(href="/login/forgot")= t(label)

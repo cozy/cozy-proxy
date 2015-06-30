@@ -4,9 +4,9 @@ FeedbackView = require 'views/register/feedback'
 
 module.exports = class RegisterView extends Mn.LayoutView
 
-    className: 'step'
+    className: 'register'
 
-    template: require 'views/templates/view_register'
+    template: require 'views/templates/view_base'
 
     regions:
         'content':  '[role=region]'

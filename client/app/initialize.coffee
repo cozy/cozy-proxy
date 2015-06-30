@@ -8,7 +8,7 @@ initLocale = ->
             phrases = require 'locales/en'
         polyglot = new Polyglot phrases: phrases, locale: locale
         # Temporary use a global variable to store the `t` helpers, waiting for
-        # Marionette allow to register gloable helpers.
+        # Marionette allow to register global helpers.
         # see https://github.com/marionettejs/backbone.marionette/issues/2164
         window.t = polyglot.t.bind polyglot
 

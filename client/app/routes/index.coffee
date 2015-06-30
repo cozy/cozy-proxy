@@ -1,23 +1,27 @@
 RegisterView = require 'views/register'
+LoginView    = require 'views/login'
 
 RegistrationModel = require 'states/registration'
+LoginModel        = require 'states/login'
 
 
 module.exports = class Router extends Backbone.Router
 
     routes:
-        'login':               'login'
-        'password/reset/:key': 'resetPassword'
-        'register?step=:step': 'register'
-        'register':            'register'
+        'login(?next=*path)':    'login'
+        'password/reset/:key':   'resetPassword'
+        'register(?step=:step)': 'register'
 
 
     initialize: (options) ->
         @app = options.app
 
 
-    login: ->
-        console.debug 'login'
+    login: (path)->
+        login = new LoginModel()
+        @app.layout.showChildView 'content', new LoginView
+            model: login
+            next: path
 
 
     resetPassword: (key) ->

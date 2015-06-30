@@ -7,8 +7,8 @@ module.exports = class RegisterControlsView extends Mn.ItemView
 
 
     onBeforeRender: ->
-        clickStream = @$el.asEventStream('click', @ui.next)
-                          .doAction('.preventDefault')
+        clickStream = @$el.asEventStream 'click', @ui.next
+                          .doAction '.preventDefault'
                           .map (e) -> e.target.href.split('=')[1]
                           .filter @model.buttonEnabled.toProperty()
         @model.setStepBus.plug @model.nextClickStream = clickStream

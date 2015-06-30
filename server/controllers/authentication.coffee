@@ -69,7 +69,8 @@ module.exports.loginIndex = (req, res) ->
             name = words.map((word) ->
                 return word.charAt(0).toUpperCase() + word.slice 1
             ).join ' '
-            res.render "index.jade", name: name
+
+        res.render "index.jade", name: name
 
 
 module.exports.forgotPassword = (req, res, next) ->

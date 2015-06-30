@@ -28,3 +28,15 @@ module.exports =
     "error bad credentials":      "Incorrect password."
     "error keys not initialized": "The keys aren't initialized."
     "error login failed":         "Login failed."
+
+    # reset password email
+    "reset password email from":    "Your Cozy <no-reply@%{domain}>"
+    "reset password email subject": "[Cozy] Resetting your password"
+    "reset password email text":    """
+        It seems that you forgot the password to your Cozy.
+        Not to worry, simply follow the link below to create a new one:
+
+        https://%{domain}/password/reset/%{key}
+
+        Don't forget to update all your encrypted data afterwards!
+    """

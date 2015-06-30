@@ -48,10 +48,17 @@ module.exports =
     'login welcome':                'Welcome'
     'login enter your password':    'Please enter your password to access to your Cozy'
     'login password':               'password'
-    'login sign in':                'sign in'
+    'login submit':                 'sign in'
     'login recover':                'Forget password? Email me instructions'
     'login recover again':          'Did not receive it? Send it again'
     'login recover sent title':     'Email sent'
     'login recover sent message':   'Please check your email, follow instructions to reset your password'
     'login wrong password title':   'Wrong password'
     'login wrong password message': 'The pasword you entered  is incorrect, please try again'
+
+    'reset welcome':                'Reset password'
+    'reset enter your password':    'Please enter your new password to reset it'
+    'reset password':               'password'
+    'reset submit':                 'reset your password'
+    'reset wrong password title':   "Your password can't be resetted"
+    'reset wrong password message': 'The pasword you entered is incorrect, or your reset token is expired'

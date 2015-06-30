@@ -1,7 +1,7 @@
 StateModel = require 'lib/state_model'
 
 
-module.exports = class Login extends StateModel
+module.exports = class Auth extends StateModel
 
     initialize: ->
         @alert   = new Bacon.Bus()

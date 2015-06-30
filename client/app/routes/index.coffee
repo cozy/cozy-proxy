@@ -8,7 +8,7 @@ AuthModel        = require 'states/auth'
 module.exports = class Router extends Backbone.Router
 
     routes:
-        'login(?next=*path)':    'login'
+        'login(*path)(?next=*path)':    'login'
         'password/reset/:key':   'resetPassword'
         'register(?step=:step)': 'register'
 
@@ -37,15 +37,14 @@ module.exports = class Router extends Backbone.Router
             type:    'reset'
 
 
-    register: (step) ->
-        return @navigate 'register?step=preset', trigger: true unless step?
-
+    register: (step = 'preset') ->
         currentView = @app.layout.getChildView 'content'
 
         unless currentView? and currentView instanceof RegisterView
             registration = new RegistrationModel()
-            registration.get('step').onValue (step) =>
-                @navigate "register?step=#{step}"
+            registration.get('step')
+                        .map (step) -> "register?step=#{step}" if step
+                        .assign @, 'navigate'
 
             currentView  = new RegisterView model: registration
             @app.layout.showChildView 'content', currentView

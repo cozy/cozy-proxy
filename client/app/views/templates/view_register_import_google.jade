@@ -1,5 +1,5 @@
 #import-google.content-block
-    h1=t('leave google title')
+    h2= t('leave google title')
     section.step#step-pastecode
         p=t("leave google code content")
         form
@@ -12,31 +12,31 @@
 
 
     section.step.google-services-list#step-pickscope
-        p=t('leave google choice')
+        p= t('leave google choice')
         label(for="google-gmail-sync")
             input(type="checkbox", name="sync_gmail", value="sync_gmail", checked)
             span.google-services-icons.gmail
-            span=t("leave google choice sync gmail")
+            span= t("leave google choice sync gmail")
 
 
         label(for="google-contacts-import")
             input(type="checkbox", name="contacts", value="contacts", checked)
             span.google-services-icons.contacts
-            span=t("leave google choice contacts")
+            span= t("leave google choice contacts")
 
 
         label(for="google-calendar-import")
             input(type="checkbox", name="calendars", value="calendars", checked)
             span.google-services-icons.calendar
-            span=t("leave google choice calendar")
+            span= t("leave google choice calendar")
 
 
         label(for="google-photos-import")
             input(type="checkbox", name="photos", value="photos", checked)
             span.google-services-icons.photos
-            span=t("leave google choice photos")
+            span= t("leave google choice photos")
 
 
         .btn-group.btn-group-02
             button#cancel.btn.btn-secondary= t('cancel')
-            button#lg-ok.btn.btn-primary=t('leave google confirm')
+            button#lg-ok.btn.btn-primary= t('leave google confirm')

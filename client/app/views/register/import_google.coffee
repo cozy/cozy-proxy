@@ -1,12 +1,14 @@
 module.exports = class RegisterImportGoogleView extends Mn.ItemView
 
-    className: 'importGoogle'
+    className: 'import-google'
 
     template: require 'views/templates/view_register_import_google'
 
     events:
-        "click button#lg-ok": "selectedScopes"
-        "click button#step-pastecode-ok": "pastedCode"
+        'click #lg-ok':             'selectedScopes'
+        'click #step-pastecode-ok': 'pastedCode'
+        'click #cancel':            'cancel'
+
 
     pastedCode: (event)->
         event.preventDefault()
@@ -27,14 +29,18 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
             sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")
 
         $.post "/apps/leave-google/lg", {auth_code: @auth_code, scope: scope}
-        # todo : navigate to the next step. (come bac to import)
-
+        @model.setStep 'setup'
 
 
     changeStep: (step) ->
         @$('.step').hide()
         @$("#step-#{step}").show()
         @$('#auth_code').focus() if step is 'pastecode'
+
+
+    cancel: ->
+        @model.setStep 'import'
+
 
     onRender: ->
         @changeStep 'pastecode'

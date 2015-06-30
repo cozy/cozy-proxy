@@ -3,14 +3,18 @@ StateModel = require 'lib/state_model'
 
 module.exports = class Registration extends StateModel
 
-    steps: [
-        'preset',
-        'import',
-        'import_google',
-        'email',
-        'setup',
-        'welcome'
-    ]
+    steps:
+        preset:
+           next : 'import'
+        import:
+            next: 'email'
+        import_google:
+            nocontrols: true
+        email:
+            next: 'setup'
+        setup:
+            next: 'welcome'
+            nocontrols: true
 
 
     initialize: ->
@@ -19,23 +23,21 @@ module.exports = class Registration extends StateModel
         @isRegistered = new Bacon.Bus()
 
         @setStepBus = new Bacon.Bus()
-        step = Bacon.update @steps[0],
-            [@setStepBus.filter @isRegistered.toProperty()], (previous, step) ->
+        isRegistered = @isRegistered.startWith(true).toProperty()
+        step = Bacon.update null,
+            [@setStepBus.filter isRegistered], (previous, step) ->
                 if step? then step else previous
         @add 'step', step
 
-        nextStep = Bacon.update @steps[1],
-            step.changes(), (previous, newStep) =>
-                return @steps[@steps.indexOf(newStep) + 1]
-        @add 'nextStep', nextStep
+        @add 'nextStep', next = step.map (step) => @steps[step]?.next or null
+        @add 'hasControls', step.map (step) => not @steps[step]?.nocontrols
 
-        @setStepBus.plug nextStep.sampledBy @isRegistered
+        @setStepBus.plug next.sampledBy @isRegistered
         @buttonEnabled.plug step.changes().map (step) =>
             return step isnt @steps[0]
 
-        @buttonEnabled.push true
-        @buttonBusy.push false
-        @isRegistered.push true
+        @buttonEnabled.startWith true
+        @buttonBusy.startWith false
 
 
     setStep: (newStep) ->

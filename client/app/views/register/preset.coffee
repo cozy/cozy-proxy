@@ -19,7 +19,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
     onRender: ->
         inputs = _.map @ui, ($el, name) =>
-            $el.asEventStream('keyup')
+            $el.asEventStream('keyup blur')
                .map '.target.value'
                .toProperty('')
 

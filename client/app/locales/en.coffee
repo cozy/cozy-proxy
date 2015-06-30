@@ -1,5 +1,7 @@
 module.exports =
     'next':                'next'
+    'skip':                'skip'
+    'welcome':             'let me in!'
     'cancel':              'cancel'
     'confirm':             'confirm'
     'step preset':         'settings'
@@ -62,3 +64,11 @@ module.exports =
     'reset submit':                 'reset your password'
     'reset wrong password title':   "Your password can't be resetted"
     'reset wrong password message': 'The pasword you entered is incorrect, or your reset token is expired'
+
+    'setup title':             "We're setting up your Cozy!"
+    'setup message':           'You are now really close to having your own personal cloud where your personal data is stored.'
+    'setup on mobile title':   'Did you know that you can use Cozy on your Android device?!'
+    'setup on mobile message': 'Check out our mobile app on Google Play'
+
+    'welcome title': 'Congratulations on taking back control of your personal data'
+    'welcome message': "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services,  there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data when it's stored here"

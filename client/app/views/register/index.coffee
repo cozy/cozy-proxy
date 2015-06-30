@@ -13,12 +13,18 @@ module.exports = class RegisterView extends Mn.LayoutView
         'controls': '.controls'
         'feedback': '.feedback'
 
+    ui:
+        footer: 'footer'
+
+
+    initialize: ->
+        @model.get('step').onValue @swapStep
+
 
     onRender: ->
         @showChildView 'controls', new ControlsView model: @model
         @showChildView 'feedback', new FeedbackView model: @model
-
-        @model.get('step').onValue @swapStep
+        @model.get('hasControls').not().assign @ui.footer, 'attr', 'aria-hidden'
 
 
     swapStep: (step) =>

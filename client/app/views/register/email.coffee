@@ -26,6 +26,7 @@ module.exports = class RegisterEmailView extends Mn.ItemView
 
 
     initialize: ->
+        @isEmail = @model.get('step').map (step) -> step is 'email'
         @showAdv = @$el.asEventStream 'click', @ui.legend
                       .scan false, (visible) -> not visible
 

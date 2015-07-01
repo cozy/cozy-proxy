@@ -1,9 +1,10 @@
 module.exports =
     'next':                'next'
     'skip':                'skip'
-    'welcome':             'let me in!'
-    'add email':           'add email account'
     'cancel':              'cancel'
+    'sign up':             'sign up'
+    'add email':           'add email account'
+    'welcome':             'let me in!'
     'confirm':             'confirm'
     'step preset':         'settings'
     'step import':         'import your datas'

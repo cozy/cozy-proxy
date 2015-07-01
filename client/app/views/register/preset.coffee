@@ -14,6 +14,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
 
     initialize: ->
+        @isPreset = @model.get('step').map (step) -> step is 'preset'
         @model.isRegistered.push false
 
 
@@ -31,6 +32,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         Bacon.combineAsArray inputs
              .filter (v) -> _.compact(v).length is v.length
              .sampledBy @model.nextClickStream
+             .filter @isPreset
              .onValues @onSubmit
 
 

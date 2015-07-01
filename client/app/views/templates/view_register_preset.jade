@@ -2,6 +2,7 @@ label.with-input(for="preset-email", aria-describedby="preset-email-tip")
     span= t('preset email')
     input#preset-email(type="email")
     span.indicator
+        span.fa.fa-times
 p#preset-email-tip.tips
     = t('preset email tip')
 
@@ -9,7 +10,6 @@ p#preset-email-tip.tips
 label.with-input(for="preset-name", aria-describedby="preset-name-tip")
     span= t('preset name')
     input#preset-name(type="text")
-    span.indicator
 p#preset-name-tip.tips
     = t('preset name tip')
 
@@ -17,7 +17,6 @@ p#preset-name-tip.tips
 label.with-input(for="preset-password", aria-describedby="preset-password-tip")
     span= t('preset password')
     input#preset-password(type="password")
-    span.indicator
 p#preset-email-tip.tips
     = t('preset password tip')
 
@@ -29,6 +28,7 @@ label.with-input(for="preset-timezone", aria-describedby="preset-timezone-tip")
         each timezone in timezones
             option(value=timezone)
     span.indicator
+        span.fa.fa-times
 p#preset-timezone-tip.tips
     = t('preset timezone tip')
 

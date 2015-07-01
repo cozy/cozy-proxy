@@ -28,7 +28,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
               .assign @ui.next, 'attr', 'aria-busy'
 
         @model.get 'nextStep'
-            .map (step) => "register?step=#{step}"
+            .map (step) -> if step then "register?step=#{step}" else '/'
             .assign @ui.next, 'attr', 'href'
 
         @model.get 'nextButtonLabel'

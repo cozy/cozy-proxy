@@ -4,6 +4,10 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
     className: 'preset'
 
+    attributes:
+        method: 'post'
+        action: '/register'
+
     template: require 'views/templates/view_register_preset'
 
     ui:
@@ -16,6 +20,10 @@ module.exports = class RegisterPresetView extends Mn.ItemView
     initialize: ->
         @isPreset = @model.get('step').map (step) -> step is 'preset'
         @model.isRegistered.push false
+
+        @submitStream = @$el.asEventStream 'submit'
+                            .doAction '.preventDefault'
+                            .filter @model.buttonEnabled.toProperty()
 
         @model.add 'email', (@$el.asEventStream('blur', @ui.email)
                                  .map '.target.value'
@@ -35,7 +43,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
         Bacon.combineAsArray inputs
              .filter (v) -> _.compact(v).length is v.length
-             .sampledBy @model.nextClickStream
+             .sampledBy @model.nextClickStream.merge @submitStream
              .filter @isPreset
              .onValues @onSubmit
 

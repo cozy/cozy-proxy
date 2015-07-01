@@ -4,6 +4,18 @@ module.exports = class RegisterSetupView extends Mn.ItemView
 
     template: require 'views/templates/view_register_setup'
 
+    ui:
+        bar: 'progress'
+
 
     initialize: ->
-        @model.setStepBus.plug Bacon.later 8000, @model.steps['setup'].next
+        @timer = Bacon.interval(80, 1)
+                      .take 100
+                      .scan 0, (a, b) -> a + b
+        end = @timer.filter (n) -> n >= 100
+                    .map @model.steps['setup'].next
+        @model.setStepBus.plug end
+
+
+    onRender: ->
+        @timer.assign @ui.bar, 'val'

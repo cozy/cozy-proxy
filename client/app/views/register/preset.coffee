@@ -48,5 +48,17 @@ module.exports = class RegisterPresetView extends Mn.ItemView
             password:    password
         req = Bacon.fromPromise $.post '/register', JSON.stringify data
 
-        @model.isRegistered.plug req.map(true)
-        @model.buttonBusy.plug req.mapEnd(false)
+        @model.isRegistered.plug req.map true
+        @model.buttonBusy.plug req.mapEnd false
+
+        errors = req.mapError '.responseJSON.error'
+           .map (message) ->
+                errors =
+                    email: /email/.test message
+                    timezone: /timezone/.test message
+
+        errors.map '.email'
+              .assign @ui.email.parent(), 'toggleClass', 'error'
+
+        errors.map '.timezone'
+              .assign @ui.timezone.parent(), 'toggleClass', 'error'

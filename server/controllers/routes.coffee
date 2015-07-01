@@ -17,6 +17,7 @@ module.exports =
     'register':
         get: auth.registerIndex
         post: [auth.register, utils.authenticate]
+    'register/email': post: [utils.isAuthenticated, auth.registerEmail]
 
     'login':
         get: auth.loginIndex

@@ -1,5 +1,6 @@
 passport     = require 'passport'
 randomstring = require 'randomstring'
+request      = require 'request-json'
 
 User         = require '../models/user'
 Instance     = require '../models/instance'
@@ -55,6 +56,52 @@ module.exports.register = (req, res, next) ->
         error = new Error validationErrors
         error.status = 400
         next error
+
+
+module.exports.registerEmail = (req, res, next) ->
+    accountData =
+        id:                null
+        label:             req.body.email
+        name:              req.body.email.split('@')[0]
+        login:             req.body.username or req.body.email
+        password:          req.body.password
+        accountType:       "IMAP"
+        draftMailbox:      ""
+        favoriteMailboxes: null
+        imapPort:          req.body.port
+        imapSSL:           req.body.ssl
+        imapServer:        req.body.server
+        imapTLS:           false
+        smtpLogin:         req.body.username or req.body.email
+        smtpMethod:        "PLAIN"
+        smtpPassword:      req.body.password
+        smtpPort:          "465"
+        smtpSSL:           req.body.ssl
+        smtpServer:        req.body.server
+        smtpTLS:           false
+        mailboxes:         ""
+        sentMailbox:       ""
+        trashMailbox:      ""
+
+    console.log accountData
+
+    emailsClient = request.newClient 'http://localhost:9125/'
+    globalRes = res
+
+    console.log "Creating email account..."
+    emailsClient.post 'account', accountData, (err, res, body) ->
+        if err?
+            console.log "Error at email account creation", err
+            error = new Error "User already registered."
+            error.status = 409
+            next error
+        else if res?.statusCode isnt 200
+            console.log "Error at email account creation response", body
+            error = new Error body
+            error.status = 409
+            next error
+        else
+            globalRes.send 204
 
 
 module.exports.loginIndex = (req, res) ->

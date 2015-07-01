@@ -26,7 +26,7 @@ module.exports = class RegisterEmailView extends Mn.ItemView
 
 
     initialize: ->
-        @isEmail = @model.get('step').map (step) -> step is 'email'
+        @isEmail = @model.get('step').map (step) -> step in ['email', 'setup']
         @showAdv = @$el.asEventStream 'click', @ui.legend
                       .scan false, (visible) -> not visible
 
@@ -44,3 +44,21 @@ module.exports = class RegisterEmailView extends Mn.ItemView
         @model.nextButtonLabel.plug requiredAll.map (bool) ->
             if bool then 'add email' else 'skip'
 
+        # inputs submission
+        inputs = getPropertiesFromEls @ui.inputs
+        Bacon.combineAsArray inputs
+             .filter requiredAll
+             .sampledBy @model.nextClickStream
+             .filter @isEmail
+             .onValue @onSubmit
+
+
+    onSubmit: (values) ->
+        data =
+            email:    values[0]
+            password: values[1]
+            server:   values[2]
+            port:     values[3]
+            ssl:      values[4]
+            username: values[5]
+        req = Bacon.fromPromise $.post '/register/email', JSON.stringify data

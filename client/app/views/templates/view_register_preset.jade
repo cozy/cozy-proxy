@@ -2,7 +2,7 @@ label.with-input(for="preset-email", aria-describedby="preset-email-tip")
     span= t('preset email')
     input#preset-email(type="email")
     span.indicator
-        span.fa.fa-times
+        span.fa.fa-exclamation-triangle
 p#preset-email-tip.tips
     = t('preset email tip')
 
@@ -28,7 +28,7 @@ label.with-input(for="preset-timezone", aria-describedby="preset-timezone-tip")
         each timezone in timezones
             option(value=timezone)
     span.indicator
-        span.fa.fa-times
+        span.fa.fa-exclamation-triangle
 p#preset-timezone-tip.tips
     = t('preset timezone tip')
 

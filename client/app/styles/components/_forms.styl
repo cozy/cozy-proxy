@@ -30,20 +30,21 @@ label.with-input
         input[type=password]
             border-color $red
 
-        .indicator .fa-times
+        .indicator span
             display block
 
-    span:first-child
+    & > span:first-child
         position  absolute
         top       0.8em
         left      0.8em
         @extend   $headings-04
 
     .indicator
-        position   absolute
-        right      1em
-        top        50%
-        margin-top -0.8em
+        position  absolute
+        top       0.5em
+        right     0.8em
+        font-size 1.1em
+        color     $red
 
         span
             display none

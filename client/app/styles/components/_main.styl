@@ -1,0 +1,115 @@
+*
+    box-sizing border-box
+
+[aria-disabled="true"]
+    opacity 0.4
+    cursor not-allowed
+
+[aria-busy="true"]
+    display         flex
+    align-items     center
+    justify-content center
+    text-indent     -100em
+
+    &:after
+        content           ''
+        display           block
+        width             1.4em
+        height            1.4em
+        margin-right      2em     // horizontally centered spinner according to button
+        background-image  url('/img/spinner-white.svg')
+        background-repeat no-repeat
+        background-size   cover
+
+body
+    @extend $body-background
+    @extend $font
+
+main
+    @extend $center-div
+    @extend $full-height-vp
+
+h1
+    margin      0.5em 0 0.3em
+    font-size   1.6em
+    line-height 1.1em
+    font-weight normal
+    text-align  center
+
+h2
+    margin  0
+    @extend $headings-02
+
+hr
+    @extend    $marged-vt-02
+    border     none
+    border-top 2px solid $grey-02
+
+a
+    color           $blue
+    text-decoration none
+
+p
+    margin 0.2em 0
+
+.tips
+    margin-top 0.2em
+    @extend $low-spot
+
+.content-block
+    margin-bottom 2em
+
+.google-services-list label
+    display     flex
+    align-items center
+    margin 0.5em 2em
+
+.feedback ul
+    display         flex
+    justify-content center
+    margin          1em 0
+    padding         0
+    list-style      none
+
+    li
+        width            12px
+        height           12px
+        margin           0 0.1em
+        background-color $grey-02
+        @extend          $border-radius-round
+        text-indent      -100em
+
+        &[aria-selected=true]
+            background-color $grey-04
+
+        &[aria-selected=true] ~ [aria-selected=false]
+            background-color transparent
+            border 1px solid $grey-04
+
+.help
+    margin-top 0
+    color      $grey-05
+    font-size  1.1em
+    text-align center
+
+// login Section
+.login
+    .feedback
+        & > div
+            margin-top   1.2em
+            padding-left 0.5em
+            border-left  4px solid transparent
+
+        .success
+            border-color $green
+
+        .error
+            border-color $red
+
+        .alert strong
+            color          $grey-08
+            font-size      0.95em
+            text-transform uppercase
+
+        p
+            color $grey-05

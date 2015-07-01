@@ -2,9 +2,11 @@
   "dependencies": {
   },
   "devDependencies": {
+    "browser-sync-brunch": "0.0.9",
     "coffee-script-brunch": "1.8.0",
     "stylus-brunch": "1.8.0",
     "javascript-brunch": "1.7.1",
-    "css-brunch": "1.7.0"
+    "css-brunch": "1.7.0",
+    "jade-brunch": "^1.8.1"
   }
 }

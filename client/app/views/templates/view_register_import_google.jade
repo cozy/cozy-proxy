@@ -1,0 +1,42 @@
+#import-google.content-block
+    h2= t('leave google title')
+    section.step#step-pastecode
+        p=t("leave google code content")
+        form
+            label.with-input(for="google-code")
+                span= t('leave google code')
+                input#auth_code(type="text", name="auth_code", required, autofocus)
+            .btn-group.btn-group-02
+                button#cancel.btn.btn-secondary= t('cancel')
+                button#step-pastecode-ok.btn.btn-primary= t('confirm')
+
+
+    section.step.google-services-list#step-pickscope
+        p= t('leave google choice')
+        label(for="google-gmail-sync")
+            input#google-gmail-sync(type="checkbox", name="sync_gmail", value="sync_gmail", checked)
+            span.google-services-icons.gmail
+            span= t("leave google choice sync gmail")
+
+
+        label(for="google-contacts-import")
+            input#google-contacts-import(type="checkbox", name="contacts", value="contacts", checked)
+            span.google-services-icons.contacts
+            span= t("leave google choice contacts")
+
+
+        label(for="google-calendar-import")
+            input#google-calendar-import(type="checkbox", name="calendars", value="calendars", checked)
+            span.google-services-icons.calendar
+            span= t("leave google choice calendar")
+
+
+        label(for="google-photos-import")
+            input#google-photos-import(type="checkbox", name="photos", value="photos", checked)
+            span.google-services-icons.photos
+            span= t("leave google choice photos")
+
+
+        .btn-group.btn-group-02
+            button#cancel.btn.btn-secondary= t('cancel')
+            button#lg-ok.btn.btn-primary= t('leave google confirm')

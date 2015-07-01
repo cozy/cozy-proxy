@@ -1,7 +1,7 @@
 Client = require('request-json').JsonClient
 logger = require('printit')
-            date: false
-            prefix: 'lib:app_manager'
+    date: false
+    prefix: 'lib:app_manager'
 
 class AppManager
 
@@ -62,6 +62,8 @@ class AppManager
     versions: (callback) ->
         @client.get "api/applications/stack", (error, res, apps) ->
             return callback error if error?
-            callback null, apps.rows.map (app) -> return "#{app.name}": app.version
+            callback null, apps.rows.map (app) ->
+                return "#{app.name}: #{app.version}"
 
 module.exports = new AppManager()
+

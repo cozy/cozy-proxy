@@ -1,6 +1,6 @@
 appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
-localization = require '../lib/localization_manager'
+
 
 module.exports.app = (req, res, next) ->
     appName = req.params.name
@@ -12,7 +12,6 @@ module.exports.app = (req, res, next) ->
             error.status = err.code
             error.template =
                 name: if err.code is 404 then 'not_found' else 'error_app'
-                params: polyglot: localization.getPolyglot()
             next error
         else
             getProxy().web req, res, target: "http://localhost:#{port}"
@@ -29,7 +28,6 @@ module.exports.publicApp = (req, res, next) ->
             error.status = err.code
             error.template =
                 name: 'error_public'
-                params: polyglot: localization.getPolyglot()
             next error
         else
             getProxy().web req, res, target: "http://localhost:#{port}"

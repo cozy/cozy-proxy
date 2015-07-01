@@ -1,0 +1,45 @@
+label.with-input(for="preset-email", aria-describedby="preset-email-tip")
+    span= t('preset email')
+    input#preset-email(type="email")
+    span.indicator
+        span.fa.fa-exclamation-triangle
+p#preset-email-tip.tips
+    = t('preset email tip')
+
+
+label.with-input(for="preset-name", aria-describedby="preset-name-tip")
+    span= t('preset name')
+    input#preset-name(type="text")
+p#preset-name-tip.tips
+    = t('preset name tip')
+
+
+label.with-input(for="preset-password", aria-describedby="preset-password-tip")
+    span= t('preset password')
+    input#preset-password(type="password")
+p#preset-email-tip.tips
+    = t('preset password tip')
+
+
+label.with-input(for="preset-timezone", aria-describedby="preset-timezone-tip")
+    span= t('preset timezone')
+    input#preset-timezone(type="text", list="preset-timezone-datalist")
+    datalist#preset-timezone-datalist
+        each timezone in timezones
+            option(value=timezone)
+    span.indicator
+        span.fa.fa-exclamation-triangle
+p#preset-timezone-tip.tips
+    = t('preset timezone tip')
+
+
+.checkboxes
+    label.checkbox(for="preset-help-us")
+        input#preset-help-us(type="checkbox", checked=true)
+        span= t('preset opt-in help')
+
+    label.checkbox(for="preset-mailing")
+        input#preset-mailing(type="checkbox")
+        span= t('preset opt-out newsletter')
+
+button(type="submit", aria-hidden="true")

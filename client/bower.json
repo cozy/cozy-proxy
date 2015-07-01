@@ -1,0 +1,22 @@
+{
+  "name": "cozy-proxy",
+  "version": "2.0.0",
+  "homepage": "https://github.com/cozy/cozy-proxy",
+  "authors": [
+    "M4D <code@m4dz.net>"
+  ],
+  "license": "AGPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "marionette": "~2.4.2",
+    "bacon": "~0.7.65",
+    "polyglot": "~0.4.2",
+    "normalize.css": "~3.0.3"
+  }
+}

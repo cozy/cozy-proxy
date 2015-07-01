@@ -2,8 +2,6 @@ logger = require('printit')
     date: true
     prefix: 'app:error'
 
-getTemplateExt = require '../helpers/get_template_ext'
-ext = getTemplateExt()
 
 module.exports = (err, req, res, next) ->
 
@@ -19,8 +17,9 @@ module.exports = (err, req, res, next) ->
         res.set header, value for header, value of err.headers
 
     if err.template? and req?.accepts('html') is 'html'
-        templateName = "#{err.template.name}.#{ext}"
+        templateName = "#{err.template.name}.jade"
         res.render templateName, err.template.params, (err, html) ->
             res.send statusCode, html
     else
         res.send statusCode, error: message
+

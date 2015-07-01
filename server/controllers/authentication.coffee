@@ -1,32 +1,21 @@
-passport = require 'passport'
+passport     = require 'passport'
 randomstring = require 'randomstring'
-locale = require 'locale'
+request      = require 'request-json'
 
-User = require '../models/user'
-Instance = require '../models/instance'
-helpers = require '../lib/helpers'
+User         = require '../models/user'
+Instance     = require '../models/instance'
+helpers      = require '../lib/helpers'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 
-timezones = require '../lib/timezones'
-supportedLocales = require('../config').supportedLanguages
-
-getTemplateExt = require '../helpers/get_template_ext'
-ext = getTemplateExt()
 
 module.exports.registerIndex = (req, res) ->
     User.first (err, user) ->
-        unless user?
-            supported = new locale.Locales supportedLocales
-            locales = new locale.Locales req.headers['accept-language']
-            bestMatch = locales.best(supported).language
-            polyglot = localization.getPolyglotByLocale bestMatch
-            res.render "register.#{ext}",
-                polyglot: polyglot
-                timezones: timezones
-                className: "intro"
-        else
+        if user?
             res.redirect '/login'
+        else
+            localization.setLocale req.headers['accept-language']
+            res.render "index.jade"
 
 
 module.exports.register = (req, res, next) ->
@@ -54,59 +43,81 @@ module.exports.register = (req, res, next) ->
                 next error
             else
                 Instance.createOrUpdate instanceData, (err) ->
-                    if err then next new Error err
-                    else
-                        User.createNew userData, (err) ->
-                            if err then next new Error err
-                            else
-                                # at first load, 'en' is the default locale
-                                # we must change it now if it has changed
-                                localization.polyglot = \
-                                localization.getPolyglotByLocale req.body.locale
-                                next()
+                    return next new Error err if err
+
+                    User.createNew userData, (err) ->
+                        return next new Error err if err
+
+                        # at first load, 'en' is the default locale
+                        # we must change it now if it has changed
+                        localization.setLocale req.body.locale
+                        next()
     else
         error = new Error validationErrors
         error.status = 400
         next error
 
 
-module.exports.loginIndex = (req, res) ->
-    # Retrieve polyglot
-    # Try 5 times if request is too early
-    counter = 0
-    retrievePolyglot = (cb) =>
-        if counter is 5
-            cb "Cannot retrieve polyglot"
-        else
-            polyglot = localization.getPolyglot()
-            if polyglot?.t?
-                cb null, polyglot
-            else
-                setTimeout () ->
-                    counter += 1
-                    retrievePolyglot cb
-                , 500
+module.exports.registerEmail = (req, res, next) ->
+    accountData =
+        id:                null
+        label:             req.body.email
+        name:              req.body.email.split('@')[0]
+        login:             req.body.username or req.body.email
+        password:          req.body.password
+        accountType:       "IMAP"
+        draftMailbox:      ""
+        favoriteMailboxes: null
+        imapPort:          req.body.port
+        imapSSL:           req.body.ssl
+        imapServer:        req.body.server
+        imapTLS:           false
+        smtpLogin:         req.body.username or req.body.email
+        smtpMethod:        "PLAIN"
+        smtpPassword:      req.body.password
+        smtpPort:          "465"
+        smtpSSL:           req.body.ssl
+        smtpServer:        req.body.server
+        smtpTLS:           false
+        mailboxes:         ""
+        sentMailbox:       ""
+        trashMailbox:      ""
 
-    User.first (err, user) ->
-        if user?
-            # display name management
-            if user.public_name?.length > 0 then name = user.public_name
-            else
-                name = helpers.hideEmail user.email
-                words = name.split ' '
-                name = words.map((word) ->
-                    return word.charAt(0).toUpperCase() + word.slice 1
-                ).join ' '
-            retrievePolyglot (err, polyglot) ->
-                if err
-                    res.send 500, error: err
-                else
-                    res.render "login.#{ext}",
-                        polyglot: polyglot
-                        name: name
-                        className: "intro"
+    console.log accountData
+
+    emailsClient = request.newClient 'http://localhost:9125/'
+    globalRes = res
+
+    console.log "Creating email account..."
+    emailsClient.post 'account', accountData, (err, res, body) ->
+        if err?
+            console.log "Error at email account creation", err
+            error = new Error "User already registered."
+            error.status = 409
+            next error
+        else if res?.statusCode isnt 200
+            console.log "Error at email account creation response", body
+            error = new Error body
+            error.status = 409
+            next error
         else
-            res.redirect '/register'
+            globalRes.send 204
+
+
+module.exports.loginIndex = (req, res) ->
+    User.first (err, user) ->
+        return res.redirect '/register' unless user?
+
+        # display name management
+        if user.public_name?.length > 0 then name = user.public_name
+        else
+            name = helpers.hideEmail user.email
+            words = name.split ' '
+            name = words.map((word) ->
+                return word.charAt(0).toUpperCase() + word.slice 1
+            ).join ' '
+
+        res.render "index.jade", name: name
 
 
 module.exports.forgotPassword = (req, res, next) ->
@@ -136,8 +147,7 @@ module.exports.forgotPassword = (req, res, next) ->
 
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
-        polyglot = localization.getPolyglot()
-        res.render "reset.#{ext}", polyglot: polyglot, resetKey: req.params.key
+        res.render "index.jade", resetKey: req.params.key
     else
         res.redirect '/'
 
@@ -145,14 +155,13 @@ module.exports.resetPasswordIndex = (req, res) ->
 module.exports.resetPassword = (req, res, next) ->
     key = req.params.key
     newPassword = req.body.password
-    polyglot = localization.getPolyglot()
 
     User.first (err, user) ->
 
         if err? then next new Error err
 
         else if not user?
-            err = new Error polyglot.t "reset error no user"
+            err = new Error localization.t "reset error no user"
             err.status = 400
             err.headers = 'Location': '/register/'
             next err
@@ -181,7 +190,7 @@ module.exports.resetPassword = (req, res, next) ->
                     next error
 
             else
-                error = new Error polyglot.t "reset error invalid key"
+                error = new Error localization.t "reset error invalid key"
                 error.status = 400
                 next error
 

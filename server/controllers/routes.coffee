@@ -17,10 +17,12 @@ module.exports =
     'register':
         get: auth.registerIndex
         post: [auth.register, utils.authenticate]
+    'register/email': post: [utils.isAuthenticated, auth.registerEmail]
 
-    'login': post: utils.authenticate
+    'login':
+        get: auth.loginIndex
+        post: utils.authenticate
     'login/forgot': post: auth.forgotPassword
-    'login*': get: auth.loginIndex
     'logout': get: [utils.isAuthenticated, auth.logout]
 
     'password/reset/:key':

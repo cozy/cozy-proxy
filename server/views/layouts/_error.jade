@@ -1,0 +1,19 @@
+extends _base
+
+block title
+    title #{t('error title')}
+
+
+block content
+    h1= t('error headline')
+
+    block error-content
+
+    block error-contact
+        ul
+            li
+                = t('error contact forum')
+                br
+                a(href="https://forum.cozy.io") https://forum.cozy.io
+            li= t('error contact email')
+            li= t('error contact irc')

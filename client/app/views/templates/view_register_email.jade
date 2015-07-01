@@ -3,25 +3,25 @@ h2= t('email caption')
 
 label.with-input(for="email-email", aria-describedby="email-email-tip")
     span= t('email email')
-    input#email-email(type="email")
+    input#email-email(type="email", required=true)
     span.indicator
 
 
 label.with-input(for="email-password")
     span= t('email password')
-    input#email-password(type="password")
+    input#email-password(type="password", required=true)
     span.indicator
 
 
 .input-group.input-group-02-third
     label.with-input(for="email-server")
         span= t('email server')
-        input#email-server(type="text")
+        input#email-server(type="text", required=true)
         span.indicator
 
     label.with-input(for="email-port")
         span= t('email port')
-        input#email-port(type="number")
+        input#email-port(type="number", required=true)
         span.indicator
 
 

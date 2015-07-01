@@ -7,8 +7,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
 
 
     initialize: ->
-        @isImport  = @model.get('step').map (step) -> /^import/.test step
-        @isWelcome = @model.get('step').map (step) -> /^welcome/.test step
+        @isWelcome = @model.get('step').map (step) -> 'welcome' is step
 
         clickStream = @$el.asEventStream 'click', @ui.next
                           .doAction '.preventDefault'
@@ -22,12 +21,6 @@ module.exports = class RegisterControlsView extends Mn.ItemView
 
 
     onRender: ->
-        @bindNext()
-        @bindIsImport()
-        @bindWelcome()
-
-
-    bindNext: ->
         @model.buttonEnabled.toProperty().not()
               .assign @ui.next, 'attr', 'aria-disabled'
 
@@ -38,17 +31,10 @@ module.exports = class RegisterControlsView extends Mn.ItemView
             .map (step) => "register?step=#{step}"
             .assign @ui.next, 'attr', 'href'
 
-        @isImport.or(@isWelcome).not().map (bool) -> t 'next' if bool
-                                      .assign @ui.next, 'text'
+        @model.get 'nextButtonLabel'
+              .map (text) -> return -> t text
+              .assign @ui.next, 'text'
 
-
-    bindIsImport: ->
-        @isImport.not().assign @ui.next, 'toggleClass', 'btn-primary'
-        @isImport.assign @ui.next, 'toggleClass', 'btn-secondary'
-        @isImport.map (bool) -> t 'skip' if bool
-                 .assign @ui.next, 'text'
-
-
-    bindWelcome: ->
-        @isWelcome.map (bool) -> t 'welcome' if bool
-                  .assign @ui.next, 'text'
+        isSkip = @model.get('nextButtonLabel').map (text) -> text is 'skip'
+        isSkip.assign @ui.next, 'toggleClass', 'btn-secondary'
+        isSkip.not().assign @ui.next, 'toggleClass', 'btn-primary'

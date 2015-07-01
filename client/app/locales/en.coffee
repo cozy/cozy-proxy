@@ -2,6 +2,7 @@ module.exports =
     'next':                'next'
     'skip':                'skip'
     'welcome':             'let me in!'
+    'add email':           'add email account'
     'cancel':              'cancel'
     'confirm':             'confirm'
     'step preset':         'settings'

@@ -3,8 +3,8 @@ module.exports = class RegisterFeedbackView extends Mn.ItemView
     template: require 'views/templates/view_register_feedback'
 
 
-    initialize: ->
-        @model.get('step').map (value) -> return -> @.classList.contains value
+    onRender: ->
+        @model.get('step').map (value) -> return -> @classList.contains value
                           .assign @$('li'), 'attr', 'aria-selected'
 
         @model.get('step').map (step) -> /^welcome/.test step

@@ -6,4 +6,4 @@ module.exports = class RegisterSetupView extends Mn.ItemView
 
 
     initialize: ->
-        @model.setStepBus.plug Bacon.later 5000, @model.steps['setup'].next
+        @model.setStepBus.plug Bacon.later 8000, @model.steps['setup'].next

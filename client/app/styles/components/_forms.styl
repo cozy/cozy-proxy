@@ -38,9 +38,9 @@ label.with-input
 .checkboxes
     margin-bottom  1em
 
-    label
-        display        block
-        padding-bottom 0.2em
+.checkbox
+    display block
+    margin  0.8em 0
 
 input[type=checkbox]
     margin-right 0.5em
@@ -65,3 +65,20 @@ input[type=checkbox]
 
         @media (max-width: 380px)
             width 100%
+
+fieldset
+    margin  1em 0
+    padding 0
+    border  none
+
+    legend
+        color $blue
+
+        &:hover
+            cursor pointer
+
+    .content
+        padding-bottom 1em
+
+    input[type=text]
+        margin 0

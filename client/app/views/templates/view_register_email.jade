@@ -25,8 +25,8 @@ label.with-input(for="email-password")
         span.indicator
 
 
-label(for="email-ssl")
-    input#email-ssl(type="checkbox")
+label.checkbox(for="email-ssl")
+    input#email-ssl(type="checkbox", checked=true)
     span= t('email ssl')
 
 
@@ -38,7 +38,7 @@ fieldset.advanced
             span= t('email username')
             input#email-username(type="text")
             span.indicator
-        p#email-username-tip
+        p#email-username-tip.tips
             = t('email username tip')
 
 p#email-email-tip.tips

@@ -5,11 +5,6 @@
     opacity 0.4
     cursor not-allowed
 
-// remove transition to text intend when the spinner is coming
-[aria-busy="true"]
-[aria-busy="false"]
-    transition text-indent 0s 0s
-
 [aria-busy="true"]
     display         flex
     align-items     center
@@ -35,7 +30,8 @@ main
 
 h1
     margin      0.5em 0 0.3em
-    font-size   1.8em
+    font-size   1.6em
+    line-height 1.1em
     font-weight normal
     text-align  center
 
@@ -43,9 +39,17 @@ h2
     margin  0
     @extend $headings-02
 
+hr
+    @extend    $marged-vt-02
+    border     none
+    border-top 2px solid $grey-02
+
 a
     color           $blue
     text-decoration none
+
+p
+    margin 0.2em 0
 
 .tips
     margin-top 0.2em
@@ -81,13 +85,30 @@ a
             background-color transparent
             border 1px solid $grey-04
 
+.help
+    margin-top 0
+    color      $grey-05
+    font-size  1.1em
+    text-align center
+
 // login Section
 .login
-    .help
-        margin-top 0
-        color      $grey-05
-        font-size  1.1em
-        text-align center
+    .feedback
+        & > div
+            margin-top   1.2em
+            padding-left 0.5em
+            border-left  4px solid transparent
 
-    .recover
-        margin-top 1em
+        .success
+            border-color $green
+
+        .error
+            border-color $red
+
+        .alert strong
+            color          $grey-08
+            font-size      0.95em
+            text-transform uppercase
+
+        p
+            color $grey-05

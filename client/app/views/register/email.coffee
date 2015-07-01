@@ -23,6 +23,9 @@ module.exports = class RegisterEmailView extends Mn.ItemView
         adv:      '.advanced .content'
         required: 'input[required]'
         inputs:   'input'
+        email:    '#email-email'
+        ssl:      '#email-ssl'
+        port:     '#email-port'
 
 
     initialize: ->
@@ -34,6 +37,12 @@ module.exports = class RegisterEmailView extends Mn.ItemView
     onRender: ->
         @showAdv.not().assign @ui.adv, 'attr', 'aria-hidden'
         @showAdv.assign @ui.legend, 'attr', 'aria-hidden'
+
+        @model.get('email').assign @ui.email, 'val'
+
+        @ui.ssl.asEventStream 'change'
+               .map (event) -> if event.target.checked then 993 else 143
+               .assign @ui.port, 'val'
 
         # required inputs interactions
         requiredInputs = getPropertiesFromEls @ui.required

@@ -17,6 +17,10 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         @isPreset = @model.get('step').map (step) -> step is 'preset'
         @model.isRegistered.push false
 
+        @model.add 'email', (@$el.asEventStream('blur', @ui.email)
+                                 .map '.target.value'
+                                 .toProperty '')
+
 
     onRender: ->
         inputs = _.map @ui, ($el, name) =>

@@ -10,13 +10,13 @@ module.exports =
     'step email settings': 'configure your email'
 
     'preset email':              'email'
-    'preset email tip':          'It will be used to contact you if you lose your password'
+    'preset email tip':          'It will be used to contact you if you lose your password.'
     'preset name':               'name'
-    'preset name tip':           'It is how you will appear to people when you share files or invite them to events'
+    'preset name tip':           'It appears to people when you share files or invite them to events.'
     'preset password':           'password'
-    'preset password tip':       'A strong password of at least 8 characters is needed. Special Characters are recommended'
+    'preset password tip':       'A strong password of at least 8 characters is required (Special Characters recommended).'
     'preset timezone':           'timezone'
-    'preset timezone tip':       'It needed to properly display your calendar'
+    'preset timezone tip':       "It's needed to properly display your calendar."
     'preset opt-in help':        'Allow Cozy to use my usage stats to improve the product.'
     'preset opt-out newsletter': 'Subscribe to the Beta Cozy Newsletter (Highly recommended).'
 

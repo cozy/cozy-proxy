@@ -5,7 +5,7 @@
         form
             label.with-input(for="google-code")
                 span= t('leave google code')
-                input#auth_code(type="text", name="auth_code", required)
+                input#auth_code(type="text", name="auth_code", required, autofocus)
             .btn-group.btn-group-02
                 button#cancel.btn.btn-secondary= t('cancel')
                 button#step-pastecode-ok.btn.btn-primary= t('confirm')

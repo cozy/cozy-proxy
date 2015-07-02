@@ -27,7 +27,7 @@ module.exports = class AuthView extends Mn.LayoutView
         @options.next   ?= '/'
         @options.forgot = @options.type is 'login'
 
-        @password = @$el.asEventStream('keyup blur', @ui.passwd)
+        @password = @$el.asEventStream('focus keyup blur', @ui.passwd)
                         .map (event) -> event.target.value
                         .toProperty('')
         @passwordEntered = @password.map (val) -> val.length > 0
@@ -41,6 +41,9 @@ module.exports = class AuthView extends Mn.LayoutView
 
     onRender: ->
         @passwordEntered.not().assign @ui.submit, 'attr', 'aria-disabled'
+        @ui.passwd.asEventStream 'focus'
+                  .assign @ui.passwd[0], 'select'
+
         @showChildView 'feedback', new FeedbackView
             forgot: @options.forgot
             model:  @model

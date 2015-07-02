@@ -143,8 +143,7 @@ task 'build', 'Build CoffeeScript to Javascript', ->
               coffee -cb --output build/ server.coffee
               jade -cPDH -o build/server/views server/views &&
               cd client &&
-                brunch build --production &&
-                cd ..
+                brunch build --production
               """
     exec command, (err, stdout, stderr) ->
         if err

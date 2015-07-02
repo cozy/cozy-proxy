@@ -6,20 +6,18 @@
     cursor not-allowed
 
 [aria-busy="true"]
-    display         flex
-    align-items     center
-    justify-content center
-    text-indent     -100em
+    position    relative
+    font-family 'Adobe Blank'
 
-    &:after
-        content           ''
-        display           block
-        width             1.4em
-        height            1.4em
-        margin-right      2em     // horizontally centered spinner according to button
-        background-image  url('/img/spinner-white.svg')
-        background-repeat no-repeat
-        background-size   cover
+    &::after
+        content   url('/img/spinner-white.svg')
+        position  absolute
+        top       50%
+        left      50%
+        transform translateX(-50%) translateY(-50%)
+        display   block
+        width     1.4em
+        height    1.4em
 
 body
     @extend $body-background

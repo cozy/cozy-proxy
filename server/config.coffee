@@ -1,3 +1,4 @@
+fs = require 'fs'
 path = require 'path'
 americano = require 'americano'
 cookieParser = require 'cookie-parser'
@@ -20,6 +21,10 @@ authSteps = [
     passport.session()
 ]
 
+
+useBuildView = fs.existsSync path.resolve(__dirname, 'views/index.js')
+
+
 config =
     authSteps: authSteps
     supportedLanguages: ['en', 'fr']
@@ -37,7 +42,8 @@ config =
             authSteps[3]
         ]
         set:
-            views: path.join __dirname, 'views'
+            'view engine': if useBuildView then 'js' else 'jade'
+            'views': path.resolve __dirname, 'views'
 
         engine:
             js: (path, locales, callback) ->

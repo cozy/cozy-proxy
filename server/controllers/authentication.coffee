@@ -15,7 +15,7 @@ module.exports.registerIndex = (req, res) ->
             res.redirect '/login'
         else
             localization.setLocale req.headers['accept-language']
-            res.render "index.jade"
+            res.render "index"
 
 
 module.exports.register = (req, res, next) ->
@@ -117,7 +117,7 @@ module.exports.loginIndex = (req, res) ->
                 return word.charAt(0).toUpperCase() + word.slice 1
             ).join ' '
 
-        res.render "index.jade", name: name
+        res.render "index", name: name
 
 
 module.exports.forgotPassword = (req, res, next) ->
@@ -147,7 +147,7 @@ module.exports.forgotPassword = (req, res, next) ->
 
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
-        res.render "index.jade", resetKey: req.params.key
+        res.render "index", resetKey: req.params.key
     else
         res.redirect '/'
 
@@ -202,4 +202,3 @@ module.exports.logout = (req, res) ->
 
 module.exports.authenticated = (req, res) ->
     res.send 200, isAuthenticated: req.isAuthenticated()
-

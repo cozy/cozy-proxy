@@ -1,8 +1,8 @@
-{exec} = require 'child_process'
-fs     = require 'fs'
-logger = require('printit')
-            date: false
-            prefix: 'cake'
+{exec}      = require 'child_process'
+fs          = require 'fs'
+logger      = require('printit')
+    date: false
+    prefix: 'cake'
 
 option '-f', '--file [FILE*]' , 'List of test files to run'
 option '-d', '--dir [DIR*]' , 'Directory of test files to run'
@@ -124,33 +124,40 @@ task "lint", "Run Coffeelint", ->
             console.log stdout
 
 
-buildJade = ->
-    jade = require 'jade'
-    for file in fs.readdirSync './server/views/'
-        filename = "./server/views/#{file}"
-        template = fs.readFileSync filename, 'utf8'
-        output = "var jade = require('jade/runtime');\n"
-        output += "module.exports = " + jade.compileClient template, {filename}
-        name = file.replace '.jade', '.js'
-        fs.writeFileSync "./build/server/views/#{name}", output
+commonJSJade = ->
+    glob = require 'glob'
+    prependFile = require 'prepend-file'
+
+    logger.info "Wrap jade precompiled templates in commonJS modules"
+    data = """var jade = require('jade/runtime');
+              module.exports = """
+    for file in glob.sync './build/server/views/**/*.js'
+        prependFile.sync file, data
+
 
 task 'build', 'Build CoffeeScript to Javascript', ->
     logger.options.prefix = 'cake:build'
     logger.info "Start compilation..."
-    command = "coffee -cb --output build/server server && " + \
-              "coffee -cb --output build/ server.coffee && " + \
-              "rm -rf build/client && mkdir build/client && " + \
-              "rm -rf build/server/views && mkdir build/server/views && " + \
-              "coffee -cb --output build/client/locales/ client/locales && " + \
-              "cp -R client/public build/client/"
+    command = """
+              rm -rf build &&
+              coffee -cb --output build/server server &&
+              coffee -cb --output build/ server.coffee
+              jade -cPDH -o build/server/views server/views &&
+              cd client &&
+                brunch build --production &&
+                cd ..
+              """
     exec command, (err, stdout, stderr) ->
         if err
             logger.error "An error has occurred while compiling:\n" + err
             process.exit 1
         else
-            buildJade()
+            commonJSJade()
             logger.info "Compilation succeeded."
             process.exit 0
+
+task 'jade-test', 'check jade convert', ->
+    commonJSJade()
 
 task 'check-build', 'Check if the compiled files are up to date', ->
     logger.options.prefix = 'cake:check-build'

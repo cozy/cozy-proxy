@@ -20,3 +20,8 @@ exports.config =
     plugins:
         jade:
             globals: ['t']
+
+    overrides:
+        production:
+            paths:
+                public: '../build/client/public'

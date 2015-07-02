@@ -27,7 +27,7 @@ module.exports = class AuthView extends Mn.LayoutView
         @options.next   ?= '/'
         @options.forgot = @options.type is 'login'
 
-        @password = @$el.asEventStream('keyup blur', @ui.passwd)
+        @password = @$el.asEventStream('focus keyup blur', @ui.passwd)
                         .map (event) -> event.target.value
                         .toProperty('')
         @passwordEntered = @password.map (val) -> val.length > 0
@@ -41,6 +41,11 @@ module.exports = class AuthView extends Mn.LayoutView
 
     onRender: ->
         @passwordEntered.not().assign @ui.submit, 'attr', 'aria-disabled'
+        @ui.passwd.asEventStream 'focus'
+                  .assign @ui.passwd[0], 'select'
+
+        @model.isBusy.assign @ui.submit, 'attr', 'aria-busy'
+
         @showChildView 'feedback', new FeedbackView
             forgot: @options.forgot
             model:  @model
@@ -53,13 +58,16 @@ module.exports = class AuthView extends Mn.LayoutView
 
 
     authenticate: (password) =>
+        @model.isBusy.push true
         data = JSON.stringify password: password
-        auth = Bacon.fromPromise $.post @options.backend, data
+        req = Bacon.fromPromise $.post @options.backend, data
 
-        auth.map '.success'
+        @model.isBusy.plug req.mapEnd false
+
+        req.map '.success'
             .onValue => window.location.pathname = @options.next
 
-        @model.alert.plug auth.mapError
+        @model.alert.plug req.mapError
             status:  'error'
             title:   t "#{@options.type} wrong password title"
             message: t "#{@options.type} wrong password message"

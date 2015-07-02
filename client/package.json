@@ -1,6 +1,7 @@
 {
   "dependencies": {},
   "devDependencies": {
+    "bower": "^1.4.1",
     "browser-sync-brunch": "0.0.9",
     "clean-css-brunch": "^1.7.2",
     "coffee-script-brunch": "1.8.0",

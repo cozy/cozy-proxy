@@ -141,8 +141,9 @@ task 'build', 'Build CoffeeScript to Javascript', ->
               rm -rf build &&
               coffee -cb --output build/server server &&
               coffee -cb --output build/ server.coffee
-              jade -cPDH -o build/server/views server/views &&
+              ./node_modules/.bin/jade -cPDH -o build/server/views server/views &&
               cd client &&
+                ./node_modules/.bin/bower install &&
                 brunch build --production
               """
     exec command, (err, stdout, stderr) ->

@@ -17,9 +17,7 @@ module.exports = (err, req, res, next) ->
         res.set header, value for header, value of err.headers
 
     if err.template? and req?.accepts('html') is 'html'
-        templateName = "#{err.template.name}.jade"
-        res.render templateName, err.template.params, (err, html) ->
+        res.render err.template.name, err.template.params, (err, html) ->
             res.send statusCode, html
     else
         res.send statusCode, error: message
-

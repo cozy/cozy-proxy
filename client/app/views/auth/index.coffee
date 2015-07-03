@@ -50,6 +50,10 @@ module.exports = class AuthView extends Mn.LayoutView
             forgot: @options.forgot
             model:  @model
 
+        setTimeout =>
+            @ui.passwd.focus()
+        , 100
+
 
     serializeData: ->
         data =

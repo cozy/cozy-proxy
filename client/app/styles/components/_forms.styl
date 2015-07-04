@@ -23,7 +23,7 @@ label.with-input
             border-color        $blue
             background-color    rgba($grey-01, 0.25)
 
-    &.error
+    &[aria-invalid=true]
         input[type=text]
         input[type=email]
         input[type=number]
@@ -32,6 +32,9 @@ label.with-input
 
         .indicator span
             display block
+
+        & + .tips
+            display none
 
     & > span:first-child
         position  absolute
@@ -48,6 +51,10 @@ label.with-input
 
         span
             display none
+
+.error
+    margin-top 0.2em
+    color $red
 
 .checkboxes
     margin-bottom  1em

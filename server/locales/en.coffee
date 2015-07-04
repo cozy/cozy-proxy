@@ -40,3 +40,8 @@ module.exports =
 
         Don't forget to update all your encrypted data afterwards!
     """
+
+    # validation errors
+    "invalid email format": "Your email address seems to be invalid."
+    "invalid timezone": "This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York."
+    "password too short": "Your password is too short, it should contain at least 8 characters."

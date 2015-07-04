@@ -15,6 +15,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         name:     '#preset-name'
         password: '#preset-password'
         timezone: '#preset-timezone'
+        inputs:   'label.with-input'
 
 
     initialize: ->
@@ -26,15 +27,22 @@ module.exports = class RegisterPresetView extends Mn.ItemView
                             .filter @model.buttonEnabled.toProperty()
 
         @model.add 'email', (@$el.asEventStream('blur', @ui.email)
-                                 .map '.target.value'
-                                 .toProperty '')
+            .map '.target.value'
+            .toProperty '')
+
+        @errors =
+            stream: new Bacon.Bus()
+            inputs: {}
+        @errors.inputs.email    = @errors.stream.map '.email'
+        @errors.inputs.password = @errors.stream.map '.password'
+        @errors.inputs.timezone = @errors.stream.map '.timezone'
 
 
     onRender: ->
-        inputs = _.map @ui, ($el, name) =>
+        inputs = _.map @ui, ($el, name) ->
             $el.asEventStream('keyup blur')
-               .map '.target.value'
-               .toProperty('')
+                .map '.target.value'
+                .toProperty('')
 
         allFieldsFull = _.reduce inputs, (memo, property) ->
             memo.and property.map (value) -> value.length > 0
@@ -42,10 +50,27 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         @model.buttonEnabled.plug allFieldsFull.changes()
 
         Bacon.combineAsArray inputs
-             .filter (v) -> _.compact(v).length is v.length
-             .sampledBy @model.nextClickStream.merge @submitStream
-             .filter @isPreset
-             .onValues @onSubmit
+            .filter (v) -> _.compact(v).length is v.length
+            .sampledBy @model.nextClickStream.merge @submitStream
+            .filter @isPreset
+            .onValues @onSubmit
+
+        @bindErrors()
+
+
+    bindErrors: ->
+        isTruthy  = (value) -> !!value
+        createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
+
+        @errors.stream.onValue =>
+            @ui.inputs.find('.error').remove()
+
+        for name, property of @errors.inputs
+            $el = @ui.inputs.filter("[for=preset-#{name}]")
+            property.map isTruthy
+                .assign $el, 'attr', 'aria-invalid'
+            property.filter(isTruthy).map createMsg
+                .assign $el, 'append'
 
 
     serializeData: ->
@@ -63,16 +88,5 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         req = Bacon.fromPromise $.post '/register', JSON.stringify data
 
         @model.isRegistered.plug req.map true
+        @errors.stream.plug req.mapError '.responseJSON.errors'
         @model.buttonBusy.plug req.mapEnd false
-
-        errors = req.mapError '.responseJSON.error'
-           .map (message) ->
-                errors =
-                    email: /email/.test message
-                    timezone: /timezone/.test message
-
-        errors.map '.email'
-              .assign @ui.email.parent(), 'toggleClass', 'error'
-
-        errors.map '.timezone'
-              .assign @ui.timezone.parent(), 'toggleClass', 'error'

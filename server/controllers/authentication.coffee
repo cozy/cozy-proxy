@@ -33,7 +33,9 @@ module.exports.register = (req, res, next) ->
 
     instanceData = locale: req.body.locale
 
-    validationErrors = User.validate userData
+    passwdValidationError = User.validatePassword req.body.password
+    validationErrors = User.validate userData, passwdValidationError
+
     if validationErrors.length is 0
         User.all (err, users) ->
             if err? then next new Error err
@@ -53,7 +55,8 @@ module.exports.register = (req, res, next) ->
                         localization.setLocale req.body.locale
                         next()
     else
-        error = new Error validationErrors
+        error = new Error 'Errors in validation'
+        error.errors = validationErrors
         error.status = 400
         next error
 

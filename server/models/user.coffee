@@ -1,8 +1,10 @@
 americano = require 'americano-cozy'
-Client = require('request-json').JsonClient
+Client    = require('request-json').JsonClient
 
-helpers = require '../lib/helpers'
-timezones = require '../lib/timezones'
+helpers      = require '../lib/helpers'
+timezones    = require '../lib/timezones'
+localization = require '../lib/localization_manager'
+
 
 client = new Client "http://localhost:9101/"
 if process.env.NODE_ENV in ['production', 'test']
@@ -44,24 +46,17 @@ User.first = (callback) ->
         else if not users or users.length is 0 then callback null, null
         else  callback null, users[0]
 
-User.validate = (data) ->
-
-    errors = []
-    errors = errors.concat User.validatePassword data.password
-
+User.validate = (data, errors = {}) ->
     if not helpers.checkEmail data.email
-        errors.push 'Invalid email format'
+        errors.email = localization.t 'invalid email format'
 
     if not (data.timezone in timezones)
-        errors.push 'Invalid timezone'
+        errors.timezone = localization.t 'invalid timezone'
 
     return errors
 
-User.validatePassword = (password) ->
-
-    # errors is an array to prepare for other password format rules
-    errors = []
-    if not password? or password.length < 5
-        errors.push 'Password is too short'
+User.validatePassword = (password, errors = {}) ->
+    if not password? or password.length < 8
+        errors.password = localization.t 'password too short'
 
     return errors

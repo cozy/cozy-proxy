@@ -20,4 +20,6 @@ module.exports = (err, req, res, next) ->
         res.render err.template.name, err.template.params, (err, html) ->
             res.send statusCode, html
     else
-        res.send statusCode, error: message
+        content = error: message
+        content.errors = err.errors if err.errors
+        res.send statusCode, content

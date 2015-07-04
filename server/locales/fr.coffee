@@ -40,3 +40,8 @@ module.exports =
 
         N'oubliez pas de mettre à jour toutes vos données chiffrées après ça !
     """
+
+    # validation errors
+    "invalid email format": "Votre adresse email ne semble pas valide."
+    "invalid timezone": "Ce fuseau horaire n'est pas valide. Utilisez un format <Continent>/<Pays>, par exemple Europe/Paris."
+    "password too short": "Votre mot de passe est trop court, il doit contenir au moins 8 caractères."

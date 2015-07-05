@@ -11,66 +11,9 @@ module.exports = class RegisterPresetView extends Mn.ItemView
     template: require 'views/templates/view_register_preset'
 
     ui:
+        labels:   'label.with-input'
+        inputs:   'label input'
         email:    '#preset-email'
-        name:     '#preset-name'
-        password: '#preset-password'
-        timezone: '#preset-timezone'
-        inputs:   'label.with-input'
-
-
-    initialize: ->
-        @isPreset = @model.get('step').map (step) -> step is 'preset'
-        @model.isRegistered.push false
-
-        @submitStream = @$el.asEventStream 'submit'
-                            .doAction '.preventDefault'
-                            .filter @model.buttonEnabled.toProperty()
-
-        @model.add 'email', (@$el.asEventStream('blur', @ui.email)
-            .map '.target.value'
-            .toProperty '')
-
-        @errors =
-            stream: new Bacon.Bus()
-            inputs: {}
-        @errors.inputs.email    = @errors.stream.map '.email'
-        @errors.inputs.password = @errors.stream.map '.password'
-        @errors.inputs.timezone = @errors.stream.map '.timezone'
-
-
-    onRender: ->
-        inputs = _.map @ui, ($el, name) ->
-            $el.asEventStream('keyup blur')
-                .map '.target.value'
-                .toProperty('')
-
-        allFieldsFull = _.reduce inputs, (memo, property) ->
-            memo.and property.map (value) -> value.length > 0
-        , Bacon.constant true
-        @model.buttonEnabled.plug allFieldsFull.changes()
-
-        Bacon.combineAsArray inputs
-            .filter (v) -> _.compact(v).length is v.length
-            .sampledBy @model.nextClickStream.merge @submitStream
-            .filter @isPreset
-            .onValues @onSubmit
-
-        @bindErrors()
-
-
-    bindErrors: ->
-        isTruthy  = (value) -> !!value
-        createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
-
-        @errors.stream.onValue =>
-            @ui.inputs.find('.error').remove()
-
-        for name, property of @errors.inputs
-            $el = @ui.inputs.filter("[for=preset-#{name}]")
-            property.map isTruthy
-                .assign $el, 'attr', 'aria-invalid'
-            property.filter(isTruthy).map createMsg
-                .assign $el, 'append'
 
 
     serializeData: ->
@@ -78,15 +21,64 @@ module.exports = class RegisterPresetView extends Mn.ItemView
             timezones: require 'lib/timezones'
 
 
-    onSubmit: (email, name, password, timezone) =>
-        @model.buttonBusy.push true
-        data =
-            email:       email
-            public_name: name
-            timezone:    timezone
-            password:    password
-        req = Bacon.fromPromise $.post '/register', JSON.stringify data
+    initialize: ->
+        @isPreset = @model.get('step').map (step) -> step is 'preset'
+        @model.isRegistered.push false
 
-        @model.isRegistered.plug req.map true
-        @errors.stream.plug req.mapError '.responseJSON.errors'
-        @model.buttonBusy.plug req.mapEnd false
+        @inputsStream = @$el.asEventStream 'keyup blur change', @ui.inputs
+        @submitStream = @$el.asEventStream 'submit'
+            .doAction '.preventDefault'
+            .filter @model.buttonEnabled.toProperty()
+
+        email = @$el.asEventStream 'blur', @ui.email
+            .map '.target.value'
+            .toProperty ''
+        @model.add 'email', email
+
+        @errors =
+            email:    @model.errors.map '.email'
+            password: @model.errors.map '.password'
+            timezone: @model.errors.map '.timezone'
+
+
+    onRender: ->
+        @initForm()
+        @initErrors()
+
+
+    initForm: ->
+        inputs   = {}
+        required = Bacon.constant true
+
+        getValue = (el) ->
+            if el.type is 'checkbox' then el.checked else el.value
+
+        @ui.inputs.map (index, el)=>
+            property = @inputsStream.map '.target'
+                .filter (target) -> target is el
+                .map getValue
+                .toProperty getValue el
+            inputs[el.name] = property
+            required = required.and(property.map (val) -> !!val) if el.required
+
+        @model.buttonEnabled.plug required.changes()
+        form = Bacon.combineTemplate inputs
+            .filter @isPreset
+            .sampledBy @model.nextClickStream.merge @submitStream
+        @model.signup.plug form
+        @model.buttonBusy.plug form.map true
+
+
+    initErrors: ->
+        isTruthy  = (value) -> !!value
+        createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
+
+        @model.errors.subscribe =>
+            @ui.labels.find('.error').remove()
+
+        for name, property of @errors
+            $el = @ui.labels.filter("[for=preset-#{name}]")
+            property.map isTruthy
+                .assign $el, 'attr', 'aria-invalid'
+            property.filter(isTruthy).map createMsg
+                .assign $el, 'append'

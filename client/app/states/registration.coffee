@@ -5,8 +5,8 @@ module.exports = class Registration extends StateModel
 
     steps:
         preset:
-           next:      'import'
-           nextLabel: 'sign up'
+            next:      'import'
+            nextLabel: 'sign up'
         import:
             next:      'email'
             nextLabel: 'skip'
@@ -23,12 +23,14 @@ module.exports = class Registration extends StateModel
 
 
     initialize: ->
-        @buttonEnabled = new Bacon.Bus()
-        @buttonBusy = new Bacon.Bus()
-        @isRegistered = new Bacon.Bus()
+        @setStepBus      = new Bacon.Bus()
+        @buttonEnabled   = new Bacon.Bus()
+        @buttonBusy      = new Bacon.Bus()
         @nextButtonLabel = new Bacon.Bus()
+        @isRegistered    = new Bacon.Bus()
+        @errors          = new Bacon.Bus()
+        @signup          = new Bacon.Bus()
 
-        @setStepBus = new Bacon.Bus()
         isRegistered = @isRegistered.startWith(true).toProperty()
         step = Bacon.update null,
             [@setStepBus.filter isRegistered], (previous, step) ->
@@ -39,7 +41,7 @@ module.exports = class Registration extends StateModel
         @add 'hasControls', step.map (step) => not @steps[step]?.nocontrols
 
         @setStepBus.plug next.sampledBy @isRegistered
-        @buttonEnabled.plug step.map (step) =>
+        @buttonEnabled.plug step.map (step) ->
             return step isnt 'preset'
 
         @buttonEnabled.startWith true
@@ -52,6 +54,16 @@ module.exports = class Registration extends StateModel
         @nextButtonLabel.plug step.map (step) =>
             @steps[step]?.nextLabel
 
+        @signup.onValue @signupSubmit
+
 
     setStep: (newStep) ->
         @setStepBus.push newStep
+
+
+    signupSubmit: (formdata) =>
+        req = Bacon.fromPromise $.post '/register', JSON.stringify formdata
+
+        @isRegistered.plug req.map true
+        @errors.plug req.mapError '.responseJSON.errors'
+        @buttonBusy.plug req.mapEnd false

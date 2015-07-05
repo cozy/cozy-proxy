@@ -22,21 +22,22 @@ module.exports.register = (req, res, next) ->
 
     hash = helpers.cryptPassword req.body.password
     userData =
-        email: req.body.email
-        owner: true
-        password: hash.hash
-        salt: hash.salt
+        email:       req.body.email
+        owner:       true
+        password:    hash.hash
+        salt:        hash.salt
         public_name: req.body.public_name
-        timezone: req.body.timezone
-        activated: true
-        docType: "User"
+        timezone:    req.body.timezone
+        activated:   true
+        allow_stats: req.body.allow_stats
+        docType:     "User"
 
     instanceData = locale: req.body.locale
 
     passwdValidationError = User.validatePassword req.body.password
     validationErrors = User.validate userData, passwdValidationError
 
-    if validationErrors.length is 0
+    unless Object.keys(validationErrors).length
         User.all (err, users) ->
             if err? then next new Error err
             else if users.length isnt 0

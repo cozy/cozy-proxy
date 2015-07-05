@@ -1,7 +1,6 @@
 getPropertiesFromEls = ($els) ->
     getValue = (el) ->
-        if el.type is 'checkbox' then el.checked
-        else el.value
+        if el.type is 'checkbox' then el.checked else el.value
 
     $els.map ->
         $(@).asEventStream 'keyup blur'

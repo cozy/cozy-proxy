@@ -1,6 +1,6 @@
 label.with-input(for="preset-email", aria-describedby="preset-email-tip")
     span= t('preset email')
-    input#preset-email(type="email" autofocus=true)
+    input#preset-email(type="email", name="email" autofocus=true, required=true)
     span.indicator
         span.fa.fa-exclamation-triangle
 p#preset-email-tip.tips
@@ -9,21 +9,21 @@ p#preset-email-tip.tips
 
 label.with-input(for="preset-name", aria-describedby="preset-name-tip")
     span= t('preset name')
-    input#preset-name(type="text")
+    input#preset-name(type="text", name="public_name", required=true)
 p#preset-name-tip.tips
     = t('preset name tip')
 
 
 label.with-input(for="preset-password", aria-describedby="preset-password-tip")
     span= t('preset password')
-    input#preset-password(type="password")
+    input#preset-password(type="password", name="password", required=true)
 p#preset-email-tip.tips
     = t('preset password tip')
 
 
 label.with-input(for="preset-timezone", aria-describedby="preset-timezone-tip")
     span= t('preset timezone')
-    input#preset-timezone(type="text", list="preset-timezone-datalist")
+    input#preset-timezone(type="text", name="timezone", list="preset-timezone-datalist", required=true)
     datalist#preset-timezone-datalist
         each timezone in timezones
             option(value=timezone)
@@ -35,11 +35,8 @@ p#preset-timezone-tip.tips
 
 .checkboxes
     label.checkbox(for="preset-help-us")
-        input#preset-help-us(type="checkbox", checked=true)
+        input#preset-help-us(type="checkbox", name="allow_stats", checked=true)
         span= t('preset opt-in help')
 
-    label.checkbox(for="preset-mailing")
-        input#preset-mailing(type="checkbox")
-        span= t('preset opt-out newsletter')
 
 button(type="submit", aria-hidden="true")

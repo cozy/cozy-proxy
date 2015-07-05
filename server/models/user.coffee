@@ -17,6 +17,7 @@ module.exports = User = americano.getModel 'User',
     public_name: String
     timezone: String
     owner: Boolean
+    allow_stats: Boolean
     activated: Boolean
 
 User.createNew = (data, callback) ->

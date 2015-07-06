@@ -24,7 +24,9 @@ module.exports = class RegisterView extends Mn.LayoutView
     onRender: ->
         @showChildView 'controls', new ControlsView model: @model
         @showChildView 'feedback', new FeedbackView model: @model
-        @model.get('hasControls').not().assign @ui.footer, 'attr', 'aria-hidden'
+        @model.get 'nextControl'
+            .map('.visible').not()
+            .assign @ui.footer, 'attr', 'aria-hidden'
 
 
     swapStep: (step) =>

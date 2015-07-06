@@ -23,12 +23,11 @@ module.exports = class RegisterPresetView extends Mn.ItemView
 
     initialize: ->
         @isPreset = @model.get('step').map (step) -> step is 'preset'
-        @model.isRegistered.push false
 
         @inputsStream = @$el.asEventStream 'keyup blur change', @ui.inputs
         @submitStream = @$el.asEventStream 'submit'
             .doAction '.preventDefault'
-            .filter @model.buttonEnabled.toProperty()
+            .filter @model.get('nextControl').map '.enabled'
 
         email = @$el.asEventStream 'blur', @ui.email
             .map '.target.value'
@@ -61,20 +60,22 @@ module.exports = class RegisterPresetView extends Mn.ItemView
             inputs[el.name] = property
             required = required.and(property.map (val) -> !!val) if el.required
 
-        @model.buttonEnabled.plug required.changes()
+        @model.nextEnabled.plug required.changes()
         form = Bacon.combineTemplate inputs
-            .filter @isPreset
             .sampledBy @model.nextClickStream.merge @submitStream
+            .filter @isPreset
         @model.signup.plug form
-        @model.buttonBusy.plug form.map true
+        @model.nextBusy.plug form.map true
 
 
     initErrors: ->
         isTruthy  = (value) -> !!value
         createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
 
-        @model.errors.subscribe =>
-            @ui.labels.find('.error').remove()
+        @model.errors
+            .filter @isPreset
+            .subscribe =>
+                @ui.labels.find('.error').remove()
 
         for name, property of @errors
             $el = @ui.labels.filter("[for=preset-#{name}]")

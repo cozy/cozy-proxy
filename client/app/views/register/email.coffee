@@ -49,7 +49,7 @@ module.exports = class RegisterEmailView extends Mn.ItemView
             memo.and property.map (value) -> value.length > 0
         , Bacon.constant true
 
-        @model.nextButtonLabel.plug requiredAll.map (bool) ->
+        @model.nextLabel.plug requiredAll.map (bool) ->
             if bool then 'add email' else 'skip'
 
         # inputs submission

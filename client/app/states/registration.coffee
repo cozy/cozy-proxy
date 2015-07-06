@@ -23,47 +23,55 @@ module.exports = class Registration extends StateModel
 
 
     initialize: ->
-        @setStepBus      = new Bacon.Bus()
-        @buttonEnabled   = new Bacon.Bus()
-        @buttonBusy      = new Bacon.Bus()
-        @nextButtonLabel = new Bacon.Bus()
-        @isRegistered    = new Bacon.Bus()
         @errors          = new Bacon.Bus()
-        @signup          = new Bacon.Bus()
-
-        isRegistered = @isRegistered.startWith(true).toProperty()
-        step = Bacon.update null,
-            [@setStepBus.filter isRegistered], (previous, step) ->
-                if step? then step else previous
-        @add 'step', step
-
-        @add 'nextStep', next = step.map (step) => @steps[step]?.next or null
-        @add 'hasControls', step.map (step) => not @steps[step]?.nocontrols
-
-        @setStepBus.plug next.sampledBy @isRegistered
-        @buttonEnabled.plug step.map (step) ->
-            return step isnt 'preset'
-
-        @buttonEnabled.startWith true
-        @buttonBusy.startWith false
-
-        nextButtonLabel = Bacon.update 'next',
-            [@nextButtonLabel], (previous, value) ->
-                if value then value else previous
-        @add 'nextButtonLabel', nextButtonLabel
-        @nextButtonLabel.plug step.map (step) =>
-            @steps[step]?.nextLabel
-
-        @signup.onValue @signupSubmit
+        @initStep()
+        @initControls()
+        @initSignup()
 
 
     setStep: (newStep) ->
         @setStepBus.push newStep
 
 
+    initStep: ->
+        @setStepBus = new Bacon.Bus()
+        @stepValve  = new Bacon.Bus()
+
+        step = @setStepBus
+            .holdWhen @stepValve.startWith(false).toProperty()
+            .toProperty null
+
+        @add 'step', step
+        @add 'nextStep', step.map (step) => @steps[step]?.next or null
+
+
+    initControls: ->
+        @nextEnabled = new Bacon.Bus()
+        @nextBusy    = new Bacon.Bus()
+        @nextLabel   = new Bacon.Bus()
+
+        nextControl = Bacon.combineTemplate
+            enabled: @nextEnabled.startWith(true).toProperty()
+            busy:    @nextBusy.startWith(false).toProperty()
+            label:   @nextLabel.startWith('next').toProperty()
+            visible: @get('step').map (step) => not @steps[step]?.nocontrols
+
+        @nextLabel.plug @get('step').map (step) => @steps[step]?.nextLabel
+
+        @add 'nextControl', nextControl
+
+
+    initSignup: ->
+        @signup = new Bacon.Bus()
+
+        @stepValve.plug @get('step').map (step) -> step is 'preset'
+        @nextEnabled.plug @get('step').map (step) -> step isnt 'preset'
+        @signup.onValue @signupSubmit
+
+
     signupSubmit: (formdata) =>
         req = Bacon.fromPromise $.post '/register', JSON.stringify formdata
 
-        @isRegistered.plug req.map true
+        @stepValve.plug req.map false
         @errors.plug req.mapError '.responseJSON.errors'
-        @buttonBusy.plug req.mapEnd false
+        @nextBusy.plug req.mapEnd false

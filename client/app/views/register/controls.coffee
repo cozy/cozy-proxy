@@ -12,7 +12,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         clickStream = @$el.asEventStream 'click', @ui.next
                           .doAction '.preventDefault'
                           .map (e) -> e.target.href.split('=')[1]
-                          .filter @model.buttonEnabled.toProperty()
+                          .filter @model.get('nextControl').map '.enabled'
         @model.nextClickStream = clickStream
         @model.setStepBus.plug clickStream.filter @isWelcome.not()
 
@@ -21,20 +21,25 @@ module.exports = class RegisterControlsView extends Mn.ItemView
 
 
     onRender: ->
-        @model.buttonEnabled.toProperty().not()
-              .assign @ui.next, 'attr', 'aria-disabled'
+        @model.get 'nextControl'
+            .map('.enabled').not()
+            .assign @ui.next, 'attr', 'aria-disabled'
 
-        @model.buttonBusy.toProperty()
-              .assign @ui.next, 'attr', 'aria-busy'
+        @model.get 'nextControl'
+            .map '.busy'
+            .assign @ui.next, 'attr', 'aria-busy'
 
         @model.get 'nextStep'
             .map (step) -> if step then "register?step=#{step}" else '/'
             .assign @ui.next, 'attr', 'href'
 
-        @model.get 'nextButtonLabel'
-              .map (text) -> return -> t text
-              .assign @ui.next, 'text'
+        @model.get 'nextControl'
+            .map '.label'
+            .map (text) -> return -> t text
+            .assign @ui.next, 'text'
 
-        isSkip = @model.get('nextButtonLabel').map (text) -> text is 'skip'
+        isSkip = @model.get 'nextControl'
+            .map '.label'
+            .map (text) -> text is 'skip'
         isSkip.assign @ui.next, 'toggleClass', 'btn-secondary'
         isSkip.not().assign @ui.next, 'toggleClass', 'btn-primary'

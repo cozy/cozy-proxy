@@ -7,7 +7,7 @@ logger = require('printit')({
 });
 
 module.exports = function(err, req, res, next) {
-  var header, message, statusCode, value, _ref;
+  var content, header, message, statusCode, value, _ref;
   if (err instanceof Error) {
     logger.error(err.message);
     logger.error(err.stack);
@@ -27,8 +27,12 @@ module.exports = function(err, req, res, next) {
       return res.send(statusCode, html);
     });
   } else {
-    return res.send(statusCode, {
+    content = {
       error: message
-    });
+    };
+    if (err.errors) {
+      content.errors = err.errors;
+    }
+    return res.send(statusCode, content);
   }
 };

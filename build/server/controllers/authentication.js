@@ -29,7 +29,7 @@ module.exports.registerIndex = function(req, res) {
 };
 
 module.exports.register = function(req, res, next) {
-  var error, hash, instanceData, userData, validationErrors;
+  var error, hash, instanceData, passwdValidationError, userData, validationErrors;
   hash = helpers.cryptPassword(req.body.password);
   userData = {
     email: req.body.email,
@@ -39,13 +39,15 @@ module.exports.register = function(req, res, next) {
     public_name: req.body.public_name,
     timezone: req.body.timezone,
     activated: true,
+    allow_stats: req.body.allow_stats,
     docType: "User"
   };
   instanceData = {
     locale: req.body.locale
   };
-  validationErrors = User.validate(userData);
-  if (validationErrors.length === 0) {
+  passwdValidationError = User.validatePassword(req.body.password);
+  validationErrors = User.validate(userData, passwdValidationError);
+  if (!Object.keys(validationErrors).length) {
     return User.all(function(err, users) {
       var error;
       if (err != null) {
@@ -70,7 +72,8 @@ module.exports.register = function(req, res, next) {
       }
     });
   } else {
-    error = new Error(validationErrors);
+    error = new Error('Errors in validation');
+    error.errors = validationErrors;
     error.status = 400;
     return next(error);
   }
@@ -208,7 +211,7 @@ module.exports.resetPassword = function(req, res, next) {
     } else {
       if (Instance.getResetKey() === req.params.key) {
         validationErrors = User.validatePassword(newPassword);
-        if (validationErrors.length === 0) {
+        if (!Object.keys(validationErrors).length) {
           data = {
             password: helpers.cryptPassword(newPassword).hash
           };
@@ -228,7 +231,8 @@ module.exports.resetPassword = function(req, res, next) {
             }
           });
         } else {
-          error = new Error(validationErrors);
+          error = new Error('Errors in validation');
+          error.errors = validationErrors;
           error.status = 400;
           return next(error);
         }

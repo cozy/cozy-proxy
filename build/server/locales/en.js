@@ -22,5 +22,8 @@ module.exports = {
   "error login failed": "Login failed.",
   "reset password email from": "Your Cozy <no-reply@%{domain}>",
   "reset password email subject": "[Cozy] Resetting your password",
-  "reset password email text": "It seems that you forgot the password to your Cozy.\nNot to worry, simply follow the link below to create a new one:\n\nhttps://%{domain}/password/reset/%{key}\n\nDon't forget to update all your encrypted data afterwards!"
+  "reset password email text": "It seems that you forgot the password to your Cozy.\nNot to worry, simply follow the link below to create a new one:\n\nhttps://%{domain}/password/reset/%{key}\n\nDon't forget to update all your encrypted data afterwards!",
+  "invalid email format": "Your email address seems to be invalid.",
+  "invalid timezone": "This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York.",
+  "password too short": "Your password is too short, it should contain at least 8 characters."
 };

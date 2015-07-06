@@ -64,7 +64,9 @@ module.exports = class AuthView extends Mn.LayoutView
 
         @model.success
             .doAction =>
-                window.location.pathname = @options.next
+                setTimeout =>
+                    window.location.pathname = @options.next
+                , 500
             .map =>
                 $ '<i/>',
                     class: 'fa fa-check'
@@ -79,3 +81,4 @@ module.exports = class AuthView extends Mn.LayoutView
         setTimeout =>
             @ui.passwd.focus()
         , 100
+

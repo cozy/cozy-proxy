@@ -175,7 +175,7 @@ module.exports.resetPassword = (req, res, next) ->
             if Instance.getResetKey() is req.params.key
                 validationErrors = User.validatePassword newPassword
 
-                if validationErrors.length is 0
+                unless Object.keys(validationErrors).length
                     data = password: helpers.cryptPassword(newPassword).hash
                     user.merge data, (err) ->
                         if err? then next new Error err
@@ -189,7 +189,8 @@ module.exports.resetPassword = (req, res, next) ->
                                     res.send 204
 
                 else
-                    error = new Error validationErrors
+                    error = new Error 'Errors in validation'
+                    error.errors = validationErrors
                     error.status = 400
                     next error
 

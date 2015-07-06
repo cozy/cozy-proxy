@@ -7,7 +7,9 @@ module.exports = class AuthFeedbackView extends Mn.ItemView
 
 
     serializeData: ->
-        _.extend @model.toJSON(), forgot: @options.forgot
+        _.extend @model.toJSON(),
+            forgot: @options.forgot
+            prefix: @options.prefix
 
 
     initialize: ->
@@ -15,20 +17,9 @@ module.exports = class AuthFeedbackView extends Mn.ItemView
         @model.get('recover').subscribe @render
 
         @model.alert.map '.status'
-                    .assign @$el, 'attr', 'class'
+            .assign @$el, 'attr', 'class'
 
-        forgot = @$el.asEventStream 'click', @ui.forgot
-                     .doAction '.preventDefault'
-                     .subscribe @sendResetPassword
-
-
-    sendResetPassword: =>
-        reset = Bacon.fromPromise $.post '/login/forgot'
-
-        @model.alert.plug reset.map
-            status:  'success'
-            title:   t 'login recover sent title'
-            message: t 'login recover sent message'
-
-        reset.map t 'login recover again'
-             .onValue (text) => @ui.forgot.text text
+        if @options.forgot
+            sendLink = @$el.asEventStream 'click', @ui.forgot
+                .doAction '.preventDefault'
+            @model.sendReset.plug sendLink

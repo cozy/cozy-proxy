@@ -50,6 +50,7 @@ module.exports =
     'login enter your password':    "Entrez votre mot de passe pour accéder à votre Cozy"
     'login password':               "mot de passe"
     'login submit':                 "s'authentifier"
+    'login auth success':           "Authentification réussie, entrons !"
     'login recover':                "Mot de passe oublié ? Envoyez-moi un email de restauration."
     'login recover again':          "Vous ne l'avez pas reçu ? Remvoyez-le moi."
     'login recover sent title':     "Email envoyé"
@@ -61,6 +62,7 @@ module.exports =
     'reset enter your password':    "Entrez un nouveau mot de passe pour le restaurer"
     'reset password':               "mot de passe"
     'reset submit':                 "restaurer votre mot de passe"
+    'reset auth success':           "mot de passe restauré"
     'reset wrong password title':   "Votre mot de passe n'a pas pu être restauré"
     'reset wrong password message': "Le mot de passe que vous avez entré n'est pas correct, ou votre jeton de restauration est expiré."
 

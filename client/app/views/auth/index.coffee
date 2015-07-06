@@ -6,7 +6,7 @@ module.exports = class AuthView extends Mn.LayoutView
     tagName: 'form'
 
     className: ->
-        @options.type
+        "#{@options.type} auth"
 
     attributes: ->
         data =
@@ -23,55 +23,59 @@ module.exports = class AuthView extends Mn.LayoutView
         submit: '.controls button[type=submit]'
 
 
-    initialize: (options) ->
-        @options.next   ?= '/'
-        @options.forgot = @options.type is 'login'
-
-        @password = @$el.asEventStream('focus keyup blur', @ui.passwd)
-                        .map (event) -> event.target.value
-                        .toProperty('')
-        @passwordEntered = @password.map (val) -> val.length > 0
-
-        @submit = @$el.asEventStream 'click', @ui.submit
-                      .doAction '.preventDefault'
-                      .filter @passwordEntered
-                      .map @password
-                      .onValue @authenticate
-
-
-    onRender: ->
-        @passwordEntered.not().assign @ui.submit, 'attr', 'aria-disabled'
-        @ui.passwd.asEventStream 'focus'
-                  .assign @ui.passwd[0], 'select'
-
-        @model.isBusy.assign @ui.submit, 'attr', 'aria-busy'
-
-        @showChildView 'feedback', new FeedbackView
-            forgot: @options.forgot
-            model:  @model
-
-        setTimeout =>
-            @ui.passwd.focus()
-        , 100
-
-
     serializeData: ->
         data =
             username: window.username
             prefix:   @options.type
 
 
-    authenticate: (password) =>
-        @model.isBusy.push true
-        data = JSON.stringify password: password
-        req = Bacon.fromPromise $.post @options.backend, data
+    initialize: (options) ->
+        @options.next   ?= '/'
+        @options.forgot = @options.type is 'login'
 
-        @model.isBusy.plug req.mapEnd false
+        password = @$el.asEventStream 'focus keyup blur', @ui.passwd
+                        .map (event) -> event.target.value
+                        .toProperty('')
+        @passwordEntered = password.map (value) -> !!value
 
-        req.map '.success'
-            .onValue => window.location.pathname = @options.next
+        submit = @$el.asEventStream 'click', @ui.submit
+            .doAction '.preventDefault'
+            .filter @passwordEntered
 
-        @model.alert.plug req.mapError
-            status:  'error'
-            title:   t "#{@options.type} wrong password title"
-            message: t "#{@options.type} wrong password message"
+        formTpl =
+            password: password
+            action:   @options.backend
+        form = Bacon.combineTemplate formTpl
+            .sampledBy submit
+
+        @model.isBusy.plug form.map true
+        @model.signin.plug form
+
+
+    onRender: ->
+        @passwordEntered.not()
+            .assign @ui.submit, 'attr', 'aria-disabled'
+
+        @ui.passwd.asEventStream 'focus'
+            .assign @ui.passwd[0], 'select'
+
+        @model.isBusy
+            .assign @ui.submit, 'attr', 'aria-busy'
+
+        @model.success
+            .doAction =>
+                window.location.pathname = @options.next
+            .map =>
+                $ '<i/>',
+                    class: 'fa fa-check'
+                    text:  t "#{@options.type} auth success"
+            .assign @ui.submit, 'html'
+
+        @showChildView 'feedback', new FeedbackView
+            forgot: @options.forgot
+            prefix: @options.type
+            model:  @model
+
+        setTimeout =>
+            @ui.passwd.focus()
+        , 100

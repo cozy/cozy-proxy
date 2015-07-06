@@ -39,3 +39,4 @@ module.exports = class Auth extends StateModel
             status:  'success'
             title:   'recover sent title'
             message: 'recover sent message'
+

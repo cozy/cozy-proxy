@@ -50,3 +50,4 @@ module.exports = class Router extends Backbone.Router
             @app.layout.showChildView 'content', currentView
 
         currentView.model.setStep step
+

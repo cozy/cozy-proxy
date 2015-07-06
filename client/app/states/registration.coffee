@@ -23,7 +23,8 @@ module.exports = class Registration extends StateModel
 
 
     initialize: ->
-        @errors          = new Bacon.Bus()
+        @errors = new Bacon.Bus()
+
         @initStep()
         @initControls()
         @initSignup()
@@ -43,6 +44,7 @@ module.exports = class Registration extends StateModel
 
         @add 'step', step
         @add 'nextStep', step.map (step) => @steps[step]?.next or null
+        @add 'previousStep', step.diff null, (previous, last) -> previous
 
 
     initControls: ->

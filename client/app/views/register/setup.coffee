@@ -9,13 +9,56 @@ module.exports = class RegisterSetupView extends Mn.ItemView
 
 
     initialize: ->
-        @timer = Bacon.interval(80, 1)
-                      .take 100
-                      .scan 0, (a, b) -> a + b
-        end = @timer.filter (n) -> n >= 100
-                    .map @model.steps['setup'].next
-        @model.setStepBus.plug end
+        @model.get('previousStep')
+            .map (step) -> step is 'import_google'
+            .onValue @initCounter
 
 
     onRender: ->
-        @timer.assign @ui.bar, 'val'
+        @progress.assign @ui.bar, 'val'
+
+
+    initCounter: (leaveGoogle) =>
+        timer = Bacon.interval(80, 1)
+            .take 100
+            .scan 0, (a, b) -> a + b
+
+        if leaveGoogle
+            @socket = window.io window.location.origin,
+                path:                 '/apps/leave-google/socket.io'
+                reconnectionDelayMax: 60000
+                reconectionDelay:     2000
+                reconnectionAttempts: 3
+
+            cards = @getSocketProperty 'contacts'
+            cals  = @getSocketProperty 'calendars'
+            time  = timer.toProperty()
+
+            @progress = Bacon.combineWith @getProgress, cards, cals, time
+        else
+            @progress = timer
+
+        end = @progress.filter (n) -> n >= 100
+            .map @model.steps['setup'].next
+        @model.setStepBus.plug end
+
+
+    getSocketProperty: (event) ->
+        endEvent = if event is 'calendars' then 'events' else event
+
+        stream = Bacon.fromBinder (sink) =>
+            sink 0
+            @socket.on event, (data) ->
+                sink Math.floor data.number / data.total * 100
+
+            @socket.on "#{endEvent}.end", ->
+                sink 100
+                sink new Bacon.End()
+
+            return ->
+
+        stream.toProperty()
+
+
+    getProgress: (cards, cals, time) ->
+        (cards + cals + time) / 3

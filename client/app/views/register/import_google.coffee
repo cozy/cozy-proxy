@@ -61,4 +61,3 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         ct_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
         @popup = window.open oauthUrl, 'Google OAuth',opts
         @changeStep 'pastecode'
-

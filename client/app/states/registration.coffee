@@ -23,10 +23,11 @@ module.exports = class Registration extends StateModel
 
 
     initialize: ->
-        @errors          = new Bacon.Bus()
+        @errors = new Bacon.Bus()
         @initStep()
         @initControls()
         @initSignup()
+        @initSetEmail()
 
 
     setStep: (newStep) ->
@@ -75,3 +76,42 @@ module.exports = class Registration extends StateModel
         @stepValve.plug req.map false
         @errors.plug req.errors().mapError '.responseJSON.errors'
         @nextBusy.plug req.mapEnd false
+
+
+    initSetEmail: ->
+        @setEmail = new Bacon.Bus()
+        @setEmail.onValue @setEmailSubmit
+
+
+    setEmailSubmit: (data) =>
+        login = data['imap-login'] or data.email
+        accountData =
+            id:                null
+            label:             data.email
+            name:              data.email.split('@')[0]
+            login:             login
+            password:          data.password
+            accountType:       "IMAP"
+            draftMailbox:      ""
+            favoriteMailboxes: null
+            imapPort:          data['imap-port']
+            imapSSL:           data['imap-ssl']
+            imapServer:        data['imap-server']
+            imapTLS:           false
+            smtpLogin:         data['smtp-login'] or login
+            smtpMethod:        "PLAIN"
+            smtpPassword:      data['smtp-password'] or data.password
+            smtpPort:          data['smtp-port']
+            smtpSSL:           data['smtp-ssl']
+            smtpServer:        data['smtp-server'] or data['imap-server']
+            smtpTLS:           false
+            mailboxes:         ""
+            sentMailbox:       ""
+            trashMailbox:      ""
+
+        $.ajax
+            type:        'POST'
+            url:         '/apps/emails/account'
+            data:        JSON.stringify accountData
+            contentType: "application/json; charset=utf-8",
+            dataType:    'json'

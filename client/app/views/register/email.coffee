@@ -34,7 +34,7 @@ module.exports = class RegisterEmailView extends FormView
 
         submit = @form.merge @model.nextClickStream
             .filter @isEmail
-            .log()
+        @model.setEmail.plug submit
 
         @model.nextLabel.plug @required.map (bool) ->
             if bool then 'add email' else 'skip'
@@ -70,14 +70,3 @@ module.exports = class RegisterEmailView extends FormView
             .map '.target.value'
             .map filterValue
             .assign smtpServer, 'val'
-
-
-    # onSubmit: (values) ->
-    #     data =
-    #         email:    values[0]
-    #         password: values[1]
-    #         server:   values[2]
-    #         port:     values[3]
-    #         ssl:      values[4]
-    #         username: values[5]
-    #     req = Bacon.fromPromise $.post '/register/email', JSON.stringify data

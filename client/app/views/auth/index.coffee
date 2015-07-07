@@ -30,7 +30,6 @@ module.exports = class AuthView extends Mn.LayoutView
 
 
     initialize: (options) ->
-        @model.add 'next', Bacon.constant(@options.next or '/')
         @options.forgot = @options.type is 'login'
 
         password = @$el.asEventStream 'focus keyup blur', @ui.passwd
@@ -44,7 +43,7 @@ module.exports = class AuthView extends Mn.LayoutView
 
         formTpl =
             password: password
-            action:   @options.backend
+            action:   @options.backendbackend
         form = Bacon.combineTemplate formTpl
             .sampledBy submit
 
@@ -68,6 +67,9 @@ module.exports = class AuthView extends Mn.LayoutView
                     class: 'fa fa-check'
                     text:  t "#{@options.type} auth success"
             .assign @ui.submit, 'html'
+
+        @model.success
+            .assign @ui.submit, 'toggleClass', 'btn-success'
 
         @showChildView 'feedback', new FeedbackView
             forgot: @options.forgot

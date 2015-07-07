@@ -18,10 +18,10 @@ module.exports = class Auth extends StateModel
         @sendReset.onValue @sendResetSubmit
 
         @success.map @get 'next'
-            # .onValue (next) ->
-            #     setTimeout =>
-            #         window.location.pathname = next
-            #     , 500
+            .onValue (next) ->
+                setTimeout =>
+                    window.location.pathname = next
+                , 500
 
 
     signinSubmit: (form) =>

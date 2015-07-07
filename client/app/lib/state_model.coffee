@@ -6,7 +6,7 @@ module.exports = class StateModel
 
 
     constructor: (options) ->
-
+        @add key, Bacon.constant(value) for key, value of options
         @initialize()
 
 

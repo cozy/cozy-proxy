@@ -16,7 +16,9 @@ module.exports = class AuthFeedbackView extends Mn.ItemView
         @model.get('alert').subscribe @render
         @model.get('recover').subscribe @render
 
-        @model.alert.map '.status'
+        @model.alert
+            .map (res) ->
+                if res.status then res.status else null
             .assign @$el, 'attr', 'class'
 
         if @options.forgot

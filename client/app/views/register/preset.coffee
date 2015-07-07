@@ -1,6 +1,7 @@
-module.exports = class RegisterPresetView extends Mn.ItemView
+FormView = require 'views/lib/form_view'
 
-    tagName: 'form'
+
+module.exports = class RegisterPresetView extends FormView
 
     className: 'preset'
 
@@ -9,11 +10,6 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         action: '/register'
 
     template: require 'views/templates/view_register_preset'
-
-    ui:
-        labels:   'label.with-input'
-        inputs:   'label input'
-        email:    '#preset-email'
 
 
     serializeData: ->
@@ -24,12 +20,7 @@ module.exports = class RegisterPresetView extends Mn.ItemView
     initialize: ->
         @isPreset = @model.get('step').map (step) -> step is 'preset'
 
-        @inputsStream = @$el.asEventStream 'keyup blur change', @ui.inputs
-        @submitStream = @$el.asEventStream 'submit'
-            .doAction '.preventDefault'
-            .filter @model.get('nextControl').map '.enabled'
-
-        email = @$el.asEventStream 'blur', @ui.email
+        email = @$el.asEventStream 'blur', '#preset-email'
             .map '.target.value'
             .toProperty ''
         @model.add 'email', email
@@ -44,42 +35,8 @@ module.exports = class RegisterPresetView extends Mn.ItemView
         @initForm()
         @initErrors()
 
+        @model.nextEnabled.plug @required.changes()
 
-    initForm: ->
-        inputs   = {}
-        required = Bacon.constant true
-
-        getValue = (el) ->
-            if el.type is 'checkbox' then el.checked else el.value
-
-        @ui.inputs.map (index, el)=>
-            property = @inputsStream.map '.target'
-                .filter (target) -> target is el
-                .map getValue
-                .toProperty getValue el
-            inputs[el.name] = property
-            required = required.and(property.map (val) -> !!val) if el.required
-
-        @model.nextEnabled.plug required.changes()
-        form = Bacon.combineTemplate inputs
-            .sampledBy @model.nextClickStream.merge @submitStream
-            .filter @isPreset
-        @model.signup.plug form
-        @model.nextBusy.plug form.map true
-
-
-    initErrors: ->
-        isTruthy  = (value) -> !!value
-        createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
-
-        @model.errors
-            .filter @isPreset
-            .subscribe =>
-                @ui.labels.find('.error').remove()
-
-        for name, property of @errors
-            $el = @ui.labels.filter("[for=preset-#{name}]")
-            property.map isTruthy
-                .assign $el, 'attr', 'aria-invalid'
-            property.filter(isTruthy).map createMsg
-                .assign $el, 'append'
+        submit = @form.filter @isPreset
+        @model.signup.plug submit
+        @model.nextBusy.plug submit.map true

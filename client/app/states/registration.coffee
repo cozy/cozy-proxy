@@ -73,5 +73,5 @@ module.exports = class Registration extends StateModel
         req = Bacon.fromPromise $.post '/register', JSON.stringify formdata
 
         @stepValve.plug req.map false
-        @errors.plug req.mapError '.responseJSON.errors'
+        @errors.plug req.errors().mapError '.responseJSON.errors'
         @nextBusy.plug req.mapEnd false

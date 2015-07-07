@@ -23,7 +23,7 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         event.preventDefault()
 
         scope =
-            photos: @$("input:checkbox[name=photos]").prop("checked")
+            photos: false
             calendars: @$("input:checkbox[name=calendars]").prop("checked")
             contacts: @$("input:checkbox[name=contacts]").prop("checked")
             sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")

@@ -17,21 +17,25 @@ module.exports = class Auth extends StateModel
         @signin.onValue @signinSubmit
         @sendReset.onValue @sendResetSubmit
 
+        @success.map @get 'next'
+            .onValue (next) ->
+                setTimeout =>
+                    window.location.pathname = next
+                , 500
+
 
     signinSubmit: (form) =>
         data = JSON.stringify password: form.password
         req = Bacon.fromPromise $.post form.action, data
 
         @isBusy.plug req.mapEnd false
-
-        @alert.plug req.mapError
+        @alert.plug req.errors().mapError
             status:  'error'
             title:   'wrong password title'
             message: 'wrong password message'
 
         @success.plug req.map '.success'
-
-
+        @alert.plug req.map false
     sendResetSubmit: =>
         reset = Bacon.fromPromise $.post '/login/forgot'
 
@@ -39,4 +43,3 @@ module.exports = class Auth extends StateModel
             status:  'success'
             title:   'recover sent title'
             message: 'recover sent message'
-

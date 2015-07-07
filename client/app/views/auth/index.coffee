@@ -30,7 +30,6 @@ module.exports = class AuthView extends Mn.LayoutView
 
 
     initialize: (options) ->
-        @options.next   ?= '/'
         @options.forgot = @options.type is 'login'
 
         password = @$el.asEventStream 'focus keyup blur', @ui.passwd
@@ -44,7 +43,7 @@ module.exports = class AuthView extends Mn.LayoutView
 
         formTpl =
             password: password
-            action:   @options.backend
+            action:   @options.backendbackend
         form = Bacon.combineTemplate formTpl
             .sampledBy submit
 
@@ -63,15 +62,14 @@ module.exports = class AuthView extends Mn.LayoutView
             .assign @ui.submit, 'attr', 'aria-busy'
 
         @model.success
-            .doAction =>
-                setTimeout =>
-                    window.location.pathname = @options.next
-                , 500
             .map =>
                 $ '<i/>',
                     class: 'fa fa-check'
                     text:  t "#{@options.type} auth success"
             .assign @ui.submit, 'html'
+
+        @model.success
+            .assign @ui.submit, 'toggleClass', 'btn-success'
 
         @showChildView 'feedback', new FeedbackView
             forgot: @options.forgot
@@ -81,4 +79,3 @@ module.exports = class AuthView extends Mn.LayoutView
         setTimeout =>
             @ui.passwd.focus()
         , 100
-

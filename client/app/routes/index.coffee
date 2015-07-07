@@ -17,22 +17,21 @@ module.exports = class Router extends Backbone.Router
         @app = options.app
 
 
-    auth: (options) ->
-        auth = new AuthModel()
+    auth: (path, options) ->
+        auth = new AuthModel next: path
         @app.layout.showChildView 'content', new AuthView _.extend options,
             model: auth
 
 
     login: (path) ->
-        @auth
-            next:    path
+        path ?= '/'
+        @auth path,
             backend: '/login'
             type:    'login'
 
 
     resetPassword: (key) ->
-        @auth
-            next:    '/login'
+        @auth '/login',
             backend: window.location.pathname
             type:    'reset'
 
@@ -50,4 +49,3 @@ module.exports = class Router extends Backbone.Router
             @app.layout.showChildView 'content', currentView
 
         currentView.model.setStep step
-

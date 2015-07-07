@@ -68,7 +68,7 @@ module.exports =
 
     'setup title':             "Nous préparons vore Cozy !"
     'setup message':           "Vous y être presque ! Dans quelques instants vous pourrez accéder à votre Cozy et reprendre le contrôle de vos données."
-    'setup on mobile title':   "Utilisez Cozy sur votre périphérique Android !"
+    'setup on mobile title':   "Utilisez Cozy sur votre périphérique Android !"
     'setup on mobile message': "Téléchargez l'app mobile Cozy sur Google Play :"
 
     'welcome title':   "Félicitations ! Vous venez de reprendre le contrôle de vos données."

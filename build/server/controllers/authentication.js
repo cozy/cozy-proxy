@@ -79,54 +79,6 @@ module.exports.register = function(req, res, next) {
   }
 };
 
-module.exports.registerEmail = function(req, res, next) {
-  var accountData, emailsClient, globalRes;
-  accountData = {
-    id: null,
-    label: req.body.email,
-    name: req.body.email.split('@')[0],
-    login: req.body.username || req.body.email,
-    password: req.body.password,
-    accountType: "IMAP",
-    draftMailbox: "",
-    favoriteMailboxes: null,
-    imapPort: req.body.port,
-    imapSSL: req.body.ssl,
-    imapServer: req.body.server,
-    imapTLS: false,
-    smtpLogin: req.body.username || req.body.email,
-    smtpMethod: "PLAIN",
-    smtpPassword: req.body.password,
-    smtpPort: "465",
-    smtpSSL: req.body.ssl,
-    smtpServer: req.body.server,
-    smtpTLS: false,
-    mailboxes: "",
-    sentMailbox: "",
-    trashMailbox: ""
-  };
-  console.log(accountData);
-  emailsClient = request.newClient('http://localhost:9125/');
-  globalRes = res;
-  console.log("Creating email account...");
-  return emailsClient.post('account', accountData, function(err, res, body) {
-    var error;
-    if (err != null) {
-      console.log("Error at email account creation", err);
-      error = new Error("User already registered.");
-      error.status = 409;
-      return next(error);
-    } else if ((res != null ? res.statusCode : void 0) !== 200) {
-      console.log("Error at email account creation response", body);
-      error = new Error(body);
-      error.status = 409;
-      return next(error);
-    } else {
-      return globalRes.send(204);
-    }
-  });
-};
-
 module.exports.loginIndex = function(req, res) {
   return User.first(function(err, user) {
     var name, words, _ref;

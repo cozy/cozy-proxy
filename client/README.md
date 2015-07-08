@@ -27,7 +27,7 @@ _NOTE:_ we currently use Bower as deps manager to avoid deps in the app reposito
 
 ## Librairies
 
-This front-end app have literate code documentation, so you can read it as well as you browse its files and logics, but you should be aware of its libraries in use:
+This front-end app have inline code documentation, so you can read it as well as you browse its files and logics, but you should be aware of its libraries in use:
 * Backbone is used for a quick and valid components architecture, like views
 * Marionette is the framework used upon Backbone to have a more clever and easier way to deal with views (like layouts, regions, and views switching)
 * Bacon is used here especially because the forms in the onboarding needs many interactions and its pattern allow us to quickly deals with them, regardless of their origins.
@@ -41,33 +41,33 @@ The app is organized in the following way:
 
 ```txt
 app/
-  |- initialize.coffee    # sets the browser environment and launch app
-  |- application.coffee   # Backbone.Marionette application singleton instance
+  |- initialize.coffee       # sets the browser environment and launch app
+  |- application.coffee      # Backbone.Marionette application singleton instance
   |
   |- routes
-  |  `- index.coffee      # the default routes a-la-backbone
+  |  `- index.coffee         # the default routes a-la-backbone
   |
-  |- views                # all views used by the application
-  |  |- templates         # all views templates, named as '[layout|view]_[module]_[viewname].jade'
-  |  |- lib               # the top-classes used for views inheritance (such as FormView)
-  |  |- [module]          # a module folder containing all its subviews components
-  |  |  |- index.coffee   # the modules's root view
-  |  |  `- [view].coffee  # a subview component
-  |  `- app_layout.coffee # application's root layout view
+  |- views                   # all views used by the application
+  |  |- templates            # all views templates, named as '[layout|view]_[module]_[viewname].jade'
+  |  |- lib                  # the top-classes used for views inheritance (such as FormView)
+  |  |- [module]             # a module folder containing all its subviews components
+  |  |  |- index.coffee      # the modules's root view
+  |  |  `- [view].coffee     # a subview component
+  |  `- app_layout.coffee    # application's root layout view
   |
-  |- states               # the states-machines, aka viewModel Bacon objects used by views
+  |- states                  # the states-machines, aka viewModel Bacon objects used by views
   |
-  |- lib                  # shared helpers, such as the state-machine root class
+  |- lib                     # shared helpers, such as the state-machine root class
   |
-  |- locales              # all front-end app locales, organized per locale
-  |  `- en.coffee         # EN_us locale, consumed by Polyglot.js
+  |- locales                 # all front-end app locales, organized per locale
+  |  `- en.coffee            # EN_us locale, consumed by Polyglot.js
   |
-  |- styles               # all Stylus (CSS) sheets
-  |  |- app.styl          # the whole app stylesheet
-  |  |- base              # the shared rules framework
-  |  `- components        # specific app stylesheets, organized per component
+  |- styles                  # all Stylus (CSS) sheets
+  |  |- app.styl             # the whole app stylesheet
+  |  |- base                 # the shared rules framework
+  |  `- components           # specific app stylesheets, organized per component
   |
-  `- assets               # frontend assets copied directly by Brunch
+  `- assets                  # frontend assets copied directly by Brunch
   ```
 
 ### App workflow

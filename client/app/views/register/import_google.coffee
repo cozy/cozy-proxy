@@ -1,3 +1,11 @@
+###
+Import Google step
+
+This view do **not** rely on the machine state (except for the next stream push)
+and uses basical Marionette logics to handle its internal events
+###
+
+
 module.exports = class RegisterImportGoogleView extends Mn.ItemView
 
     className: 'import-google'

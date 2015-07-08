@@ -1,3 +1,11 @@
+###
+Setup step view
+
+This step display a counter as a progress bar that is:
+- fake if the user do not import content (takes 8 seconds)
+- indicates the import loading state, and have a minimal duration of 8 seconds
+###
+
 module.exports = class RegisterSetupView extends Mn.ItemView
 
     className: 'setup'
@@ -8,6 +16,11 @@ module.exports = class RegisterSetupView extends Mn.ItemView
         bar: 'progress'
 
 
+    ###
+    Initialize counter
+
+    it takes care of the imported elements state (do we import something or not)
+    ###
     initialize: ->
         @model.get('previousStep')
             .map (step) -> step is 'import_google'

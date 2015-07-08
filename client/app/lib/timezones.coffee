@@ -1,3 +1,9 @@
+###
+Timezones
+
+Exposes an array of all available timezones.
+###
+
 module.exports = [
     "Europe/Paris"
     "Europe/Berlin"

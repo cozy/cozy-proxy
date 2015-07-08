@@ -1,3 +1,7 @@
+###
+fr_FR locale
+###
+
 module.exports =
     'next':                "suivant"
     'skip':                "passer"

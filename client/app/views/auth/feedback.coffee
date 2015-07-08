@@ -14,7 +14,6 @@ module.exports = class AuthFeedbackView extends Mn.ItemView
 
     initialize: ->
         @model.get('alert').subscribe @render
-        @model.get('recover').subscribe @render
 
         @model.alert
             .map (res) ->

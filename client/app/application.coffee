@@ -1,9 +1,24 @@
+###
+application
+
+Main application that create a Mn.Application singleton and exposes it. Needs
+router and app_layout view.
+###
+
 Router    = require 'routes'
 AppLayout = require 'views/app_layout'
 
 
 class Application extends Backbone.Marionette.Application
 
+    ###
+    Sets application
+
+    We instanciate root application components
+    - router: we pass the app reference to it to easily get it without requiring
+              application module later.
+    - layout: the application layout view, rendered.
+    ###
     initialize: ->
         @on 'start', (options) =>
             @router = new Router app: @
@@ -17,4 +32,5 @@ class Application extends Backbone.Marionette.Application
             Object.freeze @ if typeof Object.freeze is 'function'
 
 
-module.exports = application = new Application()
+# Exports Application singleton instance
+module.exports = new Application()

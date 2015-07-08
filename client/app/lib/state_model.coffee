@@ -39,7 +39,8 @@ module.exports = class StateModel
     Returns the property from the `properties` object
     ###
     get: (name) ->
-        return @properties[name] if @properties[name]
+        if @properties[name] then @properties[name]
+        else Bacon.constant(undefined)
 
 
     ###

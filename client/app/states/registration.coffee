@@ -78,8 +78,6 @@ module.exports = class Registration extends StateModel
         @add 'step', step
         # `nextStep` property contains the next step to come
         @add 'nextStep', step.map (step) => @steps[step]?.next or null
-        # `previousStep` property is mapped to the `step` value before update
-        @add 'previousStep', step.diff null, (previous, last) -> previous
 
 
     ###

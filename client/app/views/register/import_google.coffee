@@ -37,6 +37,15 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
             sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")
 
         $.post "/apps/leave-google/lg", {auth_code: @auth_code, scope: scope}
+
+        # Creates an array that represents the current imports and stores it
+        # in the machine state if not empty
+        imports = []
+        imports.push 'contacts' if scope.contacts
+        imports.push 'calendars' if scope.calendars
+        @model.add 'imports', Bacon.constant(imports) if imports.length
+
+        # Go to the next step
         @model.setStep 'setup'
 
 

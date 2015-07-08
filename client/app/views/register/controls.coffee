@@ -25,7 +25,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         clickStream = @$el.asEventStream 'click', @ui.next
             .doAction '.preventDefault'
             .map (e) -> e.target.href.split('=')[1] or '/login'
-            .filter @model.get('nextControl').map '.enabled'
+            .filter => @model.get('nextControl').map '.enabled'
 
         # We store the stream into the state-machine to get it accessible to
         # other views and plug it in the stepStepBus stream (as long as it

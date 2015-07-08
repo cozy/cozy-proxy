@@ -27,7 +27,7 @@ module.exports = class FormView extends Mn.ItemView
         # submitted if the control is disabled)
         @submitStream = @$el.asEventStream 'submit'
             .doAction '.preventDefault'
-            .filter @model.get('nextControl').map '.enabled'
+            .filter => @model.get('nextControl').map '.enabled'
 
 
     ###

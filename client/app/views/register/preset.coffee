@@ -52,7 +52,7 @@ module.exports = class RegisterPresetView extends FormView
 
         # Create a new stream from the submit one that is filtered onto the step
         # (e.g. the form will not be submitted if we're already not in the step)
-        submit = @form.filter @model.get('step').map (step) -> step is 'preset'
+        submit = @form.filter => @model.get('step').map (cur) -> cur is 'preset'
         # We plug it to the signup stream and to the next button busy state (e.g
         # the busy state is enable when the form is submitted)
         @model.signup.plug submit

@@ -55,7 +55,7 @@ module.exports = class RegisterEmailView extends FormView
         # step (can be triggered when we are in the email or setup step), and
         # plug it to the setEmail stream
         submit = @form.merge @model.nextClickStream
-            .filter @model.get('step').map (step) -> step in ['email', 'setup']
+            .filter => @model.get('step').map (cur) -> cur in ['email', 'setup']
         @model.setEmail.plug submit
 
         # Create a stream based on the required inputs that transform the next

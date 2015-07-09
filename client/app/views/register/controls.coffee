@@ -19,12 +19,12 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         # The clickStream is the stream trigerred by click on next button
         # control. It:
         # - stops the natural event
-        # - gets its step/route from url
+        # - gets its step/route/url from href
         # - ensure the button is enabled (if not, the event isn't propagated
         # into the stream)
         clickStream = @$el.asEventStream 'click', @ui.next
             .doAction '.preventDefault'
-            .map (e) -> e.target.href.split('=')[1] or '/login'
+            .map (e) -> e.target.href.split('=')[1] or '/'
             .filter => @model.get('nextControl').map '.enabled'
 
         # We store the stream into the state-machine to get it accessible to

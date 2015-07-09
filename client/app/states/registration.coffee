@@ -107,12 +107,11 @@ module.exports = class Registration extends StateModel
         @nextLabel.plug @get('step').map (step) => @steps[step]?.nextLabel
 
         # In case the next called step isn't declared in the `steps` var, we
-        # assume it's an internal route and navigate to it.
+        # assume it's a URL and navigate to it.
         @setStepBus
             .filter (value) => !(value in Object.keys @steps)
             .onValue (path) ->
-                {router} = require 'application'
-                router.navigate path, {trigger: true}
+                window.location.pathname = path
 
 
         # Add the `nextControl` property ti the state-machine
@@ -145,7 +144,6 @@ module.exports = class Registration extends StateModel
         # Submit the form content to the register endpoint and creates a stream
         # with the ajax promise
         req = Bacon.fromPromise $.post '/register', JSON.stringify data
-
         # If the request is successful, we stores the username in the global
         # scope to prepare the login view.
         req.subscribe -> window.username = data['public_name']

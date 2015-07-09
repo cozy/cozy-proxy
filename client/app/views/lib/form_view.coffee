@@ -66,8 +66,12 @@ module.exports = class FormView extends Mn.ItemView
         # We sampled the property by the submit stream (i.e. the form property
         # is converted as a stream which trigger a message each time the submit
         # event occurs or the next control button is clicked).
+        # The stream is filtered by required to ensure the form is submitted
+        # only if required inputs are filled.
+        @model.setStepBus.plug @submitStream.map @model.get 'nextStep'
         @form = Bacon.combineTemplate inputs
             .sampledBy @model.nextClickStream.merge @submitStream
+            .filter required
 
         # Exposes the required property into the prototype
         @required = required
@@ -86,8 +90,10 @@ module.exports = class FormView extends Mn.ItemView
         createMsg = (msg) -> $('<p/>', {class: 'error', text: msg})
 
         # Remove all errors messages into the DOM when receive new errors (e.g.
-        # user just submitted a new form also containing errors).
+        # user just submitted a new form also containing errors). We filter on
+        # errors te ensure the signal contains new errors.
         @model.errors
+            .filter (errors) -> !!errors
             .subscribe =>
                 @ui.labels.find('.error').remove()
 

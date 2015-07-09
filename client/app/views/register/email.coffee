@@ -54,9 +54,8 @@ module.exports = class RegisterEmailView extends FormView
         # Create a submission stream from the form one that is filitered to the
         # step (can be triggered when we are in the email or setup step), and
         # plug it to the setEmail stream
-        submit = @form.merge @model.nextClickStream
-            .filter => @model.get('step').map (cur) -> cur in ['email', 'setup']
-        @model.setEmail.plug submit
+        @model.setEmail.plug @form.filter =>
+            @model.get('step').map (cur) -> cur in ['email', 'setup']
 
         # Create a stream based on the required inputs that transform the next
         # control button from 'skip' to 'add email acount' when they're all

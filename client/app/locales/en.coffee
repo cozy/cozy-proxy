@@ -77,7 +77,7 @@ module.exports =
     'reset wrong password title':   "Your password can't be resetted"
     'reset wrong password message': "The pasword you entered is incorrect, or your reset token is expired"
 
-    'setup title':             "We're setting up your Cozy!"
+    'setup title':             "We're setting up your Cozy…"
     'setup message':           "You are now close to have your own personal cloud where your data are stored."
     'setup on mobile title':   "Use Cozy on your Android device!"
     'setup on mobile message': "Check out our mobile app on Google Play:"

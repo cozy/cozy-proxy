@@ -1,6 +1,7 @@
 {
   "dependencies": {},
   "devDependencies": {
+    "autoprefixer": "^5.2.0",
     "bower": "^1.4.1",
     "browser-sync-brunch": "0.0.9",
     "clean-css-brunch": "^1.7.2",
@@ -8,6 +9,7 @@
     "css-brunch": "1.7.0",
     "jade-brunch": "^1.8.1",
     "javascript-brunch": "1.7.1",
+    "postcss-brunch": "^0.4.1",
     "stylus-brunch": "1.8.0",
     "uglify-js-brunch": "^1.7.8"
   }

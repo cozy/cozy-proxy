@@ -60,7 +60,7 @@ User.prototype.merge = function(data, callback) {
 User.first = function(callback) {
   return User.request('all', function(err, users) {
     if (err) {
-      return callback(new err);
+      return callback(err);
     } else if (!users || users.length === 0) {
       return callback(null, null);
     } else {

@@ -20,6 +20,10 @@ exports.config =
     plugins:
         jade:
             globals: ['t']
+        postcss:
+            processors: [
+                require('autoprefixer')(['last 2 versions']),
+            ]
 
     overrides:
         production:

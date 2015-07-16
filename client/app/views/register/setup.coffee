@@ -19,7 +19,7 @@ fromSocket = (event) ->
     # If the socket.io socket isn't available, open it
     unless socket
         socket = window.io window.location.origin,
-            path:                 '/apps/leave-google/socket.io'
+            path:                 '/apps/import-from-google/socket.io'
             reconnectionDelayMax: 60000
             reconectionDelay:     2000
             reconnectionAttempts: 3

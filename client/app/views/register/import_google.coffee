@@ -36,7 +36,7 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
             contacts: @$("input:checkbox[name=contacts]").prop("checked")
             sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")
 
-        $.post "/apps/leave-google/lg", {auth_code: @auth_code, scope: scope}
+        $.post "/apps/import-from-google/lg", {auth_code: @auth_code, scope: scope}
 
         # Creates an array that represents the current imports and stores it
         # in the machine state if not empty

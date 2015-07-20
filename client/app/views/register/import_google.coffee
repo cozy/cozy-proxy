@@ -70,11 +70,24 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
             'scrollbars=1'
             'resizable=1'
         ].join(',')
-        oauthUrl = "https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F\
-        %2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly%20https%3A%2F%2Fpicasa\
-        web.google.com%2Fdata%2F%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fco\
-        ntacts.readonly%20email%20profile&response_type=code&client_id=26064585\
-        0650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s.apps.googleusercontent.com&redire\
-        ct_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+
+        scopes = [
+            'https://www.googleapis.com/auth/calendar.readonly'
+            'https://picasaweb.google.com/data/'
+            'https://www.googleapis.com/auth/contacts.readonly'
+            'email'
+            'https://mail.google.com/'
+            'profile'
+        ].join(' ')
+
+
+        clientID = '260645850650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s'
+        clientID += '.apps.googleusercontent.com'
+
+        oauthUrl = "https://accounts.google.com/o/oauth2/auth"
+        oauthUrl += '?scope=' + encodeURIComponent(scopes)
+        oauthUrl += '&response_type=code'
+        oauthUrl += '&client_id=' + clientID
+        oauthUrl += '&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob'
         @popup = window.open oauthUrl, 'Google OAuth',opts
         @changeStep 'pastecode'

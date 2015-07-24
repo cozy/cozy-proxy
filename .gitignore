@@ -1,4 +1,7 @@
 node_modules
+bower_components
 *.swp
 *.log
 *.transifex.coffee
+
+client/public

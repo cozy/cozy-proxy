@@ -17,9 +17,12 @@ module.exports.sendResetEmail = (instance, user, key, callback) ->
     localization = require './localization_manager'
 
     data =
-        from: localization.t('reset password email from', domain: instance.domain)
-        subject: localization.t('reset password email subject')
-        content: localization.t('reset password email text', domain: instance.domain, key: key)
+        from: localization.t 'reset password email from',
+            domain: instance.domain
+        subject: localization.t 'reset password email subject'
+        content: localization.t 'reset password email text',
+            domain: instance.domain
+            key: key
 
     client = new Client "http://localhost:9101/"
     if process.env.NODE_ENV is "production"

@@ -1,51 +1,43 @@
-passport = require 'passport'
+passport     = require 'passport'
 randomstring = require 'randomstring'
-locale = require 'locale'
+request      = require 'request-json'
 
-User = require '../models/user'
-Instance = require '../models/instance'
-helpers = require '../lib/helpers'
+User         = require '../models/user'
+Instance     = require '../models/instance'
+helpers      = require '../lib/helpers'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 
-timezones = require '../lib/timezones'
-supportedLocales = require('../config').supportedLanguages
-
-getTemplateExt = require '../helpers/get_template_ext'
-ext = getTemplateExt()
 
 module.exports.registerIndex = (req, res) ->
     User.first (err, user) ->
-        unless user?
-            supported = new locale.Locales supportedLocales
-            locales = new locale.Locales req.headers['accept-language']
-            bestMatch = locales.best(supported).language
-            polyglot = localization.getPolyglotByLocale bestMatch
-            res.render "register.#{ext}",
-                polyglot: polyglot
-                timezones: timezones
-                className: "intro"
-        else
+        if user?
             res.redirect '/login'
+        else
+            localization.setLocale req.headers['accept-language']
+            res.render "index"
 
 
 module.exports.register = (req, res, next) ->
 
     hash = helpers.cryptPassword req.body.password
     userData =
-        email: req.body.email
-        owner: true
-        password: hash.hash
-        salt: hash.salt
+        email:       req.body.email
+        owner:       true
+        password:    hash.hash
+        salt:        hash.salt
         public_name: req.body.public_name
-        timezone: req.body.timezone
-        activated: true
-        docType: "User"
+        timezone:    req.body.timezone
+        activated:   true
+        allow_stats: req.body.allow_stats
+        docType:     "User"
 
     instanceData = locale: req.body.locale
 
-    validationErrors = User.validate userData
-    if validationErrors.length is 0
+    passwdValidationError = User.validatePassword req.body.password
+    validationErrors = User.validate userData, passwdValidationError
+
+    unless Object.keys(validationErrors).length
         User.all (err, users) ->
             if err? then next new Error err
             else if users.length isnt 0
@@ -54,59 +46,36 @@ module.exports.register = (req, res, next) ->
                 next error
             else
                 Instance.createOrUpdate instanceData, (err) ->
-                    if err then next new Error err
-                    else
-                        User.createNew userData, (err) ->
-                            if err then next new Error err
-                            else
-                                # at first load, 'en' is the default locale
-                                # we must change it now if it has changed
-                                localization.polyglot = \
-                                localization.getPolyglotByLocale req.body.locale
-                                next()
+                    return next new Error err if err
+
+                    User.createNew userData, (err) ->
+                        return next new Error err if err
+
+                        # at first load, 'en' is the default locale
+                        # we must change it now if it has changed
+                        localization.setLocale req.body.locale
+                        next()
     else
-        error = new Error validationErrors
+        error = new Error 'Errors in validation'
+        error.errors = validationErrors
         error.status = 400
         next error
 
 
 module.exports.loginIndex = (req, res) ->
-    # Retrieve polyglot
-    # Try 5 times if request is too early
-    counter = 0
-    retrievePolyglot = (cb) =>
-        if counter is 5
-            cb "Cannot retrieve polyglot"
-        else
-            polyglot = localization.getPolyglot()
-            if polyglot?.t?
-                cb null, polyglot
-            else
-                setTimeout () ->
-                    counter += 1
-                    retrievePolyglot cb
-                , 500
-
     User.first (err, user) ->
-        if user?
-            # display name management
-            if user.public_name?.length > 0 then name = user.public_name
-            else
-                name = helpers.hideEmail user.email
-                words = name.split ' '
-                name = words.map((word) ->
-                    return word.charAt(0).toUpperCase() + word.slice 1
-                ).join ' '
-            retrievePolyglot (err, polyglot) ->
-                if err
-                    res.send 500, error: err
-                else
-                    res.render "login.#{ext}",
-                        polyglot: polyglot
-                        name: name
-                        className: "intro"
+        return res.redirect '/register' unless user?
+
+        # display name management
+        if user.public_name?.length > 0 then name = user.public_name
         else
-            res.redirect '/register'
+            name = helpers.hideEmail user.email
+            words = name.split ' '
+            name = words.map((word) ->
+                return word.charAt(0).toUpperCase() + word.slice 1
+            ).join ' '
+
+        res.render "index", name: name
 
 
 module.exports.forgotPassword = (req, res, next) ->
@@ -136,8 +105,7 @@ module.exports.forgotPassword = (req, res, next) ->
 
 module.exports.resetPasswordIndex = (req, res) ->
     if Instance.getResetKey() is req.params.key
-        polyglot = localization.getPolyglot()
-        res.render "reset.#{ext}", polyglot: polyglot, resetKey: req.params.key
+        res.render "index", resetKey: req.params.key
     else
         res.redirect '/'
 
@@ -145,14 +113,13 @@ module.exports.resetPasswordIndex = (req, res) ->
 module.exports.resetPassword = (req, res, next) ->
     key = req.params.key
     newPassword = req.body.password
-    polyglot = localization.getPolyglot()
 
     User.first (err, user) ->
 
         if err? then next new Error err
 
         else if not user?
-            err = new Error polyglot.t "reset error no user"
+            err = new Error localization.t "reset error no user"
             err.status = 400
             err.headers = 'Location': '/register/'
             next err
@@ -162,7 +129,7 @@ module.exports.resetPassword = (req, res, next) ->
             if Instance.getResetKey() is req.params.key
                 validationErrors = User.validatePassword newPassword
 
-                if validationErrors.length is 0
+                unless Object.keys(validationErrors).length
                     data = password: helpers.cryptPassword(newPassword).hash
                     user.merge data, (err) ->
                         if err? then next new Error err
@@ -176,12 +143,13 @@ module.exports.resetPassword = (req, res, next) ->
                                     res.send 204
 
                 else
-                    error = new Error validationErrors
+                    error = new Error 'Errors in validation'
+                    error.errors = validationErrors
                     error.status = 400
                     next error
 
             else
-                error = new Error polyglot.t "reset error invalid key"
+                error = new Error localization.t "reset error invalid key"
                 error.status = 400
                 next error
 
@@ -193,4 +161,3 @@ module.exports.logout = (req, res) ->
 
 module.exports.authenticated = (req, res) ->
     res.send 200, isAuthenticated: req.isAuthenticated()
-

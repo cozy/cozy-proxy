@@ -1,34 +1,54 @@
+Locale   = require 'locale'
 Polyglot = require 'node-polyglot'
+
 Instance = require '../models/instance'
 
-class LocalizationManager
+{supportedLanguages} = require '../config'
+supported            = new Locale.Locales supportedLanguages
 
+
+class LocalizationManager
+    # Polyglot instance in the given locale
     polyglot: null
 
-    # should be run when app starts
-    initialize: (callback) ->
-        @retrieveLocale (err, locale) =>
-            if err? then callback err
-            else
-                @polyglot = @getPolyglotByLocale locale
-                callback null, @polyglot
 
-    retrieveLocale: (callback) ->
-        Instance.getLocale (err, locale) ->
-            if err? or not locale then locale = 'en' # default value
-            callback err, locale
+    constructor: ->
+        Instance.getLocale (err, locale) =>
+            locale = 'en' if err
+            @setLocale locale
 
-    getPolyglotByLocale: (locale) ->
+
+    setLocale: (locale) ->
+        # Early return if locale is already the loaded one
+        return if @polyglot?.locale is locale
+
+        # Trying to find and use the best locale available
+        locales = new Locale.Locales locale
+        @setPolyglot locales.best supported
+
+
+    setPolyglot: (locale) ->
+        @requiredLocale = locale
         try
-            phrases = require "../../client/locales/#{locale}"
+            phrases = require "../locales/#{locale}"
+
         catch err
-            phrases = require '../../client/locales/en'
-        return new Polyglot locale: locale, phrases: phrases
+            locale    = 'en'
+            phrases = require '../locales/en'
 
-    # execute polyglot.t, for server-side localization
-    t: (key, params = {}) -> return @polyglot?.t key, params
+        @polyglot = new Polyglot locale: locale, phrases: phrases
 
-    # for template localization
-    getPolyglot: -> return @polyglot
+
+    getPolyglot: ->
+        @setPolyglot @requiredLocale unless @polyglot
+        return @polyglot
+
+
+    # Expose Polyglot interns (i.e. for templating)
+    # Those functions ensure polyglot is properly loaded before returning
+    # content.
+    t: (key, params = {}) => return @getPolyglot()?.t key, params
+    getLocale:            => return @getPolyglot()?.locale()
+
 
 module.exports = new LocalizationManager()

@@ -83,4 +83,4 @@ module.exports =
     'setup on mobile message': "Téléchargez l'app mobile Cozy sur Google Play :"
 
     'welcome title':   "Félicitations ! Vous venez de reprendre le contrôle de vos données."
-    'welcome message': "Avec Cozy, vous pouvez stocker vos données dans votre cloud personnel que vous contrôlez. Contrairement à la plupart des services de Cloud commerciaux, Cozy n'exploite pas les données placées dans votre Cloud, aucune entreprise n'est donc en mesure d'apprendre quoi que ce soit sur vous en accédant à vos données personnelles."
+    'welcome message': "Avec Cozy, vous pouvez stocker vos données dans votre Cloud personnel, que vous contrôlez, ce qui protège l'intimité de votre vie numérique. En effet, la société Cozy Cloud n'exploite pas les données que vous placez dans votre Cloud !"

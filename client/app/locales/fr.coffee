@@ -21,7 +21,7 @@ module.exports =
     'preset password':           "mot de passe"
     'preset password tip':       "Un mot de passe de fort d'au-moins 8 caractères (les caractères spéciaux sont recommandés)."
     'preset timezone':           "fuseau horaire"
-    'preset timezone tip':       "Vous permet d'afficher correctement les heures dans les événements."
+    'preset timezone tip':       "Vous permet d'afficher correctement les heures dans les agendas."
     'preset opt-in help':        "Je souhaite aider Cozy à améliorer la plateforme en transmettant des données statistiques anonymes relatives à mon utilisation."
     'preset opt-out newsletter': "Je souhaite être informé par Cozy des évolutions du produit (recommandé)."
 

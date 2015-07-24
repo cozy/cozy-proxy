@@ -17,7 +17,7 @@ module.exports =
     'preset email':              "e-mail"
     'preset email tip':          "It will be used to contact you if you lose your password."
     'preset name':               "name"
-    'preset name tip':           "It appears to people when you share files or invite them to events."
+    'preset name tip':           "It's displayed when you share files with people or invite them to events."
     'preset password':           "password"
     'preset password tip':       "A strong password of at least 8 characters is required (special characters recommended)."
     'preset timezone':           "timezone"
@@ -26,7 +26,7 @@ module.exports =
     'preset opt-out newsletter': "Subscribe to the Beta Cozy Newsletter (highly recommended)."
 
     'import google account':         "Synchronize your Gmail account & import calendar, contacts and photos from Google"
-    'import google account tip':     "You'll need to sign in to your Google account to allow your Cozy to access data hosted on Google"
+    'import google account tip':     "You'll need to sign in to your Google account to allow your Cozy to access to data hosted on Google"
     'import google account sign in': "Sign in to Google"
 
     'leave google title':             "Feed your data into Cozy"
@@ -83,4 +83,4 @@ module.exports =
     'setup on mobile message': "Check out our mobile app on Google Play:"
 
     'welcome title':   "Congratulations on taking back control of your personal data."
-    'welcome message': "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services, there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data when it's stored here"
+    'welcome message': "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services, there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data."

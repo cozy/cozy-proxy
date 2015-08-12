@@ -6,7 +6,6 @@ passwordKeys = require '../lib/password_keys'
 
 # customize passport authenticate
 module.exports.authenticate = (req, res, next) ->
-    console.log 'authenticate'
     process = (err, user) ->
         if err
             next new Error localization.t 'error server'

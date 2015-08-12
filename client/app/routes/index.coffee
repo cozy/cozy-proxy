@@ -55,7 +55,7 @@ module.exports = class Router extends Backbone.Router
     - a `next` query string parameter (the new and more cleaner way, see
     server/middlewares/authentication.coffee#L36)
     ###
-    login: (path) ->
+    login: (path = '/') ->
         if window.location.hash
             path = window.location.hash
         @auth path,

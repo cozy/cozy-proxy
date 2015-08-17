@@ -29,6 +29,7 @@ this way:
 
     git clone https://github.com/cozy/cozy-proxy.git
     cd cozy-proxy
+    npm install -g brunch coffee-script coffeelint
     npm install
     cd client
     npm install

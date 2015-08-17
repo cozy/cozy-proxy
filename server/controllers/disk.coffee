@@ -9,10 +9,10 @@ extractCredentials = (header) ->
         authDevice = header.replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
         return authDevice.split ':'
-    else        
+    else
         return ["", ""]
 
-recoverDiskSpace = (cb)-> 
+recoverDiskSpace = (cb) ->
     exec 'df -h', (err, rawDiskSpace) ->
         if err
             cb "Error while retrieving disk space -- #{err}"
@@ -24,9 +24,9 @@ recoverDiskSpace = (cb)->
                 lineData = line.split ' '
 
                 if lineData.length > 5 and lineData[5] is '/'
-                    freeSpace = lineData[3].substring(0, lineData[3].length - 1)
-                    totalSpace = lineData[1].substring(0, lineData[1].length - 1)
-                    usedSpace = lineData[2].substring(0, lineData[2].length - 1)
+                    freeSpace = lineData[3].substring 0, lineData[3].length - 1
+                    usedSpace = lineData[2].substring 0, lineData[2].length - 1
+                    totalSpace = lineData[1].substring 0, lineData[1].length - 1
 
                     data.freeDiskSpace = freeSpace
                     data.usedDiskSpace = usedSpace
@@ -47,17 +47,17 @@ getAuthController = ->
         return ""
 
 
-module.exports.getSpace = (req, res, next) =>
+module.exports.getSpace = (req, res, next) ->
     # Authenticate the device
     [username, password] = extractCredentials req.headers['authorization']
-    deviceManager.isAuthenticated username, password, (auth) =>
+    deviceManager.isAuthenticated username, password, (auth) ->
         if auth
             # Recover disk space with controller
             controllerClient.setToken getAuthController()
             controllerClient.get 'diskinfo', (err, resp, body) ->
                 # If error, recover disk space with command df -H
                 if err or resp.statusCode isnt 200
-                    recoverDiskSpace (err, body) =>
+                    recoverDiskSpace (err, body) ->
                         if err?
                             error = new Error err
                             error.status = 500

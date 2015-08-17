@@ -31,7 +31,7 @@ User.createNew = (data, callback) ->
             callback()
 
 User::merge = (data, callback) ->
-    client.put "user/merge/#{@id}/", data, (err, res, body) =>
+    client.put "user/merge/#{@id}/", data, (err, res, body) ->
         if err? then callback err
         else if res.statusCode is 404
             callback new Error "Model does not exist"

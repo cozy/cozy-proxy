@@ -22,4 +22,7 @@ module.exports = (app, server, callback) ->
 
     # initialize device authentication
     # reset (load) and display the routes
-    Device.update -> router.reset -> router.displayRoutes -> callback app, server
+    Device.update ->
+        router.reset ->
+            router.displayRoutes ->
+                callback app, server

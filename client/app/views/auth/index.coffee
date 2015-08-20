@@ -95,8 +95,11 @@ module.exports = class AuthView extends Mn.LayoutView
             model:  @model
 
         # Disable the submit button if the password field is empty
-        @passwordEntered.not()
-            .assign @ui.submit, 'attr', 'aria-disabled'
+        # Add a timeout to let the browser automatically fill it.
+        setTimeout =>
+            @passwordEntered.not()
+                .assign @ui.submit, 'attr', 'aria-disabled'
+        , 300
 
         # Select all password field content at focus
         @ui.passwd.asEventStream 'focus'

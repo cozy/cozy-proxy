@@ -61,7 +61,7 @@ describe "Proxying", ->
 
         it "Then I should get redirected to login", ->
             @response.statusCode.should.equal 200
-            @response.request.path.should.equal "/login/apps/myapp/"
+            @response.request.path.should.equal "/login?next=/apps/myapp/"
 
         it "When I send non-identified request to an existing
 private route (with params)", (done) ->
@@ -71,7 +71,7 @@ private route (with params)", (done) ->
 
         it "Then I should get redirected to login", ->
             @response.statusCode.should.equal 200
-            @response.request.path.should.equal "/login/apps/myapp/?param=a"
+            @response.request.path.should.equal "/login?next=/apps/myapp/?param=a"
 
 
     describe "Public proxying", ->

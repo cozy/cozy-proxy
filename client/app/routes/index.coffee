@@ -15,7 +15,8 @@ AuthModel = require 'states/auth'
 module.exports = class Router extends Backbone.Router
 
     routes:
-        'login(*path)(?next=*path)': 'login'
+        'login(?next=*path)':        'login'
+        'login(/*path)':             'login'
         'password/reset/:key':       'resetPassword'
         'register(?step=:step)':     'register'
 
@@ -55,6 +56,8 @@ module.exports = class Router extends Backbone.Router
     server/middlewares/authentication.coffee#L36)
     ###
     login: (path = '/') ->
+        if window.location.hash
+            path = window.location.hash
         @auth path,
             backend: '/login'
             type:    'login'

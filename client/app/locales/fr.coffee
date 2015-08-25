@@ -58,7 +58,7 @@ module.exports =
     'email smtp password tip': "Laisser vide pour utiliser le même mot de passe que pour le serveur imap"
 
     'login welcome':                "Bienvenue"
-    'login enter your password':    "Entrez votre mot de passe pour accéder à votre Cozy"
+    'login enter your password':    "Entrez votre mot de passe pour accéder à votre Cozy :"
     'login password':               "mot de passe"
     'login submit':                 "s'authentifier"
     'login auth success':           "Authentification réussie, entrons !"

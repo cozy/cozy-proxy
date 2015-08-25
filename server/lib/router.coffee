@@ -1,8 +1,8 @@
 util = require 'util'
 Client = require('request-json').JsonClient
 logger = require('printit')
-            date: false
-            prefix: 'lib:router'
+    date: false
+    prefix: 'lib:router'
 
 class Router
 

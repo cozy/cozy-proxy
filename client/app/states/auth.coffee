@@ -49,12 +49,12 @@ module.exports = class Auth extends StateModel
         req = Bacon.fromPromise $.post form.action, data
 
         # Plug success response to `@success` stream and set `@alert` to false
-        # to reset it
+        # to reset it.
         @success.plug req.map '.success'
         @alert.plug req.map false
 
         # Plug error response to `@alert` stream. We assume it's always because
-        # password isn't correct
+        # password isn't correct.
         @alert.plug req.errors().mapError
             status:  'error'
             title:   'wrong password title'

@@ -102,7 +102,7 @@ initAuth = (req, cb) ->
 # Create device :
 #       * create device document
 #       * create device access
-createDevice = (device, cb) =>
+createDevice = (device, cb) ->
     device.docType = "Device"
     # Create device document
     clientDS.post "data/", device, (err, result, docInfo) ->
@@ -125,7 +125,7 @@ createDevice = (device, cb) =>
 
 # Update device :
 #       * update device access
-updateDevice = (oldDevice, device, cb) =>
+updateDevice = (oldDevice, device, cb) ->
     path = "request/access/byApp/"
     clientDS.post path, key: oldDevice.id, (err, result, accesses) ->
         # Update access for this device
@@ -152,7 +152,7 @@ updateDevice = (oldDevice, device, cb) =>
 # Remove device :
 #       * remove device access
 #       * remove device document
-removeDevice = (device, cb) =>
+removeDevice = (device, cb) ->
     id = device.id
     # Remove Access
     clientDS.del "access/#{id}/", (err, result, body) ->
@@ -331,7 +331,8 @@ module.exports.oldReplication = (req, res, next) ->
             # the Cozy itself which is awesome because it would be easy to
             # add a permission layer and makes Cozy a true open platform
             # (easy desktop/mobile clients)
-            getProxy().web req, res, target: "http://#{couchdbHost}:#{couchdbPort}"
+            target = "http://#{couchdbHost}:#{couchdbPort}"
+            getProxy().web req, res, target: target
         else
             error = new Error "Request unauthorized"
             error.status = 401

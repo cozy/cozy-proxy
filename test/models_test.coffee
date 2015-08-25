@@ -64,25 +64,26 @@ describe "User", ->
                 email: "test"
                 password: "password"
                 timezone: "Europe/Paris"
-            User.validate(user).length.should.equal 1
+            User.validate(user).email.should.exist
+            User.validate(user).email.should.equal 'Your email address seems to be invalid.'
 
         it "wrong password", ->
-            user =
-                email: "test@cozycloud.cc"
-                password: "pas"
-                timezone: "Europe/Paris"
-            User.validate(user).length.should.equal 1
+            User.validatePassword("pas").password.should.exist
+            err = 'Your password is too short, it should contain at least 8 characters.'
+            User.validatePassword("pas").password.should.equal err
 
         it "wrong timezone", ->
             user =
                 email: "test@cozycloud.cc"
                 password: "password"
                 timezone: "blabla"
-            User.validate(user).length.should.equal 1
+            User.validate(user).timezone.should.exist
+            err = 'This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York.'
+            User.validate(user).timezone.should.equal err
 
         it "right email, right password and right timezone", ->
             user =
                 email: "test@cozycloud.cc"
                 password: "password"
                 timezone: "Europe/Paris"
-            User.validate(user).length.should.equal 0
+            Object.keys(User.validate(user)).length.should.equal 0

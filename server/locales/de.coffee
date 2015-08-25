@@ -1,3 +1,4 @@
+# coffeelint: disable=max_line_length
 module.exports =
     # error page
     "error title":             "Ups, ein Fehler ist aufgetreten"

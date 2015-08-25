@@ -44,20 +44,18 @@ User.createNew = function(data, callback) {
 };
 
 User.prototype.merge = function(data, callback) {
-  return client.put("user/merge/" + this.id + "/", data, (function(_this) {
-    return function(err, res, body) {
-      if (err != null) {
-        return callback(err);
-      } else if (res.statusCode === 404) {
-        return callback(new Error("Model does not exist"));
-      } else if (res.statusCode !== 200) {
-        err = res.statusCode + " -- " + body;
-        return callback(err);
-      } else {
-        return callback();
-      }
-    };
-  })(this));
+  return client.put("user/merge/" + this.id + "/", data, function(err, res, body) {
+    if (err != null) {
+      return callback(err);
+    } else if (res.statusCode === 404) {
+      return callback(new Error("Model does not exist"));
+    } else if (res.statusCode !== 200) {
+      err = res.statusCode + " -- " + body;
+      return callback(err);
+    } else {
+      return callback();
+    }
+  });
 };
 
 User.first = function(callback) {

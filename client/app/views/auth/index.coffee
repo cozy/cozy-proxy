@@ -55,6 +55,7 @@ module.exports = class AuthView extends Mn.LayoutView
         password = @$el.asEventStream 'focus keyup blur', @ui.passwd
                         .map '.target.value'
                         .toProperty('')
+
         # Boolean property that confirms if the input is filled or not
         @passwordEntered = password.map (value) -> !!value
 
@@ -95,8 +96,11 @@ module.exports = class AuthView extends Mn.LayoutView
             model:  @model
 
         # Disable the submit button if the password field is empty
-        @passwordEntered.not()
-            .assign @ui.submit, 'attr', 'aria-disabled'
+        # Add a timeout to let the browser automatically fill it.
+        setTimeout =>
+            @passwordEntered.not()
+                .assign @ui.submit, 'attr', 'aria-disabled'
+        , 300
 
         # Select all password field content at focus
         @ui.passwd.asEventStream 'focus'
@@ -130,3 +134,8 @@ module.exports = class AuthView extends Mn.LayoutView
         # …and change its class to reflect success
         @model.success
             .assign @ui.submit, 'toggleClass', 'btn-success'
+
+        # Re select all password field on failure.
+        @model.alert
+            .assign @ui.passwd[0], 'select'
+

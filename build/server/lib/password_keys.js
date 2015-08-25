@@ -16,41 +16,35 @@ PasswordKeys = (function() {
   PasswordKeys.prototype.initializeKeys = function(pwd, callback) {
     return this.client.post("accounts/password/", {
       password: pwd
-    }, (function(_this) {
-      return function(err, res, body) {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback();
-        }
-      };
-    })(this));
+    }, function(err, res, body) {
+      if (err) {
+        return callback(err);
+      } else {
+        return callback();
+      }
+    });
   };
 
   PasswordKeys.prototype.updateKeys = function(pwd, callback) {
     return this.client.put("accounts/password/", {
       password: pwd
-    }, (function(_this) {
-      return function(err, res, body) {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback();
-        }
-      };
-    })(this));
+    }, function(err, res, body) {
+      if (err) {
+        return callback(err);
+      } else {
+        return callback();
+      }
+    });
   };
 
   PasswordKeys.prototype.resetKeys = function(callback) {
-    return this.client.del("accounts/reset/", (function(_this) {
-      return function(err, res, body) {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback();
-        }
-      };
-    })(this));
+    return this.client.del("accounts/reset/", function(err, res, body) {
+      if (err) {
+        return callback(err);
+      } else {
+        return callback();
+      }
+    });
   };
 
   return PasswordKeys;

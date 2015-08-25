@@ -2,8 +2,8 @@ Client = require('request-json').JsonClient
 americano = require 'americano-cozy'
 async = require 'async'
 logger = require('printit')
-            date: false
-            prefix: 'models:device'
+    date: false
+    prefix: 'models:device'
 
 module.exports = Device = americano.getModel 'Device',
     login: String
@@ -49,5 +49,5 @@ Device.isAuthenticated = (login, password, callback) ->
     if isPresent or process.env.NODE_ENV is "development"
         callback true
     else
-        @update () ->
+        @update ->
             callback(cache[login]? and cache[login] is password)

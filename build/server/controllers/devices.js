@@ -125,94 +125,88 @@ initAuth = function(req, cb) {
   return cb(user);
 };
 
-createDevice = (function(_this) {
-  return function(device, cb) {
-    device.docType = "Device";
-    return clientDS.post("data/", device, function(err, result, docInfo) {
-      var access;
+createDevice = function(device, cb) {
+  device.docType = "Device";
+  return clientDS.post("data/", device, function(err, result, docInfo) {
+    var access;
+    if (err != null) {
+      return cb(err);
+    }
+    access = {
+      login: device.login,
+      password: randomString(32),
+      app: docInfo._id,
+      permissions: device.permissions || defaultPermissions
+    };
+    return clientDS.post('access/', access, function(err, result, body) {
+      var data;
       if (err != null) {
         return cb(err);
       }
-      access = {
+      data = {
+        password: access.password,
         login: device.login,
-        password: randomString(32),
-        app: docInfo._id,
-        permissions: device.permissions || defaultPermissions
+        permissions: access.permissions
       };
-      return clientDS.post('access/', access, function(err, result, body) {
-        var data;
-        if (err != null) {
-          return cb(err);
-        }
+      return cb(null, data);
+    });
+  });
+};
+
+updateDevice = function(oldDevice, device, cb) {
+  var path;
+  path = "request/access/byApp/";
+  return clientDS.post(path, {
+    key: oldDevice.id
+  }, function(err, result, accesses) {
+    var access;
+    access = {
+      login: device.login,
+      password: randomString(32),
+      app: oldDevice.id,
+      permissions: device.permissions || defaultPermissions
+    };
+    path = "access/" + accesses[0].id + "/";
+    return clientDS.put(path, access, function(err, result, body) {
+      var data, error;
+      if (err != null) {
+        console.log(err);
+        error = new Error(err);
+        return cb(error);
+      } else {
         data = {
           password: access.password,
           login: device.login,
           permissions: access.permissions
         };
         return cb(null, data);
-      });
-    });
-  };
-})(this);
-
-updateDevice = (function(_this) {
-  return function(oldDevice, device, cb) {
-    var path;
-    path = "request/access/byApp/";
-    return clientDS.post(path, {
-      key: oldDevice.id
-    }, function(err, result, accesses) {
-      var access;
-      access = {
-        login: device.login,
-        password: randomString(32),
-        app: oldDevice.id,
-        permissions: device.permissions || defaultPermissions
-      };
-      path = "access/" + accesses[0].id + "/";
-      return clientDS.put(path, access, function(err, result, body) {
-        var data, error;
-        if (err != null) {
-          console.log(err);
-          error = new Error(err);
-          return cb(error);
-        } else {
-          data = {
-            password: access.password,
-            login: device.login,
-            permissions: access.permissions
-          };
-          return cb(null, data);
-        }
-      });
-    });
-  };
-})(this);
-
-removeDevice = (function(_this) {
-  return function(device, cb) {
-    var id;
-    id = device.id;
-    return clientDS.del("access/" + id + "/", function(err, result, body) {
-      var error;
-      if (err != null) {
-        error = new Error(err);
-        error.status = 400;
-        return cd(error);
-      } else {
-        return clientDS.del("data/" + id + "/", function(err, result, body) {
-          if (err != null) {
-            error = new Error(err);
-            error.status = 400;
-            return cd(error);
-          } else {
-            return cb(null);
-          }
-        });
       }
     });
-  };
-})(this);
+  });
+};
+
+removeDevice = function(device, cb) {
+  var id;
+  id = device.id;
+  return clientDS.del("access/" + id + "/", function(err, result, body) {
+    var error;
+    if (err != null) {
+      error = new Error(err);
+      error.status = 400;
+      return cd(error);
+    } else {
+      return clientDS.del("data/" + id + "/", function(err, result, body) {
+        if (err != null) {
+          error = new Error(err);
+          error.status = 400;
+          return cd(error);
+        } else {
+          return cb(null);
+        }
+      });
+    }
+  });
+};
 
 module.exports.create = function(req, res, next) {
   var authenticator;
@@ -373,15 +367,16 @@ module.exports.oldReplication = function(req, res, next) {
   var password, ref, username;
   ref = extractCredentials(req.headers['authorization']), username = ref[0], password = ref[1];
   return deviceManager.isAuthenticated(username, password, function(auth) {
-    var error;
+    var error, target;
     if (auth) {
       if (process.env.NODE_ENV === "production") {
         req.headers['authorization'] = getCredentialsHeader();
       } else {
         req.headers['authorization'] = null;
       }
+      target = "http://" + couchdbHost + ":" + couchdbPort;
       return getProxy().web(req, res, {
-        target: "http://" + couchdbHost + ":" + couchdbPort
+        target: target
       });
     } else {
       error = new Error("Request unauthorized");

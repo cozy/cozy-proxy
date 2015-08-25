@@ -25,8 +25,10 @@ module.exports.authenticate = function(req, res, next) {
           return next(new Error(localization.t('error keys not intialized')));
         } else {
           return req.logIn(user, function(err, info) {
+            var msg;
             if (err) {
-              error = new Error(localization.t("error login failed"));
+              msg = localization.t("error login failed");
+              error = new Error(msg);
               error.status = 401;
               return next(error);
             } else {

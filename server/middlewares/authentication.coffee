@@ -20,7 +20,8 @@ module.exports.authenticate = (req, res, next) ->
                 else
                     req.logIn user, (err, info) ->
                         if err
-                            error = new Error localization.t "error login failed"
+                            msg = localization.t "error login failed"
+                            error = new Error msg
                             error.status = 401
                             next error
                         else

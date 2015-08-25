@@ -95,13 +95,6 @@ module.exports = class AuthView extends Mn.LayoutView
             prefix: @options.type
             model:  @model
 
-        # Disable the submit button if the password field is empty
-        # Add a timeout to let the browser automatically fill it.
-        setTimeout =>
-            @passwordEntered.not()
-                .assign @ui.submit, 'attr', 'aria-disabled'
-        , 300
-
         # Select all password field content at focus
         @ui.passwd.asEventStream 'focus'
             .assign @ui.passwd[0], 'select'
@@ -117,6 +110,18 @@ module.exports = class AuthView extends Mn.LayoutView
         setTimeout =>
             @ui.passwd.focus()
         , 100
+
+        # Disable the submit button if the password field is empty
+        # Add a timeout to let the browser automatically fill it.
+        setTimeout =>
+            @passwordEntered.not()
+                .assign @ui.submit, 'attr', 'aria-disabled'
+            # Focus again to avoid blinks and ensure that everything is
+            # selected.
+            # Without it Firefox doesn't select the field content in every
+            # cases.
+            @ui.passwd.focus()
+        , 300
 
         # Assign the button busy state to the state-machine busy state
         @model.isBusy

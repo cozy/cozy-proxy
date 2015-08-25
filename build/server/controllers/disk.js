@@ -64,46 +64,6 @@ getAuthController = function() {
   }
 };
 
-<<<<<<< HEAD
-module.exports.getSpace = (function(_this) {
-  return function(req, res, next) {
-    var password, ref, username;
-    ref = extractCredentials(req.headers['authorization']), username = ref[0], password = ref[1];
-    return deviceManager.isAuthenticated(username, password, function(auth) {
-      var error;
-      if (auth) {
-        controllerClient.setToken(getAuthController());
-        return controllerClient.get('diskinfo', function(err, resp, body) {
-          if (err || resp.statusCode !== 200) {
-            return recoverDiskSpace((function(_this) {
-              return function(err, body) {
-                var error;
-                if (err != null) {
-                  error = new Error(err);
-                  error.status = 500;
-                  return next(error);
-                } else {
-                  return res.send(200, {
-                    diskSpace: body
-                  });
-                }
-              };
-            })(this));
-          } else {
-            return res.send(200, {
-              diskSpace: body
-            });
-          }
-        });
-      } else {
-        error = new Error("Request unauthorized");
-        error.status = 401;
-        return next(error);
-      }
-    });
-  };
-})(this);
-=======
 module.exports.getSpace = function(req, res, next) {
   var password, ref, username;
   ref = extractCredentials(req.headers['authorization']), username = ref[0], password = ref[1];
@@ -138,4 +98,3 @@ module.exports.getSpace = function(req, res, next) {
     }
   });
 };
->>>>>>> 1c3d207cf9c38cdabf5506cd3275dd8db4e68bbc

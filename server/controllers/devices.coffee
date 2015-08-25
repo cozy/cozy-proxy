@@ -39,7 +39,7 @@ randomString = (length) ->
 extractCredentials = (header) ->
     if header?
         authDevice = header.replace 'Basic ', ''
-        authDevice = new Buffer(authDevice, 'base64').toString 'ascii'
+        authDevice = new Buffer(authDevice, 'base64').toString 'utf8'
         # username should be 'owner'
         username = authDevice.substr(0, authDevice.indexOf(':'))
         password = authDevice.substr(authDevice.indexOf(':') + 1)

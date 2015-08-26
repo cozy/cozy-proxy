@@ -5,10 +5,12 @@ Client = require("request-json").JsonClient;
 
 PasswordKeys = (function() {
   function PasswordKeys() {
+    var nodeEnv;
     this.client = new Client("http://localhost:9101/");
     this.name = process.env.NAME;
     this.token = process.env.TOKEN;
-    if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
+    nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv === "production" || nodeEnv === "test") {
       this.client.setBasicAuth(this.name, this.token);
     }
   }

@@ -33,7 +33,9 @@ config =
             americano.errorHandler
                 dumpExceptions: true
                 showStack: true
-            americano.static path.join __dirname, '/../client/public'
+            americano.static path.join __dirname, '/../client/public',
+                maxAge: 5 * 60 * 1000
+
             selectiveBodyParser
             usetracker
             authSteps[0]

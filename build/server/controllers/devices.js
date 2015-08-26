@@ -53,7 +53,7 @@ extractCredentials = function(header) {
   var authDevice, password, username;
   if (header != null) {
     authDevice = header.replace('Basic ', '');
-    authDevice = new Buffer(authDevice, 'base64').toString('ascii');
+    authDevice = new Buffer(authDevice, 'base64').toString('utf8');
     username = authDevice.substr(0, authDevice.indexOf(':'));
     password = authDevice.substr(authDevice.indexOf(':') + 1);
     return [username, password];

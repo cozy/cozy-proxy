@@ -34,8 +34,8 @@ module.exports =
     "reset password email from":    "Your Cozy <no-reply@%{domain}>"
     "reset password email subject": "[Cozy] Resetting your password"
     "reset password email text":    """
-        It seems that you forgot the password to your Cozy.
-        Not to worry, simply follow the link below to create a new one:
+        It seems that you forgot the password of your Cozy.
+        Don't worry, simply follow the link below to create a new one:
 
         https://%{domain}/password/reset/%{key}
 

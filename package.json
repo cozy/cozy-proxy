@@ -1,0 +1,55 @@
+{
+  "name": "cozy-proxy",
+  "version": "2.1.1",
+  "author": "Cozy Cloud <contact@cozycloud.cc> (http://cozycloud.cc)",
+  "licenses": [
+    {
+      "type": "AGPL v3",
+      "url": "http://www.gnu.org/licenses/agpl-3.0.html"
+    }
+  ],
+  "engines": [
+    "node >= 0.8.0"
+  ],
+  "dependencies": {
+    "americano": "0.3.7",
+    "americano-cozy": "0.2.6",
+    "async": "0.2.10",
+    "bcrypt": "0.8.1",
+    "cookie-parser": "1.3.2",
+    "cookie-session": "1.0.2",
+    "graceful-fs": "^3.0.2",
+    "http-proxy": "1.11.0",
+    "jade": "^1.11.0",
+    "locale": "0.0.14",
+    "node-polyglot": "0.3.0",
+    "passport": "0.2.0",
+    "passport-local": "1.0.0",
+    "printit": "0.1.3",
+    "randomstring": "1.0.3",
+    "request-json": "0.4.10"
+  },
+  "devDependencies": {
+    "chai": "1.9.0",
+    "coffee-coverage": "0.4.2",
+    "coffee-script": "latest",
+    "glob": "^5.0.12",
+    "mocha": "1.18.2",
+    "nock": "0.27.2",
+    "prepend-file": "^1.3.0",
+    "socket.io": "0.9.16",
+    "socket.io-client": "0.9.16",
+    "xmlhttprequest": "1.6.0"
+  },
+  "contributors": [
+    "Zoe Bellot",
+    "Romain Foucault",
+    "Frank Rousseau",
+    "Joseph Silvestre"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "test": "cake --use-js tests",
+    "start": "node build/server.js"
+  }
+}

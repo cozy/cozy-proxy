@@ -1,0 +1,131 @@
+label.with-input
+    display    block
+    position   relative
+    margin-top 1.2em
+
+    input[type=text]
+    input[type=email]
+    input[type=number]
+    input[type=password]
+        @extend   $reset-input
+        @extend   $full-width-percentage
+        @extend   $input-background
+        @extend   $border-radius-01
+        @extend   $box-border-bottom
+        @extend   $transition-sexy
+        padding   1.8em 0.8em 0.6em
+        font-size 1.1em
+
+        &:hover
+            border-color $grey-04
+
+        &:focus
+            border-color        $blue
+            background-color    rgba($grey-01, 0.25)
+
+    &[aria-invalid=true]
+        input[type=text]
+        input[type=email]
+        input[type=number]
+        input[type=password]
+            border-color $red
+
+        .indicator span
+            display block
+
+        & + .tips
+            display none
+
+    & > span:first-child
+        position  absolute
+        top       0.8em
+        left      0.8em
+        @extend   $headings-04
+
+    .indicator
+        position  absolute
+        top       0.5em
+        right     0.8em
+        font-size 1.1em
+        color     $red
+
+        span
+            display none
+
+.error
+    margin-top 0.2em
+    color $red
+
+.checkboxes
+    margin-bottom  1em
+
+.checkbox
+    display block
+    margin  0.8em 0
+
+input[type=checkbox]
+    margin-right 0.5em
+
+// Group of inputs
+.input-group
+    display         flex
+    justify-content space-between
+
+    @media (max-width: 380px)
+        display block
+
+.input-group-02-third
+    .with-input:first-child
+        width 64%
+
+        @media (max-width: 380px)
+            width 100%
+
+    .with-input:last-child
+        width 33%
+
+        @media (max-width: 380px)
+            width 100%
+
+fieldset
+    margin  1em 0
+    padding 0
+    border  none
+
+    legend
+        color $blue
+
+        &:hover
+            cursor pointer
+
+    .content
+        padding-bottom 1em
+
+    input[type=text]
+        margin 0
+
+progress
+    width         100%
+    margin        1em 0
+    color         $blue
+    font-size     .6em
+    line-height   1.5em
+    text-indent   .5em
+    height        1em
+    background    $grey-01
+    border        none
+    border-radius 20px
+
+    // chrome and safari
+    &::-webkit-progress-bar
+        background    $grey-01
+        border-radius 20px
+
+    &::-webkit-progress-value
+        background    $blue
+        border-radius 20px
+
+    // firefox
+    &::-moz-progress-bar
+        background    $blue
+        border-radius 20px

@@ -1,0 +1,12 @@
+extends view_base
+
+block region
+    h1 #{t(prefix + ' welcome')} #{username}
+    p.help#login-password-tip= t(prefix + ' enter your password')
+    label.with-input(for="#{prefix}-password", aria-describedby="#{prefix}-password-tip")
+        span= t(prefix + ' password')
+        input(id="#{prefix}-password" name="password" type="password" autofocus=true)
+
+
+block controls
+    button.btn.btn-primary(type="submit")= t(prefix + ' submit')

@@ -1,0 +1,44 @@
+.btn
+    display        block
+    @extend        $reset-link
+    @extend        $padded-01
+    @extend        $border-radius-01
+    margin-top     1em
+    border         none
+    text-align     center
+    text-transform uppercase
+    @extend        $transition-sexy
+
+.btn-primary
+    @extend          $full-width-percentage
+    background-color $blue
+    color            #fff
+
+    &:hover
+        background-color darken($blue, 20%)
+
+.btn-secondary
+    background-color transparent
+    border           2px solid $grey-03
+    color            $grey-05
+
+    &:hover
+        background-color $grey-04
+        border-color     $grey-04
+        color            #ffffff
+
+.btn-success
+    background-color $green
+
+.btn-group
+    display         flex
+    justify-content space-between
+
+.btn-group-02 .btn
+        width 49%
+
+// btn google play
+.btn-store
+    display    block
+    margin     1em 0
+    text-align center

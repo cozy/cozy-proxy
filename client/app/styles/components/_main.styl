@@ -1,0 +1,116 @@
+*
+    box-sizing border-box
+
+[aria-disabled="true"]
+    opacity 0.4
+    cursor not-allowed
+
+[aria-busy="true"]
+    position    relative
+    font-family 'Adobe Blank'
+
+    &::after
+        content   url('data:image/svg+xml;utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20fill%3D%22%23fff%22%3E%3Cpath%20opacity%3D%22.25%22%20d%3D%22M16%200%20A16%2016%200%200%200%2016%2032%20A16%2016%200%200%200%2016%200%20M16%204%20A12%2012%200%200%201%2016%2028%20A12%2012%200%200%201%2016%204%22%2F%3E%3Cpath%20d%3D%22M16%200%20A16%2016%200%200%201%2032%2016%20L28%2016%20A12%2012%200%200%200%2016%204z%22%20transform%3D%22rotation%22%3E%3CanimateTransform%20attributeName%3D%22transform%22%20type%3D%22rotate%22%20from%3D%220%2016%2016%22%20to%3D%22360%2016%2016%22%20dur%3D%220.8s%22%20begin%3D%220s%22%20repeatCount%3D%22indefinite%22%20%2F%3E%3C%2Fpath%3E%3C%2Fsvg%3E')
+        position  absolute
+        top       50%
+        left      50%
+        transform translateX(-50%) translateY(-50%)
+        display   block
+        width     1.4em
+        height    1.4em
+
+body
+    @extend $body-background
+    @extend $font
+
+main
+    @extend $center-div
+    @extend $full-height-vp
+
+h1
+    margin      0.5em 0 0.3em
+    font-size   1.6em
+    line-height 1.1em
+    font-weight normal
+    text-align  center
+
+h2
+    margin  0
+    @extend $headings-02
+
+hr
+    @extend    $marged-vt-02
+    border     none
+    border-top 2px solid $grey-02
+
+a
+    color           $blue
+    text-decoration none
+
+    &:not(.btn):hover
+        text-decoration underline
+
+p
+    margin 0.2em 0
+
+.tips
+    margin-top 0.2em
+    @extend $low-spot
+
+.content-block
+    margin-bottom 2em
+
+.google-services-list label
+    display     flex
+    align-items center
+    margin 0.5em 2em
+
+.feedback ul
+    display         flex
+    justify-content center
+    margin          1em 0
+    padding         0
+    list-style      none
+
+    li
+        width            12px
+        height           12px
+        margin           0 0.1em
+        background-color $grey-02
+        @extend          $border-radius-round
+        text-indent      -100em
+
+        &[aria-selected=true]
+            background-color $grey-04
+
+        &[aria-selected=true] ~ [aria-selected=false]
+            background-color transparent
+            border 1px solid $grey-04
+
+.help
+    margin-top 0
+    color      $grey-05
+    font-size  1.1em
+    text-align center
+
+// login Section
+.auth
+    .feedback
+        & > div
+            margin-top   1.2em
+            padding-left 0.5em
+            border-left  4px solid transparent
+
+        .success
+            border-color $green
+
+        .error
+            border-color $red
+
+        .alert strong
+            color          $grey-08
+            font-size      0.95em
+            text-transform uppercase
+
+        p
+            color $grey-05

@@ -17,9 +17,17 @@ localization = require('../lib/localization_manager');
 
 passwordKeys = require('../lib/password_keys');
 
-module.exports.registerIndex = function(req, res) {
+module.exports.registerIndex = function(req, res, next) {
   return User.first(function(err, user) {
-    if (user != null) {
+    var error;
+    if (err != null) {
+      error = new Error("[Error to access cozy user] " + err.code);
+      error.status = 500;
+      error.template = {
+        name: 'error'
+      };
+      return next(error);
+    } else if (user != null) {
       return res.redirect('/login');
     } else {
       localization.setLocale(req.headers['accept-language']);

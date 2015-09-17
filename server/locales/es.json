@@ -1,4 +1,4 @@
-module.exports = {
+{
   "error title": "¡Oh!, ha ocurrido un error",
   "error headline": "Parece que algo no funciona.",
   "error reinsurance": "¡No se preocupe, quizás no sea grave!",
@@ -23,4 +23,3 @@ module.exports = {
   "reset password email subject": "[Cozy] Inicializando su contraseña",
   "reset password email text": "Parece que a usted se le ha olvidado la contraseña de su Cozy.\nNo se preocupe, siga simplemente el enlace siguiente para definir una nueva :\n\nhttps://%{domain}/password/reset/%{key}\n\nDespués de eso, ¡no olvide actualizar sus datos cifrados!"
 }
-;

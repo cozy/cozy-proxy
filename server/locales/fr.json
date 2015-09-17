@@ -1,4 +1,4 @@
-module.exports = {
+{
   "error title": "Oups, une erreur est survenue",
   "error headline": "Il semble que quelque chose se soit mal passé.",
   "error reinsurance": "Ne vous inquiétez pas, ce n'est probablement pas trop grave !",
@@ -26,4 +26,3 @@ module.exports = {
   "invalid timezone": "Ce fuseau horaire n'est pas valide. Utilisez un format <Continent>/<Pays>, par exemple Europe/Paris.",
   "password too short": "Votre mot de passe est trop court, il doit contenir au moins 8 caractères."
 }
-;

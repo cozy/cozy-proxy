@@ -1,6 +1,7 @@
 {
   "dependencies": {},
   "devDependencies": {
+    "json-brunch": "^1.5.4",
     "autoprefixer": "^5.2.0",
     "bower": "^1.4.1",
     "browser-sync-brunch": "0.0.9",

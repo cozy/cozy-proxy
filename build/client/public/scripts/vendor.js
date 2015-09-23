@@ -1,42 +1,59 @@
-(function(/*! Brunch !*/) {
+(function() {
   'use strict';
 
-  var globals = typeof window !== 'undefined' ? window : global;
+  var globals = typeof window === 'undefined' ? global : window;
   if (typeof globals.require === 'function') return;
 
   var modules = {};
   var cache = {};
+  var has = ({}).hasOwnProperty;
 
-  var has = function(object, name) {
-    return ({}).hasOwnProperty.call(object, name);
+  var aliases = {};
+
+  var endsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
   };
 
-  var expand = function(root, name) {
-    var results = [], parts, part;
-    if (/^\.\.?(\/|$)/.test(name)) {
-      parts = [root, name].join('/').split('/');
-    } else {
-      parts = name.split('/');
-    }
-    for (var i = 0, length = parts.length; i < length; i++) {
-      part = parts[i];
-      if (part === '..') {
-        results.pop();
-      } else if (part !== '.' && part !== '') {
-        results.push(part);
+  var unalias = function(alias, loaderPath) {
+    var start = 0;
+    if (loaderPath) {
+      if (loaderPath.indexOf('components/' === 0)) {
+        start = 'components/'.length;
+      }
+      if (loaderPath.indexOf('/', start) > 0) {
+        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
       }
     }
-    return results.join('/');
+    var result = aliases[alias + '/index.js'] || aliases[loaderPath + '/deps/' + alias + '/index.js'];
+    if (result) {
+      return 'components/' + result.substring(0, result.length - '.js'.length);
+    }
+    return alias;
   };
 
+  var expand = (function() {
+    var reg = /^\.\.?(\/|$)/;
+    return function(root, name) {
+      var results = [], parts, part;
+      parts = (reg.test(name) ? root + '/' + name : name).split('/');
+      for (var i = 0, length = parts.length; i < length; i++) {
+        part = parts[i];
+        if (part === '..') {
+          results.pop();
+        } else if (part !== '.' && part !== '') {
+          results.push(part);
+        }
+      }
+      return results.join('/');
+    };
+  })();
   var dirname = function(path) {
     return path.split('/').slice(0, -1).join('/');
   };
 
   var localRequire = function(path) {
     return function(name) {
-      var dir = dirname(path);
-      var absolute = expand(dir, name);
+      var absolute = expand(dirname(path), name);
       return globals.require(absolute, path);
     };
   };
@@ -51,21 +68,26 @@
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
+    path = unalias(name, loaderPath);
 
-    if (has(cache, path)) return cache[path].exports;
-    if (has(modules, path)) return initModule(path, modules[path]);
+    if (has.call(cache, path)) return cache[path].exports;
+    if (has.call(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
-    if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
+    if (has.call(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has.call(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
   };
 
-  var define = function(bundle, fn) {
+  require.alias = function(from, to) {
+    aliases[to] = from;
+  };
+
+  require.register = require.define = function(bundle, fn) {
     if (typeof bundle === 'object') {
       for (var key in bundle) {
-        if (has(bundle, key)) {
+        if (has.call(bundle, key)) {
           modules[key] = bundle[key];
         }
       }
@@ -74,21 +96,18 @@
     }
   };
 
-  var list = function() {
+  require.list = function() {
     var result = [];
     for (var item in modules) {
-      if (has(modules, item)) {
+      if (has.call(modules, item)) {
         result.push(item);
       }
     }
     return result;
   };
 
+  require.brunch = true;
   globals.require = require;
-  globals.require.define = define;
-  globals.require.register = define;
-  globals.require.list = list;
-  globals.require.brunch = true;
 })();
 /*!
  * jQuery JavaScript Library v2.1.4
@@ -9302,7 +9321,7 @@ return jQuery;
 }));
 
 (function() {
-  var Bacon, BufferingSource, Bus, CompositeUnsubscribe, ConsumingSource, Desc, Dispatcher, End, Error, Event, EventStream, Exception, Initial, Next, None, Observable, Property, PropertyDispatcher, Some, Source, UpdateBarrier, _, addPropertyInitValueToStream, argumentsToObservables, argumentsToObservablesAndFunction, assert, assertArray, assertEventStream, assertFunction, assertNoArguments, assertObservable, assertObservableIsProperty, assertString, cloneArray, constantToFunction, containsDuplicateDeps, convertArgsToFunction, describe, endEvent, eventIdCounter, eventMethods, findDeps, findHandlerMethods, flatMap_, former, idCounter, initialEvent, isArray, isFieldKey, isObservable, latter, liftCallback, makeFunction, makeFunctionArgs, makeFunction_, makeObservable, makeSpawner, nextEvent, nop, partiallyApplied, recursionDepth, ref, registerObs, spys, toCombinator, toEvent, toFieldExtractor, toFieldKey, toOption, toSimpleExtractor, valueAndEnd, withDesc, withMethodCallSupport,
+  var Bacon, BufferingSource, Bus, CompositeUnsubscribe, ConsumingSource, Desc, Dispatcher, End, Error, Event, EventStream, Exception, Initial, Next, None, Observable, Property, PropertyDispatcher, Some, Source, UpdateBarrier, _, addPropertyInitValueToStream, assert, assertArray, assertEventStream, assertFunction, assertNoArguments, assertObservable, assertObservableIsProperty, assertString, cloneArray, constantToFunction, containsDuplicateDeps, convertArgsToFunction, describe, endEvent, eventIdCounter, eventMethods, findDeps, findHandlerMethods, flatMap_, former, idCounter, initialEvent, isArray, isFieldKey, isObservable, latter, liftCallback, makeFunction, makeFunctionArgs, makeFunction_, makeObservable, makeSpawner, nextEvent, nop, partiallyApplied, recursionDepth, ref, registerObs, spys, toCombinator, toEvent, toFieldExtractor, toFieldKey, toOption, toSimpleExtractor, valueAndEnd, withDesc, withMethodCallSupport,
     hasProp = {}.hasOwnProperty,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     slice = [].slice,
@@ -9314,7 +9333,7 @@ return jQuery;
     }
   };
 
-  Bacon.version = '0.7.73';
+  Bacon.version = '0.7.66';
 
   Exception = (typeof global !== "undefined" && global !== null ? global : this).Error;
 
@@ -10148,9 +10167,6 @@ return jQuery;
     extend(Next, superClass);
 
     function Next(valueF, eager) {
-      if (!(this instanceof Next)) {
-        return new Next(valueF, eager);
-      }
       Next.__super__.constructor.call(this);
       if (!eager && _.isFunction(valueF) || valueF instanceof Next) {
         this.valueF = valueF;
@@ -10218,11 +10234,8 @@ return jQuery;
   Initial = (function(superClass) {
     extend(Initial, superClass);
 
-    function Initial(valueF, eager) {
-      if (!(this instanceof Initial)) {
-        return new Initial(valueF, eager);
-      }
-      Initial.__super__.constructor.call(this, valueF, eager);
+    function Initial() {
+      return Initial.__super__.constructor.apply(this, arguments);
     }
 
     Initial.prototype.isInitial = function() {
@@ -10249,9 +10262,7 @@ return jQuery;
     extend(End, superClass);
 
     function End() {
-      if (!(this instanceof End)) {
-        return new End;
-      }
+      return End.__super__.constructor.apply(this, arguments);
     }
 
     End.prototype.isEnd = function() {
@@ -10277,11 +10288,8 @@ return jQuery;
   Error = (function(superClass) {
     extend(Error, superClass);
 
-    function Error(error) {
-      if (!(this instanceof Error)) {
-        return new Error(error);
-      }
-      this.error = error;
+    function Error(error1) {
+      this.error = error1;
     }
 
     Error.prototype.isError = function() {
@@ -10639,9 +10647,6 @@ return jQuery;
     extend(EventStream, superClass);
 
     function EventStream(desc, subscribe, handler) {
-      if (!(this instanceof EventStream)) {
-        return new EventStream(desc, subscribe, handler);
-      }
       if (_.isFunction(desc)) {
         handler = subscribe;
         subscribe = desc;
@@ -10868,6 +10873,7 @@ return jQuery;
             var reply;
             reply = flushWhileTriggers();
             if (ends) {
+              ends = false;
               if (_.all(sources, cannotSync) || _.all(pats, cannotMatch)) {
                 reply = Bacon.noMore;
                 sink(endEvent());
@@ -11175,25 +11181,12 @@ return jQuery;
     });
   };
 
-  argumentsToObservables = function(args) {
-    if (isArray(args[0])) {
-      return args[0];
-    } else {
-      return Array.prototype.slice.call(args);
-    }
-  };
-
-  argumentsToObservablesAndFunction = function(args) {
-    if (_.isFunction(args[0])) {
-      return [argumentsToObservables(Array.prototype.slice.call(args, 1)), args[0]];
-    } else {
-      return [argumentsToObservables(Array.prototype.slice.call(args, 0, args.length - 1)), _.last(args)];
-    }
-  };
-
   Bacon.combineAsArray = function() {
     var index, j, len1, s, sources, stream, streams;
-    streams = argumentsToObservables(arguments);
+    streams = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if (streams.length === 1 && isArray(streams[0])) {
+      streams = streams[0];
+    }
     for (index = j = 0, len1 = streams.length; j < len1; index = ++j) {
       stream = streams[index];
       if (!(isObservable(stream))) {
@@ -11227,11 +11220,79 @@ return jQuery;
   };
 
   Bacon.combineWith = function() {
-    var f, ref, streams;
-    ref = argumentsToObservablesAndFunction(arguments), streams = ref[0], f = ref[1];
+    var f, streams;
+    f = arguments[0], streams = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     return withDesc(new Bacon.Desc(Bacon, "combineWith", [f].concat(slice.call(streams))), Bacon.combineAsArray(streams).map(function(values) {
       return f.apply(null, values);
     }));
+  };
+
+  Bacon.combineTemplate = function(template) {
+    var applyStreamValue, combinator, compile, compileTemplate, constantValue, current, funcs, mkContext, setValue, streams;
+    funcs = [];
+    streams = [];
+    current = function(ctxStack) {
+      return ctxStack[ctxStack.length - 1];
+    };
+    setValue = function(ctxStack, key, value) {
+      return current(ctxStack)[key] = value;
+    };
+    applyStreamValue = function(key, index) {
+      return function(ctxStack, values) {
+        return setValue(ctxStack, key, values[index]);
+      };
+    };
+    constantValue = function(key, value) {
+      return function(ctxStack) {
+        return setValue(ctxStack, key, value);
+      };
+    };
+    mkContext = function(template) {
+      if (isArray(template)) {
+        return [];
+      } else {
+        return {};
+      }
+    };
+    compile = function(key, value) {
+      var popContext, pushContext;
+      if (isObservable(value)) {
+        streams.push(value);
+        return funcs.push(applyStreamValue(key, streams.length - 1));
+      } else if (value === Object(value) && typeof value !== "function" && !(value instanceof RegExp) && !(value instanceof Date)) {
+        pushContext = function(key) {
+          return function(ctxStack) {
+            var newContext;
+            newContext = mkContext(value);
+            setValue(ctxStack, key, newContext);
+            return ctxStack.push(newContext);
+          };
+        };
+        popContext = function(ctxStack) {
+          return ctxStack.pop();
+        };
+        funcs.push(pushContext(key));
+        compileTemplate(value);
+        return funcs.push(popContext);
+      } else {
+        return funcs.push(constantValue(key, value));
+      }
+    };
+    compileTemplate = function(template) {
+      return _.each(template, compile);
+    };
+    compileTemplate(template);
+    combinator = function(values) {
+      var ctxStack, f, j, len1, rootContext;
+      rootContext = mkContext(template);
+      ctxStack = [rootContext];
+      for (j = 0, len1 = funcs.length; j < len1; j++) {
+        f = funcs[j];
+        f(ctxStack, values);
+      }
+      return rootContext;
+    };
+    return withDesc(new Bacon.Desc(Bacon, "combineTemplate", [template]), Bacon.combineAsArray(streams).map(combinator));
   };
 
   Bacon.Observable.prototype.combine = function(other, f) {
@@ -11239,6 +11300,12 @@ return jQuery;
     combinator = toCombinator(f);
     return withDesc(new Bacon.Desc(this, "combine", [other, f]), Bacon.combineAsArray(this, other).map(function(values) {
       return combinator(values[0], values[1]);
+    }));
+  };
+
+  Bacon.Observable.prototype.decode = function(cases) {
+    return withDesc(new Bacon.Desc(this, "decode", [cases]), this.combine(Bacon.combineTemplate(cases), function(key, values) {
+      return values[key];
     }));
   };
 
@@ -11356,15 +11423,14 @@ return jQuery;
       end: void 0,
       values: [],
       flush: function() {
-        var reply, valuesToPush;
+        var reply;
         if (this.scheduled) {
           Bacon.scheduler.clearTimeout(this.scheduled);
           this.scheduled = null;
         }
         if (this.values.length > 0) {
-          valuesToPush = this.values;
+          reply = this.push(nextEvent(this.values));
           this.values = [];
-          reply = this.push(nextEvent(valuesToPush));
           if (this.end != null) {
             return this.push(this.end);
           } else if (reply !== Bacon.noMore) {
@@ -11599,9 +11665,6 @@ return jQuery;
       this.guardedSink = bind(this.guardedSink, this);
       this.subscribeAll = bind(this.subscribeAll, this);
       this.unsubAll = bind(this.unsubAll, this);
-      if (!(this instanceof Bus)) {
-        return new Bus();
-      }
       this.sink = void 0;
       this.subscriptions = [];
       this.ended = false;
@@ -11747,74 +11810,6 @@ return jQuery;
     });
   });
 
-  Bacon.combineTemplate = function(template) {
-    var applyStreamValue, combinator, compile, compileTemplate, constantValue, current, funcs, mkContext, pushContext, setValue, streams;
-    funcs = [];
-    streams = [];
-    current = function(ctxStack) {
-      return ctxStack[ctxStack.length - 1];
-    };
-    setValue = function(ctxStack, key, value) {
-      return current(ctxStack)[key] = value;
-    };
-    applyStreamValue = function(key, index) {
-      return function(ctxStack, values) {
-        return setValue(ctxStack, key, values[index]);
-      };
-    };
-    constantValue = function(key, value) {
-      return function(ctxStack) {
-        return setValue(ctxStack, key, value);
-      };
-    };
-    mkContext = function(template) {
-      if (isArray(template)) {
-        return [];
-      } else {
-        return {};
-      }
-    };
-    pushContext = function(key, value) {
-      return function(ctxStack) {
-        var newContext;
-        newContext = mkContext(value);
-        setValue(ctxStack, key, newContext);
-        return ctxStack.push(newContext);
-      };
-    };
-    compile = function(key, value) {
-      var popContext;
-      if (isObservable(value)) {
-        streams.push(value);
-        return funcs.push(applyStreamValue(key, streams.length - 1));
-      } else if (value === Object(value) && typeof value !== "function" && !(value instanceof RegExp) && !(value instanceof Date)) {
-        popContext = function(ctxStack) {
-          return ctxStack.pop();
-        };
-        funcs.push(pushContext(key, value));
-        compileTemplate(value);
-        return funcs.push(popContext);
-      } else {
-        return funcs.push(constantValue(key, value));
-      }
-    };
-    compileTemplate = function(template) {
-      return _.each(template, compile);
-    };
-    compileTemplate(template);
-    combinator = function(values) {
-      var ctxStack, f, j, len1, rootContext;
-      rootContext = mkContext(template);
-      ctxStack = [rootContext];
-      for (j = 0, len1 = funcs.length; j < len1; j++) {
-        f = funcs[j];
-        f(ctxStack, values);
-      }
-      return rootContext;
-    };
-    return withDesc(new Bacon.Desc(Bacon, "combineTemplate", [template]), Bacon.combineAsArray(streams).map(combinator));
-  };
-
   addPropertyInitValueToStream = function(property, stream) {
     var justInitValue;
     justInitValue = new EventStream(describe(property, "justInitValue"), function(sink) {
@@ -11937,17 +11932,10 @@ return jQuery;
     }));
   };
 
-  Bacon.Observable.prototype.decode = function(cases) {
-    return withDesc(new Bacon.Desc(this, "decode", [cases]), this.combine(Bacon.combineTemplate(cases), function(key, values) {
-      return values[key];
-    }));
-  };
-
   Bacon.Observable.prototype.scan = function(seed, f) {
-    var acc, initHandled, resultProperty, subscribe;
+    var acc, resultProperty, subscribe;
     f = toCombinator(f);
     acc = toOption(seed);
-    initHandled = false;
     subscribe = (function(_this) {
       return function(sink) {
         var initSent, reply, sendInit, unsub;
@@ -11957,7 +11945,7 @@ return jQuery;
         sendInit = function() {
           if (!initSent) {
             return acc.forEach(function(value) {
-              initSent = initHandled = true;
+              initSent = true;
               reply = sink(new Initial(function() {
                 return value;
               }));
@@ -11971,13 +11959,13 @@ return jQuery;
         unsub = _this.dispatcher.subscribe(function(event) {
           var next, prev;
           if (event.hasValue()) {
-            if (initHandled && event.isInitial()) {
+            if (initSent && event.isInitial()) {
               return Bacon.more;
             } else {
               if (!event.isInitial()) {
                 sendInit();
               }
-              initSent = initHandled = true;
+              initSent = true;
               prev = acc.getOrElse(void 0);
               next = f(prev, event.value());
               acc = new Some(next);
@@ -12246,14 +12234,14 @@ return jQuery;
   };
 
   Bacon.EventStream.prototype.holdWhen = function(valve) {
-    var bufferedValues, onHold, src;
+    var bufferedValues, composite, onHold, src, subscribed;
+    composite = new CompositeUnsubscribe();
     onHold = false;
     bufferedValues = [];
+    subscribed = false;
     src = this;
     return new EventStream(new Bacon.Desc(this, "holdWhen", [valve]), function(sink) {
-      var composite, endIfBothEnded, subscribed;
-      composite = new CompositeUnsubscribe();
-      subscribed = false;
+      var endIfBothEnded;
       endIfBothEnded = function(unsub) {
         if (typeof unsub === "function") {
           unsub();
@@ -12349,7 +12337,10 @@ return jQuery;
 
   Bacon.mergeAll = function() {
     var streams;
-    streams = argumentsToObservables(arguments);
+    streams = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if (isArray(streams[0])) {
+      streams = streams[0];
+    }
     if (streams.length) {
       return new EventStream(new Bacon.Desc(Bacon, "mergeAll", streams), function(sink) {
         var ends, sinks, smartSink;
@@ -12654,7 +12645,10 @@ return jQuery;
 
   Bacon.zipAsArray = function() {
     var streams;
-    streams = argumentsToObservables(arguments);
+    streams = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if (isArray(streams[0])) {
+      streams = streams[0];
+    }
     return withDesc(new Bacon.Desc(Bacon, "zipAsArray", streams), Bacon.zipWith(streams, function() {
       var xs;
       xs = 1 <= arguments.length ? slice.call(arguments, 0) : [];
@@ -12664,7 +12658,10 @@ return jQuery;
 
   Bacon.zipWith = function() {
     var f, ref1, streams;
-    ref1 = argumentsToObservablesAndFunction(arguments), streams = ref1[0], f = ref1[1];
+    f = arguments[0], streams = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!_.isFunction(f)) {
+      ref1 = [f, streams[0]], streams = ref1[0], f = ref1[1];
+    }
     streams = _.map((function(s) {
       return s.toEventStream();
     }), streams);
@@ -12745,9 +12742,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     define([], function() {
       return Bacon;
     });
-    if (typeof this !== "undefined" && this !== null) {
-      this.Bacon = Bacon;
-    }
+    this.Bacon = Bacon;
   } else if ((typeof module !== "undefined" && module !== null) && (module.exports != null)) {
     module.exports = Bacon;
     Bacon.Bacon = Bacon;
@@ -14306,7 +14301,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   }
 }.call(this));
 
-//     Backbone.js 1.2.3
+//     Backbone.js 1.2.1
 
 //     (c) 2010-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Backbone may be freely distributed under the MIT license.
@@ -14349,10 +14344,10 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   var previousBackbone = root.Backbone;
 
   // Create a local reference to a common array method we'll want to use later.
-  var slice = Array.prototype.slice;
+  var slice = [].slice;
 
   // Current version of the library. Keep in sync with `package.json`.
-  Backbone.VERSION = '1.2.3';
+  Backbone.VERSION = '1.2.1';
 
   // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
   // the `$` variable.
@@ -14376,13 +14371,8 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // form param named `model`.
   Backbone.emulateJSON = false;
 
-  // Proxy Backbone class methods to Underscore functions, wrapping the model's
-  // `attributes` object or collection's `models` array behind the scenes.
-  //
-  // collection.filter(function(model) { return model.get('age') > 10 });
-  // collection.each(this.addView);
-  //
-  // `Function#apply` can be slow so we use the method's arg count, if we know it.
+  // Proxy Underscore methods to a Backbone class' prototype using a
+  // particular attribute as the data argument
   var addMethod = function(length, method, attribute) {
     switch (length) {
       case 1: return function() {
@@ -14392,10 +14382,10 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
         return _[method](this[attribute], value);
       };
       case 3: return function(iteratee, context) {
-        return _[method](this[attribute], cb(iteratee, this), context);
+        return _[method](this[attribute], iteratee, context);
       };
       case 4: return function(iteratee, defaultVal, context) {
-        return _[method](this[attribute], cb(iteratee, this), defaultVal, context);
+        return _[method](this[attribute], iteratee, defaultVal, context);
       };
       default: return function() {
         var args = slice.call(arguments);
@@ -14410,26 +14400,12 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     });
   };
 
-  // Support `collection.sortBy('attr')` and `collection.findWhere({id: 1})`.
-  var cb = function(iteratee, instance) {
-    if (_.isFunction(iteratee)) return iteratee;
-    if (_.isObject(iteratee) && !instance._isModel(iteratee)) return modelMatcher(iteratee);
-    if (_.isString(iteratee)) return function(model) { return model.get(iteratee); };
-    return iteratee;
-  };
-  var modelMatcher = function(attrs) {
-    var matcher = _.matches(attrs);
-    return function(model) {
-      return matcher(model.attributes);
-    };
-  };
-
   // Backbone.Events
   // ---------------
 
   // A module that can be mixed in to *any object* in order to provide it with
-  // a custom event channel. You may bind a callback to an event with `on` or
-  // remove with `off`; `trigger`-ing an event fires all callbacks in
+  // custom events. You may bind with `on` or remove with `off` callback
+  // functions to an event; `trigger`-ing an event fires all callbacks in
   // succession.
   //
   //     var object = {};
@@ -14444,25 +14420,26 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
   // Iterates over the standard `event, callback` (as well as the fancy multiple
   // space-separated events `"change blur", callback` and jQuery-style event
-  // maps `{event: callback}`).
-  var eventsApi = function(iteratee, events, name, callback, opts) {
+  // maps `{event: callback}`), reducing them by manipulating `memo`.
+  // Passes a normalized single event name and callback, as well as any
+  // optional `opts`.
+  var eventsApi = function(iteratee, memo, name, callback, opts) {
     var i = 0, names;
     if (name && typeof name === 'object') {
       // Handle event maps.
       if (callback !== void 0 && 'context' in opts && opts.context === void 0) opts.context = callback;
       for (names = _.keys(name); i < names.length ; i++) {
-        events = eventsApi(iteratee, events, names[i], name[names[i]], opts);
+        memo = iteratee(memo, names[i], name[names[i]], opts);
       }
     } else if (name && eventSplitter.test(name)) {
-      // Handle space separated event names by delegating them individually.
+      // Handle space separated event names.
       for (names = name.split(eventSplitter); i < names.length; i++) {
-        events = iteratee(events, names[i], callback, opts);
+        memo = iteratee(memo, names[i], callback, opts);
       }
     } else {
-      // Finally, standard events.
-      events = iteratee(events, name, callback, opts);
+      memo = iteratee(memo, name, callback, opts);
     }
-    return events;
+    return memo;
   };
 
   // Bind an event to a `callback` function. Passing `"all"` will bind
@@ -14471,7 +14448,8 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     return internalOn(this, name, callback, context);
   };
 
-  // Guard the `listening` argument from the public API.
+  // An internal use `on` function, used to guard the `listening` argument from
+  // the public API.
   var internalOn = function(obj, name, callback, context, listening) {
     obj._events = eventsApi(onApi, obj._events || {}, name, callback, {
         context: context,
@@ -14488,8 +14466,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   };
 
   // Inversion-of-control versions of `on`. Tell *this* object to listen to
-  // an event in another object... keeping track of what it's listening to
-  // for easier unbinding later.
+  // an event in another object... keeping track of what it's listening to.
   Events.listenTo =  function(obj, name, callback) {
     if (!obj) return this;
     var id = obj._listenId || (obj._listenId = _.uniqueId('l'));
@@ -14557,6 +14534,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
   // The reducing API that removes a callback from the `events` object.
   var offApi = function(events, name, callback, options) {
+    // No events to consider.
     if (!events) return;
 
     var i = 0, listening;
@@ -14611,9 +14589,9 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   };
 
   // Bind an event to only be triggered a single time. After the first time
-  // the callback is invoked, its listener will be removed. If multiple events
-  // are passed in using the space-separated syntax, the handler will fire
-  // once for each event, not once for a combination of all events.
+  // the callback is invoked, it will be removed. When multiple events are
+  // passed in using the space-separated syntax, the event will fire once for every
+  // event you passed in, not once for a combination of all events
   Events.once =  function(name, callback, context) {
     // Map the event into a `{event: once}` object.
     var events = eventsApi(onceMap, {}, name, callback, _.bind(this.off, this));
@@ -14801,6 +14779,9 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       var changed = this.changed;
       var prev    = this._previousAttributes;
 
+      // Check for changes of `id`.
+      if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
+
       // For each `set` attribute, update or delete the current value.
       for (var attr in attrs) {
         val = attrs[attr];
@@ -14812,9 +14793,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
         }
         unset ? delete current[attr] : current[attr] = val;
       }
-
-      // Update the `id`.
-      this.id = this.get(this.idAttribute);
 
       // Trigger all relevant attribute changes.
       if (!silent) {
@@ -15038,8 +15016,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
   });
 
-  // Underscore methods that we want to implement on the Model, mapped to the
-  // number of arguments they take.
+  // Underscore methods that we want to implement on the Model.
   var modelMethods = { keys: 1, values: 1, pairs: 1, invert: 1, pick: 0,
       omit: 0, chain: 1, isEmpty: 1 };
 
@@ -15072,16 +15049,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   var setOptions = {add: true, remove: true, merge: true};
   var addOptions = {add: true, remove: false};
 
-  // Splices `insert` into `array` at index `at`.
-  var splice = function(array, insert, at) {
-    at = Math.min(Math.max(at, 0), array.length);
-    var tail = Array(array.length - at);
-    var length = insert.length;
-    for (var i = 0; i < tail.length; i++) tail[i] = array[i + at];
-    for (i = 0; i < length; i++) array[i + at] = insert[i];
-    for (i = 0; i < tail.length; i++) array[i + length + at] = tail[i];
-  };
-
   // Define the Collection's inheritable methods.
   _.extend(Collection.prototype, Events, {
 
@@ -15104,9 +15071,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       return Backbone.sync.apply(this, arguments);
     },
 
-    // Add a model, or list of models to the set. `models` may be Backbone
-    // Models or raw JavaScript objects to be converted to Models, or any
-    // combination of the two.
+    // Add a model, or list of models to the set.
     add: function(models, options) {
       return this.set(models, _.extend({merge: false}, options, addOptions));
     },
@@ -15126,88 +15091,83 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // already exist in the collection, as necessary. Similar to **Model#set**,
     // the core operation for updating the data contained by the collection.
     set: function(models, options) {
-      if (models == null) return;
-
       options = _.defaults({}, options, setOptions);
       if (options.parse && !this._isModel(models)) models = this.parse(models, options);
-
       var singular = !_.isArray(models);
-      models = singular ? [models] : models.slice();
-
+      models = singular ? (models ? [models] : []) : models.slice();
+      var id, model, attrs, existing, sort;
       var at = options.at;
       if (at != null) at = +at;
       if (at < 0) at += this.length + 1;
-
-      var set = [];
-      var toAdd = [];
-      var toRemove = [];
-      var modelMap = {};
-
-      var add = options.add;
-      var merge = options.merge;
-      var remove = options.remove;
-
-      var sort = false;
       var sortable = this.comparator && (at == null) && options.sort !== false;
       var sortAttr = _.isString(this.comparator) ? this.comparator : null;
+      var toAdd = [], toRemove = [], modelMap = {};
+      var add = options.add, merge = options.merge, remove = options.remove;
+      var order = !sortable && add && remove ? [] : false;
+      var orderChanged = false;
 
       // Turn bare objects into model references, and prevent invalid models
       // from being added.
-      var model;
       for (var i = 0; i < models.length; i++) {
-        model = models[i];
+        attrs = models[i];
 
         // If a duplicate is found, prevent it from being added and
         // optionally merge it into the existing model.
-        var existing = this.get(model);
-        if (existing) {
-          if (merge && model !== existing) {
-            var attrs = this._isModel(model) ? model.attributes : model;
+        if (existing = this.get(attrs)) {
+          if (remove) modelMap[existing.cid] = true;
+          if (merge && attrs !== existing) {
+            attrs = this._isModel(attrs) ? attrs.attributes : attrs;
             if (options.parse) attrs = existing.parse(attrs, options);
             existing.set(attrs, options);
-            if (sortable && !sort) sort = existing.hasChanged(sortAttr);
-          }
-          if (!modelMap[existing.cid]) {
-            modelMap[existing.cid] = true;
-            set.push(existing);
+            if (sortable && !sort && existing.hasChanged(sortAttr)) sort = true;
           }
           models[i] = existing;
 
         // If this is a new, valid model, push it to the `toAdd` list.
         } else if (add) {
-          model = models[i] = this._prepareModel(model, options);
-          if (model) {
-            toAdd.push(model);
-            this._addReference(model, options);
-            modelMap[model.cid] = true;
-            set.push(model);
-          }
+          model = models[i] = this._prepareModel(attrs, options);
+          if (!model) continue;
+          toAdd.push(model);
+          this._addReference(model, options);
         }
+
+        // Do not add multiple models with the same `id`.
+        model = existing || model;
+        if (!model) continue;
+        id = this.modelId(model.attributes);
+        if (order && (model.isNew() || !modelMap[id])) {
+          order.push(model);
+
+          // Check to see if this is actually a new model at this index.
+          orderChanged = orderChanged || !this.models[i] || model.cid !== this.models[i].cid;
+        }
+
+        modelMap[id] = true;
       }
 
-      // Remove stale models.
+      // Remove nonexistent models if appropriate.
       if (remove) {
-        for (i = 0; i < this.length; i++) {
-          model = this.models[i];
-          if (!modelMap[model.cid]) toRemove.push(model);
+        for (var i = 0; i < this.length; i++) {
+          if (!modelMap[(model = this.models[i]).cid]) toRemove.push(model);
         }
         if (toRemove.length) this._removeModels(toRemove, options);
       }
 
       // See if sorting is needed, update `length` and splice in new models.
-      var orderChanged = false;
-      var replace = !sortable && add && remove;
-      if (set.length && replace) {
-        orderChanged = this.length != set.length || _.some(this.models, function(model, index) {
-          return model !== set[index];
-        });
-        this.models.length = 0;
-        splice(this.models, set, 0);
-        this.length = this.models.length;
-      } else if (toAdd.length) {
+      if (toAdd.length || orderChanged) {
         if (sortable) sort = true;
-        splice(this.models, toAdd, at == null ? this.length : at);
-        this.length = this.models.length;
+        this.length += toAdd.length;
+        if (at != null) {
+          for (var i = 0; i < toAdd.length; i++) {
+            this.models.splice(at + i, 0, toAdd[i]);
+          }
+        } else {
+          if (order) this.models.length = 0;
+          var orderedModels = order || toAdd;
+          for (var i = 0; i < orderedModels.length; i++) {
+            this.models.push(orderedModels[i]);
+          }
+        }
       }
 
       // Silently sort the collection if appropriate.
@@ -15215,10 +15175,10 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
       // Unless silenced, it's time to fire all appropriate add/sort events.
       if (!options.silent) {
-        for (i = 0; i < toAdd.length; i++) {
-          if (at != null) options.index = at + i;
-          model = toAdd[i];
-          model.trigger('add', model, this, options);
+        var addOpts = at != null ? _.clone(options) : options;
+        for (var i = 0; i < toAdd.length; i++) {
+          if (at != null) addOpts.index = at + i;
+          (model = toAdd[i]).trigger('add', model, this, addOpts);
         }
         if (sort || orderChanged) this.trigger('sort', this, options);
         if (toAdd.length || toRemove.length) this.trigger('update', this, options);
@@ -15287,7 +15247,10 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // Return models with matching attributes. Useful for simple cases of
     // `filter`.
     where: function(attrs, first) {
-      return this[first ? 'find' : 'filter'](attrs);
+      var matches = _.matches(attrs);
+      return this[first ? 'find' : 'filter'](function(model) {
+        return matches(model.attributes);
+      });
     },
 
     // Return the first model with matching attributes. Useful for simple cases
@@ -15300,19 +15263,16 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // normal circumstances, as the set will maintain sort order as each item
     // is added.
     sort: function(options) {
-      var comparator = this.comparator;
-      if (!comparator) throw new Error('Cannot sort a set without a comparator');
+      if (!this.comparator) throw new Error('Cannot sort a set without a comparator');
       options || (options = {});
 
-      var length = comparator.length;
-      if (_.isFunction(comparator)) comparator = _.bind(comparator, this);
-
       // Run sort based on type of `comparator`.
-      if (length === 1 || _.isString(comparator)) {
-        this.models = this.sortBy(comparator);
+      if (_.isString(this.comparator) || this.comparator.length === 1) {
+        this.models = this.sortBy(this.comparator, this);
       } else {
-        this.models.sort(comparator);
+        this.models.sort(_.bind(this.comparator, this));
       }
+
       if (!options.silent) this.trigger('sort', this, options);
       return this;
     },
@@ -15401,6 +15361,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     },
 
     // Internal method called by both remove and set.
+    // Returns removed models, or false if nothing is removed.
     _removeModels: function(models, options) {
       var removed = [];
       for (var i = 0; i < models.length; i++) {
@@ -15470,15 +15431,28 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // right here:
   var collectionMethods = { forEach: 3, each: 3, map: 3, collect: 3, reduce: 4,
       foldl: 4, inject: 4, reduceRight: 4, foldr: 4, find: 3, detect: 3, filter: 3,
-      select: 3, reject: 3, every: 3, all: 3, some: 3, any: 3, include: 3, includes: 3,
-      contains: 3, invoke: 0, max: 3, min: 3, toArray: 1, size: 1, first: 3,
+      select: 3, reject: 3, every: 3, all: 3, some: 3, any: 3, include: 2,
+      contains: 2, invoke: 0, max: 3, min: 3, toArray: 1, size: 1, first: 3,
       head: 3, take: 3, initial: 3, rest: 3, tail: 3, drop: 3, last: 3,
       without: 0, difference: 0, indexOf: 3, shuffle: 1, lastIndexOf: 3,
-      isEmpty: 1, chain: 1, sample: 3, partition: 3, groupBy: 3, countBy: 3,
-      sortBy: 3, indexBy: 3};
+      isEmpty: 1, chain: 1, sample: 3, partition: 3 };
 
   // Mix in each Underscore method as a proxy to `Collection#models`.
   addUnderscoreMethods(Collection, collectionMethods, 'models');
+
+  // Underscore methods that take a property name as an argument.
+  var attributeMethods = ['groupBy', 'countBy', 'sortBy', 'indexBy'];
+
+  // Use attributes instead of properties.
+  _.each(attributeMethods, function(method) {
+    if (!_[method]) return;
+    Collection.prototype[method] = function(value, context) {
+      var iterator = _.isFunction(value) ? value : function(model) {
+        return model.get(value);
+      };
+      return _[method](this.models, iterator, context);
+    };
+  });
 
   // Backbone.View
   // -------------
@@ -15503,7 +15477,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // Cached regex to split keys for `delegate`.
   var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
-  // List of view options to be set as properties.
+  // List of view options to be merged as properties.
   var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
 
   // Set up all inheritable **Backbone.View** properties and methods.
@@ -15847,7 +15821,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // falls back to polling.
   var History = Backbone.History = function() {
     this.handlers = [];
-    this.checkUrl = _.bind(this.checkUrl, this);
+    _.bindAll(this, 'checkUrl');
 
     // Ensure that `History` can be used outside of the browser.
     if (typeof window !== 'undefined') {
@@ -15940,7 +15914,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       this.options          = _.extend({root: '/'}, this.options, options);
       this.root             = this.options.root;
       this._wantsHashChange = this.options.hashChange !== false;
-      this._hasHashChange   = 'onhashchange' in window && (document.documentMode === void 0 || document.documentMode > 7);
+      this._hasHashChange   = 'onhashchange' in window;
       this._useHashChange   = this._wantsHashChange && this._hasHashChange;
       this._wantsPushState  = !!this.options.pushState;
       this._hasPushState    = !!(this.history && this.history.pushState);
@@ -16059,7 +16033,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       // If the root doesn't match, no routes can match either.
       if (!this.matchRoot()) return false;
       fragment = this.fragment = this.getFragment(fragment);
-      return _.some(this.handlers, function(handler) {
+      return _.any(this.handlers, function(handler) {
         if (handler.route.test(fragment)) {
           handler.callback(fragment);
           return true;
@@ -16203,7 +16177,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
 // Backbone.BabySitter
 // -------------------
-// v0.1.10
+// v0.1.8
 //
 // Copyright (c)2015 Derick Bailey, Muted Solutions, LLC.
 // Distributed under MIT license
@@ -16381,7 +16355,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   })(Backbone, _);
   
 
-  Backbone.ChildViewContainer.VERSION = '0.1.10';
+  Backbone.ChildViewContainer.VERSION = '0.1.8';
 
   Backbone.ChildViewContainer.noConflict = function () {
     Backbone.ChildViewContainer = previousChildViewContainer;
@@ -16394,7 +16368,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
-// v1.3.5
+// v1.3.3
 //
 // Copyright (c)2015 Derick Bailey, Muted Solutions, LLC.
 // Distributed under MIT license
@@ -16423,7 +16397,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
   var Wreqr = Backbone.Wreqr = {};
 
-  Backbone.Wreqr.VERSION = '1.3.5';
+  Backbone.Wreqr.VERSION = '1.3.3';
 
   Backbone.Wreqr.noConflict = function () {
     Backbone.Wreqr = previousWreqr;
@@ -16830,7 +16804,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
-// v2.4.3
+// v2.4.2
 //
 // Copyright (c)2015 Derick Bailey, Muted Solutions, LLC.
 // Distributed under MIT license
@@ -16861,7 +16835,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
 
   var Marionette = Backbone.Marionette = {};
 
-  Marionette.VERSION = '2.4.3';
+  Marionette.VERSION = '2.4.2';
 
   Marionette.noConflict = function() {
     root.Marionette = previousMarionette;
@@ -17106,8 +17080,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // re-rendered.
   
   Marionette.MonitorDOMRefresh = function(view) {
-    if (view._isDomRefreshMonitored) { return; }
-    view._isDomRefreshMonitored = true;
   
     // track when the view has been shown in the DOM,
     // using a Marionette.Region (or by other means of triggering "show")
@@ -17125,7 +17097,9 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // Trigger the "dom:refresh" event and corresponding "onDomRefresh" method
     function triggerDOMRefresh() {
       if (view._isShown && view._isRendered && Marionette.isNodeAttached(view.el)) {
-        Marionette.triggerMethodOn(view, 'dom:refresh', view);
+        if (_.isFunction(view.triggerMethod)) {
+          view.triggerMethod('dom:refresh');
+        }
       }
     }
   
@@ -17466,7 +17440,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       }
   
       this._ensureViewIsIntact(view);
-      Marionette.MonitorDOMRefresh(view);
   
       var showOptions     = options || {};
       var isDifferentView = view !== this.currentView;
@@ -17511,8 +17484,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
         // to the currentView since once a view has been destroyed
         // we can not reuse it.
         view.once('destroy', this.empty, this);
-  
-        this._renderView(view);
+        view.render();
   
         view._parent = this;
   
@@ -17580,16 +17552,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       return _.union([view], _.result(view, '_getNestedViews') || []);
     },
   
-    _renderView: function(view) {
-      if (!view.supportsRenderLifecycle) {
-        Marionette.triggerMethodOn(view, 'before:render', view);
-      }
-      view.render();
-      if (!view.supportsRenderLifecycle) {
-        Marionette.triggerMethodOn(view, 'render', view);
-      }
-    },
-  
     _ensureElement: function() {
       if (!_.isObject(this.el)) {
         this.$el = this.getEl(this.el);
@@ -17642,8 +17604,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     empty: function(options) {
       var view = this.currentView;
   
-      var emptyOptions = options || {};
-      var preventDestroy  = !!emptyOptions.preventDestroy;
+      var preventDestroy = Marionette._getValue(options, 'preventDestroy', this);
       // If there is no view in the region
       // we should not remove anything
       if (!view) { return; }
@@ -17669,22 +17630,15 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // on the view (if showing a raw Backbone view or a Marionette View)
     _destroyView: function() {
       var view = this.currentView;
-      if (view.isDestroyed) { return; }
   
-      if (!view.supportsDestroyLifecycle) {
-        Marionette.triggerMethodOn(view, 'before:destroy', view);
-      }
-      if (view.destroy) {
+      if (view.destroy && !view.isDestroyed) {
         view.destroy();
-      } else {
+      } else if (view.remove) {
         view.remove();
   
         // appending isDestroyed to raw Backbone View allows regions
         // to throw a ViewDestroyedError for this view
         view.isDestroyed = true;
-      }
-      if (!view.supportsDestroyLifecycle) {
-        Marionette.triggerMethodOn(view, 'destroy', view);
       }
     },
   
@@ -17693,10 +17647,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // and will not replace the current HTML for the `el`
     // of the region.
     attachView: function(view) {
-      if (this.currentView) {
-        delete this.currentView._parent;
-      }
-      view._parent = this;
       this.currentView = view;
       return this;
     },
@@ -17988,15 +17938,16 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // using a template-loader plugin as described here:
     // https://github.com/marionettejs/backbone.marionette/wiki/Using-marionette-with-requirejs
     loadTemplate: function(templateId, options) {
-      var $template = Backbone.$(templateId);
+      var template = Backbone.$(templateId).html();
   
-      if (!$template.length) {
+      if (!template || template.length === 0) {
         throw new Marionette.Error({
           name: 'NoTemplateError',
           message: 'Could not find template: "' + templateId + '"'
         });
       }
-      return $template.html();
+  
+      return template;
     },
   
     // Pre-compile the template before caching it. Override
@@ -18041,11 +17992,9 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   // The core view class that other Marionette views extend from.
   Marionette.View = Backbone.View.extend({
     isDestroyed: false,
-    supportsRenderLifecycle: true,
-    supportsDestroyLifecycle: true,
   
     constructor: function(options) {
-      this.render = _.bind(this.render, this);
+      _.bindAll(this, 'render');
   
       options = Marionette._getValue(options, this);
   
@@ -18265,13 +18214,14 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // Internal method to create an event handler for a given `triggerDef` like
     // 'click:foo'
     _buildViewTrigger: function(triggerDef) {
+      var hasOptions = _.isObject(triggerDef);
   
-      var options = _.defaults({}, triggerDef, {
+      var options = _.defaults({}, (hasOptions ? triggerDef : {}), {
         preventDefault: true,
         stopPropagation: true
       });
   
-      var eventName = _.isObject(triggerDef) ? options.event : triggerDef;
+      var eventName = hasOptions ? options.event : triggerDef;
   
       return function(e) {
         if (e) {
@@ -18334,16 +18284,15 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       // invoke triggerMethod on parent view
       var eventPrefix = Marionette.getOption(layoutView, 'childViewEventPrefix');
       var prefixedEventName = eventPrefix + ':' + eventName;
-      var callArgs = [this].concat(args);
   
-      Marionette._triggerMethod(layoutView, prefixedEventName, callArgs);
+      Marionette._triggerMethod(layoutView, [prefixedEventName, this].concat(args));
   
       // call the parent view's childEvents handler
       var childEvents = Marionette.getOption(layoutView, 'childEvents');
       var normalizedChildEvents = layoutView.normalizeMethods(childEvents);
   
-      if (normalizedChildEvents && _.isFunction(normalizedChildEvents[eventName])) {
-        normalizedChildEvents[eventName].apply(layoutView, callArgs);
+      if (!!normalizedChildEvents && _.isFunction(normalizedChildEvents[eventName])) {
+        normalizedChildEvents[eventName].apply(layoutView, [this].concat(args));
       }
     },
   
@@ -18617,12 +18566,11 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   
     // Handle a child added to the collection
     _onCollectionAdd: function(child, collection, opts) {
-      // `index` is present when adding with `at` since BB 1.2; indexOf fallback for < 1.2
-      var index = opts.at !== undefined && (opts.index || collection.indexOf(child));
-  
-      // When filtered or when there is no initial index, calculate index.
-      if (this.getOption('filter') || index === false) {
-        index = _.indexOf(this._filteredSortedModels(index), child);
+      var index;
+      if (opts.at !== undefined) {
+        index = opts.at;
+      } else {
+        index = _.indexOf(this._filteredSortedModels(), child);
       }
   
       if (this._shouldAddChild(child, index)) {
@@ -18762,7 +18710,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
         this.triggerMethod('render:collection', this);
   
         // If we have shown children and none have passed the filter, show the empty view
-        if (this.children.isEmpty() && this.getOption('filter')) {
+        if (this.children.isEmpty()) {
           this.showEmptyView();
         }
       }
@@ -18781,22 +18729,18 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     },
   
     // Allow the collection to be sorted by a custom view comparator
-    _filteredSortedModels: function(addedAt) {
+    _filteredSortedModels: function() {
+      var models;
       var viewComparator = this.getViewComparator();
-      var models = this.collection.models;
-      addedAt = Math.min(Math.max(addedAt, 0), models.length - 1);
   
       if (viewComparator) {
-        var addedModel;
-        // Preserve `at` location, even for a sorted view
-        if (addedAt) {
-          addedModel = models[addedAt];
-          models = models.slice(0, addedAt).concat(models.slice(addedAt + 1));
+        if (_.isString(viewComparator) || viewComparator.length === 1) {
+          models = this.collection.sortBy(viewComparator, this);
+        } else {
+          models = _.clone(this.collection.models).sort(_.bind(viewComparator, this));
         }
-        models = this._sortModelsBy(models, viewComparator);
-        if (addedModel) {
-          models.splice(addedAt, 0, addedModel);
-        }
+      } else {
+        models = this.collection.models;
       }
   
       // Filter after sorting in case the filter uses the index
@@ -18807,18 +18751,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       }
   
       return models;
-    },
-  
-    _sortModelsBy: function(models, comparator) {
-      if (typeof comparator === 'string') {
-        return _.sortBy(models, function(model) {
-          return model.get(comparator);
-        }, this);
-      } else if (comparator.length === 1) {
-        return _.sortBy(models, comparator, this);
-      } else {
-        return models.sort(_.bind(comparator, this));
-      }
     },
   
     // Internal method to show an empty view in place of
@@ -18881,27 +18813,30 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       // Proxy emptyView events
       this.proxyChildEvents(view);
   
-      view.once('render', function() {
-        // trigger the 'before:show' event on `view` if the collection view has already been shown
-        if (this._isShown) {
-          Marionette.triggerMethodOn(view, 'before:show', view);
-        }
+      // trigger the 'before:show' event on `view` if the collection view has already been shown
+      if (this._isShown) {
+        Marionette.triggerMethodOn(view, 'before:show', view);
+      }
   
-        // Trigger `before:attach` following `render` to avoid adding logic and event triggers
-        // to public method `renderChildView()`.
-        if (canTriggerAttach && this._triggerBeforeAttach) {
-          nestedViews = this._getViewAndNested(view);
-          this._triggerMethodMany(nestedViews, this, 'before:attach');
-        }
-      }, this);
-  
-      // Store the `emptyView` like a `childView` so we can properly remove and/or close it later
+      // Store the `emptyView` like a `childView` so we can properly
+      // remove and/or close it later
       this.children.add(view);
+  
+      // Trigger `before:attach` following `render` to avoid adding logic and event triggers
+      // to public method `renderChildView()`.
+      if (canTriggerAttach && this._triggerBeforeAttach) {
+        nestedViews = [view].concat(view._getNestedViews());
+        view.once('render', function() {
+          this._triggerMethodMany(nestedViews, this, 'before:attach');
+        }, this);
+      }
+  
+      // Render it and show it
       this.renderChildView(view, this._emptyViewIndex);
   
       // Trigger `attach`
       if (canTriggerAttach && this._triggerAttach) {
-        nestedViews = this._getViewAndNested(view);
+        nestedViews = [view].concat(view._getNestedViews());
         this._triggerMethodMany(nestedViews, this, 'attach');
       }
       // call the 'show' method if the collection view has already been shown
@@ -18982,27 +18917,28 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       // set up the child view event forwarding
       this.proxyChildEvents(view);
   
-      view.once('render', function() {
-        // trigger the 'before:show' event on `view` if the collection view has already been shown
-        if (this._isShown && !this.isBuffering) {
-          Marionette.triggerMethodOn(view, 'before:show', view);
-        }
-  
-        // Trigger `before:attach` following `render` to avoid adding logic and event triggers
-        // to public method `renderChildView()`.
-        if (canTriggerAttach && this._triggerBeforeAttach) {
-          nestedViews = this._getViewAndNested(view);
-          this._triggerMethodMany(nestedViews, this, 'before:attach');
-        }
-      }, this);
+      // trigger the 'before:show' event on `view` if the collection view has already been shown
+      if (this._isShown && !this.isBuffering) {
+        Marionette.triggerMethodOn(view, 'before:show', view);
+      }
   
       // Store the child view itself so we can properly remove and/or destroy it later
       this.children.add(view);
+  
+      // Trigger `before:attach` following `render` to avoid adding logic and event triggers
+      // to public method `renderChildView()`.
+      if (canTriggerAttach && this._triggerBeforeAttach) {
+        nestedViews = [view].concat(view._getNestedViews());
+        view.once('render', function() {
+          this._triggerMethodMany(nestedViews, this, 'before:attach');
+        }, this);
+      }
+  
       this.renderChildView(view, index);
   
       // Trigger `attach`
       if (canTriggerAttach && this._triggerAttach) {
-        nestedViews = this._getViewAndNested(view);
+        nestedViews = [view].concat(view._getNestedViews());
         this._triggerMethodMany(nestedViews, this, 'attach');
       }
       // Trigger `show`
@@ -19013,13 +18949,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   
     // render the child view
     renderChildView: function(view, index) {
-      if (!view.supportsRenderLifecycle) {
-        Marionette.triggerMethodOn(view, 'before:render', view);
-      }
       view.render();
-      if (!view.supportsRenderLifecycle) {
-        Marionette.triggerMethodOn(view, 'render', view);
-      }
       this.attachHtml(this, view, index);
       return view;
     },
@@ -19027,9 +18957,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // Build a `childView` for a model in the collection.
     buildChildView: function(child, ChildViewClass, childViewOptions) {
       var options = _.extend({model: child}, childViewOptions);
-      var childView = new ChildViewClass(options);
-      Marionette.MonitorDOMRefresh(childView);
-      return childView;
+      return new ChildViewClass(options);
     },
   
     // Remove the child view and destroy it.
@@ -19037,30 +18965,25 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
     // later views in the collection in order to keep
     // the children in sync with the collection.
     removeChildView: function(view) {
-      if (!view) { return view; }
   
-      this.triggerMethod('before:remove:child', view);
+      if (view) {
+        this.triggerMethod('before:remove:child', view);
   
-      if (!view.supportsDestroyLifecycle) {
-        Marionette.triggerMethodOn(view, 'before:destroy', view);
+        // call 'destroy' or 'remove', depending on which is found
+        if (view.destroy) {
+          view.destroy();
+        } else if (view.remove) {
+          view.remove();
+        }
+  
+        delete view._parent;
+        this.stopListening(view);
+        this.children.remove(view);
+        this.triggerMethod('remove:child', view);
+  
+        // decrement the index of views after this one
+        this._updateIndices(view, false);
       }
-      // call 'destroy' or 'remove', depending on which is found
-      if (view.destroy) {
-        view.destroy();
-      } else {
-        view.remove();
-      }
-      if (!view.supportsDestroyLifecycle) {
-        Marionette.triggerMethodOn(view, 'destroy', view);
-      }
-  
-      delete view._parent;
-      this.stopListening(view);
-      this.children.remove(view);
-      this.triggerMethod('remove:child', view);
-  
-      // decrement the index of views after this one
-      this._updateIndices(view, false);
   
       return view;
     },
@@ -19209,11 +19132,6 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   
     _getImmediateChildren: function() {
       return _.values(this.children._views);
-    },
-  
-    _getViewAndNested: function(view) {
-      // This will not fail on Backbone.View which does not have #_getNestedViews.
-      return [view].concat(_.result(view, '_getNestedViews') || []);
     },
   
     getViewComparator: function() {
@@ -19912,7 +19830,7 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
       this.submodules = {};
       _.extend(this, options);
       this._initChannel();
-      Marionette.Object.apply(this, arguments);
+      Marionette.Object.call(this, options);
     },
   
     // Command execution, facilitated by Backbone.Wreqr.Commands
@@ -20624,13 +20542,216 @@ if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) 
   return Polyglot;
 }));
 
-(function(/* BrowserSync-Brunch */) {
-  var url = "//" + location.hostname + ":3000/browser-sync/browser-sync-client.2.1.6.js";
-  var bs = document.createElement("script");
-  bs.type = "text/javascript"; bs.async = true; bs.src = url;
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(bs, s);
-})();
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+/**
+ * Merge two attribute objects giving precedence
+ * to values in object `b`. Classes are special-cased
+ * allowing for arrays and merging/joining appropriately
+ * resulting in a string.
+ *
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ * @api private
+ */
+
+exports.merge = function merge(a, b) {
+  if (arguments.length === 1) {
+    var attrs = a[0];
+    for (var i = 1; i < a.length; i++) {
+      attrs = merge(attrs, a[i]);
+    }
+    return attrs;
+  }
+  var ac = a['class'];
+  var bc = b['class'];
+
+  if (ac || bc) {
+    ac = ac || [];
+    bc = bc || [];
+    if (!Array.isArray(ac)) ac = [ac];
+    if (!Array.isArray(bc)) bc = [bc];
+    a['class'] = ac.concat(bc).filter(nulls);
+  }
+
+  for (var key in b) {
+    if (key != 'class') {
+      a[key] = b[key];
+    }
+  }
+
+  return a;
+};
+
+/**
+ * Filter null `val`s.
+ *
+ * @param {*} val
+ * @return {Boolean}
+ * @api private
+ */
+
+function nulls(val) {
+  return val != null && val !== '';
+}
+
+/**
+ * join array as classes.
+ *
+ * @param {*} val
+ * @return {String}
+ */
+exports.joinClasses = joinClasses;
+function joinClasses(val) {
+  return Array.isArray(val) ? val.map(joinClasses).filter(nulls).join(' ') : val;
+}
+
+/**
+ * Render the given classes.
+ *
+ * @param {Array} classes
+ * @param {Array.<Boolean>} escaped
+ * @return {String}
+ */
+exports.cls = function cls(classes, escaped) {
+  var buf = [];
+  for (var i = 0; i < classes.length; i++) {
+    if (escaped && escaped[i]) {
+      buf.push(exports.escape(joinClasses([classes[i]])));
+    } else {
+      buf.push(joinClasses(classes[i]));
+    }
+  }
+  var text = joinClasses(buf);
+  if (text.length) {
+    return ' class="' + text + '"';
+  } else {
+    return '';
+  }
+};
+
+/**
+ * Render the given attribute.
+ *
+ * @param {String} key
+ * @param {String} val
+ * @param {Boolean} escaped
+ * @param {Boolean} terse
+ * @return {String}
+ */
+exports.attr = function attr(key, val, escaped, terse) {
+  if ('boolean' == typeof val || null == val) {
+    if (val) {
+      return ' ' + (terse ? key : key + '="' + key + '"');
+    } else {
+      return '';
+    }
+  } else if (0 == key.indexOf('data') && 'string' != typeof val) {
+    return ' ' + key + "='" + JSON.stringify(val).replace(/'/g, '&apos;') + "'";
+  } else if (escaped) {
+    return ' ' + key + '="' + exports.escape(val) + '"';
+  } else {
+    return ' ' + key + '="' + val + '"';
+  }
+};
+
+/**
+ * Render the given attributes object.
+ *
+ * @param {Object} obj
+ * @param {Object} escaped
+ * @return {String}
+ */
+exports.attrs = function attrs(obj, terse){
+  var buf = [];
+
+  var keys = Object.keys(obj);
+
+  if (keys.length) {
+    for (var i = 0; i < keys.length; ++i) {
+      var key = keys[i]
+        , val = obj[key];
+
+      if ('class' == key) {
+        if (val = joinClasses(val)) {
+          buf.push(' ' + key + '="' + val + '"');
+        }
+      } else {
+        buf.push(exports.attr(key, val, false, terse));
+      }
+    }
+  }
+
+  return buf.join('');
+};
+
+/**
+ * Escape the given string of `html`.
+ *
+ * @param {String} html
+ * @return {String}
+ * @api private
+ */
+
+exports.escape = function escape(html){
+  var result = String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  if (result === '' + html) return html;
+  else return result;
+};
+
+/**
+ * Re-throw the given `err` in context to the
+ * the jade in `filename` at the given `lineno`.
+ *
+ * @param {Error} err
+ * @param {String} filename
+ * @param {String} lineno
+ * @api private
+ */
+
+exports.rethrow = function rethrow(err, filename, lineno, str){
+  if (!(err instanceof Error)) throw err;
+  if ((typeof window != 'undefined' || !filename) && !str) {
+    err.message += ' on line ' + lineno;
+    throw err;
+  }
+  try {
+    str =  str || require('fs').readFileSync(filename, 'utf8')
+  } catch (ex) {
+    rethrow(err, null, lineno)
+  }
+  var context = 3
+    , lines = str.split('\n')
+    , start = Math.max(lineno - context, 0)
+    , end = Math.min(lines.length, lineno + context);
+
+  // Error context
+  var context = lines.slice(start, end).map(function(line, i){
+    var curr = i + start + 1;
+    return (curr == lineno ? '  > ' : '    ')
+      + curr
+      + '| '
+      + line;
+  }).join('\n');
+
+  // Alter exception message
+  err.path = filename;
+  err.message = (filename || 'Jade') + ':' + lineno
+    + '\n' + context + '\n\n' + err.message;
+  throw err;
+};
+
+},{"fs":2}],2:[function(require,module,exports){
+
+},{}]},{},[1])
+(1)
+});
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.io=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 
 module.exports = _dereq_('./lib/');
@@ -27638,215 +27759,5 @@ function toArray(list, index) {
 (1)
 });
 
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
-
-/**
- * Merge two attribute objects giving precedence
- * to values in object `b`. Classes are special-cased
- * allowing for arrays and merging/joining appropriately
- * resulting in a string.
- *
- * @param {Object} a
- * @param {Object} b
- * @return {Object} a
- * @api private
- */
-
-exports.merge = function merge(a, b) {
-  if (arguments.length === 1) {
-    var attrs = a[0];
-    for (var i = 1; i < a.length; i++) {
-      attrs = merge(attrs, a[i]);
-    }
-    return attrs;
-  }
-  var ac = a['class'];
-  var bc = b['class'];
-
-  if (ac || bc) {
-    ac = ac || [];
-    bc = bc || [];
-    if (!Array.isArray(ac)) ac = [ac];
-    if (!Array.isArray(bc)) bc = [bc];
-    a['class'] = ac.concat(bc).filter(nulls);
-  }
-
-  for (var key in b) {
-    if (key != 'class') {
-      a[key] = b[key];
-    }
-  }
-
-  return a;
-};
-
-/**
- * Filter null `val`s.
- *
- * @param {*} val
- * @return {Boolean}
- * @api private
- */
-
-function nulls(val) {
-  return val != null && val !== '';
-}
-
-/**
- * join array as classes.
- *
- * @param {*} val
- * @return {String}
- */
-exports.joinClasses = joinClasses;
-function joinClasses(val) {
-  return Array.isArray(val) ? val.map(joinClasses).filter(nulls).join(' ') : val;
-}
-
-/**
- * Render the given classes.
- *
- * @param {Array} classes
- * @param {Array.<Boolean>} escaped
- * @return {String}
- */
-exports.cls = function cls(classes, escaped) {
-  var buf = [];
-  for (var i = 0; i < classes.length; i++) {
-    if (escaped && escaped[i]) {
-      buf.push(exports.escape(joinClasses([classes[i]])));
-    } else {
-      buf.push(joinClasses(classes[i]));
-    }
-  }
-  var text = joinClasses(buf);
-  if (text.length) {
-    return ' class="' + text + '"';
-  } else {
-    return '';
-  }
-};
-
-/**
- * Render the given attribute.
- *
- * @param {String} key
- * @param {String} val
- * @param {Boolean} escaped
- * @param {Boolean} terse
- * @return {String}
- */
-exports.attr = function attr(key, val, escaped, terse) {
-  if ('boolean' == typeof val || null == val) {
-    if (val) {
-      return ' ' + (terse ? key : key + '="' + key + '"');
-    } else {
-      return '';
-    }
-  } else if (0 == key.indexOf('data') && 'string' != typeof val) {
-    return ' ' + key + "='" + JSON.stringify(val).replace(/'/g, '&apos;') + "'";
-  } else if (escaped) {
-    return ' ' + key + '="' + exports.escape(val) + '"';
-  } else {
-    return ' ' + key + '="' + val + '"';
-  }
-};
-
-/**
- * Render the given attributes object.
- *
- * @param {Object} obj
- * @param {Object} escaped
- * @return {String}
- */
-exports.attrs = function attrs(obj, terse){
-  var buf = [];
-
-  var keys = Object.keys(obj);
-
-  if (keys.length) {
-    for (var i = 0; i < keys.length; ++i) {
-      var key = keys[i]
-        , val = obj[key];
-
-      if ('class' == key) {
-        if (val = joinClasses(val)) {
-          buf.push(' ' + key + '="' + val + '"');
-        }
-      } else {
-        buf.push(exports.attr(key, val, false, terse));
-      }
-    }
-  }
-
-  return buf.join('');
-};
-
-/**
- * Escape the given string of `html`.
- *
- * @param {String} html
- * @return {String}
- * @api private
- */
-
-exports.escape = function escape(html){
-  var result = String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-  if (result === '' + html) return html;
-  else return result;
-};
-
-/**
- * Re-throw the given `err` in context to the
- * the jade in `filename` at the given `lineno`.
- *
- * @param {Error} err
- * @param {String} filename
- * @param {String} lineno
- * @api private
- */
-
-exports.rethrow = function rethrow(err, filename, lineno, str){
-  if (!(err instanceof Error)) throw err;
-  if ((typeof window != 'undefined' || !filename) && !str) {
-    err.message += ' on line ' + lineno;
-    throw err;
-  }
-  try {
-    str =  str || require('fs').readFileSync(filename, 'utf8')
-  } catch (ex) {
-    rethrow(err, null, lineno)
-  }
-  var context = 3
-    , lines = str.split('\n')
-    , start = Math.max(lineno - context, 0)
-    , end = Math.min(lines.length, lineno + context);
-
-  // Error context
-  var context = lines.slice(start, end).map(function(line, i){
-    var curr = i + start + 1;
-    return (curr == lineno ? '  > ' : '    ')
-      + curr
-      + '| '
-      + line;
-  }).join('\n');
-
-  // Alter exception message
-  err.path = filename;
-  err.message = (filename || 'Jade') + ':' + lineno
-    + '\n' + context + '\n\n' + err.message;
-  throw err;
-};
-
-},{"fs":2}],2:[function(require,module,exports){
-
-},{}]},{},[1])
-(1)
-});
 
 //# sourceMappingURL=vendor.js.map

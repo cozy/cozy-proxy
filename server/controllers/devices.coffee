@@ -249,6 +249,7 @@ module.exports.remove = (req, res, next) ->
             login = req.params.login
 
             checkLogin login, true, (err, device) ->
+                return next err if err?
                 # Remove device
                 removeDevice device, (err) ->
                     if err?

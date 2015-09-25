@@ -52,9 +52,11 @@ Each modification requires a new build, here is how to run a build:
 
 ![Build Status](https://travis-ci.org/cozy/cozy-proxy.png?branch=master)
 
-To run tests type the following command into the Cozy Home folder:
+To run tests, type the following command into the Cozy Proxy folder:
 
     cake tests
+
+Note: a running data-system is required for the tests.
 
 ## Icons
 

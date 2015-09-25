@@ -15,6 +15,8 @@ helpers.options =
     serverHost: process.env.HOST or 'localhost'
     serverPort: process.env.PORT or 9104
 
+localization = require "#{helpers.prefix}server/lib/localization_manager"
+
 # default client
 client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/", jar: true
 
@@ -139,3 +141,6 @@ helpers.closeFakeServers = ->
     for name, server of @fakeServers
         server.close()
     @fakeServers = {}
+
+helpers.setDefaultLocale = ->
+    localization.setLocale 'en'

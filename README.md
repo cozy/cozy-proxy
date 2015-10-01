@@ -60,6 +60,11 @@ To run tests type the following command into the Cozy Home folder:
 
 by [iconmonstr](http://iconmonstr.com/)
 
+## Contribute with Transifex
+
+Transifex can be used the same way as git. It can push or pull translations. The config file in the .tx repository configure the way Transifex is working : it will get the json files from the client/app/locales repository.
+If you want to learn more about how to use this tool, I'll invite you to check [this](docs.transifex.com/tutorials/) tutorial.
+
 ## License
 
 Cozy Proxy is developed by Cozy Cloud and distributed under the AGPL v3 license.

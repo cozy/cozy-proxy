@@ -28,6 +28,8 @@ module.exports.sendResetEmail = (instance, user, key, callback) ->
     if process.env.NODE_ENV is "production"
         client.setBasicAuth process.env.NAME, process.env.TOKEN
     client.post "mail/to-user/", data, (err, res, body) ->
+        if not err? and body?.error?
+            err = body.error
         log.error err if err?
         callback err
 

@@ -78,3 +78,8 @@ module.exports = class Auth extends StateModel
             status:  'success'
             title:   'recover sent title'
             message: 'recover sent message'
+
+        @alert.plug reset.errors().mapError
+            status:  'error'
+            title:   'recover error title'
+            message: 'recover error message'

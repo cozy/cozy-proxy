@@ -1,5 +1,4 @@
-var jade = require('jade/runtime');
-module.exports = function template(locals) {
+function template(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;

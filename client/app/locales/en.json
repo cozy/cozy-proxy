@@ -57,6 +57,8 @@
   "login recover again": "Did not receive it? Send it again",
   "login recover sent title": "Email sent",
   "login recover sent message": "Please check your email, follow instructions to reset your password",
+  "login recover error title": "Error sending mail",
+  "login recover error message": "Error sending password recovery message, please check your MTA is running or contact server admin",
   "login wrong password title": "Wrong password",
   "login wrong password message": "The pasword you entered is incorrect, please try again",
   "reset welcome": "Reset password",

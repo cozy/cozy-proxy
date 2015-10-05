@@ -4,6 +4,7 @@ User = require "#{helpers.prefix}server/models/user"
 
 describe "Models", ->
 
+    before helpers.setDefaultLocale
     before helpers.createAllRequests
     before helpers.deleteAllUsers
     after  helpers.deleteAllUsers

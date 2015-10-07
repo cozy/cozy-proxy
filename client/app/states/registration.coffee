@@ -124,6 +124,7 @@ module.exports = class Registration extends StateModel
     initSignup: ->
         # Declares a stream to receive the form submission
         @signup = new Bacon.Bus()
+        @isSignup = false
 
         # If the current step is `preset`, set the valve to block the step flow:
         # it will resume when the sign up form request returns a success.
@@ -141,18 +142,23 @@ module.exports = class Registration extends StateModel
     - data: an object containing the form input entries as key/values pairs
     ###
     signupSubmit: (data) =>
-        # Submit the form content to the register endpoint and creates a stream
-        # with the ajax promise
-        req = Bacon.fromPromise $.post '/register', JSON.stringify data
-        # If the request is successful, we stores the username in the global
-        # scope to prepare the login view.
-        req.subscribe -> window.username = data['public_name']
-        # Unblock the step flow valve when the response is successful
-        @stepValve.plug req.map false
-        # Map request errors in the `errors` stream
-        @errors.plug req.errors().mapError '.responseJSON.errors'
-        # Map the request end to the next button busy state
-        @nextBusy.plug req.mapEnd false
+        if @isSignup
+            # Map the request end to the next button busy state
+            @nextBusy.push new Bacon.Next(false)
+        else
+            @isSignup = true
+            # Submit the form content to the register endpoint and creates a stream
+            # with the ajax promise
+            req = Bacon.fromPromise $.post '/register', JSON.stringify data
+            # If the request is successful, we stores the username in the global
+            # scope to prepare the login view.
+            req.subscribe -> window.username = data['public_name']
+            # Unblock the step flow valve when the response is successful
+            @stepValve.plug req.map false
+            # Map request errors in the `errors` stream
+            @errors.plug req.errors().mapError '.responseJSON.errors'
+            # Map the request end to the next button busy state
+            @nextBusy.plug req.mapEnd false
 
 
     ###

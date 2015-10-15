@@ -255,7 +255,7 @@ module.exports.remove = (req, res, next) ->
                     if err?
                         next err
                     else
-                        res.send 200
+                        res.send 204
 
     initAuth req, (user) ->
         # Check if request is authenticated

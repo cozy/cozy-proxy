@@ -47,12 +47,18 @@ module.exports = class RegisterPresetView extends FormView
         @initForm()
         @initErrors()
 
+        # Step valve
+        @onStep = @model.get('step').sampledBy(@form).map (step) ->
+            step is 'preset'
+        .toProperty()
+
+
         # Set the next button enable state when all required fields are filled
         @model.nextEnabled.plug @required.changes()
 
         # Create a new stream from the submit one that is filtered onto the step
         # (e.g. the form will not be submitted if we're already not in the step)
-        submit = @form.filter => @model.get('step').map (cur) -> cur is 'preset'
+        submit = @form.filter @onStep
         # We plug it to the signup stream and to the next button busy state (e.g
         # the busy state is enable when the form is submitted)
         @model.signup.plug submit

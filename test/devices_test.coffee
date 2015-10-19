@@ -194,7 +194,7 @@ describe "Devices", =>
 
             it "Then 200 is returned as status code", ->
                 should.not.exist @body.error
-                @res.statusCode.should.equal 200
+                @res.statusCode.should.equal 204
 
             it "Delete an other device", (done) ->
                 @timeout 10 * 1000
@@ -207,4 +207,4 @@ describe "Devices", =>
 
             it "Then 200 is returned as status code", ->
                 should.not.exist @body.error
-                @res.statusCode.should.equal 200
+                @res.statusCode.should.equal 204

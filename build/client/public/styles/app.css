@@ -904,6 +904,11 @@ header {
     top: 2em;
   }
 }
+header a {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+}
 
 
 /*# sourceMappingURL=app.css.map*/

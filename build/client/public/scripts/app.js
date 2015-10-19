@@ -1958,7 +1958,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<section class=\"popup\"><header></header><div class=\"container\"></div></section>");;return buf.join("");
+buf.push("<section class=\"popup\"><header><a href=\"http://cozy.io\" target=\"_blank\" title=\"Cozy Website\"></a></header><div class=\"container\"></div></section>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

@@ -289,6 +289,9 @@ module.exports.remove = function(req, res, next) {
     } else {
       login = req.params.login;
       return checkLogin(login, true, function(err, device) {
+        if (err != null) {
+          return next(err);
+        }
         return removeDevice(device, function(err) {
           if (err != null) {
             return next(err);

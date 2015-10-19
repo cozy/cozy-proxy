@@ -38,6 +38,9 @@ module.exports.sendResetEmail = function(instance, user, key, callback) {
     client.setBasicAuth(process.env.NAME, process.env.TOKEN);
   }
   return client.post("mail/to-user/", data, function(err, res, body) {
+    if ((err == null) && ((body != null ? body.error : void 0) != null)) {
+      err = body.error;
+    }
     if (err != null) {
       log.error(err);
     }

@@ -296,7 +296,7 @@ module.exports.remove = function(req, res, next) {
           if (err != null) {
             return next(err);
           } else {
-            return res.send(200);
+            return res.send(204);
           }
         });
       });

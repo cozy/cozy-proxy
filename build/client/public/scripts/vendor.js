@@ -9333,7 +9333,7 @@ return jQuery;
     }
   };
 
-  Bacon.version = '0.7.66';
+  Bacon.version = '0.7.70';
 
   Exception = (typeof global !== "undefined" && global !== null ? global : this).Error;
 
@@ -10873,7 +10873,6 @@ return jQuery;
             var reply;
             reply = flushWhileTriggers();
             if (ends) {
-              ends = false;
               if (_.all(sources, cannotSync) || _.all(pats, cannotMatch)) {
                 reply = Bacon.noMore;
                 sink(endEvent());
@@ -11227,85 +11226,11 @@ return jQuery;
     }));
   };
 
-  Bacon.combineTemplate = function(template) {
-    var applyStreamValue, combinator, compile, compileTemplate, constantValue, current, funcs, mkContext, setValue, streams;
-    funcs = [];
-    streams = [];
-    current = function(ctxStack) {
-      return ctxStack[ctxStack.length - 1];
-    };
-    setValue = function(ctxStack, key, value) {
-      return current(ctxStack)[key] = value;
-    };
-    applyStreamValue = function(key, index) {
-      return function(ctxStack, values) {
-        return setValue(ctxStack, key, values[index]);
-      };
-    };
-    constantValue = function(key, value) {
-      return function(ctxStack) {
-        return setValue(ctxStack, key, value);
-      };
-    };
-    mkContext = function(template) {
-      if (isArray(template)) {
-        return [];
-      } else {
-        return {};
-      }
-    };
-    compile = function(key, value) {
-      var popContext, pushContext;
-      if (isObservable(value)) {
-        streams.push(value);
-        return funcs.push(applyStreamValue(key, streams.length - 1));
-      } else if (value === Object(value) && typeof value !== "function" && !(value instanceof RegExp) && !(value instanceof Date)) {
-        pushContext = function(key) {
-          return function(ctxStack) {
-            var newContext;
-            newContext = mkContext(value);
-            setValue(ctxStack, key, newContext);
-            return ctxStack.push(newContext);
-          };
-        };
-        popContext = function(ctxStack) {
-          return ctxStack.pop();
-        };
-        funcs.push(pushContext(key));
-        compileTemplate(value);
-        return funcs.push(popContext);
-      } else {
-        return funcs.push(constantValue(key, value));
-      }
-    };
-    compileTemplate = function(template) {
-      return _.each(template, compile);
-    };
-    compileTemplate(template);
-    combinator = function(values) {
-      var ctxStack, f, j, len1, rootContext;
-      rootContext = mkContext(template);
-      ctxStack = [rootContext];
-      for (j = 0, len1 = funcs.length; j < len1; j++) {
-        f = funcs[j];
-        f(ctxStack, values);
-      }
-      return rootContext;
-    };
-    return withDesc(new Bacon.Desc(Bacon, "combineTemplate", [template]), Bacon.combineAsArray(streams).map(combinator));
-  };
-
   Bacon.Observable.prototype.combine = function(other, f) {
     var combinator;
     combinator = toCombinator(f);
     return withDesc(new Bacon.Desc(this, "combine", [other, f]), Bacon.combineAsArray(this, other).map(function(values) {
       return combinator(values[0], values[1]);
-    }));
-  };
-
-  Bacon.Observable.prototype.decode = function(cases) {
-    return withDesc(new Bacon.Desc(this, "decode", [cases]), this.combine(Bacon.combineTemplate(cases), function(key, values) {
-      return values[key];
     }));
   };
 
@@ -11423,14 +11348,15 @@ return jQuery;
       end: void 0,
       values: [],
       flush: function() {
-        var reply;
+        var reply, valuesToPush;
         if (this.scheduled) {
           Bacon.scheduler.clearTimeout(this.scheduled);
           this.scheduled = null;
         }
         if (this.values.length > 0) {
-          reply = this.push(nextEvent(this.values));
+          valuesToPush = this.values;
           this.values = [];
+          reply = this.push(nextEvent(valuesToPush));
           if (this.end != null) {
             return this.push(this.end);
           } else if (reply !== Bacon.noMore) {
@@ -11810,6 +11736,74 @@ return jQuery;
     });
   });
 
+  Bacon.combineTemplate = function(template) {
+    var applyStreamValue, combinator, compile, compileTemplate, constantValue, current, funcs, mkContext, pushContext, setValue, streams;
+    funcs = [];
+    streams = [];
+    current = function(ctxStack) {
+      return ctxStack[ctxStack.length - 1];
+    };
+    setValue = function(ctxStack, key, value) {
+      return current(ctxStack)[key] = value;
+    };
+    applyStreamValue = function(key, index) {
+      return function(ctxStack, values) {
+        return setValue(ctxStack, key, values[index]);
+      };
+    };
+    constantValue = function(key, value) {
+      return function(ctxStack) {
+        return setValue(ctxStack, key, value);
+      };
+    };
+    mkContext = function(template) {
+      if (isArray(template)) {
+        return [];
+      } else {
+        return {};
+      }
+    };
+    pushContext = function(key, value) {
+      return function(ctxStack) {
+        var newContext;
+        newContext = mkContext(value);
+        setValue(ctxStack, key, newContext);
+        return ctxStack.push(newContext);
+      };
+    };
+    compile = function(key, value) {
+      var popContext;
+      if (isObservable(value)) {
+        streams.push(value);
+        return funcs.push(applyStreamValue(key, streams.length - 1));
+      } else if (value === Object(value) && typeof value !== "function" && !(value instanceof RegExp) && !(value instanceof Date)) {
+        popContext = function(ctxStack) {
+          return ctxStack.pop();
+        };
+        funcs.push(pushContext(key, value));
+        compileTemplate(value);
+        return funcs.push(popContext);
+      } else {
+        return funcs.push(constantValue(key, value));
+      }
+    };
+    compileTemplate = function(template) {
+      return _.each(template, compile);
+    };
+    compileTemplate(template);
+    combinator = function(values) {
+      var ctxStack, f, j, len1, rootContext;
+      rootContext = mkContext(template);
+      ctxStack = [rootContext];
+      for (j = 0, len1 = funcs.length; j < len1; j++) {
+        f = funcs[j];
+        f(ctxStack, values);
+      }
+      return rootContext;
+    };
+    return withDesc(new Bacon.Desc(Bacon, "combineTemplate", [template]), Bacon.combineAsArray(streams).map(combinator));
+  };
+
   addPropertyInitValueToStream = function(property, stream) {
     var justInitValue;
     justInitValue = new EventStream(describe(property, "justInitValue"), function(sink) {
@@ -11932,10 +11926,17 @@ return jQuery;
     }));
   };
 
+  Bacon.Observable.prototype.decode = function(cases) {
+    return withDesc(new Bacon.Desc(this, "decode", [cases]), this.combine(Bacon.combineTemplate(cases), function(key, values) {
+      return values[key];
+    }));
+  };
+
   Bacon.Observable.prototype.scan = function(seed, f) {
-    var acc, resultProperty, subscribe;
+    var acc, initHandled, resultProperty, subscribe;
     f = toCombinator(f);
     acc = toOption(seed);
+    initHandled = false;
     subscribe = (function(_this) {
       return function(sink) {
         var initSent, reply, sendInit, unsub;
@@ -11945,7 +11946,7 @@ return jQuery;
         sendInit = function() {
           if (!initSent) {
             return acc.forEach(function(value) {
-              initSent = true;
+              initSent = initHandled = true;
               reply = sink(new Initial(function() {
                 return value;
               }));
@@ -11959,13 +11960,13 @@ return jQuery;
         unsub = _this.dispatcher.subscribe(function(event) {
           var next, prev;
           if (event.hasValue()) {
-            if (initSent && event.isInitial()) {
+            if (initHandled && event.isInitial()) {
               return Bacon.more;
             } else {
               if (!event.isInitial()) {
                 sendInit();
               }
-              initSent = true;
+              initSent = initHandled = true;
               prev = acc.getOrElse(void 0);
               next = f(prev, event.value());
               acc = new Some(next);
@@ -12234,14 +12235,14 @@ return jQuery;
   };
 
   Bacon.EventStream.prototype.holdWhen = function(valve) {
-    var bufferedValues, composite, onHold, src, subscribed;
-    composite = new CompositeUnsubscribe();
+    var bufferedValues, onHold, src;
     onHold = false;
     bufferedValues = [];
-    subscribed = false;
     src = this;
     return new EventStream(new Bacon.Desc(this, "holdWhen", [valve]), function(sink) {
-      var endIfBothEnded;
+      var composite, endIfBothEnded, subscribed;
+      composite = new CompositeUnsubscribe();
+      subscribed = false;
       endIfBothEnded = function(unsub) {
         if (typeof unsub === "function") {
           unsub();

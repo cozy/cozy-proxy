@@ -111,7 +111,10 @@ module.exports = class Registration extends StateModel
         @setStepBus
             .filter (value) => !(value in Object.keys @steps)
             .onValue (path) ->
-                window.location.pathname = path
+                # /!\ we can't set only the pathname here, because
+                # Chrome encodes it, replacing # with %23 See #195
+                loc = window.location
+                window.location.href = "#{loc.protocol}//#{loc.host}#{next}"
 
 
         # Add the `nextControl` property ti the state-machine
@@ -171,7 +174,7 @@ module.exports = class Registration extends StateModel
 
     - data: an object containing the form input entries as key/values pairs
     ###
-    setEmailSubmit: (data) =>
+    setEmailSubmit: (data) ->
         # Map form data to the _email_ app endpoint expected form
         login = data['imap-login'] or data.email
         accountData =

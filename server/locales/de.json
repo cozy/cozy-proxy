@@ -21,7 +21,7 @@
     "error login failed": "Anmeldung fehlgeschlagen.",
     "reset password email from": "Ihr Cozy <no-reply@%{domain}>",
     "reset password email subject": "[Cozy] Rücksetzen Sie Ihr Passwort",
-    "reset password email text": "Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\nKeine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\n\nhttps://%{domain}/password/reset/%{key}\n\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!"
+    "reset password email text": "Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\nKeine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\n\nhttps://%{domain}/password/reset/%{key}\n\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!",
     "invalid email format": "Your email address seems to be invalid.",
     "invalid timezone": "This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York.",
     "password too short": "Your password is too short, it should contain at least 8 characters."

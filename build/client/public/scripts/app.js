@@ -536,8 +536,8 @@ module.exports = {
     "login recover again": "¿No lo ha recibido? Enviénmelo de nuevo",
     "login recover sent title": "Email enviado",
     "login recover sent message": "Se le ha enviado un email con las instrucciones para restaurar su contraseña",
-    "login recover error title": "Error sending mail",
-    "login recover error message": "Error sending password recovery message, please check your MTA is running or contact server admin",
+    "login recover error title": "Error al enviar el correo",
+    "login recover error message": "Error al enviar el mensaje de recuperación de la contraseña, por favor chequear su MTA o ponerse en contacto con la administación del servidor",
     "login wrong password title": "Contraseña incorrecta",
     "login wrong password message": "La contraseña que usted ha entrado es incorrecta, por favor vuelva a ensayar",
     "reset welcome": "Restauración de lacontraseña",
@@ -696,8 +696,8 @@ module.exports = {
     "login recover again": "이메일을 받지 못하셨나요? 다시 보내시겠습니까?",
     "login recover sent title": "이메일 보냄",
     "login recover sent message": "이메일을 확인해 주세요. 비밀번호를 초기화 하기 위하여 다음 단계를 실행 하세요.",
-    "login recover error title": "Error sending mail",
-    "login recover error message": "Error sending password recovery message, please check your MTA is running or contact server admin",
+    "login recover error title": "이메일을 보내는 중에 오류가 발생했습니다.",
+    "login recover error message": "이메일을 통해 비밀번호를 보내는중에 오류가 발생 하였습니다. 메 일 서버 또는 관리자에게 문의하세요.",
     "login wrong password title": "비밀번호가 틀립니다.",
     "login wrong password message": "입력된 비밀번호가 올바르지 않습니다. 다시 입력해 주세요.",
     "reset welcome": "비밀번호 초기화",
@@ -887,7 +887,9 @@ module.exports = Auth = (function(_super) {
      */
     return this.success.map(this.get('next')).onValue(function(next) {
       return setTimeout(function() {
-        return window.location.pathname = next;
+        var loc;
+        loc = window.location;
+        return window.location.href = "" + loc.protocol + "//" + loc.host + next;
       }, 500);
     });
   };
@@ -963,7 +965,6 @@ module.exports = Registration = (function(_super) {
   __extends(Registration, _super);
 
   function Registration() {
-    this.setEmailSubmit = __bind(this.setEmailSubmit, this);
     this.signupSubmit = __bind(this.signupSubmit, this);
     return Registration.__super__.constructor.apply(this, arguments);
   }
@@ -1079,7 +1080,9 @@ module.exports = Registration = (function(_super) {
         return !(__indexOf.call(Object.keys(_this.steps), value) >= 0);
       };
     })(this)).onValue(function(path) {
-      return window.location.pathname = path;
+      var loc;
+      loc = window.location;
+      return window.location.href = "" + loc.protocol + "//" + loc.host + next;
     });
     return this.add('nextControl', nextControl);
   };

@@ -25,4 +25,5 @@ module.exports = {
     "invalid email format": "Su dirección email no es válida.",
     "invalid timezone": "Este huso horario no es válido. Por favor use el formato <Continent>/<Country>, por  Etados_Unidos/New_York.",
     "password too short": "Su contraseña es muy corta, debe contener al menos 8 caracteres."
-};
+}
+;

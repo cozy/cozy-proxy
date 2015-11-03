@@ -39,7 +39,7 @@ module.exports = class AuthView extends Mn.LayoutView
     - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
-        username: window.username
+        username: require('env').username
         prefix:   @options.type
 
 
@@ -139,4 +139,3 @@ module.exports = class AuthView extends Mn.LayoutView
         # Re select all password field on failure.
         @model.alert
             .assign @ui.passwd[0], 'select'
-

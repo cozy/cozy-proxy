@@ -1,6 +1,7 @@
 passport     = require 'passport'
 randomstring = require 'randomstring'
 request      = require 'request-json'
+async        = require 'async'
 
 User         = require '../models/user'
 Instance     = require '../models/instance'
@@ -9,23 +10,52 @@ localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 
 
+getEnv = (callback) ->
+    async.parallel [
+        (callback) ->
+            User.first (err, user) ->
+                return callback err if err
+
+                return callback null, env = username: null unless user
+
+                env = if user.public_name?.length > 0
+                    username: user.public_name
+                else
+                    username: helpers.hideEmail user.email
+                        .split ' '
+                        .map (word) -> word[0].toUpperCase() + word.slice(1)
+                        .join ' '
+                callback null, env
+
+        , (callback) ->
+            env = apps: (key for key of require('../lib/router').getRoutes())
+            callback null, env
+    ],
+    (err, results) ->
+        return callback err if err
+
+        env = {}
+        env[key] = value for key, value of result for result in results
+        callback null, env
+
+
 module.exports.registerIndex = (req, res, next) ->
-    User.first (err, user) ->
-        if err?
-            error = new Error "[Error to access cozy user] " + err.code
-            error.status = 500
-            error.template =
-                name: 'error'
+    getEnv (err, env) ->
+        if err
+            error          = new Error "[Error to access cozy user] #{err.code}"
+            error.status   = 500
+            error.template = name: 'error'
             next error
-        else if user?
+
+        else if env.username
             res.redirect '/login'
+
         else
             localization.setLocale req.headers['accept-language']
-            res.render "index"
+            res.render 'index', env: env
 
 
 module.exports.register = (req, res, next) ->
-
     hash = helpers.cryptPassword req.body.password
     userData =
         email:       req.body.email
@@ -36,7 +66,7 @@ module.exports.register = (req, res, next) ->
         timezone:    req.body.timezone
         activated:   true
         allow_stats: req.body.allow_stats
-        docType:     "User"
+        docType:     'User'
 
     instanceData = locale: req.body.locale
 
@@ -47,7 +77,7 @@ module.exports.register = (req, res, next) ->
         User.all (err, users) ->
             if err? then next new Error err
             else if users.length isnt 0
-                error = new Error "User already registered."
+                error        = new Error 'User already registered.'
                 error.status = 409
                 next error
             else
@@ -62,58 +92,47 @@ module.exports.register = (req, res, next) ->
                         localization.setLocale req.body.locale
                         next()
     else
-        error = new Error 'Errors in validation'
+        error        = new Error 'Errors in validation'
         error.errors = validationErrors
         error.status = 400
         next error
 
 
 module.exports.loginIndex = (req, res) ->
-    User.first (err, user) ->
-        return res.redirect '/register' unless user?
-
-        # display name management
-        if user.public_name?.length > 0 then name = user.public_name
-        else
-            name = helpers.hideEmail user.email
-            words = name.split ' '
-            name = words.map((word) ->
-                return word.charAt(0).toUpperCase() + word.slice 1
-            ).join ' '
-
-        res.render "index", name: name
+    getEnv (err, env) ->
+        return res.redirect '/register' unless env.username
+        res.render 'index', env: env
 
 
 module.exports.forgotPassword = (req, res, next) ->
-
     User.first (err, user) ->
-        if err?
+        if err
             next new Error err
-        else if not user?
-            err = new Error "No user registered."
-            err.status = 400
+
+        else unless user
+            err         = new Error 'No user registered.'
+            err.status  = 400
             err.headers = 'Location': '/register/'
             next err
+
         else
             key = randomstring.generate()
             Instance.setResetKey key
             Instance.first (err, instance) ->
-                if err? then next new Error err
-                else if not instance?
-                    instance = domain: "domain.not.set"
+                return next err if err
 
+                instance = domain: 'domain.not.set'
                 helpers.sendResetEmail instance, user, key, (err, result) ->
-                    if err?
-                        next new Error "Email cannot be sent"
-                    else
-                        res.send 204
+                    return next new Error 'Email cannot be sent' if err
+                    res.send 204
 
 
 module.exports.resetPasswordIndex = (req, res) ->
-    if Instance.getResetKey() is req.params.key
-        res.render "index", resetKey: req.params.key
-    else
-        res.redirect '/'
+    getEnv (err, env) ->
+        if Instance.getResetKey() is req.params.key
+            res.render 'index', env: env
+        else
+            res.redirect '/'
 
 
 module.exports.resetPassword = (req, res, next) ->

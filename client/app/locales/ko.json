@@ -48,7 +48,7 @@
     "email smtp login tip": "IMAP 서버의 사용자 명과 같으면, 빈칸으로 남겨 두세요",
     "email smtp password": "SMTP 비밀번호",
     "email smtp password tip": "IMAP 서버의 비밀번호와 같으면, 빈칸으로 남겨 두세요",
-    "login welcome": "환영합니다.",
+    "login welcome": "환영합니다. %{username}",
     "login enter your password": "비밀 번호를 입력하세요",
     "login password": "비밀번호",
     "login submit": "로그인",

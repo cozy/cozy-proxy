@@ -24,13 +24,10 @@ module.exports = class Registration extends StateModel
             next:      if hasGoogleImport then 'import' else 'setup'
             nextLabel: 'sign up'
         import:
-            next:      'email'
+            next:      'setup'
             nextLabel: 'skip'
         import_google:
             nocontrols: true
-        email:
-            next:      'setup'
-            nextLabel: 'skip'
         setup:
             next:       'welcome'
             nocontrols: true

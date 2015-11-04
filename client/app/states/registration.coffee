@@ -17,9 +17,11 @@ module.exports = class Registration extends StateModel
     - nextLabel: the label for the next button flow control
     - nocontrols: hide the flow controls
     ###
-    steps:
+    steps: do ->
+        hasGoogleImport = 'import-from-google' in require('env').apps
+
         preset:
-            next:      'import'
+            next:      if hasGoogleImport then 'import' else 'setup'
             nextLabel: 'sign up'
         import:
             next:      'email'
@@ -114,7 +116,7 @@ module.exports = class Registration extends StateModel
                 # /!\ we can't set only the pathname here, because
                 # Chrome encodes it, replacing # with %23 See #195
                 loc = window.location
-                window.location.href = "#{loc.protocol}//#{loc.host}#{next}"
+                window.location.href = "#{loc.protocol}//#{loc.host}#{path}"
 
 
         # Add the `nextControl` property ti the state-machine

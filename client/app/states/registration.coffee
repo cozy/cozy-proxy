@@ -114,10 +114,10 @@ module.exports = class Registration extends StateModel
                 # /!\ we can't set only the pathname here, because
                 # Chrome encodes it, replacing # with %23 See #195
                 loc = window.location
-                window.location.href = "#{loc.protocol}//#{loc.host}#{next}"
+                window.location.href = "#{loc.protocol}//#{loc.host}#{path}"
 
 
-        # Add the `nextControl` property ti the state-machine
+        # Add the `nextControl` property to the state-machine
         @add 'nextControl', nextControl
 
 

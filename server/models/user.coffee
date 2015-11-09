@@ -10,6 +10,7 @@ client = new Client "http://localhost:9101/"
 if process.env.NODE_ENV in ['production', 'test']
     client.setBasicAuth process.env.NAME, process.env.TOKEN
 
+
 module.exports = User = americano.getModel 'User',
     email: String
     password: String
@@ -20,6 +21,7 @@ module.exports = User = americano.getModel 'User',
     allow_stats: Boolean
     activated: Boolean
 
+
 User.createNew = (data, callback) ->
     data.docType = "User"
     client.post "user/", data, (err, res, body) ->
@@ -29,6 +31,7 @@ User.createNew = (data, callback) ->
             callback err
         else
             callback()
+
 
 User::merge = (data, callback) ->
     client.put "user/merge/#{@id}/", data, (err, res, body) ->
@@ -41,11 +44,29 @@ User::merge = (data, callback) ->
         else
             callback()
 
+
 User.first = (callback) ->
     User.request 'all', (err, users) ->
         if err then callback err
         else if not users or users.length is 0 then callback null, null
         else  callback null, users[0]
+
+
+User.getUsername = (callback) ->
+    User.first (err, user) ->
+        return callback err if err
+
+        return callback() unless user
+
+        username = if user.public_name?.length > 0
+            user.public_name
+        else
+            helpers.hideEmail user.email
+                .split ' '
+                .map (word) -> word[0].toUpperCase() + word.slice(1)
+                .join ' '
+        callback null, username
+
 
 User.validate = (data, errors = {}) ->
     if not helpers.checkEmail data.email
@@ -55,6 +76,7 @@ User.validate = (data, errors = {}) ->
         errors.timezone = localization.t 'invalid timezone'
 
     return errors
+
 
 User.validatePassword = (password, errors = {}) ->
     if not password? or password.length < 8

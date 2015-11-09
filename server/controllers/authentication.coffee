@@ -11,31 +11,13 @@ passwordKeys = require '../lib/password_keys'
 
 
 getEnv = (callback) ->
-    async.parallel [
-        (callback) ->
-            User.first (err, user) ->
-                return callback err if err
-
-                return callback null, env = username: null unless user
-
-                env = if user.public_name?.length > 0
-                    username: user.public_name
-                else
-                    username: helpers.hideEmail user.email
-                        .split ' '
-                        .map (word) -> word[0].toUpperCase() + word.slice(1)
-                        .join ' '
-                callback null, env
-
-        , (callback) ->
-            env = apps: (key for key of require('../lib/router').getRoutes())
-            callback null, env
-    ],
-    (err, results) ->
+    User.getUsername (err, username) ->
         return callback err if err
 
-        env = {}
-        env[key] = value for key, value of result for result in results
+        env =
+            username: username
+            apps:     Object.keys require('../lib/router').getRoutes()
+
         callback null, env
 
 

@@ -17,18 +17,17 @@ module.exports = class Registration extends StateModel
     - nextLabel: the label for the next button flow control
     - nocontrols: hide the flow controls
     ###
-    steps:
+    steps: do ->
+        hasGoogleImport = 'import-from-google' in require('env').apps
+
         preset:
-            next:      'import'
+            next:      if hasGoogleImport then 'import' else 'setup'
             nextLabel: 'sign up'
         import:
-            next:      'email'
+            next:      'setup'
             nextLabel: 'skip'
         import_google:
             nocontrols: true
-        email:
-            next:      'setup'
-            nextLabel: 'skip'
         setup:
             next:       'welcome'
             nocontrols: true

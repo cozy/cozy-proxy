@@ -9,8 +9,10 @@ block content
     main(role='application')
 
 block js
-    script
-        if name
-            | var username='#{name}';
     script(src="/scripts/vendor.js")
+    if env
+        script.
+            require.register('env', function(exports, require, module) {
+              module.exports = !{JSON.stringify(env)}
+            })
     script(src="/scripts/app.js", onload="require('initialize');")

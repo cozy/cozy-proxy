@@ -2,13 +2,17 @@
     h2= t('leave google title')
     section.step#step-pastecode
         p=t("leave google code content")
+        
+        button#sign-in.btn.btn-primary= t('leave google sign in')    
         form
             label.with-input(for="google-code")
                 span= t('leave google code')
-                input#auth_code(type="text", name="auth_code", required, autofocus)
+                input#auth_code(type="text", name="auth_code", required, autofocus, disabled)
             .btn-group.btn-group-02
-                button#cancel.btn.btn-secondary= t('cancel')
-                button#step-pastecode-ok.btn.btn-primary= t('confirm')
+                button#cancel.btn.btn-secondary= t('back')
+                button#step-pastecode-ok.btn.btn-primary(disabled)= t('confirm')
+                    
+        p: a(href="https://cozy.io/" target="_blank")= t('leave google help me')
 
 
     section.step.google-services-list#step-pickscope
@@ -28,5 +32,5 @@
 
 
         .btn-group.btn-group-02
-            button#cancel.btn.btn-secondary= t('cancel')
+            button#cancel.btn.btn-secondary= t('back')
             button#lg-ok.btn.btn-primary= t('leave google confirm')

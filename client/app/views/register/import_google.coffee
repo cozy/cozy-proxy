@@ -13,6 +13,7 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
     template: require 'views/templates/view_register_import_google'
 
     events:
+        'click #sign-in':           'signIn'
         'click #lg-ok':             'selectedScopes'
         'click #step-pastecode-ok': 'pastedCode'
         'click #cancel':            'cancel'
@@ -60,7 +61,7 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         @model.setStep 'import'
 
 
-    onRender: ->
+    signIn: ->
         opts = "
             toolbars=0,
             width=700,
@@ -94,4 +95,8 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         "
 
         @popup = window.open oauthUrl, 'Google OAuth',opts
+        @$('[disabled]').prop 'disabled', false
+
+
+    onRender: ->
         @changeStep 'pastecode'

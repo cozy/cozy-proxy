@@ -56,6 +56,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         # Assign the label to the next button
         @model.get 'nextControl'
             .map '.label'
+            .filter (text) -> text isnt undefined
             .map (text) -> return -> t text
             .assign @ui.next, 'text'
 

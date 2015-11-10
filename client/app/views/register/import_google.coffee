@@ -31,13 +31,10 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         event.preventDefault()
 
         scope =
-            photos: false
-            calendars: @$("input:checkbox[name=calendars]").prop("checked")
-            contacts: @$("input:checkbox[name=contacts]").prop("checked")
+            photos:     false
+            calendars:  @$("input:checkbox[name=calendars]").prop("checked")
+            contacts:   @$("input:checkbox[name=contacts]").prop("checked")
             sync_gmail: false
-            # Currently the Gmail sync is broken. So we remove it from the
-            # scope until it's fixed.
-            #sync_gmail: @$("input:checkbox[name=sync_gmail]").prop("checked")
 
         data = auth_code: @auth_code, scope: scope
         $.post "/apps/import-from-google/lg", data
@@ -64,34 +61,37 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
 
 
     onRender: ->
-        @changeStep 'pastecode'
-        opts = [
-            'toolbars=0'
-            'width=700'
-            'height=600'
-            'left=200'
-            'top=200'
-            'scrollbars=1'
-            'resizable=1'
-        ].join(',')
+        opts = "
+            toolbars=0,
+            width=700,
+            height=600,
+            left=200,
+            top=200,
+            scrollbars=1,
+            resizable=1
+        "
 
-        scopes = [
-            'https://www.googleapis.com/auth/calendar.readonly'
-            'https://picasaweb.google.com/data/'
-            'https://www.googleapis.com/auth/contacts.readonly'
-            'email'
-            'https://mail.google.com/'
-            'profile'
-        ].join(' ')
+        scopes = "
+            https://www.googleapis.com/auth/calendar.readonly
+            https://picasaweb.google.com/data/
+            https://www.googleapis.com/auth/contacts.readonly
+            email
+            https://mail.google.com/
+            profile
+        "
 
+        clientID = "
+            260645850650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s\
+            .apps.googleusercontent.com
+        "
 
-        clientID = '260645850650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s'
-        clientID += '.apps.googleusercontent.com'
+        oauthUrl = "
+            https://accounts.google.com/o/oauth2/auth\
+            ?scope=#{encodeURIComponent(scopes)}\
+            &response_type=code\
+            &client_id=#{clientID}\
+            &redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
+        "
 
-        oauthUrl = "https://accounts.google.com/o/oauth2/auth"
-        oauthUrl += '?scope=' + encodeURIComponent(scopes)
-        oauthUrl += '&response_type=code'
-        oauthUrl += '&client_id=' + clientID
-        oauthUrl += '&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob'
         @popup = window.open oauthUrl, 'Google OAuth',opts
         @changeStep 'pastecode'

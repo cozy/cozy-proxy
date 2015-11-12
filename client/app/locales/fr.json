@@ -72,6 +72,6 @@
     "setup message": "Vous y être presque ! Dans quelques instants vous pourrez accéder à votre Cozy et reprendre le contrôle de vos données.",
     "setup on mobile title": "Synchronisez vos données avec votre Android !",
     "setup on mobile message": "Téléchargez l'app mobile Cozy sur Google Play :",
-    "welcome title": "Félicitations ! Vous venez de reprendre le contrôle de vos données.",
-    "welcome message": "Avec Cozy, vous pouvez stocker vos données dans votre Cloud personnel, que vous contrôlez, ce qui protège l'intimité de votre vie numérique. En effet, la société Cozy Cloud n'exploite pas les données que vous placez dans votre Cloud !"
+    "welcome title": "Félicitations ! Vous venez de reprendre le contrôle de vos données !",
+    "welcome message": "Avec Cozy, vous pouvez désormais stocker vos données dans votre propre cloud personnel. Contrairement aux autres services cloud, aucun de vos données ne sont analysées ou exploitées !"
 }

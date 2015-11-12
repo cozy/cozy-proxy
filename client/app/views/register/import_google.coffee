@@ -13,19 +13,22 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
     template: require 'views/templates/view_register_import_google'
 
     events:
-        'click #sign-in':           'signIn'
+        'click #cancel':            'cancel'
         'click #lg-ok':             'selectedScopes'
         'click #step-pastecode-ok': 'pastedCode'
-        'click #cancel':            'cancel'
+        'click .nav':               'navToStep'
 
 
     pastedCode: (event)->
         event.preventDefault()
+
         @popup?.close()
-        @changeStep 'pickscope'
 
         @auth_code = @$("input:text[name=auth_code]").val()
         @$("input:text[name=auth_code]").val("")
+
+        @changeStep 'pickscope'
+
 
 
     selectedScopes: (event)->
@@ -54,14 +57,25 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
     changeStep: (step) ->
         @$('.step').hide()
         @$("#step-#{step}").show()
-        @$('#auth_code').focus() if step is 'pastecode'
+        if step is 'pastecode'
+            setTimeout (-> @$('#auth_code').focus()), 30
+            @_authPopup()
 
 
     cancel: ->
         @model.setStep 'import'
 
 
-    signIn: ->
+    navToStep: (event) ->
+        event.preventDefault()
+        @changeStep event.currentTarget.dataset.target
+
+
+    onRender: ->
+        @changeStep 'sign-in'
+
+
+    _authPopup: ->
         opts = "
             toolbars=0,
             width=700,
@@ -95,8 +109,3 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         "
 
         @popup = window.open oauthUrl, 'Google OAuth',opts
-        @$('[disabled]').prop 'disabled', false
-
-
-    onRender: ->
-        @changeStep 'pastecode'

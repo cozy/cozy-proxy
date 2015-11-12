@@ -1,23 +1,34 @@
 #import-google.content-block
     h2= t('leave google title')
+
+    section.step#step-sign-in
+        h3
+            span.count= 1
+            = t('leave google sign in content')
+            
+        .btn-group.btn-group-02
+            button#cancel.btn.btn-secondary= t('back')
+            button.nav.btn.btn-primary(data-target='pastecode')= t('leave google sign in')
+
+
     section.step#step-pastecode
-        p=t("leave google code content")
+        h3
+            span.count= 2
+            = t("leave google code content")
         
-        button#sign-in.btn.btn-primary= t('leave google sign in')    
-        form
-            label.with-input(for="google-code")
-                span= t('leave google code')
-                input#auth_code(type="text", name="auth_code", required, autofocus, disabled)
-            .btn-group.btn-group-02
-                button#cancel.btn.btn-secondary= t('back')
-                button#step-pastecode-ok.btn.btn-primary(disabled)= t('confirm')
-                    
-        p: a(href="https://cozy.io/" target="_blank")= t('leave google help me')
+        label.with-input(for="google-code")
+            span= t('leave google code')
+            input#auth_code(type="text", name="auth_code", required, autofocus)
+                
+        .btn-group.btn-group-02
+            button.nav.btn.btn-secondary(data-target='sign-in')= t('back')
+            button#step-pastecode-ok.btn.btn-primary= t('confirm')
 
 
     section.step.google-services-list#step-pickscope
-        p= t('leave google choice')
-
+        h3
+            span.count= 3
+            = t('leave google choice')
 
         label(for="google-contacts-import")
             input#google-contacts-import(type="checkbox", name="contacts", value="contacts", checked)
@@ -32,5 +43,8 @@
 
 
         .btn-group.btn-group-02
-            button#cancel.btn.btn-secondary= t('back')
+            button.nav.btn.btn-secondary(data-target='pastecode')= t('back')
             button#lg-ok.btn.btn-primary= t('leave google confirm')
+
+
+    p.tip: a(href="https://cozy.io/" target="_blank")= t('leave google help me')

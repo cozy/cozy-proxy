@@ -1,8 +1,8 @@
 {
     "next": "next",
-    "skip": "skip",
+    "skip": "Jump to Cozy creation",
     "cancel": "cancel",
-    "sign up": "create my Cozy",
+    "sign up": "register",
     "add email": "add email account",
     "welcome": "let me in!",
     "confirm": "confirm",
@@ -21,7 +21,7 @@
     "preset opt-out newsletter": "Subscribe to the Beta Cozy Newsletter (highly recommended).",
     "import google account": "Synchronize your Gmail account & import calendar, contacts and photos from Google",
     "import google account tip": "You'll need to sign in to your Google account to allow your Cozy to access to data hosted on Google",
-    "import google account sign in": "Sign in to Google",
+    "import google account sign in": "Import data from Google",
     "leave google title": "Feed your data into Cozy",
     "leave google code content": "Paste the code from Google below:",
     "leave google code": "google code",
@@ -70,7 +70,7 @@
     "reset wrong password message": "The pasword you entered is incorrect, or your reset token is expired",
     "setup title": "We're setting up your Cozy…",
     "setup message": "You are now close to have your own personal cloud where your data are stored.",
-    "setup on mobile title": "Use Cozy on your Android device!",
+    "setup on mobile title": "Synchronize your data with your Android device!",
     "setup on mobile message": "Check out our mobile app on Google Play:",
     "welcome title": "Congratulations on taking back control of your personal data.",
     "welcome message": "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services, there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data."

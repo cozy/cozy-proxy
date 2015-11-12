@@ -2,6 +2,7 @@ Client = require('request-json').JsonClient
 logger = require('printit')
     date: false
     prefix: 'lib:app_manager'
+fs = require 'fs'
 
 class AppManager
 
@@ -25,7 +26,7 @@ class AppManager
             when 'installing'
                 callback code: 404, msg: 'app is still installing'
             when 'installed'
-                callback null, routes[slug].port
+                callback null, routes[slug]
             when 'stopped'
                 if shouldStart and not @isStarting[slug]?
                     @isStarting[slug] = true

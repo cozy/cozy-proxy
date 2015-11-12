@@ -16,7 +16,10 @@ class Router
 
     displayRoutes: (callback) ->
         for slug, route of @routes
-            logger.info "#{slug} (#{route.state}) on port #{route.port}"
+            if route.type is 'static'
+                logger.info "#{slug} (#{route.state}) on type #{route.type}"
+            else
+                logger.info "#{slug} (#{route.state}) on port #{route.port}"
 
         callback() if callback?
 
@@ -32,7 +35,12 @@ class Router
             try
                 for app in apps.rows
                     @routes[app.slug] = {}
-                    @routes[app.slug].port = app.port if app.port?
+                    # add path to be able to read the static file
+                    if app.type is 'static'
+                        @routes[app.slug].type = app.type
+                        @routes[app.slug].path = app.path
+                    else
+                        @routes[app.slug].port = app.port if app.port?
                     @routes[app.slug].state = app.state if app.state?
                 logger.info "Routes have been successfully reset."
                 callback()

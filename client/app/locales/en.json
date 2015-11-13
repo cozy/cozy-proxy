@@ -16,7 +16,7 @@
   "preset password": "password",
   "preset password tip": "A strong password of at least 8 characters is required (special characters recommended).",
   "preset timezone": "timezone",
-  "preset timezone tip": "It's needed to properly display your calendar.",
+  "preset timezone tip": "Your timezone is needed to properly display your calendar events.",
   "preset opt-in help": "Allow Cozy to use my usage stats to improve the product.",
   "preset opt-out newsletter": "Subscribe to the Beta Cozy Newsletter (highly recommended).",
   "import google account": "Synchronize your Gmail account & import calendar, contacts and photos from Google",

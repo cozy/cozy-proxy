@@ -64,12 +64,6 @@ fromSocket = (event) ->
         return ->
 
 
-# Returns the median value of arguments values
-getProgress = ->
-    sum = [].reduce.call arguments, ((memo, val) -> memo + val), 0
-    Math.floor sum / arguments.length
-
-
 ###
 Setup View
 ###
@@ -125,11 +119,15 @@ module.exports = class RegisterSetupView extends Mn.ItemView
         # If there's imports, the `progress` property is a median of the timer
         # and imports progress ; otherwise it's just a reference to the timer
         if imports
+            # Returns the median value of arguments values
+            getProgress = ->
+                sum = [].reduce.call arguments, ((memo, val) -> memo + val), 0
+                Math.floor sum / arguments.length
+
             streams = imports.map (datasource) ->
                 fromSocket(datasource).toProperty()
 
-            args = [getProgress, timer()].concat streams
-            @progress = Bacon.combineWith.apply Bacon, args
+            @progress = Bacon.combineWith getProgress, timer(), streams...
             @progress.onError @onError
         else
             @progress = timer()

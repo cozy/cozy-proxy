@@ -7,6 +7,7 @@ label.with-input
     input[type=email]
     input[type=number]
     input[type=password]
+    select
         @extend   $reset-input
         @extend   $full-width-percentage
         @extend   $input-background
@@ -22,6 +23,9 @@ label.with-input
         &:focus
             border-color        $blue
             background-color    rgba($grey-01, 0.25)
+
+    select
+        padding-top .6em
 
     &[aria-invalid=true]
         input[type=text]

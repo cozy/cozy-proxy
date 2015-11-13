@@ -24,11 +24,19 @@ p#preset-email-tip.tips
 
 
 label.with-input(for="preset-timezone", aria-describedby="preset-timezone-tip")
-    span= t('preset timezone')
-    input#preset-timezone(type="text", name="timezone", list="preset-timezone-datalist", required=true)
-    datalist#preset-timezone-datalist
-        each timezone in timezones
-            option(value=timezone)
+    select#preset-timezone(name="timezone" required=true)
+        - var skipstep  = false
+        - var lastcont = null
+        each timezone, index in timezones
+            unless skipstep
+                - var cont = timezone.split('/')[0]
+                if cont != lastcont
+                    - lastcont = cont
+                    if index
+                        option(disabled=true)= '---'
+                if cont.toLowerCase() == 'africa'
+                    - skipstep = true
+            option(value=timezone)= timezone
     span.indicator
         span.fa.fa-exclamation-triangle
 p#preset-timezone-tip.tips

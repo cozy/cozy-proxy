@@ -135,14 +135,6 @@ commonJSJade = ->
 # convert JSON lang files to JS
 buildJsInLocales = ->
     path = require 'path'
-    # client files
-    for file in fs.readdirSync './client/app/locales/'
-        filename = './client/app/locales/' + file
-        template = fs.readFileSync filename, 'utf8'
-        exported = "module.exports = #{template};\n"
-        name     = file.replace '.json', '.js'
-        fs.writeFileSync "./build/client/app/locales/#{name}", exported
-    # server files
     for file in fs.readdirSync './server/locales/'
         filename = './server/locales/' + file
         template = fs.readFileSync filename, 'utf8'
@@ -158,16 +150,10 @@ task 'build', 'Build CoffeeScript to Javascript', ->
                 coffee -cb --output build/server server &&
                 coffee -cb --output build/ server.coffee
                 ./node_modules/.bin/jade -cPDH -o build/server/views server/views &&
-                cd client &&
-                ./node_modules/.bin/bower install &&
-                brunch build --production &&
-                cd .. &&
                 mkdir -p build/server/locales/ &&
-                rm -rf build/server/locales/* &&
-                mkdir -p build/client/app/locales/ &&
-                rm -rf build/client/app/locales/* &&
-                cp -R client/public build/client/ &&
-                rm -rf client/app/locales/*.coffee
+                cd client &&
+                    ./node_modules/.bin/bower install &&
+                    brunch build --production
               """
     exec command, (err, stdout, stderr) ->
         if err

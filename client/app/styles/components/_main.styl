@@ -35,8 +35,24 @@ h1
     text-align  center
 
 h2
-    margin  0
+    margin  1em 0
     @extend $headings-02
+    text-align center
+    font-size 1.5em
+
+h3
+    display     flex
+    font-weight normal
+
+    .count
+        display       flex
+        align-items   center
+        flex-basis    1.5em
+        margin-right  .5em
+        padding-right .5em
+        font-size     1.5em
+        color         $grey-06
+        border-right  2px solid $grey-02
 
 hr
     @extend    $marged-vt-02
@@ -56,9 +72,6 @@ p
 .tips
     margin-top 0.2em
     @extend $low-spot
-
-.content-block
-    margin-bottom 2em
 
 .google-services-list label
     display     flex
@@ -86,6 +99,9 @@ p
         &[aria-selected=true] ~ [aria-selected=false]
             background-color transparent
             border 1px solid $grey-04
+
+.step
+    margin-bottom 2em
 
 .help
     margin-top 0

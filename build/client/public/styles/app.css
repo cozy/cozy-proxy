@@ -475,6 +475,7 @@ label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
 label.with-input input[type=password],
+label.with-input select,
 .popup {
   width: 100%;
 }
@@ -500,14 +501,16 @@ body {
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   background-color: #e8f0f8;
 }
 .btn,
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   border-radius: 2px;
 }
 .popup {
@@ -525,14 +528,16 @@ header {
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   outline: none;
   box-shadow: 0 0;
 }
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   border: 2px solid #dde6ef;
   border-width: 0 0 2px 0;
 }
@@ -540,14 +545,16 @@ label.with-input input[type=password] {
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   transition: background ease-out 0.4s, border ease-out 0.4s;
 }
 .btn:hover,
 label.with-input input[type=text]:hover,
 label.with-input input[type=email]:hover,
 label.with-input input[type=number]:hover,
-label.with-input input[type=password]:hover {
+label.with-input input[type=password]:hover,
+label.with-input select:hover {
   transition-duration: 0.1s;
 }
 .btn {
@@ -601,22 +608,28 @@ label.with-input {
 label.with-input input[type=text],
 label.with-input input[type=email],
 label.with-input input[type=number],
-label.with-input input[type=password] {
+label.with-input input[type=password],
+label.with-input select {
   padding: 1.8em 0.8em 0.6em;
   font-size: 1.1em;
 }
 label.with-input input[type=text]:hover,
 label.with-input input[type=email]:hover,
 label.with-input input[type=number]:hover,
-label.with-input input[type=password]:hover {
+label.with-input input[type=password]:hover,
+label.with-input select:hover {
   border-color: #acb8c5;
 }
 label.with-input input[type=text]:focus,
 label.with-input input[type=email]:focus,
 label.with-input input[type=number]:focus,
-label.with-input input[type=password]:focus {
+label.with-input input[type=password]:focus,
+label.with-input select:focus {
   border-color: #33a6ff;
   background-color: rgba(232,240,248,0.25);
+}
+label.with-input select {
+  padding-top: 0.6em;
 }
 label.with-input[aria-invalid=true] input[type=text],
 label.with-input[aria-invalid=true] input[type=email],
@@ -644,6 +657,9 @@ label.with-input .indicator {
 }
 label.with-input .indicator span {
   display: none;
+}
+[disabled] {
+  opacity: 0.5;
 }
 .error {
   margin-top: 0.2em;
@@ -793,7 +809,31 @@ h1 {
   text-align: center;
 }
 h2 {
-  margin: 0;
+  margin: 1em 0;
+  text-align: center;
+  font-size: 1.5em;
+}
+h3 {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-weight: normal;
+}
+h3 .count {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-flex-basis: 1.5em;
+      -ms-flex-preferred-size: 1.5em;
+          flex-basis: 1.5em;
+  margin-right: 0.5em;
+  padding-right: 0.5em;
+  font-size: 1.5em;
+  color: #748192;
+  border-right: 2px solid #dde6ef;
 }
 hr {
   border: none;
@@ -811,9 +851,6 @@ p {
 }
 .tips {
   margin-top: 0.2em;
-}
-.content-block {
-  margin-bottom: 2em;
 }
 .google-services-list label {
   display: -webkit-flex;
@@ -848,6 +885,9 @@ p {
 .feedback ul li[aria-selected=true] ~ [aria-selected=false] {
   background-color: transparent;
   border: 1px solid #acb8c5;
+}
+.step {
+  margin-bottom: 2em;
 }
 .help {
   margin-top: 0;

@@ -70,6 +70,22 @@ User.first = function(callback) {
   });
 };
 
+User.getUsername = function(callback) {
+  return User.first(function(err, user) {
+    var ref1, username;
+    if (err) {
+      return callback(err);
+    }
+    if (!user) {
+      return callback();
+    }
+    username = ((ref1 = user.public_name) != null ? ref1.length : void 0) > 0 ? user.public_name : helpers.hideEmail(user.email).split(' ').map(function(word) {
+      return word[0].toUpperCase() + word.slice(1);
+    }).join(' ');
+    return callback(null, username);
+  });
+};
+
 User.validate = function(data, errors) {
   var ref1;
   if (errors == null) {

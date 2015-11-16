@@ -318,9 +318,10 @@ module.exports = ["Europe/Paris", "Europe/Berlin", "Europe/Madrid", "Europe/Rome
 ;require.register("locales/de", function(exports, require, module) {
 module.exports = {
     "next": "next",
-    "skip": "skip",
+    "skip": "Jump to the Cozy creation",
     "cancel": "cancel",
-    "sign up": "create my Cozy",
+    "back": "back",
+    "sign up": "register",
     "add email": "add email account",
     "welcome": "let me in!",
     "confirm": "confirm",
@@ -337,11 +338,14 @@ module.exports = {
     "preset timezone tip": "It's needed to properly display your calendar.",
     "preset opt-in help": "Allow Cozy to use my usage stats to improve the product.",
     "preset opt-out newsletter": "Subscribe to the Beta Cozy Newsletter (highly recommended).",
+    "import from google": "import my data from my Google account",
     "import google account": "Synchronize your Gmail account & import calendar, contacts and photos from Google",
     "import google account tip": "You'll need to sign in to your Google account to allow your Cozy to access to data hosted on Google",
-    "import google account sign in": "Sign in to Google",
     "leave google title": "Feed your data into Cozy",
-    "leave google code content": "Paste the code from Google below:",
+    "leave google help me": "I don't understand what I have to do, please help me!",
+    "leave google sign in content": "Sign in to your Google account and authorize your Cozy to access it. You will get a complex string. Copy it in your clipboard.",
+    "leave google sign in": "Sign in to Google",
+    "leave google code content": "Then, copy and paste the code from the popup in this field:",
     "leave google code": "google code",
     "leave google choice": "Choose what you want to do with your data stored on Google servers:",
     "leave google choice sync gmail": "GMail - Access your email from Cozy",
@@ -349,25 +353,9 @@ module.exports = {
     "leave google choice calendar": "One-time import of Google Calendar",
     "leave google choice photos": "One-time import of Google Photos",
     "leave google confirm": "Import data",
-    "email caption": "If you want to be able to read your email from your Cozy, we need to set it up.",
-    "email email": "e-mail",
-    "email email tip": "You can add more emails accounts later.",
-    "email password": "password",
-    "email imap server": "imap server",
-    "email imap port": "port",
-    "email imap ssl": "Using SSL?",
-    "email show advanced": "Show advanced parameters",
-    "email imap login": "imap login",
-    "email imap login tip": "Add your IMAP username, if it is different from your email address",
-    "email smtp server": "smtp server",
-    "email smtp port": "smtp port",
-    "email smtp ssl": "Using SSL?",
-    "email smtp login": "smtp login",
-    "email smtp login tip": "Leave empty to use the same username as for the imap server",
-    "email smtp password": "smtp password",
-    "email smtp password tip": "Leave empty to use the same password as for the imap server",
-    "login welcome": "Welcome",
-    "login enter your password": "Please enter your password to access to your Cozy:",
+    "import error": "An error occurs when trying to import your datas. Please try again later from the dedicated app.",
+    "login welcome": "Welcome %{username}",
+    "login enter your password": "Please enter your password to access to your Cozy",
     "login password": "password",
     "login submit": "sign in",
     "login auth success": "Authentication successful, let's go in!",
@@ -380,7 +368,7 @@ module.exports = {
     "login wrong password title": "Wrong password",
     "login wrong password message": "The pasword you entered is incorrect, please try again",
     "reset welcome": "Reset password",
-    "reset enter your password": "Please enter your new password to reset it",
+    "reset enter your password": "%{username}, please enter your new password to reset your access",
     "reset password": "password",
     "reset submit": "reset your password",
     "reset auth success": "password successfully resetted",
@@ -388,19 +376,21 @@ module.exports = {
     "reset wrong password message": "The pasword you entered is incorrect, or your reset token is expired",
     "setup title": "We're setting up your Cozy…",
     "setup message": "You are now close to have your own personal cloud where your data are stored.",
-    "setup on mobile title": "Use Cozy on your Android device!",
+    "setup on mobile title": "Synchronize your data with your Android device!",
     "setup on mobile message": "Check out our mobile app on Google Play:",
-    "welcome title": "Congratulations on taking back control of your personal data.",
-    "welcome message": "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services, there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data."
-};
+    "welcome title": "Congratulations on taking back control of your personal data!",
+    "welcome message": "You can now store your data on your own personal cloud. As opposed to most cloud services, there is no data-mining taking place on your Cozy."
+}
+;
 });
 
 require.register("locales/en", function(exports, require, module) {
 module.exports = {
   "next": "next",
-  "skip": "skip",
+  "skip": "Jump to the Cozy creation",
   "cancel": "cancel",
-  "sign up": "create my Cozy",
+  "back": "back",
+  "sign up": "register",
   "add email": "add email account",
   "welcome": "let me in!",
   "confirm": "confirm",
@@ -414,14 +404,17 @@ module.exports = {
   "preset password": "password",
   "preset password tip": "A strong password of at least 8 characters is required (special characters recommended).",
   "preset timezone": "timezone",
-  "preset timezone tip": "It's needed to properly display your calendar.",
+  "preset timezone tip": "Your timezone is needed to properly display your calendar events.",
   "preset opt-in help": "Allow Cozy to use my usage stats to improve the product.",
   "preset opt-out newsletter": "Subscribe to the Beta Cozy Newsletter (highly recommended).",
+  "import from google": "import my data from my Google account",
   "import google account": "Synchronize your Gmail account & import calendar, contacts and photos from Google",
   "import google account tip": "You'll need to sign in to your Google account to allow your Cozy to access to data hosted on Google",
-  "import google account sign in": "Sign in to Google",
   "leave google title": "Feed your data into Cozy",
-  "leave google code content": "Paste the code from Google below:",
+  "leave google help me": "I don't understand what I have to do, please help me!",
+  "leave google sign in content": "Sign in to your Google account and authorize your Cozy to access it. You will get a complex string. Copy it in your clipboard.",
+  "leave google sign in": "Sign in to Google",
+  "leave google code content": "Then, copy and paste the code from the popup in this field:",
   "leave google code": "google code",
   "leave google choice": "Choose what you want to do with your data stored on Google servers:",
   "leave google choice sync gmail": "GMail - Access your email from Cozy",
@@ -429,25 +422,9 @@ module.exports = {
   "leave google choice calendar": "One-time import of Google Calendar",
   "leave google choice photos": "One-time import of Google Photos",
   "leave google confirm": "Import data",
-  "email caption": "If you want to be able to read your email from your Cozy, we need to set it up.",
-  "email email": "e-mail",
-  "email email tip": "You can add more emails accounts later.",
-  "email password": "password",
-  "email imap server": "imap server",
-  "email imap port": "port",
-  "email imap ssl": "Using SSL?",
-  "email show advanced": "Show advanced parameters",
-  "email imap login": "imap login",
-  "email imap login tip": "Add your IMAP username, if it is different from your email address",
-  "email smtp server": "smtp server",
-  "email smtp port": "smtp port",
-  "email smtp ssl": "Using SSL?",
-  "email smtp login": "smtp login",
-  "email smtp login tip": "Leave empty to use the same username as for the imap server",
-  "email smtp password": "smtp password",
-  "email smtp password tip": "Leave empty to use the same password as for the imap server",
-  "login welcome": "Welcome",
-  "login enter your password": "Please enter your password to access to your Cozy:",
+  "import error": "An error occurs when trying to import your datas. Please try again later from the dedicated app.",
+  "login welcome": "Welcome %{username}",
+  "login enter your password": "Please enter your password to access to your Cozy",
   "login password": "password",
   "login submit": "sign in",
   "login auth success": "Authentication successful, let's go in!",
@@ -460,7 +437,7 @@ module.exports = {
   "login wrong password title": "Wrong password",
   "login wrong password message": "The pasword you entered is incorrect, please try again",
   "reset welcome": "Reset password",
-  "reset enter your password": "Please enter your new password to reset it",
+  "reset enter your password": "%{username}, please enter your new password to reset your access",
   "reset password": "password",
   "reset submit": "reset your password",
   "reset auth success": "password successfully resetted",
@@ -468,10 +445,10 @@ module.exports = {
   "reset wrong password message": "The pasword you entered is incorrect, or your reset token is expired",
   "setup title": "We're setting up your Cozy…",
   "setup message": "You are now close to have your own personal cloud where your data are stored.",
-  "setup on mobile title": "Use Cozy on your Android device!",
+  "setup on mobile title": "Synchronize your data with your Android device!",
   "setup on mobile message": "Check out our mobile app on Google Play:",
-  "welcome title": "Congratulations on taking back control of your personal data.",
-  "welcome message": "With Cozy, you can store your data on your personal Cloud that you control. As opposed to most commercial Cloud services, there is no data-mining taking place on your Cozy Cloud, so no large corporation is trying to learn everything from you by searching through your data."
+  "welcome title": "Congratulations on taking back control of your personal data!",
+  "welcome message": "You can now store your data on your own personal cloud. As opposed to most cloud services, there is no data-mining taking place on your Cozy. "
 }
 ;
 });
@@ -479,9 +456,10 @@ module.exports = {
 require.register("locales/es", function(exports, require, module) {
 module.exports = {
     "next": "siguiente",
-    "skip": "pasar",
+    "skip": "Saltar a la creación de Cozy",
     "cancel": "anular",
-    "sign up": "crear mi Cozy",
+    "back": "volver",
+    "sign up": "inscribirse",
     "add email": "añadir una cuenta email",
     "welcome": "¡Vamos pues!",
     "confirm": "confirmar",
@@ -498,10 +476,13 @@ module.exports = {
     "preset timezone tip": "Le permite visualizar correctamente las horas en su agenda.",
     "preset opt-in help": "Deseo ayudar a Cozy a mejorar la plataforma trasmitiéndole los datos estadísticos anonimos referidos a mi utilización.",
     "preset opt-out newsletter": "Quisiera que Cozy me informara de la evolución del producto (recomendado).",
+    "import from google": "import my data from my Google account",
     "import google account": "Sincronizar su cuenta Gmail & importar agenda, contactos y fotos desde Google",
     "import google account tip": "Se requiere iniciar una sesión en su cuenta Google para autorizar a su Cozy a acceder a sus datos alojados en Google",
-    "import google account sign in": "Iniciar sesión en Google",
     "leave google title": "Importar sus datos a Cozy",
+    "leave google help me": "I don't understand what I have to do, please help me!",
+    "leave google sign in content": "Sign in to your Google account and authorize your Cozy to access it. You will get a complex string. Copy it in your clipboard.",
+    "leave google sign in": "Iniciar sesión en Google",
     "leave google code content": "Pegar el código enviado por Google aquí debajo:",
     "leave google code": "código google",
     "leave google choice": "Escoger lo que usted quiere hacer con los datos almacenados en los servidores de Google:",
@@ -510,25 +491,9 @@ module.exports = {
     "leave google choice calendar": "Agenda Google - Copiar en mi Cozy",
     "leave google choice photos": "Fotos Google - Copiar en mi Cozy",
     "leave google confirm": "Importar datos",
-    "email caption": "Pour acceder a sus emails desde Cozy, debe configurar su cuenta.",
-    "email email": "e-mail",
-    "email email tip": "Usted puede añadir más cuentas de email más tarde.",
-    "email password": "contraseña",
-    "email imap server": "servidor imap",
-    "email imap port": "puerto",
-    "email imap ssl": "¿Utilizar  SSL?",
-    "email show advanced": "Configurar los parámetros avanzados",
-    "email imap login": "nombre del usuario imap",
-    "email imap login tip": "Nombre del usuario IMAP, si diferente de la dirección email de su cuenta",
-    "email smtp server": "servidor smtp",
-    "email smtp port": "puerto smtp",
-    "email smtp ssl": "¿Utilizar SSL?",
-    "email smtp login": "nombre del usuario smtp",
-    "email smtp login tip": "Dejar vacío si quiere utilizar el mismo usuario del servidor imap",
-    "email smtp password": "contraseña smtp",
-    "email smtp password tip": "Dejar vacio si quiere utilizar la misma contraseña del servidor imap",
-    "login welcome": "Bienvenid@",
-    "login enter your password": "Introducir su contraseña para acceder a su Cozy:",
+    "import error": "An error occurs when trying to import your datas. Please try again later from the dedicated app.",
+    "login welcome": "Bienvenido %{username}",
+    "login enter your password": "Introducir su contraseña para acceder a su Cozy",
     "login password": "contraseña",
     "login submit": "iniciar sesión",
     "login auth success": "Autenticación exitosa, ¡ adelante !",
@@ -541,27 +506,29 @@ module.exports = {
     "login wrong password title": "Contraseña incorrecta",
     "login wrong password message": "La contraseña que usted ha entrado es incorrecta, por favor vuelva a ensayar",
     "reset welcome": "Restauración de lacontraseña",
-    "reset enter your password": "Por favor, introduzca su nueva contraseña para restaurarla",
+    "reset enter your password": "%{username}, por favor, introduzca su nueva contraseña para restaurarla",
     "reset password": "contraseña",
     "reset submit": "restaurar su contraseña",
     "reset auth success": "contraseña restaurada",
     "reset wrong password title": "Su contraseña no ha podido restaurarse",
-    "reset wrong password message": "La contraseña que usted ha introducido es incorrecta, o su token de restauración a expirado",
+    "reset wrong password message": "La contraseña que usted ha introducido es incorrecta, o su token de restauración ha expirado",
     "setup title": "Estamos configurando su Cozy...",
     "setup message": "Ya casi puede disponer de su nube personal en donde podrá almacenar sus datos.",
-    "setup on mobile title": "Utilizar Cozy en su periférico Android",
+    "setup on mobile title": "¡Utilizar Cozy en su periférico Android!",
     "setup on mobile message": "Descargar la app mobile Cozy en Google Play:",
     "welcome title": "¡Felicitaciones! Usted acaba de tomar el control de sus datos.",
-    "welcome message": "Con Cozy, usted puede almacenar sus datos en un Cloud personal que usted controla, lo que permite proteger la intimidad de su vida numérica. Efectivamente, ¡la empresa Cozy Cloud no explota los datos que usted coloca en su Cloud!"
-};
+    "welcome message": "You can now store your data on your own personal cloud. As opposed to most cloud services, there is no data-mining taking place on your Cozy."
+}
+;
 });
 
 require.register("locales/fr", function(exports, require, module) {
 module.exports = {
     "next": "suivant",
-    "skip": "passer",
+    "skip": "Créer directement votre Cozy",
     "cancel": "annuler",
-    "sign up": "créer mon Cozy",
+    "back": "retour",
+    "sign up": "s'enregistrer",
     "add email": "ajouter un compte email",
     "welcome": "c'est parti !",
     "confirm": "valider",
@@ -578,11 +545,14 @@ module.exports = {
     "preset timezone tip": "Vous permet d'afficher correctement les heures dans les agendas.",
     "preset opt-in help": "Je souhaite aider Cozy à améliorer la plateforme en transmettant des données statistiques anonymes relatives à mon utilisation.",
     "preset opt-out newsletter": "Je souhaite être informé par Cozy des évolutions du produit (recommandé).",
+    "import from google": "importer mes données depuis mon compte Google",
     "import google account": "Synchroniser votre compte Gmail & importer mes calendriers, contacts et photos depuis Google",
     "import google account tip": "Vous devez vous authentifier sur votre compte Google pour autoriser Cozy à accéder aux informations hébergées chez Google",
-    "import google account sign in": "S'authentifier chez Google",
     "leave google title": "Importez vos données dans Cozy",
-    "leave google code content": "Collez le code transmis par Google ci-dessous :",
+    "leave google help me": "Je n'ai pas compris, aidez-moi !",
+    "leave google sign in content": "Authentifiez-vous sur votre compte Google pour authoriser votre Cozy à accéder à vos informations. Vous obtiendrez une suite de caractères complexe. Copiez-la.",
+    "leave google sign in": "S'authentifier chez Google",
+    "leave google code content": "Puis, copiez-collez le code extrait de la popup dans ce champ :",
     "leave google code": "jeton google",
     "leave google choice": "Sélectionnez les données hébergées chez Google à importer :",
     "leave google choice sync gmail": "GMail - Accédez à vos emails depuis Cozy",
@@ -590,25 +560,9 @@ module.exports = {
     "leave google choice calendar": "Calendriers Google - Copier sur mon Cozy",
     "leave google choice photos": "Photos Google - Copier sur mon Cozy",
     "leave google confirm": "Importer les données",
-    "email caption": "Pour accéder à vos emails depuis Cozy, configurez votre compte.",
-    "email email": "email",
-    "email email tip": "Vous pourrez ajouter d'autres comptes depuis l'application.",
-    "email password": "mot de passe",
-    "email imap server": "serveur imap",
-    "email imap port": "port",
-    "email imap ssl": "Utiliser SSL ?",
-    "email show advanced": "Configurer des paramètres avancés",
-    "email imap login": "nom d'utilisateur imap",
-    "email imap login tip": "Nom d'utilisateur, si différent de l'adresse email du compte.",
-    "email smtp server": "serveur smtp",
-    "email smtp port": "port smtp",
-    "email smtp ssl": "Utiliser SSL ?",
-    "email smtp login": "nom d'utilisateur smtp",
-    "email smtp login tip": "Laisser vide pour utiliser le même nom d'utilisateur que pour le serveur imap",
-    "email smtp password": "mot de passe smtp",
-    "email smtp password tip": "Laisser vide pour utiliser le même mot de passe que pour le serveur imap",
-    "login welcome": "Bienvenue",
-    "login enter your password": "Entrez votre mot de passe pour accéder à votre Cozy :",
+    "import error": "Une erreur s'est produite durant l'importation de vos données. Veuillez réessayer depuis l'application dédiée.",
+    "login welcome": "Bienvenue %{username}",
+    "login enter your password": "Entrez votre mot de passe pour accéder à votre Cozy",
     "login password": "mot de passe",
     "login submit": "s'authentifier",
     "login auth success": "Authentification réussie, entrons !",
@@ -621,7 +575,7 @@ module.exports = {
     "login wrong password title": "Mot de passe erroné",
     "login wrong password message": "Le mot de passe que vous avez saisi n'est pas correct, veuillez réessayer.",
     "reset welcome": "Restauration du mot de passe",
-    "reset enter your password": "Entrez un nouveau mot de passe pour le restaurer",
+    "reset enter your password": "%{username}, entrez un nouveau mot de passe pour restaurer votre accès",
     "reset password": "mot de passe",
     "reset submit": "restaurer votre mot de passe",
     "reset auth success": "mot de passe restauré",
@@ -629,11 +583,12 @@ module.exports = {
     "reset wrong password message": "Le mot de passe que vous avez entré n'est pas correct, ou votre jeton de restauration est expiré.",
     "setup title": "Nous préparons votre Cozy…",
     "setup message": "Vous y être presque ! Dans quelques instants vous pourrez accéder à votre Cozy et reprendre le contrôle de vos données.",
-    "setup on mobile title": "Utilisez Cozy sur votre périphérique Android !",
+    "setup on mobile title": "Synchronisez vos données avec votre Android !",
     "setup on mobile message": "Téléchargez l'app mobile Cozy sur Google Play :",
-    "welcome title": "Félicitations ! Vous venez de reprendre le contrôle de vos données.",
-    "welcome message": "Avec Cozy, vous pouvez stocker vos données dans votre Cloud personnel, que vous contrôlez, ce qui protège l'intimité de votre vie numérique. En effet, la société Cozy Cloud n'exploite pas les données que vous placez dans votre Cloud !"
-};
+    "welcome title": "Félicitations ! Vous venez de reprendre le contrôle de vos données !",
+    "welcome message": "Avec Cozy, vous pouvez désormais stocker vos données dans votre propre cloud personnel. Contrairement aux autres services cloud, aucune de vos données ne sont analysées ou exploitées !"
+}
+;
 });
 
 require.register("locales/ko", function(exports, require, module) {
@@ -641,7 +596,8 @@ module.exports = {
     "next": "다음",
     "skip": "건너띄기",
     "cancel": "취소",
-    "sign up": "회원가입",
+    "back": "뒤로",
+    "sign up": "클라우드 생성",
     "add email": "이메일 주소 추가",
     "welcome": "환영합니다!",
     "confirm": "확인",
@@ -658,11 +614,14 @@ module.exports = {
     "preset timezone tip": "캘린더 표시시 정확한 시간을 표시 하는데 필요 합니다.",
     "preset opt-in help": "클라우드 향상을 위해 시스템 내용을 사용하도록 허용 합니다.",
     "preset opt-out newsletter": "Cozy 뉴스레터(권장).",
+    "import from google": "구글 계정에서 데이터 가져오기",
     "import google account": "G메일 계정과 캘린더, 주소록, 사진을 동기화 합니다.",
     "import google account tip": "클라우드가 구글 계정에 접근 하도록 허용합니다.",
-    "import google account sign in": "구글 로그인",
     "leave google title": "Cozy로 데이터를 제공 합니다",
-    "leave google code content": "구글로 부터 받은 코드를 아래 붙여넣기 합니다:",
+    "leave google help me": "지원 요청!",
+    "leave google sign in content": "클라우드가 구글 계정에 접근 하도록 허용합니다.",
+    "leave google sign in": "구글 로그인",
+    "leave google code content": "팝업 창에서 복사한 코드를 여기에 붙여 넣으세요:",
     "leave google code": "구글 코드",
     "leave google choice": "구글 서버에 저장된 데이터 중 필요한 것을 선택:",
     "leave google choice sync gmail": "GMail - 클라우드 접근 하도록 허용",
@@ -670,25 +629,9 @@ module.exports = {
     "leave google choice calendar": "한번만 캘린더 가져오기",
     "leave google choice photos": "한번만 구글 사진 가져오기",
     "leave google confirm": "가져오기",
-    "email caption": "클라우드상에서 이메일을 보기 원한다면, 지금 설정 하세요.",
-    "email email": "이메일",
-    "email email tip": "나중에 계정을 추가 할 수 있습니다.",
-    "email password": "비밀번호",
-    "email imap server": "IMAP 서버",
-    "email imap port": "포트",
-    "email imap ssl": "SSL 사용?",
-    "email show advanced": "고급 설정 보기",
-    "email imap login": "IMAP 로그인",
-    "email imap login tip": "IMAP 아이디가 이메일 주소와 다르면 입력 하세요.",
-    "email smtp server": "SMTP 서버",
-    "email smtp port": "SMTP 포트",
-    "email smtp ssl": "SSL 사용?",
-    "email smtp login": "SMTP 로그인",
-    "email smtp login tip": "IMAP 서버의 사용자 명과 같으면, 빈칸으로 남겨 두세요",
-    "email smtp password": "SMTP 비밀번호",
-    "email smtp password tip": "IMAP 서버의 비밀번호와 같으면, 빈칸으로 남겨 두세요",
-    "login welcome": "환영합니다.",
-    "login enter your password": "비밀 번호를 입력하세요",
+    "import error": "데이터를 가져오는 중 오류가 발생 하였습니다. 잠시 후에 다시 시도해 주세요.",
+    "login welcome": "환영합니다. %{username}",
+    "login enter your password": "클라우드에 접속 하기 위해 비밀 번호를 입력하세요:",
     "login password": "비밀번호",
     "login submit": "로그인",
     "login auth success": "인증 성공!",
@@ -701,7 +644,7 @@ module.exports = {
     "login wrong password title": "비밀번호가 틀립니다.",
     "login wrong password message": "입력된 비밀번호가 올바르지 않습니다. 다시 입력해 주세요.",
     "reset welcome": "비밀번호 초기화",
-    "reset enter your password": "새 비밀번호를 입력 하세요",
+    "reset enter your password": "초기화 하기 위해 새 비빌번호를 입력하세요.",
     "reset password": "비밀번호",
     "reset submit": "비밀번호 초기화",
     "reset auth success": "비밀번호가 초기화 되었습니다.",
@@ -709,10 +652,10 @@ module.exports = {
     "reset wrong password message": "입력된 비밀번호가 올바르지 않거나, 사용기한이 종료 되었습니다.",
     "setup title": "클라우드를 설정 중입니다…",
     "setup message": "설정이 거의 완료 되었습니다.",
-    "setup on mobile title": "안드로이드 방치에서 사용하기!",
+    "setup on mobile title": "안드로이드 장치에서 클라우드를 경험해 보세요!",
     "setup on mobile message": "구글 플레이에서 모바일 앱 설치:",
-    "welcome title": "축하 합니다. 설정이 완료 되었습니다.",
-    "welcome message": "Cozy 클라우드와 즐거운 시작이 되세요."
+    "welcome title": "Congratulations on taking back control of your personal data!",
+    "welcome message": "You can now store your data on your own personal cloud. As opposed to most cloud services, there is no data-mining taking place on your Cozy."
 };
 });
 
@@ -979,30 +922,30 @@ module.exports = Registration = (function(_super) {
   - nocontrols: hide the flow controls
    */
 
-  Registration.prototype.steps = {
-    preset: {
-      next: 'import',
-      nextLabel: 'sign up'
-    },
-    "import": {
-      next: 'email',
-      nextLabel: 'skip'
-    },
-    import_google: {
-      nocontrols: true
-    },
-    email: {
-      next: 'setup',
-      nextLabel: 'skip'
-    },
-    setup: {
-      next: 'welcome',
-      nocontrols: true
-    },
-    welcome: {
-      nextLabel: 'welcome'
-    }
-  };
+  Registration.prototype.steps = (function() {
+    var hasGoogleImport;
+    hasGoogleImport = __indexOf.call(require('env').apps, 'import-from-google') >= 0;
+    return {
+      preset: {
+        next: hasGoogleImport ? 'import' : 'setup',
+        nextLabel: 'sign up'
+      },
+      "import": {
+        next: 'setup',
+        nextLabel: 'skip'
+      },
+      import_google: {
+        nocontrols: true
+      },
+      setup: {
+        next: 'welcome',
+        nocontrols: true
+      },
+      welcome: {
+        nextLabel: 'welcome'
+      }
+    };
+  })();
 
   Registration.prototype.initialize = function() {
     this.errors = new Bacon.Bus();
@@ -1082,7 +1025,7 @@ module.exports = Registration = (function(_super) {
     })(this)).onValue(function(path) {
       var loc;
       loc = window.location;
-      return window.location.href = "" + loc.protocol + "//" + loc.host + next;
+      return window.location.href = "" + loc.protocol + "//" + loc.host + path;
     });
     return this.add('nextControl', nextControl);
   };
@@ -1318,7 +1261,7 @@ module.exports = AuthView = (function(_super) {
 
   AuthView.prototype.serializeData = function() {
     return {
-      username: window.username,
+      username: require('env').username,
       prefix: this.options.type
     };
   };
@@ -1565,7 +1508,9 @@ module.exports = RegisterControlsView = (function(_super) {
         return '/';
       }
     }).assign(this.ui.next, 'attr', 'href');
-    this.model.get('nextControl').map('.label').map(function(text) {
+    this.model.get('nextControl').map('.label').filter(function(text) {
+      return text !== void 0;
+    }).map(function(text) {
       return function() {
         return t(text);
       };
@@ -1580,141 +1525,6 @@ module.exports = RegisterControlsView = (function(_super) {
   return RegisterControlsView;
 
 })(Mn.ItemView);
-});
-
-;require.register("views/register/email", function(exports, require, module) {
-
-/*
-Email account setting view
-
-A view that contains a setup form for a primary email adress.
- */
-var FormView, RegisterEmailView,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-FormView = require('views/lib/form_view');
-
-module.exports = RegisterEmailView = (function(_super) {
-  __extends(RegisterEmailView, _super);
-
-  function RegisterEmailView() {
-    return RegisterEmailView.__super__.constructor.apply(this, arguments);
-  }
-
-  RegisterEmailView.prototype.className = 'email';
-
-  RegisterEmailView.prototype.template = require('views/templates/view_register_email');
-
-
-  /*
-  Initialize internal streams
-   */
-
-  RegisterEmailView.prototype.initialize = function() {
-    this.ui.legend = '.advanced legend';
-    this.ui.adv = '.advanced .content';
-    this.ui.ssl = 'input[type=checkbox][aria-controls]';
-    this.showAdv = this.$el.asEventStream('click', this.ui.legend).scan(false, function(visible) {
-      return !visible;
-    });
-    return this.sslCheck = this.$el.asEventStream('change', this.ui.ssl).map('.target');
-  };
-
-
-  /*
-  Assign reactive actions
-   */
-
-  RegisterEmailView.prototype.onRender = function() {
-    var _ref;
-    this.showAdv.not().assign(this.ui.adv, 'attr', 'aria-hidden');
-    this.showAdv.assign(this.ui.legend, 'attr', 'aria-hidden');
-    if ((_ref = this.model.get('email')) != null) {
-      _ref.assign(this.ui.inputs.filter('#email-email'), 'val');
-    }
-    this.initSSLCheckboxes();
-    this.bindSMTPServer();
-    this.initForm();
-    this.model.setEmail.plug(this.form.filter((function(_this) {
-      return function() {
-        return _this.model.get('step').map(function(cur) {
-          return cur === 'email' || cur === 'setup';
-        });
-      };
-    })(this)));
-    return this.model.nextLabel.plug(this.required.map(function(bool) {
-      if (bool) {
-        return 'add email';
-      } else {
-        return 'skip';
-      }
-    }));
-  };
-
-
-  /*
-  Initialize the SSL checkboxes
-  
-  When clicking on a checkbox that controls an ssl-port input, then change
-  this input value to pre-fill a right value, depending of the service and the
-  state of the SSL checkbox.
-   */
-
-  RegisterEmailView.prototype.initSSLCheckboxes = function() {
-    return this.ui.ssl.each((function(_this) {
-      return function(indexs, el) {
-        var control, service;
-        service = el.id.match(/email-([a-z]{4})-ssl/i)[1];
-        control = _this.$("#" + (el.getAttribute('aria-controls')));
-        return _this.sslCheck.filter(function(target) {
-          return target === el;
-        }).map(function(target) {
-          var ssl;
-          ssl = target.checked;
-          switch (service) {
-            case 'imap':
-              if (ssl) {
-                return 993;
-              } else {
-                return 143;
-              }
-            case 'smtp':
-              if (ssl) {
-                return 465;
-              } else {
-                return 25;
-              }
-          }
-        }).assign(control, 'val');
-      };
-    })(this));
-  };
-
-
-  /*
-  Initialize smtp server input logic
-  
-  When fill the imap-server input, if the smtp-server input is empty or was
-  never edited, then is takes the same value as the imap-server input. If it
-  contains a custom value, it doesn't change.
-   */
-
-  RegisterEmailView.prototype.bindSMTPServer = function() {
-    var imapServer, smtpServer;
-    imapServer = this.ui.inputs.filter('#email-imap-server');
-    smtpServer = this.ui.inputs.filter('#email-smtp-server');
-    smtpServer.asEventStream('keyup').map(function(e) {
-      return !!e.target.value.length;
-    }).assign(smtpServer, 'data', 'edited');
-    return imapServer.asEventStream('keyup').map('.target.value').filter(function() {
-      return smtpServer.data('edited');
-    }).assign(smtpServer, 'val');
-  };
-
-  return RegisterEmailView;
-
-})(FormView);
 });
 
 ;require.register("views/register/feedback", function(exports, require, module) {
@@ -1810,9 +1620,10 @@ module.exports = RegisterImportGoogleView = (function(_super) {
   RegisterImportGoogleView.prototype.template = require('views/templates/view_register_import_google');
 
   RegisterImportGoogleView.prototype.events = {
+    'click #cancel': 'cancel',
     'click #lg-ok': 'selectedScopes',
     'click #step-pastecode-ok': 'pastedCode',
-    'click #cancel': 'cancel'
+    'click .nav': 'navToStep'
   };
 
   RegisterImportGoogleView.prototype.pastedCode = function(event) {
@@ -1821,9 +1632,9 @@ module.exports = RegisterImportGoogleView = (function(_super) {
     if ((_ref = this.popup) != null) {
       _ref.close();
     }
-    this.changeStep('pickscope');
     this.auth_code = this.$("input:text[name=auth_code]").val();
-    return this.$("input:text[name=auth_code]").val("");
+    this.$("input:text[name=auth_code]").val("");
+    return this.changeStep('pickscope');
   };
 
   RegisterImportGoogleView.prototype.selectedScopes = function(event) {
@@ -1857,7 +1668,10 @@ module.exports = RegisterImportGoogleView = (function(_super) {
     this.$('.step').hide();
     this.$("#step-" + step).show();
     if (step === 'pastecode') {
-      return this.$('#auth_code').focus();
+      setTimeout((function() {
+        return this.$('#auth_code').focus();
+      }), 30);
+      return this._authPopup();
     }
   };
 
@@ -1865,20 +1679,22 @@ module.exports = RegisterImportGoogleView = (function(_super) {
     return this.model.setStep('import');
   };
 
+  RegisterImportGoogleView.prototype.navToStep = function(event) {
+    event.preventDefault();
+    return this.changeStep(event.currentTarget.dataset.target);
+  };
+
   RegisterImportGoogleView.prototype.onRender = function() {
+    return this.changeStep('sign-in');
+  };
+
+  RegisterImportGoogleView.prototype._authPopup = function() {
     var clientID, oauthUrl, opts, scopes;
-    this.changeStep('pastecode');
-    opts = ['toolbars=0', 'width=700', 'height=600', 'left=200', 'top=200', 'scrollbars=1', 'resizable=1'].join(',');
-    scopes = ['https://www.googleapis.com/auth/calendar.readonly', 'https://picasaweb.google.com/data/', 'https://www.googleapis.com/auth/contacts.readonly', 'email', 'https://mail.google.com/', 'profile'].join(' ');
-    clientID = '260645850650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s';
-    clientID += '.apps.googleusercontent.com';
-    oauthUrl = "https://accounts.google.com/o/oauth2/auth";
-    oauthUrl += '?scope=' + encodeURIComponent(scopes);
-    oauthUrl += '&response_type=code';
-    oauthUrl += '&client_id=' + clientID;
-    oauthUrl += '&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob';
-    this.popup = window.open(oauthUrl, 'Google OAuth', opts);
-    return this.changeStep('pastecode');
+    opts = "toolbars=0, width=700, height=600, left=200, top=200, scrollbars=1, resizable=1";
+    scopes = "https://www.googleapis.com/auth/calendar.readonly https://picasaweb.google.com/data/ https://www.googleapis.com/auth/contacts.readonly email https://mail.google.com/ profile";
+    clientID = "260645850650-2oeufakc8ddbrn8p4o58emsl7u0r0c8s.apps.googleusercontent.com";
+    oauthUrl = "https://accounts.google.com/o/oauth2/auth?scope=" + (encodeURIComponent(scopes)) + "&response_type=code&client_id=" + clientID + "&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob";
+    return this.popup = window.open(oauthUrl, 'Google OAuth', opts);
   };
 
   return RegisterImportGoogleView;
@@ -2057,11 +1873,11 @@ Helpers
 
 This section declares top-level helpers
  */
-var RegisterSetupView, fromSocket, getProgress, socket,
+var RegisterSetupView, fromSocket, socket,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  __slice = [].slice;
 
 socket = null;
 
@@ -2077,24 +1893,31 @@ fromSocket = function(event) {
   }
   endEvent = event === 'calendars' ? 'events' : event;
   return Bacon.fromBinder(function(sink) {
-    sink(0);
-    socket.on(event, function(data) {
-      return sink(Math.floor(data.number / data.total * 100));
-    });
-    socket.on("" + endEvent + ".end", function() {
+    var onEnd, onError, preventErrTimeout;
+    onEnd = function() {
       sink(100);
       return sink(new Bacon.End());
+    };
+    onError = function() {
+      sink(100);
+      return sink(new Bacon.Error('import error'));
+    };
+    preventErrTimeout = _.debounce(onError, 15000);
+    sink(0);
+    setTimeout(function() {
+      if (socket.disconnected) {
+        return onError();
+      }
+    }, 2500);
+    socket.on(event, function(data) {
+      sink(Math.floor(data.number / data.total * 100));
+      return preventErrTimeout();
     });
+    socket.on("" + endEvent + ".end", onEnd);
+    socket.on('ok', onEnd);
+    socket.on('invalid token', onError);
     return function() {};
   });
-};
-
-getProgress = function() {
-  var sum;
-  sum = [].reduce.call(arguments, (function(memo, val) {
-    return memo + val;
-  }), 0);
-  return sum / arguments.length;
 };
 
 
@@ -2107,6 +1930,7 @@ module.exports = RegisterSetupView = (function(_super) {
 
   function RegisterSetupView() {
     this.initCounter = __bind(this.initCounter, this);
+    this.onError = __bind(this.onError, this);
     return RegisterSetupView.__super__.constructor.apply(this, arguments);
   }
 
@@ -2120,12 +1944,11 @@ module.exports = RegisterSetupView = (function(_super) {
 
 
   /*
-  Initialize counter
-  
-  it takes care of the imported elements state (do we import something or not)
+  Initiliaze counter - it takes care of the imported elements state (do we
+  import something or not)
    */
 
-  RegisterSetupView.prototype.initialize = function() {
+  RegisterSetupView.prototype.onBeforeRender = function() {
     return this.model.get('imports').onValue(this.initCounter);
   };
 
@@ -2140,27 +1963,51 @@ module.exports = RegisterSetupView = (function(_super) {
 
 
   /*
+  When an error occurs, give feedback to the user (and prevent duplicate error
+  box if there's already one)
+   */
+
+  RegisterSetupView.prototype.onError = function() {
+    var text;
+    if (this.$('.error').length) {
+      return;
+    }
+    text = window.t('import error');
+    return this.ui.bar.after($('<p/>', {
+      "class": 'error',
+      text: text
+    }));
+  };
+
+
+  /*
   Creates a counter property from
   - a timer of 8 seconds
   - each imports feedbacks
    */
 
   RegisterSetupView.prototype.initCounter = function(imports) {
-    var args, end, timer;
-    timer = Bacon.interval(80, 1).take(100).scan(0, function(a, b) {
-      return a + b;
-    });
+    var end, getProgress, streams, timer;
+    timer = function() {
+      return Bacon.interval(80, 1).take(100).scan(0, function(a, b) {
+        return a + b;
+      }).toProperty();
+    };
     if (imports) {
-      args = [getProgress, timer.toProperty()];
-      if (__indexOf.call(imports, 'contacts') >= 0) {
-        args.push(fromSocket('contacts').toProperty());
-      }
-      if (__indexOf.call(imports, 'calendars') >= 0) {
-        args.push(fromSocket('calendars').toProperty());
-      }
-      this.progress = Bacon.combineWith.apply(Bacon, args);
+      getProgress = function() {
+        var sum;
+        sum = [].reduce.call(arguments, (function(memo, val) {
+          return memo + val;
+        }), 0);
+        return Math.floor(sum / arguments.length);
+      };
+      streams = imports.map(function(datasource) {
+        return fromSocket(datasource).toProperty();
+      });
+      this.progress = Bacon.combineWith.apply(Bacon, [getProgress, timer()].concat(__slice.call(streams)));
+      this.progress.onError(this.onError);
     } else {
-      this.progress = timer.toProperty();
+      this.progress = timer();
     }
     end = this.progress.filter(function(n) {
       return n >= 100;
@@ -2225,7 +2072,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),prefix = locals_.prefix,username = locals_.username;
-buf.push("<div role=\"region\"><h1>" + (jade.escape((jade_interp = t(prefix + ' welcome')) == null ? '' : jade_interp)) + " " + (jade.escape((jade_interp = username) == null ? '' : jade_interp)) + "</h1><p id=\"login-password-tip\" class=\"help\">" + (jade.escape(null == (jade_interp = t(prefix + ' enter your password')) ? "" : jade_interp)) + "</p><label" + (jade.attr("for", "" + (prefix) + "-password", true, false)) + (jade.attr("aria-describedby", "" + (prefix) + "-password-tip", true, false)) + " class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t(prefix + ' password')) ? "" : jade_interp)) + "</span><input" + (jade.attr("id", "" + (prefix) + "-password", true, false)) + " name=\"password\" type=\"password\" autofocus=\"autofocus\"/></label></div><footer><div class=\"controls\"><button type=\"submit\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t(prefix + ' submit')) ? "" : jade_interp)) + "</button></div><div class=\"feedback\"></div></footer>");;return buf.join("");
+buf.push("<div role=\"region\"><h1>" + (jade.escape(null == (jade_interp = t(prefix + ' welcome', {username: username})) ? "" : jade_interp)) + "</h1><p id=\"login-password-tip\" class=\"help\">" + (jade.escape(null == (jade_interp = t(prefix + ' enter your password', {username: username})) ? "" : jade_interp)) + "</p><label" + (jade.attr("for", "" + (prefix) + "-password", true, false)) + (jade.attr("aria-describedby", "" + (prefix) + "-password-tip", true, false)) + " class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t(prefix + ' password')) ? "" : jade_interp)) + "</span><input" + (jade.attr("id", "" + (prefix) + "-password", true, false)) + " name=\"password\" type=\"password\" autofocus=\"autofocus\"/></label></div><footer><div class=\"controls\"><button type=\"submit\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t(prefix + ' submit')) ? "" : jade_interp)) + "</button></div><div class=\"feedback\"></div></footer>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -2304,25 +2151,6 @@ if (typeof define === 'function' && define.amd) {
 }
 });
 
-;require.register("views/templates/view_register_email", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-
-buf.push("<h2>" + (jade.escape(null == (jade_interp = t('email caption')) ? "" : jade_interp)) + "</h2><label for=\"email-email\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email email')) ? "" : jade_interp)) + "</span><input id=\"email-email\" type=\"email\" name=\"email\" required=\"required\"/></label><label for=\"email-password\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email password')) ? "" : jade_interp)) + "</span><input id=\"email-password\" type=\"password\" name=\"password\" required=\"required\"/></label><div class=\"input-group input-group-02-third\"><label for=\"email-imap-server\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email imap server')) ? "" : jade_interp)) + "</span><input id=\"email-imap-server\" type=\"text\" name=\"imap-server\" required=\"required\"/></label><label for=\"email-imap-port\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email imap port')) ? "" : jade_interp)) + "</span><input id=\"email-imap-port\" type=\"number\" name=\"imap-port\" required=\"required\" value=\"993\"/></label></div><label for=\"email-imap-ssl\" class=\"checkbox\"><input id=\"email-imap-ssl\" type=\"checkbox\" name=\"imap-ssl\" checked=\"checked\" aria-controls=\"email-imap-port\"/><span>" + (jade.escape(null == (jade_interp = t('email imap ssl')) ? "" : jade_interp)) + "</span></label><fieldset class=\"advanced\"><legend>" + (jade.escape(null == (jade_interp = t('email show advanced')) ? "" : jade_interp)) + "</legend><div class=\"content\"><label for=\"email-imap-login\" aria-describedby=\"email-imap-login-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email imap login')) ? "" : jade_interp)) + "</span><input id=\"email-imap-login\" type=\"text\" name=\"imap-login\"/></label><p id=\"email-login-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('email imap login tip')) ? "" : jade_interp)) + "</p><hr/><div class=\"input-group input-group-02-third\"><label for=\"email-smtp-server\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email smtp server')) ? "" : jade_interp)) + "</span><input id=\"email-smtp-server\" type=\"text\" name=\"smtp-server\"/></label><label for=\"email-smtp-port\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email smtp port')) ? "" : jade_interp)) + "</span><input id=\"email-smtp-port\" type=\"number\" name=\"smtp-port\" value=\"465\"/></label></div><label for=\"email-smtp-ssl\" class=\"checkbox\"><input id=\"email-smtp-ssl\" type=\"checkbox\" name=\"smtp-ssl\" checked=\"checked\" aria-controls=\"email-smtp-port\"/><span>" + (jade.escape(null == (jade_interp = t('email smtp ssl')) ? "" : jade_interp)) + "</span></label><label for=\"email-smtp-login\" aria-describedby=\"email-smtp-login-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email smtp login')) ? "" : jade_interp)) + "</span><input id=\"email-smtp-login\" type=\"email\" name=\"smtp-login\"/></label><p id=\"email-login-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('email smtp login tip')) ? "" : jade_interp)) + "</p><label for=\"email-smtp-password\" aria-describedby=\"email-smtp-password-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('email smtp password')) ? "" : jade_interp)) + "</span><input id=\"email-password\" type=\"password\" name=\"smtp-password\"/></label><p id=\"email-login-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('email smtp password tip')) ? "" : jade_interp)) + "</p></div></fieldset><p id=\"email-email-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('email email tip')) ? "" : jade_interp)) + "</p>");;return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
 ;require.register("views/templates/view_register_feedback", function(exports, require, module) {
 var __templateData = function template(locals) {
 var buf = [];
@@ -2348,7 +2176,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div id=\"import-google\" class=\"content-block\"><div class=\"content-illustration google-services\"></div><h2>" + (jade.escape(null == (jade_interp = t('import google account')) ? "" : jade_interp)) + "</h2><p>" + (jade.escape(null == (jade_interp = t('import google account tip')) ? "" : jade_interp)) + "</p><a id=\"import-google\" type=\"button\" href=\"/register?step=import_google\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('import google account sign in')) ? "" : jade_interp)) + "</a></div>");;return buf.join("");
+buf.push("<div id=\"import-google\" class=\"content-block\"><div class=\"content-illustration google-services\"></div><h2>" + (jade.escape(null == (jade_interp = t('import google account')) ? "" : jade_interp)) + "</h2><p>" + (jade.escape(null == (jade_interp = t('import google account tip')) ? "" : jade_interp)) + "</p><a id=\"import-google\" type=\"button\" href=\"/register?step=import_google\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('import from google')) ? "" : jade_interp)) + "</a></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -2367,7 +2195,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div id=\"import-google\" class=\"content-block\"><h2>" + (jade.escape(null == (jade_interp = t('leave google title')) ? "" : jade_interp)) + "</h2><section id=\"step-pastecode\" class=\"step\"><p>" + (jade.escape(null == (jade_interp = t("leave google code content")) ? "" : jade_interp)) + "</p><form><label for=\"google-code\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('leave google code')) ? "" : jade_interp)) + "</span><input id=\"auth_code\" type=\"text\" name=\"auth_code\" required=\"required\" autofocus=\"autofocus\"/></label><div class=\"btn-group btn-group-02\"><button id=\"cancel\" class=\"btn btn-secondary\">" + (jade.escape(null == (jade_interp = t('cancel')) ? "" : jade_interp)) + "</button><button id=\"step-pastecode-ok\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('confirm')) ? "" : jade_interp)) + "</button></div></form></section><section id=\"step-pickscope\" class=\"step google-services-list\"><p>" + (jade.escape(null == (jade_interp = t('leave google choice')) ? "" : jade_interp)) + "</p><label for=\"google-contacts-import\"><input id=\"google-contacts-import\" type=\"checkbox\" name=\"contacts\" value=\"contacts\" checked=\"checked\"/><span class=\"google-services-icons contacts\"></span><span>" + (jade.escape(null == (jade_interp = t("leave google choice contacts")) ? "" : jade_interp)) + "</span></label><label for=\"google-calendar-import\"><input id=\"google-calendar-import\" type=\"checkbox\" name=\"calendars\" value=\"calendars\" checked=\"checked\"/><span class=\"google-services-icons calendar\"></span><span>" + (jade.escape(null == (jade_interp = t("leave google choice calendar")) ? "" : jade_interp)) + "</span></label><div class=\"btn-group btn-group-02\"><button id=\"cancel\" class=\"btn btn-secondary\">" + (jade.escape(null == (jade_interp = t('cancel')) ? "" : jade_interp)) + "</button><button id=\"lg-ok\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('leave google confirm')) ? "" : jade_interp)) + "</button></div></section></div>");;return buf.join("");
+buf.push("<div id=\"import-google\" class=\"content-block\"><h2>" + (jade.escape(null == (jade_interp = t('leave google title')) ? "" : jade_interp)) + "</h2><section id=\"step-sign-in\" class=\"step\"><h3><span class=\"count\">1</span>" + (jade.escape(null == (jade_interp = t('leave google sign in content')) ? "" : jade_interp)) + "</h3><div class=\"btn-group btn-group-02\"><button id=\"cancel\" class=\"btn btn-secondary\">" + (jade.escape(null == (jade_interp = t('back')) ? "" : jade_interp)) + "</button><button data-target=\"pastecode\" class=\"nav btn btn-primary\">" + (jade.escape(null == (jade_interp = t('leave google sign in')) ? "" : jade_interp)) + "</button></div></section><section id=\"step-pastecode\" class=\"step\"><h3><span class=\"count\">2</span>" + (jade.escape(null == (jade_interp = t("leave google code content")) ? "" : jade_interp)) + "</h3><label for=\"google-code\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('leave google code')) ? "" : jade_interp)) + "</span><input id=\"auth_code\" type=\"text\" name=\"auth_code\" required=\"required\" autofocus=\"autofocus\"/></label><div class=\"btn-group btn-group-02\"><button data-target=\"sign-in\" class=\"nav btn btn-secondary\">" + (jade.escape(null == (jade_interp = t('back')) ? "" : jade_interp)) + "</button><button id=\"step-pastecode-ok\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('confirm')) ? "" : jade_interp)) + "</button></div></section><section id=\"step-pickscope\" class=\"step google-services-list\"><h3><span class=\"count\">3</span>" + (jade.escape(null == (jade_interp = t('leave google choice')) ? "" : jade_interp)) + "</h3><label for=\"google-contacts-import\"><input id=\"google-contacts-import\" type=\"checkbox\" name=\"contacts\" value=\"contacts\" checked=\"checked\"/><span class=\"google-services-icons contacts\"></span><span>" + (jade.escape(null == (jade_interp = t("leave google choice contacts")) ? "" : jade_interp)) + "</span></label><label for=\"google-calendar-import\"><input id=\"google-calendar-import\" type=\"checkbox\" name=\"calendars\" value=\"calendars\" checked=\"checked\"/><span class=\"google-services-icons calendar\"></span><span>" + (jade.escape(null == (jade_interp = t("leave google choice calendar")) ? "" : jade_interp)) + "</span></label><div class=\"btn-group btn-group-02\"><button data-target=\"pastecode\" class=\"nav btn btn-secondary\">" + (jade.escape(null == (jade_interp = t('back')) ? "" : jade_interp)) + "</button><button id=\"lg-ok\" class=\"btn btn-primary\">" + (jade.escape(null == (jade_interp = t('leave google confirm')) ? "" : jade_interp)) + "</button></div></section><p class=\"tip\"><a href=\"https://cozy.io/\" target=\"_blank\">" + (jade.escape(null == (jade_interp = t('leave google help me')) ? "" : jade_interp)) + "</a></p></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -2386,30 +2214,64 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),timezones = locals_.timezones;
-buf.push("<label for=\"preset-email\" aria-describedby=\"preset-email-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset email')) ? "" : jade_interp)) + "</span><input id=\"preset-email\" type=\"email\" name=\"email\" autofocus=\"autofocus\" required=\"required\"/><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-email-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset email tip')) ? "" : jade_interp)) + "</p><label for=\"preset-name\" aria-describedby=\"preset-name-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset name')) ? "" : jade_interp)) + "</span><input id=\"preset-name\" type=\"text\" name=\"public_name\" required=\"required\"/></label><p id=\"preset-name-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset name tip')) ? "" : jade_interp)) + "</p><label for=\"preset-password\" aria-describedby=\"preset-password-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset password')) ? "" : jade_interp)) + "</span><input id=\"preset-password\" type=\"password\" name=\"password\" required=\"required\"/><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-email-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset password tip')) ? "" : jade_interp)) + "</p><label for=\"preset-timezone\" aria-describedby=\"preset-timezone-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset timezone')) ? "" : jade_interp)) + "</span><input id=\"preset-timezone\" type=\"text\" name=\"timezone\" list=\"preset-timezone-datalist\" required=\"required\"/><datalist id=\"preset-timezone-datalist\">");
+buf.push("<label for=\"preset-email\" aria-describedby=\"preset-email-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset email')) ? "" : jade_interp)) + "</span><input id=\"preset-email\" type=\"email\" name=\"email\" autofocus=\"autofocus\" required=\"required\"/><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-email-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset email tip')) ? "" : jade_interp)) + "</p><label for=\"preset-name\" aria-describedby=\"preset-name-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset name')) ? "" : jade_interp)) + "</span><input id=\"preset-name\" type=\"text\" name=\"public_name\" required=\"required\"/></label><p id=\"preset-name-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset name tip')) ? "" : jade_interp)) + "</p><label for=\"preset-password\" aria-describedby=\"preset-password-tip\" class=\"with-input\"><span>" + (jade.escape(null == (jade_interp = t('preset password')) ? "" : jade_interp)) + "</span><input id=\"preset-password\" type=\"password\" name=\"password\" required=\"required\"/><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-email-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset password tip')) ? "" : jade_interp)) + "</p><label for=\"preset-timezone\" aria-describedby=\"preset-timezone-tip\" class=\"with-input\"><select id=\"preset-timezone\" name=\"timezone\" required=\"required\">");
+var skipstep  = false
+var lastcont = null
 // iterate timezones
 ;(function(){
   var $$obj = timezones;
   if ('number' == typeof $$obj.length) {
 
-    for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
-      var timezone = $$obj[$index];
+    for (var index = 0, $$l = $$obj.length; index < $$l; index++) {
+      var timezone = $$obj[index];
 
-buf.push("<option" + (jade.attr("value", timezone, true, false)) + "></option>");
+if (!( skipstep))
+{
+var cont = timezone.split('/')[0]
+if ( cont != lastcont)
+{
+lastcont = cont
+if ( index)
+{
+buf.push("<option disabled=\"disabled\">---</option>");
+}
+}
+if ( cont.toLowerCase() == 'africa')
+{
+skipstep = true
+}
+}
+buf.push("<option" + (jade.attr("value", timezone, true, false)) + ">" + (jade.escape(null == (jade_interp = timezone) ? "" : jade_interp)) + "</option>");
     }
 
   } else {
     var $$l = 0;
-    for (var $index in $$obj) {
-      $$l++;      var timezone = $$obj[$index];
+    for (var index in $$obj) {
+      $$l++;      var timezone = $$obj[index];
 
-buf.push("<option" + (jade.attr("value", timezone, true, false)) + "></option>");
+if (!( skipstep))
+{
+var cont = timezone.split('/')[0]
+if ( cont != lastcont)
+{
+lastcont = cont
+if ( index)
+{
+buf.push("<option disabled=\"disabled\">---</option>");
+}
+}
+if ( cont.toLowerCase() == 'africa')
+{
+skipstep = true
+}
+}
+buf.push("<option" + (jade.attr("value", timezone, true, false)) + ">" + (jade.escape(null == (jade_interp = timezone) ? "" : jade_interp)) + "</option>");
     }
 
   }
 }).call(this);
 
-buf.push("</datalist><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-timezone-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset timezone tip')) ? "" : jade_interp)) + "</p><div class=\"checkboxes\"><label for=\"preset-help-us\" class=\"checkbox\"><input id=\"preset-help-us\" type=\"checkbox\" name=\"allow_stats\" checked=\"checked\"/><span>" + (jade.escape(null == (jade_interp = t('preset opt-in help')) ? "" : jade_interp)) + "</span></label></div><button type=\"submit\" aria-hidden=\"true\"></button>");;return buf.join("");
+buf.push("</select><span class=\"indicator\"><span class=\"fa fa-exclamation-triangle\"></span></span></label><p id=\"preset-timezone-tip\" class=\"tips\">" + (jade.escape(null == (jade_interp = t('preset timezone tip')) ? "" : jade_interp)) + "</p><div class=\"checkboxes\"><label for=\"preset-help-us\" class=\"checkbox\"><input id=\"preset-help-us\" type=\"checkbox\" name=\"allow_stats\" checked=\"checked\"/><span>" + (jade.escape(null == (jade_interp = t('preset opt-in help')) ? "" : jade_interp)) + "</span></label></div><button type=\"submit\" aria-hidden=\"true\"></button>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

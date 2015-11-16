@@ -33,7 +33,11 @@ module.exports.initializeProxy = function(app, server) {
     agent: new http.Agent()
   });
   proxy.on('error', function(err, req, res) {
-    console.log(err);
+    if (/ECONNREFUSED/.test(err)) {
+      console.log("connexion to " + req.url + " refused");
+    } else {
+      console.log(err);
+    }
     err = new Error(err);
     err.statusCode = 500;
     err.template = {

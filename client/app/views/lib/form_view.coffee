@@ -11,7 +11,7 @@ module.exports = class FormView extends Mn.ItemView
 
     ui:
         labels:   'label.with-input'
-        inputs:   'label input'
+        inputs:   ':input'
 
 
     ###

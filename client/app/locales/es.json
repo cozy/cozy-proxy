@@ -29,6 +29,7 @@
     "leave google sign in": "Iniciar sesión en Google",
     "leave google code content": "Pegar el código enviado por Google aquí debajo:",
     "leave google code": "código google",
+    "leave google url doc": "https://cozy.io/en/mobile/import-google.html",
     "leave google choice": "Escoger lo que usted quiere hacer con los datos almacenados en los servidores de Google:",
     "leave google choice sync gmail": "GMail - Acceder a su email desde Cozy",
     "leave google choice contacts": "Contactos Google - Copiar en mi Cozy",

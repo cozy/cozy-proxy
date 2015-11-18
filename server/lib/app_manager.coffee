@@ -2,7 +2,6 @@ Client = require('request-json').JsonClient
 logger = require('printit')
     date: false
     prefix: 'lib:app_manager'
-fs = require 'fs'
 
 class AppManager
 
@@ -19,7 +18,6 @@ class AppManager
         if not routes[slug]?
             callback code: 404, msg: 'app unknown'
             return
-
         switch routes[slug].state
             when 'broken'
                 callback code: 500, msg: 'app broken'
@@ -45,9 +43,7 @@ class AppManager
     startApp: (slug, callback) ->
         logger.info "Starting app #{slug}"
         @client.post "api/applications/#{slug}/start", {}, (err, res, data) =>
-
             err = err or data.msg if data.error
-
             if err? or res.statusCode isnt 200
                 msg = "An error occurred while starting the app #{slug}"
                 logger.error "#{msg} -- #{err}"
@@ -67,4 +63,3 @@ class AppManager
                 return "#{app.name}: #{app.version}"
 
 module.exports = new AppManager()
-

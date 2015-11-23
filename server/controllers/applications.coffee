@@ -1,18 +1,16 @@
 appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
-fs = require 'fs'
-path = require 'path'
 send = require 'send'
 lockedpath = require 'lockedpath'
 logger = require('printit')
     date: false
     prefix: 'controllers:applications'
 
-# get url to start a static app
-getUrlForStaticApp = (appName, url, root, callback) ->
+# get path to start a static app
+getPathForStaticApp = (appName, path, root, callback) ->
     logger.info "Starting static app #{appName}"
-    url += 'index.html' if url is '/' or url is '/public/'
-    callback lockedpath(root).join url
+    path += 'index.html' if path is '/' or path is '/public/'
+    callback lockedpath(root).join path
 
 module.exports.app = (req, res, next) ->
     appName = req.params.name
@@ -29,7 +27,7 @@ module.exports.app = (req, res, next) ->
             getProxy().web req, res, target: "http://localhost:#{result.port}"
         else
             # showing private static app
-            getUrlForStaticApp appName, req.url, result.path, (url) ->
+            getPathForStaticApp appName, req.url, result.path, (url) ->
                 send(req, url).pipe res
 
 
@@ -49,7 +47,7 @@ module.exports.publicApp = (req, res, next) ->
             getProxy().web req, res, target: "http://localhost:#{result.port}"
         else
             # showing public static app
-            getUrlForStaticApp appName, req.url, result.path, (url) ->
+            getPathForStaticApp appName, req.url, result.path, (url) ->
                 send(req, url).pipe res
 
 module.exports.appWithSlash = (req, res) -> res.redirect "#{req.url}/"

@@ -23,13 +23,12 @@ module.exports.app = (req, res, next) ->
             error.template =
                 name: if err.code is 404 then 'not_found' else 'error_app'
             next error
-        else if result.port?
-            getProxy().web req, res, target: "http://localhost:#{result.port}"
-        else
+        else if result.type is 'static'
             # showing private static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
                 send(req, url).pipe res
-
+        else
+            getProxy().web req, res, target: "http://localhost:#{result.port}"
 
 module.exports.publicApp = (req, res, next) ->
     appName = req.params.name
@@ -43,11 +42,11 @@ module.exports.publicApp = (req, res, next) ->
             error.template =
                 name: 'error_public'
             next error
-        else if result.port?
-            getProxy().web req, res, target: "http://localhost:#{result.port}"
-        else
+        else if result.type is 'static'
             # showing public static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
                 send(req, url).pipe res
+        else
+            getProxy().web req, res, target: "http://localhost:#{result.port}"
 
 module.exports.appWithSlash = (req, res) -> res.redirect "#{req.url}/"

@@ -28,12 +28,12 @@ class AppManager
             when 'stopped'
                 if shouldStart and not @isStarting[slug]?
                     @isStarting[slug] = true
-                    @startApp slug, (err, port) =>
+                    @startApp slug, (err, response) =>
                         delete @isStarting[slug]
                         if err?
                             callback code: 500, msg: "cannot start app : #{err}"
                         else
-                            callback null, port
+                            callback null, response
                 else
                     callback code: 500, msg: 'wont start'
 
@@ -54,7 +54,7 @@ class AppManager
                 routes[slug] =
                     port: data.app.port
                     state: data.app.state
-                callback null, data.app.port
+                callback null, routes[slug]
 
     versions: (callback) ->
         @client.get "api/applications/stack", (error, res, apps) ->

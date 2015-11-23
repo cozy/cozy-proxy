@@ -40,12 +40,12 @@ AppManager = (function() {
           msg: 'app is still installing'
         });
       case 'installed':
-        return callback(null, routes[slug].port);
+        return callback(null, routes[slug]);
       case 'stopped':
         if (shouldStart && (this.isStarting[slug] == null)) {
           this.isStarting[slug] = true;
           return this.startApp(slug, (function(_this) {
-            return function(err, port) {
+            return function(err, response) {
               delete _this.isStarting[slug];
               if (err != null) {
                 return callback({
@@ -53,7 +53,7 @@ AppManager = (function() {
                   msg: "cannot start app : " + err
                 });
               } else {
-                return callback(null, port);
+                return callback(null, response);
               }
             };
           })(this));
@@ -91,7 +91,7 @@ AppManager = (function() {
             port: data.app.port,
             state: data.app.state
           };
-          return callback(null, data.app.port);
+          return callback(null, routes[slug]);
         }
       };
     })(this));

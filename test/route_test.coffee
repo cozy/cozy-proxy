@@ -49,7 +49,7 @@ describe "Proxying", ->
             "myapp2": port: 4447, state: 'stopped'
             "front": type: 'static',
             state: 'installed',
-            path: '/usr/local/cozy/apps/front',
+            path: '/usr/local/cozy/apps/front'
 
     after helpers.stopApp
     after helpers.closeFakeServers
@@ -155,7 +155,3 @@ private route (with params)", (done) ->
         it "should have called home to start the app", ->
             expected = "/api/applications/front/start"
             @scope.isDone().should.be.true
-
-        it "Then I should be redirected to the cozy-front", \
-        ->
-            @response.statusCode.should.equal 200

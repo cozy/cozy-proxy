@@ -28,7 +28,11 @@ Router = (function() {
     ref = this.routes;
     for (slug in ref) {
       route = ref[slug];
-      logger.info(slug + " (" + route.state + ") on port " + route.port);
+      if (route.type === 'static') {
+        logger.info(slug + " (" + route.state + ") on type " + route.type);
+      } else {
+        logger.info(slug + " (" + route.state + ") on port " + route.port);
+      }
     }
     if (callback != null) {
       return callback();
@@ -51,8 +55,13 @@ Router = (function() {
           for (i = 0, len = ref.length; i < len; i++) {
             app = ref[i];
             _this.routes[app.slug] = {};
-            if (app.port != null) {
-              _this.routes[app.slug].port = app.port;
+            if (app.type === 'static') {
+              _this.routes[app.slug].type = app.type;
+              _this.routes[app.slug].path = app.path;
+            } else {
+              if (app.port != null) {
+                _this.routes[app.slug].port = app.port;
+              }
             }
             if (app.state != null) {
               _this.routes[app.slug].state = app.state;

@@ -102,10 +102,7 @@ module.exports.forgotPassword = (req, res, next) ->
             Instance.setResetKey key
             Instance.first (err, instance) ->
                 return next err if err
-
-                if not instance?
-                    instance = domain: 'domain.not.set'
-
+                instance ?= domain: 'domain.not.set'
                 helpers.sendResetEmail instance, user, key, (err, result) ->
                     return next new Error 'Email cannot be sent' if err
                     res.send 204

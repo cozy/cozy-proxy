@@ -135,9 +135,11 @@ module.exports.forgotPassword = function(req, res, next) {
         if (err) {
           return next(err);
         }
-        instance = {
-          domain: 'domain.not.set'
-        };
+        if (instance == null) {
+          instance = {
+            domain: 'domain.not.set'
+          };
+        }
         return helpers.sendResetEmail(instance, user, key, function(err, result) {
           if (err) {
             return next(new Error('Email cannot be sent'));

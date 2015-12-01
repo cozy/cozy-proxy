@@ -134,7 +134,7 @@ updateDevice = (oldDevice, device, cb) ->
             password: randomString 32
             app: oldDevice.id
             permissions: device.permissions or defaultPermissions
-        path = "access/#{accesses[0].id}/"
+        path = "access/#{access.app}/"
         clientDS.put path, access, (err, result, body) ->
             if err?
                 console.log err

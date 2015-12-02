@@ -1,4 +1,5 @@
 appManager = require '../lib/app_manager'
+staticFile = require 'node-static'
 {getProxy} = require '../lib/proxy'
 send = require 'send'
 lockedpath = require 'lockedpath'
@@ -24,9 +25,19 @@ module.exports.app = (req, res, next) ->
                 name: if err.code is 404 then 'not_found' else 'error_app'
             next error
         else if result.type is 'static'
+            if result.token
+                if req.query.token?
+                    req.url = '/'
+                    token = req.query.token.slice(0, -1);
+                if token isnt result.token
+                    error = new Error 'Not authorized to access static app'
+                    error.status = 401
+                    next error
+            
             # showing private static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
-                send(req, url).pipe res
+                file = new staticFile.Server url
+                file.serve req, res
         else
             getProxy().web req, res, target: "http://localhost:#{result.port}"
 
@@ -45,7 +56,8 @@ module.exports.publicApp = (req, res, next) ->
         else if result.type is 'static'
             # showing public static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
-                send(req, url).pipe res
+                file = new staticFile.Server url
+                file.serve req, res
         else
             getProxy().web req, res, target: "http://localhost:#{result.port}"
 

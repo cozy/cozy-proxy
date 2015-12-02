@@ -21,7 +21,7 @@ module.exports = {
   'routes': {
     get: index.showRoutes
   },
-  'routes/reset': {
+  'routes/reset*': {
     get: index.resetRoutes
   },
   'register': {
@@ -64,11 +64,11 @@ module.exports = {
     put: devices.update,
     "delete": devices.remove
   },
-  'apps/:name/*': {
+  'apps/:name/': {
     all: [utils.isAuthenticated, apps.app]
   },
   'apps/:name*': {
-    all: [utils.isAuthenticated, apps.appWithSlash]
+    all: [utils.isAuthenticated, apps.app]
   },
   'replication/*': {
     all: devices.replication

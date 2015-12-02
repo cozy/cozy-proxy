@@ -31,7 +31,6 @@ class Router
                 logger.error "Cannot retrieve applications list."
                 logger.error util.inspect(error) or apps.msg
                 return callback error or apps.msg
-
             try
                 for app in apps.rows
                     @routes[app.slug] = {}
@@ -39,6 +38,7 @@ class Router
                     if app.type is 'static'
                         @routes[app.slug].type = app.type
                         @routes[app.slug].path = app.path
+                        @routes[app.slug].token = app.token
                     else
                         @routes[app.slug].port = app.port if app.port?
                     @routes[app.slug].state = app.state if app.state?

@@ -152,6 +152,6 @@ private route (with params)", (done) ->
                 @body = body
                 done()
 
-        it "should have called home to start the app", ->
+        it "should have called home to start the static app", ->
             expected = "/api/applications/front/start"
             @scope.isDone().should.be.true

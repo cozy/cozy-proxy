@@ -166,7 +166,7 @@ updateDevice = function(oldDevice, device, cb) {
       app: oldDevice.id,
       permissions: device.permissions || defaultPermissions
     };
-    path = "access/" + accesses[0].id + "/";
+    path = "access/" + access.app + "/";
     return clientDS.put(path, access, function(err, result, body) {
       var data, error;
       if (err != null) {

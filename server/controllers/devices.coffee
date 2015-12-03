@@ -104,15 +104,16 @@ initAuth = (req, cb) ->
 #       * create device access
 createDevice = (device, cb) ->
     device.docType = "Device"
+    access =
+        login: device.login
+        password: randomString 32
+        permissions: device.permissions or defaultPermissions
     # Create device document
+    delete device.permissions
     clientDS.post "data/", device, (err, result, docInfo) ->
         return cb(err) if err?
         # Create access for this device
-        access =
-            login: device.login
-            password: randomString 32
-            app: docInfo._id
-            permissions: device.permissions or defaultPermissions
+        access.app = docInfo._id
         clientDS.post 'access/', access, (err, result, body) ->
             return cb(err) if err?
             data =
@@ -141,12 +142,15 @@ updateDevice = (oldDevice, device, cb) ->
                 error = new Error err
                 cb error
             else
-                data =
-                    password: access.password
-                    login: device.login
-                    permissions: access.permissions
-                # Return access to device
-                cb null, data
+                oldDevice.login = device.login
+                delete oldDevice.permissions
+                clientDS.put "data/#{oldDevice.id}", oldDevice, (err, result, body) ->
+                    data =
+                        password: access.password
+                        login: device.login
+                        permissions: access.permissions
+                    # Return access to device
+                    cb null, data
 
 
 # Remove device :

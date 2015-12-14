@@ -33,6 +33,6 @@ module.exports.isAuthenticated = (req, res, next) ->
         next()
     else
         url = "/login"
-        url += "?next=#{req.url}" unless req.url is '/'
+        url += "?next=#{encodeURIComponent req.url}" unless req.url is '/'
         url += "&#{qs.stringify req.query}" if req.query.length
         res.redirect url

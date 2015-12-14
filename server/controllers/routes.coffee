@@ -42,11 +42,9 @@ module.exports =
         put: devices.update
         delete: devices.remove
 
-    'apps/:name/': all: [utils.isAuthenticated, apps.app]
-    
-    'apps/:name*': all:[utils.isAuthenticated, apps.app]
 
-    # 'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
+    'apps/:name/*': all: [utils.isAuthenticated, apps.app]
+    'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
     'replication/*': all: devices.replication
     'ds-api/*': all: devices.dsApi

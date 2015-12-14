@@ -18,27 +18,27 @@ class AppManager
         if not routes[slug]?
             callback code: 404, msg: 'app unknown'
             return
-
         switch routes[slug].state
             when 'broken'
                 callback code: 500, msg: 'app broken'
             when 'installing'
                 callback code: 404, msg: 'app is still installing'
             when 'installed'
-                callback null, routes[slug].port
+                callback null, routes[slug]
             when 'stopped'
                 if shouldStart and not @isStarting[slug]?
                     @isStarting[slug] = true
-                    @startApp slug, (err, port) =>
+                    @startApp slug, (err, response) =>
                         delete @isStarting[slug]
                         if err?
                             callback code: 500, msg: "cannot start app : #{err}"
                         else
-                            callback null, port
+                            callback null, response
                 else
                     callback code: 500, msg: 'wont start'
 
             else callback code: 500, msg: 'incorrect app state'
+
 
     # request home to start a new app
     startApp: (slug, callback) ->
@@ -57,7 +57,7 @@ class AppManager
                 routes[slug] =
                     port: data.app.port
                     state: data.app.state
-                callback null, data.app.port
+                callback null, routes[slug]
 
     versions: (callback) ->
         @client.get "api/applications/stack", (error, res, apps) ->
@@ -66,4 +66,3 @@ class AppManager
                 return "#{app.name}: #{app.version}"
 
 module.exports = new AppManager()
-

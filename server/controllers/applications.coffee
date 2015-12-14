@@ -24,16 +24,7 @@ module.exports.app = (req, res, next) ->
             error.template =
                 name: if err.code is 404 then 'not_found' else 'error_app'
             next error
-        else if result.type is 'static'
-            if result.token
-                if req.query.token?
-                    req.url = '/'
-                    token = req.query.token.slice(0, -1);
-                if token isnt result.token
-                    error = new Error 'Not authorized to access static app'
-                    error.status = 401
-                    next error
-            
+        else if result.type is 'static'          
             # showing private static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
                 file = new staticFile.Server url

@@ -16,9 +16,14 @@ module.exports.sendResetEmail = (instance, user, key, callback) ->
     # must be required here to prevent cross dependency resolution
     localization = require './localization_manager'
 
+    # cleanup domain: remove https and port number if needed
+    domain = instance.domain
+    if domain.indexOf('https://') isnt -1
+        domain = domain.substring(8, domain.length)
+    domain = domain.split(':')[0]
     data =
         from: localization.t 'reset password email from',
-            domain: instance.domain
+            domain: domain
         subject: localization.t 'reset password email subject'
         content: localization.t 'reset password email text',
             domain: instance.domain

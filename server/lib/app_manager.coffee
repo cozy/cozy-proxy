@@ -45,7 +45,7 @@ class AppManager
         logger.info "Starting app #{slug}"
         @client.post "api/applications/#{slug}/start", {}, (err, res, data) =>
 
-            err = err or data.msg if data.error
+            err = err or data.msg if data?.error
 
             if err? or res.statusCode isnt 200
                 msg = "An error occurred while starting the app #{slug}"

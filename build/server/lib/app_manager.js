@@ -77,7 +77,7 @@ AppManager = (function() {
     return this.client.post("api/applications/" + slug + "/start", {}, (function(_this) {
       return function(err, res, data) {
         var msg, routes;
-        if (data.error) {
+        if (data != null ? data.error : void 0) {
           err = err || data.msg;
         }
         if ((err != null) || res.statusCode !== 200) {

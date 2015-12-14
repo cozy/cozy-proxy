@@ -51,7 +51,7 @@ module.exports.isAuthenticated = function(req, res, next) {
   } else {
     url = "/login";
     if (req.url !== '/') {
-      url += "?next=" + req.url;
+      url += "?next=" + (encodeURIComponent(req.url));
     }
     if (req.query.length) {
       url += "&" + (qs.stringify(req.query));

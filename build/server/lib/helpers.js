@@ -21,11 +21,16 @@ module.exports.cryptPassword = function(password) {
 };
 
 module.exports.sendResetEmail = function(instance, user, key, callback) {
-  var client, data, localization;
+  var client, data, domain, localization;
   localization = require('./localization_manager');
+  domain = instance.domain;
+  if (domain.indexOf('https://') !== -1) {
+    domain = domain.substring(8, domain.length);
+  }
+  domain = domain.split(':')[0];
   data = {
     from: localization.t('reset password email from', {
-      domain: instance.domain
+      domain: domain
     }),
     subject: localization.t('reset password email subject'),
     content: localization.t('reset password email text', {

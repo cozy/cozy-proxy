@@ -126,18 +126,19 @@ initAuth = function(req, cb) {
 };
 
 createDevice = function(device, cb) {
+  var access;
   device.docType = "Device";
+  access = {
+    login: device.login,
+    password: randomString(32),
+    permissions: device.permissions || defaultPermissions
+  };
+  delete device.permissions;
   return clientDS.post("data/", device, function(err, result, docInfo) {
-    var access;
     if (err != null) {
       return cb(err);
     }
-    access = {
-      login: device.login,
-      password: randomString(32),
-      app: docInfo._id,
-      permissions: device.permissions || defaultPermissions
-    };
+    access.app = docInfo._id;
     return clientDS.post('access/', access, function(err, result, body) {
       var data;
       if (err != null) {
@@ -168,18 +169,23 @@ updateDevice = function(oldDevice, device, cb) {
     };
     path = "access/" + access.app + "/";
     return clientDS.put(path, access, function(err, result, body) {
-      var data, error;
+      var error;
       if (err != null) {
         console.log(err);
         error = new Error(err);
         return cb(error);
       } else {
-        data = {
-          password: access.password,
-          login: device.login,
-          permissions: access.permissions
-        };
-        return cb(null, data);
+        oldDevice.login = device.login;
+        delete oldDevice.permissions;
+        return clientDS.put("data/" + oldDevice.id, oldDevice, function(err, result, body) {
+          var data;
+          data = {
+            password: access.password,
+            login: device.login,
+            permissions: access.permissions
+          };
+          return cb(null, data);
+        });
       }
     });
   });

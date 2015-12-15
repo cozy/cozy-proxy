@@ -1,5 +1,4 @@
 appManager = require '../lib/app_manager'
-staticFile = require 'node-static'
 {getProxy} = require '../lib/proxy'
 send = require 'send'
 lockedpath = require 'lockedpath'
@@ -24,11 +23,10 @@ module.exports.app = (req, res, next) ->
             error.template =
                 name: if err.code is 404 then 'not_found' else 'error_app'
             next error
-        else if result.type is 'static'          
+        else if result.type is 'static'
             # showing private static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
-                file = new staticFile.Server url
-                file.serve req, res
+                send(req, url).pipe res
         else
             getProxy().web req, res, target: "http://localhost:#{result.port}"
 
@@ -47,8 +45,7 @@ module.exports.publicApp = (req, res, next) ->
         else if result.type is 'static'
             # showing public static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
-                file = new staticFile.Server url
-                file.serve req, res
+                send(req, url).pipe res
         else
             getProxy().web req, res, target: "http://localhost:#{result.port}"
 

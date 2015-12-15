@@ -58,7 +58,6 @@ Router = (function() {
             if (app.type === 'static') {
               _this.routes[app.slug].type = app.type;
               _this.routes[app.slug].path = app.path;
-              _this.routes[app.slug].token = app.token;
             } else {
               if (app.port != null) {
                 _this.routes[app.slug].port = app.port;

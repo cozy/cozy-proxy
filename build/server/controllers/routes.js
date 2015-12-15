@@ -64,11 +64,11 @@ module.exports = {
     put: devices.update,
     "delete": devices.remove
   },
-  'apps/:name/': {
+  'apps/:name/*': {
     all: [utils.isAuthenticated, apps.app]
   },
   'apps/:name*': {
-    all: [utils.isAuthenticated, apps.app]
+    all: [utils.isAuthenticated, apps.appWithSlash]
   },
   'replication/*': {
     all: devices.replication

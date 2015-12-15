@@ -21,8 +21,9 @@ module.exports = {
     "error login failed": "Echec de la connexion.",
     "reset password email from": "Votre Cozy <no-reply@%{domain}>",
     "reset password email subject": "[Cozy] Réinitialiser votre mot de passe",
-    "reset password email text": "Il semble que vous ayez oublié le mot de passe de votre Cozy.\nNe vous inquiétez pas, suivez simplement le lien suivant pour en définir un nouveau :\n\nhttps://%{domain}/password/reset/%{key}\n\nN'oubliez pas de mettre à jour toutes vos données chiffrées après ça !\n\nPour plus d'infos, vous pouvez visiter la FAQ de cozy :\n\nhttps://cozy.io/fr/faq.html#que-faire-si-j-oublie-mon-mot-de-passe-",
+    "reset password email text": "Il semble que vous ayez oublié le mot de passe de votre Cozy.\nNe vous inquiétez pas, suivez simplement le lien suivant pour en définir un nouveau :\n\nhttps://%{domain}/password/reset/%{key}\n\nN'oubliez pas de mettre à jour toutes vos données chiffrées après ça !\n\nPour plus d'infos, vous pouvez visiter la FAQ de cozy :\n\nhttps://docs.cozy.io/fr/faq.html#que-faire-si-j-oublie-mon-mot-de-passe-",
     "invalid email format": "Votre adresse email ne semble pas valide.",
     "invalid timezone": "Ce fuseau horaire n'est pas valide. Utilisez un format <Continent>/<Pays>, par exemple Europe/Paris.",
     "password too short": "Votre mot de passe est trop court, il doit contenir au moins 8 caractères."
-};
+}
+;

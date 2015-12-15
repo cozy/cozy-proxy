@@ -21,7 +21,7 @@ module.exports = {
   'routes': {
     get: index.showRoutes
   },
-  'routes/reset*': {
+  'routes/reset': {
     get: index.resetRoutes
   },
   'register': {

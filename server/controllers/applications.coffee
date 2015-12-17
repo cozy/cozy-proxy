@@ -24,7 +24,7 @@ module.exports.app = (req, res, next) ->
             error.template =
                 name: if err.code is 404 then 'not_found' else 'error_app'
             next error
-        else if result.type is 'static'          
+        else if result.type is 'static'
             # showing private static app
             getPathForStaticApp appName, req.url, result.path, (url) ->
                 file = new staticFile.Server url

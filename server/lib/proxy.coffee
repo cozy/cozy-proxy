@@ -28,11 +28,8 @@ module.exports.initializeProxy = (app, server) ->
 
     # proxy error handling
     proxy.on 'error', (err, req, res) ->
-        if /ECONNREFUSED/.test err
-            console.log "connexion to #{req.url} refused"
-        else
-            console.log err
-
+        logger.error "Error connecting to #{req.url}"
+        logger.error err
         err = new Error err
         err.statusCode = 500
         err.template =

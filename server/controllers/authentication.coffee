@@ -80,10 +80,13 @@ module.exports.register = (req, res, next) ->
         next error
 
 
-module.exports.loginIndex = (req, res) ->
+module.exports.loginIndex = (req, res, next) ->
     getEnv (err, env) ->
-        return res.redirect '/register' unless env.username
-        res.render 'index', env: env
+        if err
+            next new Error err
+        else
+            return res.redirect '/register' unless env.username
+            res.render 'index', env: env
 
 
 module.exports.forgotPassword = (req, res, next) ->
@@ -110,10 +113,13 @@ module.exports.forgotPassword = (req, res, next) ->
 
 module.exports.resetPasswordIndex = (req, res) ->
     getEnv (err, env) ->
-        if Instance.getResetKey() is req.params.key
-            res.render 'index', env: env
+        if err
+            next new Error err
         else
-            res.redirect '/'
+            if Instance.getResetKey() is req.params.key
+                res.render 'index', env: env
+            else
+                res.redirect '/'
 
 
 module.exports.resetPassword = (req, res, next) ->

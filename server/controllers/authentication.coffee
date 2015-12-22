@@ -111,7 +111,7 @@ module.exports.forgotPassword = (req, res, next) ->
                     res.send 204
 
 
-module.exports.resetPasswordIndex = (req, res) ->
+module.exports.resetPasswordIndex = (req, res, next) ->
     getEnv (err, env) ->
         if err
             next new Error err

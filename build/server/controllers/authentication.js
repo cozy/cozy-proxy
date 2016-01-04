@@ -105,14 +105,18 @@ module.exports.register = function(req, res, next) {
   }
 };
 
-module.exports.loginIndex = function(req, res) {
+module.exports.loginIndex = function(req, res, next) {
   return getEnv(function(err, env) {
-    if (!env.username) {
-      return res.redirect('/register');
+    if (err) {
+      return next(new Error(err));
+    } else {
+      if (!env.username) {
+        return res.redirect('/register');
+      }
+      return res.render('index', {
+        env: env
+      });
     }
-    return res.render('index', {
-      env: env
-    });
   });
 };
 
@@ -151,14 +155,18 @@ module.exports.forgotPassword = function(req, res, next) {
   });
 };
 
-module.exports.resetPasswordIndex = function(req, res) {
+module.exports.resetPasswordIndex = function(req, res, next) {
   return getEnv(function(err, env) {
-    if (Instance.getResetKey() === req.params.key) {
-      return res.render('index', {
-        env: env
-      });
+    if (err) {
+      return next(new Error(err));
     } else {
-      return res.redirect('/');
+      if (Instance.getResetKey() === req.params.key) {
+        return res.render('index', {
+          env: env
+        });
+      } else {
+        return res.redirect('/');
+      }
     }
   });
 };

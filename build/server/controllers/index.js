@@ -19,7 +19,7 @@ module.exports.showRoutes = function(req, res) {
   return res.send(200, router.getRoutes());
 };
 
-module.exports.resetRoutes = function(req, res) {
+module.exports.resetRoutes = function(req, res, next) {
   return router.reset(function(error) {
     if (error != null) {
       return next(new Error(error));
@@ -31,7 +31,7 @@ module.exports.resetRoutes = function(req, res) {
   });
 };
 
-module.exports.status = function(req, res) {
+module.exports.status = function(req, res, next) {
   return statusChecker.checkAllStatus(function(err, status) {
     if (err) {
       return next(new Error(err));

@@ -22,6 +22,7 @@ AppManager = (function() {
     var routes;
     routes = this.router.getRoutes();
     if (routes[slug] == null) {
+      logger.error("App " + slug + " unknown");
       callback({
         code: 404,
         msg: 'app unknown'
@@ -30,6 +31,7 @@ AppManager = (function() {
     }
     switch (routes[slug].state) {
       case 'broken':
+        logger.error("App " + slug + " broken");
         return callback({
           code: 500,
           msg: 'app broken'
@@ -48,6 +50,7 @@ AppManager = (function() {
             return function(err, response) {
               delete _this.isStarting[slug];
               if (err != null) {
+                logger.error("cannot start app " + slug + " : " + err);
                 return callback({
                   code: 500,
                   msg: "cannot start app : " + err
@@ -58,6 +61,7 @@ AppManager = (function() {
             };
           })(this));
         } else {
+          logger.error("cannot start app " + slug + " : won't start");
           return callback({
             code: 500,
             msg: 'wont start'
@@ -65,6 +69,7 @@ AppManager = (function() {
         }
         break;
       default:
+        logger.error(slug + " : incorrect app state : " + routes[slug].state);
         return callback({
           code: 500,
           msg: 'incorrect app state'

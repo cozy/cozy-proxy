@@ -51,6 +51,6 @@
   "scripts": {
     "test": "cake --use-js tests",
     "start": "node build/server.js",
-	"postinstall": "node postinstall.js"
+    "postinstall": "node postinstall.js"
   }
 }

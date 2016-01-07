@@ -5,8 +5,6 @@ User = require '../models/user'
 
 couchdbHost    = process.env.COUCH_HOST or 'localhost'
 couchdbPort    = process.env.COUCH_PORT or '5984'
-indexerHost    = process.env.INDEXER_HOST or 'localhost'
-indexerPort    = process.env.INDEXER_PORT or '9102'
 proxyHost      = process.env.PROXY_HOST or 'localhost'
 proxyPort      = process.env.PROXY_PORT or '9104'
 controllerHost = process.env.CONTROLLER_HOST or 'localhost'
@@ -19,7 +17,6 @@ homePort       = process.env.DEFAULT_REDIRECT_PORT
 couchUrl      = "http://#{couchdbHost}:#{couchdbPort}/"
 controllerUrl = "http://#{controllerHost}:#{controllerPort}/"
 dataSystemUrl = "http://#{dataSystemHost}:#{dataSystemPort}/"
-indexerUrl    = "http://#{indexerHost}:#{indexerPort}/"
 homeUrl       = "http://#{homeHost}:#{homePort}/"
 proxyUrl      = "http://#{proxyHost}:#{proxyPort}/"
 
@@ -34,7 +31,6 @@ class StatusChecker
         couchdb: false
         datasystem: false
         controller: false
-        indexer: false
         home: false
         registered: false
 
@@ -50,7 +46,6 @@ class StatusChecker
             @getChecker "couchdb", couchUrl
             @getChecker "controller", controllerUrl, "drones/running"
             @getChecker "datasystem", dataSystemUrl
-            @getChecker "indexer", indexerUrl
             @getChecker "home", homeUrl
             @getChecker "proxy", proxyUrl, "routes"
         ], =>

@@ -44,7 +44,7 @@ class StatusChecker
 
         async.series [
             @getChecker "couchdb", couchUrl
-            @getChecker "controller", controllerUrl, "drones/running"
+            @getChecker "controller", controllerUrl
             @getChecker "datasystem", dataSystemUrl
             @getChecker "home", homeUrl
             @getChecker "proxy", proxyUrl, "routes"

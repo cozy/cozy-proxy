@@ -22,6 +22,7 @@ AppManager = (function() {
     var routes;
     routes = this.router.getRoutes();
     if (routes[slug] == null) {
+      logger.error("App " + slug + " unknown");
       callback({
         code: 404,
         msg: 'app unknown'
@@ -30,6 +31,7 @@ AppManager = (function() {
     }
     switch (routes[slug].state) {
       case 'broken':
+        logger.error("App " + slug + " broken");
         return callback({
           code: 500,
           msg: 'app broken'
@@ -40,24 +42,26 @@ AppManager = (function() {
           msg: 'app is still installing'
         });
       case 'installed':
-        return callback(null, routes[slug].port);
+        return callback(null, routes[slug]);
       case 'stopped':
         if (shouldStart && (this.isStarting[slug] == null)) {
           this.isStarting[slug] = true;
           return this.startApp(slug, (function(_this) {
-            return function(err, port) {
+            return function(err, response) {
               delete _this.isStarting[slug];
               if (err != null) {
+                logger.error("cannot start app " + slug + " : " + err);
                 return callback({
                   code: 500,
                   msg: "cannot start app : " + err
                 });
               } else {
-                return callback(null, port);
+                return callback(null, response);
               }
             };
           })(this));
         } else {
+          logger.error("cannot start app " + slug + " : won't start");
           return callback({
             code: 500,
             msg: 'wont start'
@@ -65,6 +69,7 @@ AppManager = (function() {
         }
         break;
       default:
+        logger.error(slug + " : incorrect app state : " + routes[slug].state);
         return callback({
           code: 500,
           msg: 'incorrect app state'
@@ -91,7 +96,7 @@ AppManager = (function() {
             port: data.app.port,
             state: data.app.state
           };
-          return callback(null, data.app.port);
+          return callback(null, routes[slug]);
         }
       };
     })(this));

@@ -8,14 +8,14 @@ module.exports.defaultRedirect = (req, res) ->
 
 module.exports.showRoutes = (req, res) -> res.send 200, router.getRoutes()
 
-module.exports.resetRoutes = (req, res) ->
+module.exports.resetRoutes = (req, res, next) ->
     router.reset (error) ->
         if error?
             next new Error error
         else
             res.send 200, success: true
 
-module.exports.status = (req, res) ->
+module.exports.status = (req, res, next) ->
     statusChecker.checkAllStatus (err, status) ->
         if err then next new Error err
         else res.send status

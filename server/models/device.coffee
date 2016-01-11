@@ -20,26 +20,18 @@ if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
 
 # Update device in cache
 Device.update = (callback) ->
-    # Retrieve all devices
-    Device.request 'all', (err, devices) ->
+    # Retrieve all accesses
+    client.post "request/access/all/", {}, (err, res, accesses) ->
         cache = {}
         if err?
             logger.error err
             callback err
         else
-            if devices?
+            if accesses?
                 # Retrieve all accesses
-                devices = devices.map (device) -> return device.id
-                client.post "request/access/byApp/", {}, (err, res, accesses) ->
-                    if err?
-                        logger.error err
-                        callback err
-                    else
-                        for access in accesses
-                            # Check if access correspond to a device
-                            if access.key in devices
-                                cache[access.value.login] = access.value.token
-                    callback() if callback?
+                for access in accesses
+                    cache[access.value.login] = access.value.token
+                callback() if callback?
             else
                 callback() if callback?
 

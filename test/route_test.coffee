@@ -47,6 +47,9 @@ describe "Proxying", ->
         router.routes =
             "myapp": port: 4445, state: 'installed'
             "myapp2": port: 4447, state: 'stopped'
+            "front": type: 'static',
+            state: 'installed',
+            path: '/usr/local/cozy/apps/front'
 
     after helpers.stopApp
     after helpers.closeFakeServers
@@ -144,3 +147,15 @@ private route (with params)", (done) ->
             @response.statusCode.should.equal 200
             should.exist @body.msg
             @body.msg.should.equal "ok2"
+
+    describe "start static app", ->
+
+        it "When I send a request to front ", (done) ->
+            client.get "apps/front/", (error, response, body) =>
+                @response = response
+                @body = body
+                done()
+
+        it "should have called home to start the static app", ->
+            expected = "/api/applications/front/start"
+            @scope.isDone().should.be.true

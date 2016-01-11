@@ -12,7 +12,7 @@ passport = require 'passport'
 module.exports =
 
     'routes': get: index.showRoutes
-    'routes/reset': get: index.resetRoutes
+    'routes/reset*': get: index.resetRoutes
 
     'register':
         get: auth.registerIndex
@@ -41,6 +41,7 @@ module.exports =
     'device/:login':
         put: devices.update
         delete: devices.remove
+
 
     'apps/:name/*': all: [utils.isAuthenticated, apps.app]
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]

@@ -1,5 +1,4 @@
 http = require 'http'
-americano = require 'americano'
 Client = require('request-json').JsonClient
 module.exports = helpers = {}
 

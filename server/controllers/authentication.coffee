@@ -108,7 +108,7 @@ module.exports.forgotPassword = (req, res, next) ->
                 instance ?= domain: 'domain.not.set'
                 helpers.sendResetEmail instance, user, key, (err, result) ->
                     return next new Error 'Email cannot be sent' if err
-                    res.send 204
+                    res.sendStatus 204
 
 
 module.exports.resetPasswordIndex = (req, res, next) ->
@@ -152,7 +152,7 @@ module.exports.resetPassword = (req, res, next) ->
                                 if err? then next new Error err
                                 else
                                     passport.currentUser = null
-                                    res.send 204
+                                    res.sendStatus 204
 
                 else
                     error = new Error 'Errors in validation'
@@ -168,8 +168,8 @@ module.exports.resetPassword = (req, res, next) ->
 
 module.exports.logout = (req, res) ->
     req.logout()
-    res.send 204
+    res.sendStatus 204
 
 
 module.exports.authenticated = (req, res) ->
-    res.send 200, isAuthenticated: req.isAuthenticated()
+    res.status(200).send isAuthenticated: req.isAuthenticated()

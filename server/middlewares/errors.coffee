@@ -13,13 +13,16 @@ module.exports = (err, req, res, next) ->
     message = if err instanceof Error then err.message else err.error
     message = message or 'Server error occurred' # default message
 
-    if err.headers? and Object.keys(err.headers).length > 0
+    if err.headers? and Object.keys(err.headers).length > 0 and !res.headersSent
         res.set header, value for header, value of err.headers
 
-    if err.template? and req?.accepts('html') is 'html'
+    content = error: message
+    content.errors = err.errors if err.errors
+
+    if res.headersSent
+        res.end content
+    else if err.template? and req?.accepts('html') is 'html'
         res.render err.template.name, err.template.params, (err, html) ->
-            res.send statusCode, html
+            res.status(statusCode).send html
     else
-        content = error: message
-        content.errors = err.errors if err.errors
-        res.send statusCode, content
+        res.status(statusCode).send content

@@ -63,9 +63,9 @@ module.exports.getSpace = (req, res, next) ->
                             error.status = 500
                             next error
                         else
-                            res.send 200, diskSpace: body
+                            res.status(200).send diskSpace: body
                 else
-                    res.send 200, diskSpace: body
+                    res.status(200).send diskSpace: body
         else
             error = new Error "Request unauthorized"
             error.status = 401

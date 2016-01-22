@@ -201,7 +201,7 @@ module.exports.create = (req, res, next) ->
                     if err?
                         next err
                     else
-                        res.send 201, data
+                        res.status(201).send data
 
 
     initAuth req, (user) ->
@@ -231,7 +231,7 @@ module.exports.update = (req, res, next) ->
                     if err?
                         next err
                     else
-                        res.send 200, data
+                        res.status(200).send data
 
     initAuth req, (user) ->
         # Check if request is authenticated
@@ -259,7 +259,7 @@ module.exports.remove = (req, res, next) ->
                     if err?
                         next err
                     else
-                        res.send 204
+                        res.sendStatus 204
 
     initAuth req, (user) ->
         # Check if request is authenticated
@@ -305,7 +305,7 @@ module.exports.getVersions = (req, res, next) ->
                     error.status = 400
                     next error
                 else
-                    res.send apps, 200
+                    res.status(200).send apps
         else
             error = new Error "Request unauthorized"
             error.status = 401

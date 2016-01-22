@@ -6,7 +6,7 @@ router = require '../lib/router'
 # @TODO : support xml
 module.exports.webfingerHostMeta = (req, res) ->
 
-    return res.send 404 unless req.params.ext is 'json'
+    return res.sendStatus 404 unless req.params.ext is 'json'
 
     res.header 'Access-Control-Allow-Origin', '*'
     res.header 'Access-Control-Allow-Credentials', true
@@ -24,7 +24,7 @@ module.exports.webfingerHostMeta = (req, res) ->
             rel: 'lrdd'
             template: template
 
-        res.send 200, hostmeta
+        res.status(200).send hostmeta
 
 
 # return the account file
@@ -42,7 +42,7 @@ module.exports.webfingerAccount = (req, res, next) ->
             if routes['sync']?
                 res.redirect "#{host}/public/sync/"
             else
-                res.send 404, 'Application Sync is not installed.'
+                res.status(404).send 'Application Sync is not installed.'
 
         else if req.params.module is 'webfinger'
 
@@ -70,7 +70,7 @@ module.exports.webfingerAccount = (req, res, next) ->
 
                 accountInfo.links.push link
 
-            return res.send 200, accountInfo
+            return res.status(200).send accountInfo
 
         else
-            res.send 404
+            res.sendStatus 404

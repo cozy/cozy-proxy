@@ -7,7 +7,7 @@ router = require('../lib/router');
 
 module.exports.webfingerHostMeta = function(req, res) {
   if (req.params.ext !== 'json') {
-    return res.send(404);
+    return res.sendStatus(404);
   }
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', true);
@@ -28,7 +28,7 @@ module.exports.webfingerHostMeta = function(req, res) {
         template: template
       }
     };
-    return res.send(200, hostmeta);
+    return res.status(200).send(hostmeta);
   });
 };
 
@@ -47,7 +47,7 @@ module.exports.webfingerAccount = function(req, res, next) {
       if (routes['sync'] != null) {
         return res.redirect(host + "/public/sync/");
       } else {
-        return res.send(404, 'Application Sync is not installed.');
+        return res.status(404).send('Application Sync is not installed.');
       }
     } else if (req.params.module === 'webfinger') {
       OAUTH_VERSION = 'http://tools.ietf.org/html/rfc6749#section-4.2';
@@ -73,9 +73,9 @@ module.exports.webfingerAccount = function(req, res, next) {
         link.properties[OAUTH_VERSION] = authEndPoint;
         accountInfo.links.push(link);
       }
-      return res.send(200, accountInfo);
+      return res.status(200).send(accountInfo);
     } else {
-      return res.send(404);
+      return res.sendStatus(404);
     }
   });
 };

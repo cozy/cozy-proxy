@@ -236,7 +236,7 @@ module.exports.create = function(req, res, next) {
           if (err != null) {
             return next(err);
           } else {
-            return res.send(201, data);
+            return res.status(201).send(data);
           }
         });
       });
@@ -270,7 +270,7 @@ module.exports.update = function(req, res, next) {
           if (err != null) {
             return next(err);
           } else {
-            return res.send(200, data);
+            return res.status(200).send(data);
           }
         });
       });
@@ -302,7 +302,7 @@ module.exports.remove = function(req, res, next) {
           if (err != null) {
             return next(err);
           } else {
-            return res.send(204);
+            return res.sendStatus(204);
           }
         });
       });
@@ -361,7 +361,7 @@ module.exports.getVersions = function(req, res, next) {
           error.status = 400;
           return next(error);
         } else {
-          return res.send(apps, 200);
+          return res.status(200).send(apps);
         }
       });
     } else {

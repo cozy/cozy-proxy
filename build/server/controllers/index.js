@@ -16,7 +16,7 @@ module.exports.defaultRedirect = function(req, res) {
 };
 
 module.exports.showRoutes = function(req, res) {
-  return res.send(200, router.getRoutes());
+  return res.status(200).send(router.getRoutes());
 };
 
 module.exports.resetRoutes = function(req, res, next) {
@@ -24,7 +24,7 @@ module.exports.resetRoutes = function(req, res, next) {
     if (error != null) {
       return next(new Error(error));
     } else {
-      return res.send(200, {
+      return res.status(200).send({
         success: true
       });
     }

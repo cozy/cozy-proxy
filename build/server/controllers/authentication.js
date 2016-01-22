@@ -148,7 +148,7 @@ module.exports.forgotPassword = function(req, res, next) {
           if (err) {
             return next(new Error('Email cannot be sent'));
           }
-          return res.send(204);
+          return res.sendStatus(204);
         });
       });
     }
@@ -203,7 +203,7 @@ module.exports.resetPassword = function(req, res, next) {
                   return next(new Error(err));
                 } else {
                   passport.currentUser = null;
-                  return res.send(204);
+                  return res.sendStatus(204);
                 }
               });
             }
@@ -225,11 +225,11 @@ module.exports.resetPassword = function(req, res, next) {
 
 module.exports.logout = function(req, res) {
   req.logout();
-  return res.send(204);
+  return res.sendStatus(204);
 };
 
 module.exports.authenticated = function(req, res) {
-  return res.send(200, {
+  return res.status(200).send({
     isAuthenticated: req.isAuthenticated()
   });
 };

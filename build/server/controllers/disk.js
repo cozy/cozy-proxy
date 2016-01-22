@@ -80,13 +80,13 @@ module.exports.getSpace = function(req, res, next) {
               error.status = 500;
               return next(error);
             } else {
-              return res.send(200, {
+              return res.status(200).send({
                 diskSpace: body
               });
             }
           });
         } else {
-          return res.send(200, {
+          return res.status(200).send({
             diskSpace: body
           });
         }

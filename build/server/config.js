@@ -22,8 +22,9 @@ selectiveBodyParser = require('./middlewares/selective_body_parser');
 authSteps = [
   cookieParser(randomstring.generate()), cookieSession({
     secret: randomstring.generate(),
-    maxage: 1000 * 60 * 60 * 24 * 7
-  }, false), passport.initialize(), passport.session()
+    maxage: 1000 * 60 * 60 * 24 * 7,
+    secureProxy: process.env.NODE_ENV === 'production'
+  }), passport.initialize(), passport.session()
 ];
 
 useBuildView = fs.existsSync(path.resolve(__dirname, 'views/index.js'));

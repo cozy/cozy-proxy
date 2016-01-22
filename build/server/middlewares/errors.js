@@ -15,24 +15,26 @@ module.exports = function(err, req, res, next) {
   statusCode = err.status || 500;
   message = err instanceof Error ? err.message : err.error;
   message = message || 'Server error occurred';
-  if ((err.headers != null) && Object.keys(err.headers).length > 0) {
+  if ((err.headers != null) && Object.keys(err.headers).length > 0 && !res.headersSent) {
     ref = err.headers;
     for (header in ref) {
       value = ref[header];
       res.set(header, value);
     }
   }
-  if ((err.template != null) && (req != null ? req.accepts('html') : void 0) === 'html') {
+  content = {
+    error: message
+  };
+  if (err.errors) {
+    content.errors = err.errors;
+  }
+  if (res.headersSent) {
+    return res.end(content);
+  } else if ((err.template != null) && (req != null ? req.accepts('html') : void 0) === 'html') {
     return res.render(err.template.name, err.template.params, function(err, html) {
-      return res.send(statusCode, html);
+      return res.status(statusCode).send(html);
     });
   } else {
-    content = {
-      error: message
-    };
-    if (err.errors) {
-      content.errors = err.errors;
-    }
-    return res.send(statusCode, content);
+    return res.status(statusCode).send(content);
   }
 };

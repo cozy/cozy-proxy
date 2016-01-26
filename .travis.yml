@@ -31,9 +31,10 @@ addons:
             - netstat
 
 before_install:
+    - travis_retry pip install --user transifex-client
+    - travis_retry npm install forever coffee-script -g
     - travis_retry git clone git://github.com/cozy/cozy-data-system.git
     - cd cozy-data-system
-    - travis_retry npm install forever coffee-script -g
     - travis_retry npm install # data-system
     - pwd
     - NAME=data-system TOKEN=token forever start -o forever-ds.log build/server.js
@@ -43,6 +44,10 @@ before_install:
     - cd ..
     - export NAME=proxy
     - export TOKEN=token
+
+script:
+    - npm run build
+    - npm run test:build
 
 after_failure:
     - pwd

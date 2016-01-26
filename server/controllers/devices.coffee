@@ -144,7 +144,8 @@ updateDevice = (oldDevice, device, cb) ->
             else
                 oldDevice.login = device.login
                 delete oldDevice.permissions
-                clientDS.put "data/#{oldDevice.id}", oldDevice, (err, result, body) ->
+                path = "data/#{oldDevice.id}"
+                clientDS.put path, oldDevice, (err, result, body) ->
                     data =
                         password: access.password
                         login: device.login

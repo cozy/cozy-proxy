@@ -34,6 +34,7 @@
     "chai": "1.9.0",
     "coffee-coverage": "0.4.2",
     "coffee-script": "latest",
+    "coffeelint": "1.14.2",
     "glob": "^5.0.12",
     "mocha": "1.18.2",
     "nock": "0.27.2",

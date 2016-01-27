@@ -61,7 +61,7 @@ deviceExists = (login, cb) ->
         else if body.length is 0
             cb null, false
         else
-            cb null, body[0]
+            cb null, body[0]?.value
 
 checkLogin = (login, wantExist, cb)->
     if not login?

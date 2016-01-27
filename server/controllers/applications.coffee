@@ -33,15 +33,18 @@ forwardRequest = (req, res, errTemplate, next) ->
             getProxy().web req, res, target: "http://localhost:#{result.port}"
 
 module.exports.app = (req, res, next) ->
+    appName = req.params.name
     req.url = req.url.substring "/apps/#{appName}".length
     errTemplate = (err) ->
         name: if err.code is 404 then 'not_found' else 'error_app'
     forwardRequest req, res, errTemplate, next
 
 module.exports.publicApp = (req, res, next) ->
+    appName = req.params.name
     req.url = req.url.substring "/public/#{appName}".length
     req.url = "/public#{req.url}"
     errTemplate = (err) ->
         name: 'error_public'
+    forwardRequest req, res, errTemplate, next
 
 module.exports.appWithSlash = (req, res) -> res.redirect "#{req.url}/"

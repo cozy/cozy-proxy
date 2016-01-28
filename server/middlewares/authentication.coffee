@@ -26,7 +26,7 @@ module.exports.authenticate = (req, res, next) ->
                             error.status = 401
                             next error
                         else
-                            res.send 200, success: true
+                            res.status(200).send success: true
     passport.authenticate('local', process)(req, res, next)
 
 module.exports.isAuthenticated = (req, res, next) ->

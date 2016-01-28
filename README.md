@@ -38,7 +38,7 @@ this way:
 
 Each modification requires a new build, here is how to run a build:
 
-    cake build
+    npm run build
 
 ### To hack cozy-proxy using the cozy vagrant
 
@@ -54,7 +54,7 @@ Each modification requires a new build, here is how to run a build:
 
 To run tests, type the following command into the Cozy Proxy folder:
 
-    cake tests
+    npm run test
 
 Note: a running data-system is required for the tests.
 
@@ -78,9 +78,9 @@ Cozy Proxy is developed by Cozy Cloud and distributed under the AGPL v3 license.
 [Cozy](https://cozy.io) is a platform that brings all your web services in the
 same private space.  With it, your web apps and your devices can share data
 easily, providing you with a new experience. You can install Cozy on your own
-hardware where no one profiles you. 
+hardware where no one profiles you.
 
-## Community 
+## Community
 
 You can reach the Cozy Community by:
 

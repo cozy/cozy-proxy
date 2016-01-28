@@ -22,6 +22,7 @@
     "locale": "0.0.14",
     "lockedpath": "0.1.1",
     "node-polyglot": "0.3.0",
+    "npm-run-all": "1.5.0",
     "passport": "0.2.0",
     "passport-local": "1.0.0",
     "printit": "0.1.15",
@@ -33,6 +34,7 @@
     "chai": "1.9.0",
     "coffee-coverage": "0.4.2",
     "coffee-script": "latest",
+    "coffeelint": "1.14.2",
     "glob": "^5.0.12",
     "mocha": "1.18.2",
     "nock": "0.27.2",
@@ -49,8 +51,21 @@
   ],
   "main": "server.js",
   "scripts": {
-    "test": "cake --use-js tests",
+    "build": "npm-run-all --parallel 'build:*'",
+    "build:server": "coffee -cb --output build/server server && coffee -cb --output build/ server.coffee",
+    "build:client": "cd client && brunch build --production",
+    "clean": "rm -rf build",
+    "jade": "mkdir -p build/server/views && jade -cPDH -o build/server/views server/views && cake jade",
+    "lint": "coffeelint -f coffeelint.json --quiet -r server server.coffee -r client/app",
+    "locales": "mkdir -p build/server/locales && cake locales",
+    "prebuild": "npm-run-all clean tx lint",
+    "prebuild:client": "cd client && npm update && bower install",
+    "postbuild": "npm-run-all --parallel jade locales",
+    "postinstall": "node postinstall.js",
     "start": "node build/server.js",
-    "postinstall": "node postinstall.js"
+    "test": "npm run test:server",
+    "test:build": "env USE_JS=true npm run test",
+    "test:server": "env NODE_ENV=test PORT=4444 mocha --reporter spec --compilers coffee:coffee-script/register",
+    "tx": "tx pull --all || true"
   }
 }

@@ -7,7 +7,7 @@ client = helpers.getClient()
 Client = require('request-json').JsonClient
 clientDS = new Client "http://localhost:9101/"
 
-describe "Devices", =>
+describe "Devices", ->
 
     #before helpers.deleteAllUsers
     before helpers.startApp
@@ -147,7 +147,7 @@ describe "Devices", =>
 
         describe 'Modify a correct device', =>
 
-            it "Try to modify a uncorrect device", (done) =>
+            it "Try to modify a correct device", (done) =>
                 client.setBasicAuth 'owner', 'user_pwd'
                 device =
                     login:"test_device_2"
@@ -164,7 +164,7 @@ describe "Devices", =>
                 @res.statusCode.should.equal 200
 
 
-    describe "Remove device", =>
+    describe "Remove device", ->
 
         describe 'Unauthorized request', ->
 
@@ -181,7 +181,7 @@ describe "Devices", =>
                 @res.statusCode.should.equal 401
                 @body.error.should.equal 'Bad credentials'
 
-        describe 'Delete a device', =>
+        describe 'Delete a device', ->
 
             it "Delete a device", (done) ->
                 @timeout 10 * 1000
@@ -192,11 +192,11 @@ describe "Devices", =>
                     @body = body
                     done()
 
-            it "Then 200 is returned as status code", ->
+            it "Then 204 is returned as status code", ->
                 should.not.exist @body.error
                 @res.statusCode.should.equal 204
 
-            it "Delete an other device", (done) ->
+            it "Delete another device", (done) ->
                 @timeout 10 * 1000
                 client.setBasicAuth 'owner', 'user_pwd'
                 client.del "device/test_device_2", (err,res, body) =>
@@ -205,6 +205,6 @@ describe "Devices", =>
                     @body = body
                     done()
 
-            it "Then 200 is returned as status code", ->
+            it "Then 204 is returned as status code", ->
                 should.not.exist @body.error
                 @res.statusCode.should.equal 204

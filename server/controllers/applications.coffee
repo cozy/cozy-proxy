@@ -13,13 +13,10 @@ getPathForStaticApp = (appName, path, root, callback) ->
     callback lockedpath(root).join path
 
 forwardRequest = (req, res, errTemplate, next) ->
-    connectionClosed = false
-    req.on 'close', -> connectionClosed = true
-    res.on 'close', -> connectionClosed = true
     appName = req.params.name
     shouldStart = -1 is req.url.indexOf 'socket.io'
     appManager.ensureStarted appName, shouldStart, (err, result) ->
-        if connectionClosed
+        if not res.connection or res.connection.destroyed
             return
         else if err?
             error = new Error err.msg

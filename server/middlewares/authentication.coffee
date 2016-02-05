@@ -38,4 +38,8 @@ module.exports.isAuthenticated = (req, res, next) ->
         url += "&#{qs.stringify req.query}" if req.query.length
         res.redirect url
 
-
+module.exports.isNotAuthenticated = (req, res, next) ->
+    if req.isAuthenticated()
+        res.redirect '/'
+    else
+        next()

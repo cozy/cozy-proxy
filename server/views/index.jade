@@ -7,6 +7,13 @@ block title
 
 block content
     main(role='application')
+      noscript
+        section.popup
+          header
+            a(title='Cozy Website', href='https://cozy.io')
+          .container
+            h1 Sorry
+            p.help Cozy needs JavaScript and cookies to work but it looks like you have disabled one of them.
 
 block js
     script(src="/scripts/vendor.js")

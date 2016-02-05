@@ -21,6 +21,19 @@ You can contribute to the Cozy Proxy in many ways:
 * Translate it in [a new language](https://github.com/cozy/cozy-proxy/tree/master/client/app/locales).
 * Improve the session management.
 
+## Listen on https
+
+It is recommended to run Cozy Proxy behind a reverse proxy like nginx. The
+reverse proxy does the SSL/TLS stuff in that case. But if you want to run Cozy
+Proxy with no reverse proxy (low memory server for example), you can set the
+following env variables:
+
+```sh
+USE_SSL=true
+SSL_CRT_PATH=/path/to/server.crt  # /etc/cozy/server.crt by default
+SSL_KEY_PATH=/path/to/server.key  # /etc/cozy/server.key by default
+```
+
 ## Hack
 
 To be hacked, the Cozy Proxy dev environment requires that a CouchDB instance

@@ -11,7 +11,7 @@
     "node >= 0.8.0"
   ],
   "dependencies": {
-    "americano": "0.4.2",
+    "americano": "0.4.3",
     "americano-cozy": "0.2.11",
     "async": "0.2.10",
     "cookie-parser": "1.4.1",

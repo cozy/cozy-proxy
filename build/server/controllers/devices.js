@@ -73,12 +73,13 @@ deviceExists = function(login, cb) {
   return clientDS.post("request/device/byLogin/", {
     key: login
   }, function(err, result, body) {
+    var ref;
     if (err) {
       return cb(err);
     } else if (body.length === 0) {
       return cb(null, false);
     } else {
-      return cb(null, body[0]);
+      return cb(null, (ref = body[0]) != null ? ref.value : void 0);
     }
   });
 };
@@ -177,7 +178,8 @@ updateDevice = function(oldDevice, device, cb) {
       } else {
         oldDevice.login = device.login;
         delete oldDevice.permissions;
-        return clientDS.put("data/" + oldDevice.id, oldDevice, function(err, result, body) {
+        path = "data/" + oldDevice.id;
+        return clientDS.put(path, oldDevice, function(err, result, body) {
           var data;
           data = {
             password: access.password,

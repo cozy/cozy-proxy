@@ -10,7 +10,7 @@ supported            = new Locale.Locales supportedLanguages
 class LocalizationManager
     # Polyglot instance in the given locale
     polyglot: null
-
+    defaultPolyglot: null
 
     constructor: ->
         Instance.getLocale (err, locale) =>
@@ -37,6 +37,10 @@ class LocalizationManager
             phrases = require '../locales/en'
 
         @polyglot = new Polyglot locale: locale, phrases: phrases
+        @defaultPolyglot = new Polyglot
+            locale: 'en'
+            phrases: require('../locales/en')
+        return @polyglot
 
 
     getPolyglot: ->
@@ -47,8 +51,10 @@ class LocalizationManager
     # Expose Polyglot interns (i.e. for templating)
     # Those functions ensure polyglot is properly loaded before returning
     # content.
-    t: (key, params = {}) => return @getPolyglot()?.t key, params
     getLocale:            => return @getPolyglot()?.locale()
+    t: (key, params = {}) =>
+        params._ ?= @defaultPolyglot?.t key, params
+        return @getPolyglot()?.t key, params
 
 
 module.exports = new LocalizationManager()

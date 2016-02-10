@@ -158,7 +158,7 @@ updateDevice = (oldDevice, device, cb) ->
 #       * remove device access
 #       * remove device document
 removeDevice = (device, cb) ->
-    id = device.id
+    id = device._id
     # Remove Access
     clientDS.del "access/#{id}/", (err, result, body) ->
         if err?

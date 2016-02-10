@@ -34,6 +34,23 @@ SSL_CRT_PATH=/path/to/server.crt  # /etc/cozy/server.crt by default
 SSL_KEY_PATH=/path/to/server.key  # /etc/cozy/server.key by default
 ```
 
+To use this when the whole Cozy stack is running, you can add this variables
+into the Controller configuration file, `/etc/cozy/controller.json`, as
+[explained into the
+documentation](https://docs.cozy.io/en/hack/cookbooks/controller.html#configuration).
+Just add the following lines into this file:
+
+```json
+    "env": {
+      "proxy": {
+        "PORT": 443,
+        "USE_SSL": true,
+        "SSL_CRT_PATH": "/path/to/server.crt",
+        "SSL_KEY_PATH": "/path/to/server.key"
+      }
+    }
+```
+
 ## Hack
 
 To be hacked, the Cozy Proxy dev environment requires that a CouchDB instance

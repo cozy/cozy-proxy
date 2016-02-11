@@ -23,7 +23,7 @@ application = module.exports = function(opts, callback) {
   errorMiddleware = require('./server/middlewares/errors');
   options = {
     name: 'proxy',
-    port: opts.port || process.env.PORT || 9104,
+    port: opts.port || process.env.PROXY_PORT || 9104,
     host: opts.host || process.env.HOST || "127.0.0.1",
     root: __dirname
   };

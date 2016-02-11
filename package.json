@@ -61,7 +61,6 @@
     "prebuild": "npm-run-all clean tx lint",
     "prebuild:client": "cd client && npm update && bower install",
     "postbuild": "npm-run-all --parallel jade locales",
-    "postinstall": "node postinstall.js",
     "start": "node build/server.js",
     "test": "npm run test:server",
     "test:build": "env USE_JS=true npm run test",

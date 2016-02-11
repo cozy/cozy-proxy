@@ -10,7 +10,7 @@ process.on 'uncaughtException', (err) ->
 unless process.env.DEFAULT_REDIRECT_PORT
     process.env.DEFAULT_REDIRECT_PORT = 9103
 
-application = module.exports = (callback) ->
+application = module.exports = (opts, callback) ->
 
     americano = require 'americano'
     initialize = require './server/initialize'
@@ -18,8 +18,8 @@ application = module.exports = (callback) ->
 
     options =
         name: 'proxy'
-        port: process.env.PORT or 9104
-        host: process.env.HOST or "127.0.0.1"
+        port: opts.port or process.env.PORT or 9104
+        host: opts.host or process.env.HOST or "127.0.0.1"
         root: __dirname
 
     if process.env.USE_SSL

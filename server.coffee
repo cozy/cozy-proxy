@@ -18,7 +18,7 @@ application = module.exports = (opts, callback) ->
 
     options =
         name: 'proxy'
-        port: opts.port or process.env.PORT or 9104
+        port: opts.port or process.env.PROXY_PORT or 9104
         host: opts.host or process.env.HOST or "127.0.0.1"
         root: __dirname
 

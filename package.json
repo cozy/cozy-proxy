@@ -10,6 +10,7 @@
   "engines": [
     "node >= 0.8.0"
   ],
+  "main": "build/server.js",
   "dependencies": {
     "americano": "0.4.2",
     "americano-cozy": "0.2.11",
@@ -47,7 +48,6 @@
     "Frank Rousseau",
     "Joseph Silvestre"
   ],
-  "main": "server.js",
   "scripts": {
     "test": "cake --use-js tests",
     "start": "node build/server.js",

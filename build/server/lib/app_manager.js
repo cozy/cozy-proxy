@@ -19,7 +19,7 @@ AppManager = (function() {
   }
 
   AppManager.prototype.ensureStarted = function(slug, shouldStart, callback) {
-    var routes;
+    var routes, state;
     routes = this.router.getRoutes();
     if (routes[slug] == null) {
       logger.error("App " + slug + " unknown");
@@ -69,7 +69,8 @@ AppManager = (function() {
         }
         break;
       default:
-        logger.error(slug + " : incorrect app state : " + routes[slug].state);
+        state = routes[slug].state;
+        logger.error(slug + ": incorrect app state: " + state);
         return callback({
           code: 500,
           msg: 'incorrect app state'

@@ -1,4 +1,4 @@
-if alert
+if alert && alert.title
     .alert
         p: strong= t(prefix + ' ' + alert.title)
         p= t(prefix + ' ' + alert.message)

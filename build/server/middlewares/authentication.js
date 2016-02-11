@@ -34,7 +34,7 @@ module.exports.authenticate = function(req, res, next) {
               error.status = 401;
               return next(error);
             } else {
-              return res.send(200, {
+              return res.status(200).send({
                 success: true
               });
             }
@@ -58,5 +58,13 @@ module.exports.isAuthenticated = function(req, res, next) {
       url += "&" + (qs.stringify(req.query));
     }
     return res.redirect(url);
+  }
+};
+
+module.exports.isNotAuthenticated = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
+  } else {
+    return next();
   }
 };

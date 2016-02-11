@@ -26,7 +26,7 @@ module.exports.authenticate = (req, res, next) ->
                             error.status = 401
                             next error
                         else
-                            res.send 200, success: true
+                            res.status(200).send success: true
     passport.authenticate('local', process)(req, res, next)
 
 module.exports.isAuthenticated = (req, res, next) ->
@@ -38,4 +38,8 @@ module.exports.isAuthenticated = (req, res, next) ->
         url += "&#{qs.stringify req.query}" if req.query.length
         res.redirect url
 
-
+module.exports.isNotAuthenticated = (req, res, next) ->
+    if req.isAuthenticated()
+        res.redirect '/'
+    else
+        next()

@@ -61,7 +61,7 @@ deviceExists = (login, cb) ->
         else if body.length is 0
             cb null, false
         else
-            cb null, body[0]
+            cb null, body[0]?.value
 
 checkLogin = (login, wantExist, cb)->
     if not login?
@@ -144,7 +144,8 @@ updateDevice = (oldDevice, device, cb) ->
             else
                 oldDevice.login = device.login
                 delete oldDevice.permissions
-                clientDS.put "data/#{oldDevice.id}", oldDevice, (err, result, body) ->
+                path = "data/#{oldDevice.id}"
+                clientDS.put path, oldDevice, (err, result, body) ->
                     data =
                         password: access.password
                         login: device.login

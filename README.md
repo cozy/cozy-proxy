@@ -21,6 +21,19 @@ You can contribute to the Cozy Proxy in many ways:
 * Translate it in [a new language](https://github.com/cozy/cozy-proxy/tree/master/client/app/locales).
 * Improve the session management.
 
+## Listen on https
+
+It is recommended to run Cozy Proxy behind a reverse proxy like nginx. The
+reverse proxy does the SSL/TLS stuff in that case. But if you want to run Cozy
+Proxy with no reverse proxy (low memory server for example), you can set the
+following env variables:
+
+```sh
+USE_SSL=true
+SSL_CRT_PATH=/path/to/server.crt  # /etc/cozy/server.crt by default
+SSL_KEY_PATH=/path/to/server.key  # /etc/cozy/server.key by default
+```
+
 ## Hack
 
 To be hacked, the Cozy Proxy dev environment requires that a CouchDB instance
@@ -38,7 +51,7 @@ this way:
 
 Each modification requires a new build, here is how to run a build:
 
-    cake build
+    npm run build
 
 ### To hack cozy-proxy using the cozy vagrant
 
@@ -54,7 +67,7 @@ Each modification requires a new build, here is how to run a build:
 
 To run tests, type the following command into the Cozy Proxy folder:
 
-    cake tests
+    npm run test
 
 Note: a running data-system is required for the tests.
 
@@ -78,9 +91,9 @@ Cozy Proxy is developed by Cozy Cloud and distributed under the AGPL v3 license.
 [Cozy](https://cozy.io) is a platform that brings all your web services in the
 same private space.  With it, your web apps and your devices can share data
 easily, providing you with a new experience. You can install Cozy on your own
-hardware where no one profiles you. 
+hardware where no one profiles you.
 
-## Community 
+## Community
 
 You can reach the Cozy Community by:
 

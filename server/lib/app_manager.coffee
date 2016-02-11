@@ -42,7 +42,8 @@ class AppManager
                     callback code: 500, msg: 'wont start'
 
             else
-                logger.error "#{slug} : incorrect app state : #{routes[slug].state}"
+                state = routes[slug].state
+                logger.error "#{slug}: incorrect app state: #{state}"
                 callback code: 500, msg: 'incorrect app state'
 
 

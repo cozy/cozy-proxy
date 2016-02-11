@@ -1,4 +1,8 @@
 module.exports = {
+    "index title": "Cozy - Your Private Personal Cloud",
+    "index description": "Cozy is an app-based personal cloud you can host at home. It allows you to own and connect your data. It turns a low-cost piece of hardware like a Raspberry Pi 2 or an online VPS into a powerful app platform. It comes with common applications like a contacts manager, calendar, webmail and filebox.",
+    "index noscript title": "Sorry",
+    "index noscript message": "Cozy needs JavaScript and cookies to work but it looks like you have disabled one of them.",
     "error title": "Oups, une erreur est survenue",
     "error headline": "Il semble que quelque chose se soit mal passé.",
     "error reinsurance": "Ne vous inquiétez pas, ce n'est probablement pas trop grave !",
@@ -25,5 +29,4 @@ module.exports = {
     "invalid email format": "Votre adresse email ne semble pas valide.",
     "invalid timezone": "Ce fuseau horaire n'est pas valide. Utilisez un format <Continent>/<Pays>, par exemple Europe/Paris.",
     "password too short": "Votre mot de passe est trop court, il doit contenir au moins 8 caractères."
-}
-;
+};

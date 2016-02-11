@@ -16,15 +16,15 @@ if (!process.env.DEFAULT_REDIRECT_PORT) {
   process.env.DEFAULT_REDIRECT_PORT = 9103;
 }
 
-application = module.exports = function(callback) {
+application = module.exports = function(opts, callback) {
   var americano, crtPath, errorMiddleware, initialize, keyPath, options;
   americano = require('americano');
   initialize = require('./server/initialize');
   errorMiddleware = require('./server/middlewares/errors');
   options = {
     name: 'proxy',
-    port: process.env.PORT || 9104,
-    host: process.env.HOST || "127.0.0.1",
+    port: opts.port || process.env.PORT || 9104,
+    host: opts.host || process.env.HOST || "127.0.0.1",
     root: __dirname
   };
   if (process.env.USE_SSL) {

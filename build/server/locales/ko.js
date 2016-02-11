@@ -1,4 +1,8 @@
 module.exports = {
+    "index title": "Cozy - Your Private Personal Cloud",
+    "index description": "Cozy is an app-based personal cloud you can host at home. It allows you to own and connect your data. It turns a low-cost piece of hardware like a Raspberry Pi 2 or an online VPS into a powerful app platform. It comes with common applications like a contacts manager, calendar, webmail and filebox.",
+    "index noscript title": "Sorry",
+    "index noscript message": "Cozy needs JavaScript and cookies to work but it looks like you have disabled one of them.",
     "error title": "앗, 오류가 발생 했습니다.",
     "error headline": "오류가 발생 하였습니다.",
     "error reinsurance": "걱정 하지 마세요, 아마도 심각한 오류는 아닐 것 입니다!",

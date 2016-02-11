@@ -15,6 +15,7 @@
     "americano": "0.4.3",
     "americano-cozy": "0.2.11",
     "async": "0.2.10",
+    "bcrypt": "^0.8.5",
     "cookie-parser": "1.4.1",
     "cookie-session": "1.2.0",
     "graceful-fs": "^3.0.2",

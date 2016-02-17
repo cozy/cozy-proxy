@@ -1,6 +1,6 @@
-americano = require 'americano-cozy'
+cozydb = require 'cozydb'
 
-module.exports = UseTracker = americano.getModel 'UseTracker',
+module.exports = UseTracker = cozydb.getModel 'UseTracker',
     app: String
     dateStart: Date
     dateEnd: Date

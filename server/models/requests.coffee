@@ -1,7 +1,7 @@
-americano = require 'americano-cozy'
+cozydb = require 'cozydb'
 
 module.exports =
 
-    user: all: americano.defaultRequests.all
-    device: all: americano.defaultRequests.all
-    instance: all: americano.defaultRequests.all
+    user: all: cozydb.defaultRequests.all
+    device: all: cozydb.defaultRequests.all
+    instance: all: cozydb.defaultRequests.all

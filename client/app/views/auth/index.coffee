@@ -39,7 +39,7 @@ module.exports = class AuthView extends Mn.LayoutView
     - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
-        username: require('env').username
+        username: window.ENV.username
         prefix:   @options.type
 
 

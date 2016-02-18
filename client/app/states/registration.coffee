@@ -18,7 +18,7 @@ module.exports = class Registration extends StateModel
     - nocontrols: hide the flow controls
     ###
     steps: do ->
-        hasGoogleImport = 'import-from-google' in require('env').apps
+        hasGoogleImport = 'import-from-google' in window.ENV.apps
 
         preset:
             next:      if hasGoogleImport then 'import' else 'setup'

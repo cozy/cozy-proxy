@@ -17,7 +17,7 @@ global translator `t` method to use it in Marionette templates.
 We use the `html[lang]` attribute to get the correct locale.
 ###
 initLocale = ->
-    locale = $('html').attr 'lang'
+    locale = document.documentElement.getAttribute 'lang'
     try phrases = require "locales/#{locale}"
     catch e
         phrases = require 'locales/en'
@@ -32,6 +32,6 @@ Starts
 
 Trigger locale initilization and starts application singleton.
 ###
-$ ->
+document.addEventListener 'DOMContentLoaded', ->
     initLocale()
     application.start()

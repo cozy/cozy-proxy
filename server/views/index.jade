@@ -16,10 +16,8 @@ block content
             p.help= t('index noscript message')
 
 block js
-    script(src="/scripts/vendor.js")
     if env
         script.
-            require.register('env', function(exports, require, module) {
-              module.exports = !{JSON.stringify(env)}
-            })
-    script(src="/scripts/app.js", onload="require('initialize');")
+            ENV = !{JSON.stringify(env)};
+    script(src="/scripts/vendor.js" defer=true)
+    script(src="/scripts/app.js", onload="require('initialize')" defer=true)

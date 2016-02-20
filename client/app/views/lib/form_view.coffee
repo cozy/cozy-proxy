@@ -5,7 +5,15 @@ This is a top-level class that contains helpers for FormViews. It is not
 intended to be used directly.
 ###
 
-module.exports = class FormView extends Mn.ItemView
+Bacon = require 'baconjs'
+$     = require 'jquery'
+
+{ItemView} = require 'backbone.marionette'
+
+asEventStream = Bacon.$.asEventStream
+
+
+module.exports = class FormView extends ItemView
 
     tagName: 'form'
 
@@ -21,11 +29,11 @@ module.exports = class FormView extends Mn.ItemView
         super
 
         # inputsStream is a stream containing all inputs events, delegated
-        @inputsStream = @$el.asEventStream 'keyup blur change', @ui.inputs
+        @inputsStream = asEventStream.call @$el, 'keyup blur change', @ui.inputs
         # submitStream receive the submit event, prevent the natural submission,
         # and is filtered onto the next button enable state (form can't be
         # submitted if the control is disabled)
-        @submitStream = @$el.asEventStream 'submit'
+        @submitStream = asEventStream.call @$el, 'submit'
             .doAction '.preventDefault'
             .filter => @model.get('nextControl').map '.enabled'
 

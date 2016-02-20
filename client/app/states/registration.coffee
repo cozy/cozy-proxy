@@ -4,7 +4,10 @@ Registration state-machine
 Exposed streams and properties to the Register* views.
 ###
 
-StateModel = require 'lib/state_model'
+Bacon = require 'baconjs'
+$     = require 'jquery'
+
+StateModel = require '../lib/state_model'
 
 
 module.exports = class Registration extends StateModel

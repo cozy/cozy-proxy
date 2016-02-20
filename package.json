@@ -30,8 +30,6 @@
     "send": "0.13.1"
   },
   "devDependencies": {
-    "bower": "1.7.7",
-    "brunch": "1.8.5",
     "chai": "1.9.0",
     "coffee-coverage": "0.4.2",
     "coffee-script": "1.10.0",
@@ -40,8 +38,9 @@
     "jade2commonjs": "cozy/jade2commonjs",
     "mocha": "1.18.2",
     "nock": "0.27.2",
+    "nodemon": "1.9.0",
     "npm-run-all": "1.5.0",
-    "socket.io": "0.9.16",
+    "webpack": "1.12.13",
     "xmlhttprequest": "1.6.0"
   },
   "contributors": [
@@ -54,19 +53,23 @@
   "scripts": {
     "build": "npm-run-all --parallel 'build:*'",
     "build:server": "coffee -cb --output build/server server && coffee -cb --output build/ server.coffee",
-    "build:client": "cd client && brunch build --production",
+    "build:client": "cd client && env NODE_ENV=production webpack",
     "build:views": "jade2commonjs --no-debug --out build/server/views --ignore '**/_*.jade' server/views",
     "clean": "rm -rf build",
     "copy:locales": "mkdir -p build/server/locales && cp -r server/locales/*.json build/server/locales/",
     "lint": "coffeelint -f coffeelint.json --quiet -r server server.coffee -r client/app",
     "prebuild": "npm-run-all clean tx lint",
-    "prebuild:client": "cd client && npm update && bower install",
+    "prebuild:client": "cd client && npm update",
+    "prewatch:client": "npm run prebuild:client",
     "postbuild": "npm-run-all --parallel copy:*",
     "postinstall": "node postinstall.js",
     "start": "node build/server.js",
     "test": "npm run test:server",
     "test:build": "env USE_JS=true npm run test",
     "test:server": "env NODE_ENV=test PORT=4444 mocha --reporter spec --compilers coffee:coffee-script/register",
-    "tx": "tx pull --all || true"
+    "tx": "tx pull --all || true",
+    "watch": "npm-run-all --parallel 'watch:*'",
+    "watch:client": "cd client && webpack --display-modules --display-chunks --watch",
+    "watch:server": "coffee server.coffee"
   }
 }

@@ -5,9 +5,12 @@ Attach itself to the `[role=application] DOM node and declares the application
 main region for its subviews.
 ###
 
-module.exports = class AppLayout extends Mn.LayoutView
+{LayoutView} = require 'backbone.marionette'
 
-    template: require 'views/templates/layout_app'
+
+module.exports = class AppLayout extends LayoutView
+
+    template: require './templates/layout_app'
 
     el: '[role=application]'
 

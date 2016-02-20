@@ -5,7 +5,9 @@ Sets the browser environment to prepare it to launch the app, and then require
 the application.
 ###
 
-application = require './application'
+Polyglot = require 'node-polyglot'
+
+app = require './application'
 
 
 ###
@@ -18,9 +20,9 @@ We use the `html[lang]` attribute to get the correct locale.
 ###
 initLocale = ->
     locale = document.documentElement.getAttribute 'lang'
-    try phrases = require "locales/#{locale}"
+    try phrases = require "./locales/#{locale}"
     catch e
-        phrases = require 'locales/en'
+        phrases = require './locales/en'
     polyglot = new Polyglot phrases: phrases, locale: locale
     # Temporary use a global variable to store the `t` helpers, waiting for
     # Marionette allow to register global helpers.
@@ -34,4 +36,4 @@ Trigger locale initilization and starts application singleton.
 ###
 document.addEventListener 'DOMContentLoaded', ->
     initLocale()
-    application.start()
+    app.start()

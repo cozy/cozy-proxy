@@ -5,6 +5,9 @@ When building a state-machine (a viewModel object propulsed by Bacon), this
 top-level class is used to provides common methods an properties.
 ###
 
+Bacon = require 'baconjs'
+
+
 module.exports = class StateModel
 
     # Properties stores to state-machines Bacon properties

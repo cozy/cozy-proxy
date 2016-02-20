@@ -6,10 +6,17 @@ reset password mode). It inherits from `Mn.LayoutView` because it declares a
 region to host form feedbacks (state-machine `alert` property).
 ###
 
-FeedbackView = require 'views/auth/feedback'
+Bacon = require 'baconjs'
+$     = require 'jquery'
+
+{LayoutView} = require 'backbone.marionette'
+
+FeedbackView = require './feedback'
+
+asEventStream = Bacon.$.asEventStream
 
 
-module.exports = class AuthView extends Mn.LayoutView
+module.exports = class AuthView extends LayoutView
 
     tagName: 'form'
 
@@ -21,7 +28,7 @@ module.exports = class AuthView extends Mn.LayoutView
             method: 'POST'
             action: @options.backend
 
-    template: require 'views/templates/view_auth'
+    template: require '../templates/view_auth'
 
     regions:
         'feedback': '.feedback'
@@ -52,9 +59,9 @@ module.exports = class AuthView extends Mn.LayoutView
     initialize: ->
         # Create property for password input, delegated from the input element
         # events, mapped to its value
-        password = @$el.asEventStream 'focus keyup blur', @ui.passwd
-                        .map '.target.value'
-                        .toProperty('')
+        password = asEventStream.call @$el, 'focus keyup blur', @ui.passwd
+            .map '.target.value'
+            .toProperty('')
 
         # Boolean property that confirms if the input is filled or not
         @passwordEntered = password.map (value) -> !!value
@@ -62,7 +69,7 @@ module.exports = class AuthView extends Mn.LayoutView
         # Submit stream, delegated from the submission event, and filtered by
         # the password input (submit can only be triggered if the password field
         # is not empty)
-        submit = @$el.asEventStream 'click', @ui.submit
+        submit = asEventStream.call @$el, 'click', @ui.submit
             .doAction '.preventDefault'
             .filter @passwordEntered
 
@@ -96,7 +103,7 @@ module.exports = class AuthView extends Mn.LayoutView
             model:  @model
 
         # Select all password field content at focus
-        @ui.passwd.asEventStream 'focus'
+        asEventStream.call @ui.passwd, 'focus'
             .assign @ui.passwd[0], 'select'
 
         # This is a ugly workaround to the autofocus issue: the field is marked

@@ -19,5 +19,4 @@ block js
     if env
         script.
             ENV = !{JSON.stringify(env)};
-    script(src="/scripts/vendor.js" defer=true)
-    script(src="/scripts/app.js", onload="require('initialize')" defer=true)
+    script(src="/app.js" defer=true)

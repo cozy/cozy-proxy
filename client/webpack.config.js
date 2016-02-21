@@ -5,6 +5,9 @@ var CopyPlugin        = require('copy-webpack-plugin');
 
 var production = process.env.NODE_ENV === 'production';
 
+var autoprefixer = require('autoprefixer')(['last 2 versions']);
+var mqpacker     = require('css-mqpacker');
+
 var plugins = [
     new ExtractTextPlugin('app.css'),
     new webpack.optimize.CommonsChunkPlugin({
@@ -55,12 +58,12 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                loader: ExtractTextPlugin.extract('style', 'css?-svgo!stylus')
+                loader: ExtractTextPlugin.extract('style', production? 'css?-svgo&-autoprefixer&-mergeRules!postcss!stylus' : 'css!stylus')
             },
             {
                 test: /\.css$/,
                 exclude: /vendor/,
-                loader: ExtractTextPlugin.extract('style', 'css')
+                loader: ExtractTextPlugin.extract('style', production? 'css?-svgo&-autoprefixer&-mergeRules!postcss' : 'css')
             },
             {
                 test: /\.jade$/,
@@ -78,4 +81,5 @@ module.exports = {
         ]
     },
     plugins: plugins,
+    postcss: [autoprefixer, mqpacker]
 };

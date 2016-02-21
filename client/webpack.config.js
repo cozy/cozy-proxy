@@ -2,6 +2,7 @@ var webpack           = require('webpack');
 
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyPlugin        = require('copy-webpack-plugin');
+var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 var production = process.env.NODE_ENV === 'production';
 
@@ -34,6 +35,13 @@ if (production) {
             __SERVER__:      !production,
             __DEVELOPMENT__: !production,
             __DEVTOOLS__:    !production
+        })
+    ]);
+} else {
+    plugins = plugins.concat([
+        new BrowserSyncPlugin({
+            proxy: 'http://localhost:' + (process.env.PORT || 9104) + '/',
+            open: false
         })
     ]);
 }

@@ -1,7 +1,12 @@
 node_modules
 bower_components
+
 *.swp
 *.log
 *.transifex.coffee
 
+locales
+!locales/en.json
+
 client/public
+build

@@ -26,11 +26,10 @@ html(lang=getLocale())
         meta(name="msapplication-TileImage", content="/mstile-144x144.png")
         meta(name="theme-color", content="#20a8f1")
 
-        link(rel='stylesheet', href='/fonts/fonts.css')
-        link(rel='stylesheet', href='/app.css')
-        
+        link(rel="stylesheet", href="/fonts/fonts.css")
+        link(rel="stylesheet", href="/#{assets? assets.css : 'app.css'}")
+
         block js
 
     body
         block content
-            

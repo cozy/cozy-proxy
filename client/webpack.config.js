@@ -1,7 +1,10 @@
+var path = require('path');
+
 var webpack           = require('webpack');
 
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyPlugin        = require('copy-webpack-plugin');
+var AssetsPlugin      = require('assets-webpack-plugin');
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 var production = process.env.NODE_ENV === 'production';
@@ -10,7 +13,7 @@ var autoprefixer = require('autoprefixer')(['last 2 versions']);
 var mqpacker     = require('css-mqpacker');
 
 var plugins = [
-    new ExtractTextPlugin('app.css'),
+    new ExtractTextPlugin(production? 'app.[hash].css' : 'app.css'),
     new webpack.optimize.CommonsChunkPlugin({
         name:      'main',
         children:  true,
@@ -23,6 +26,9 @@ var plugins = [
 
 if (production) {
     plugins = plugins.concat([
+        new AssetsPlugin({
+            filename: '../build/webpack-assets.json'
+        }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -50,8 +56,8 @@ module.exports = {
     entry: './app/initialize',
     output: {
         path: path.join(production? '../build/client' : '', 'public'),
-        filename: 'app.js',
-        chunkFilename: 'register.js'
+        filename: production? 'app.[hash].js' : 'app.js',
+        chunkFilename: production? 'register.[hash].js' : 'register.js'
     },
     resolve: {
         extensions: ['', '.js', '.coffee', '.jade', '.json']
@@ -84,7 +90,7 @@ module.exports = {
             {
                 test: /\.(png|gif|jpe?g|svg)$/i,
                 exclude: /vendor/,
-                loader: 'file?name=img/[name].[ext]'
+                loader:  'file?name=img/' + (production? '[name].[hash].[ext]' : '[name].[ext]')
             }
         ]
     },

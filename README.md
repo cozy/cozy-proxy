@@ -71,10 +71,6 @@ To run tests, type the following command into the Cozy Proxy folder:
 
 Note: a running data-system is required for the tests.
 
-## Icons
-
-by [iconmonstr](http://iconmonstr.com/)
-
 ## Contribute with Transifex
 
 Transifex can be used the same way as git. It can push or pull translations. The config file in the .tx repository configure the way Transifex is working : it will get the json files from the locales repository.

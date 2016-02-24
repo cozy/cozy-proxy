@@ -147,7 +147,7 @@ module.exports.resetPassword = (req, res, next) ->
                         if err? then next new Error err
                         else
                             Instance.resetKey = null
-                            passwordKeys.resetKeys (err) ->
+                            passwordKeys.resetKeys newPassword, (err) ->
 
                                 if err? then next new Error err
                                 else

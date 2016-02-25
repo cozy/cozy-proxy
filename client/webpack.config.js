@@ -7,13 +7,13 @@ var CopyPlugin        = require('copy-webpack-plugin');
 var AssetsPlugin      = require('assets-webpack-plugin');
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
-var production = process.env.NODE_ENV === 'production';
+var optimize = process.env.OPTIMIZE === 'true';
 
 var autoprefixer = require('autoprefixer')(['last 2 versions']);
 var mqpacker     = require('css-mqpacker');
 
 var plugins = [
-    new ExtractTextPlugin(production? 'app.[hash].css' : 'app.css'),
+    new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
     new webpack.optimize.CommonsChunkPlugin({
         name:      'main',
         children:  true,
@@ -24,7 +24,7 @@ var plugins = [
     ])
 ];
 
-if (production) {
+if (optimize) {
     plugins = plugins.concat([
         new AssetsPlugin({
             filename: '../build/webpack-assets.json'
@@ -38,9 +38,9 @@ if (production) {
             },
         }),
         new webpack.DefinePlugin({
-            __SERVER__:      !production,
-            __DEVELOPMENT__: !production,
-            __DEVTOOLS__:    !production
+            __SERVER__:      !optimize,
+            __DEVELOPMENT__: !optimize,
+            __DEVTOOLS__:    !optimize
         })
     ]);
 } else {
@@ -55,15 +55,15 @@ if (production) {
 module.exports = {
     entry: './app/initialize',
     output: {
-        path: path.join(production? '../build/client' : '', 'public'),
-        filename: production? 'app.[hash].js' : 'app.js',
-        chunkFilename: production? 'register.[hash].js' : 'register.js'
+        path: path.join(optimize? '../build/client' : '', 'public'),
+        filename: optimize? 'app.[hash].js' : 'app.js',
+        chunkFilename: optimize? 'register.[hash].js' : 'register.js'
     },
     resolve: {
         extensions: ['', '.js', '.coffee', '.jade', '.json']
     },
-    debug: !production,
-    devtool: production ? false : 'eval',
+    debug: !optimize,
+    devtool: 'source-map',
     module: {
         loaders: [
             {
@@ -72,12 +72,12 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                loader: ExtractTextPlugin.extract('style', production? 'css?-svgo&-autoprefixer&-mergeRules!postcss!stylus' : 'css!stylus')
+                loader: ExtractTextPlugin.extract('style', optimize? 'css?-svgo&-autoprefixer&-mergeRules!postcss!stylus' : 'css!stylus')
             },
             {
                 test: /\.css$/,
                 exclude: /vendor/,
-                loader: ExtractTextPlugin.extract('style', production? 'css?-svgo&-autoprefixer&-mergeRules!postcss' : 'css')
+                loader: ExtractTextPlugin.extract('style', optimize? 'css?-svgo&-autoprefixer&-mergeRules!postcss' : 'css')
             },
             {
                 test: /\.jade$/,
@@ -90,7 +90,7 @@ module.exports = {
             {
                 test: /\.(png|gif|jpe?g|svg)$/i,
                 exclude: /vendor/,
-                loader:  'file?name=img/' + (production? '[name].[hash].[ext]' : '[name].[ext]')
+                loader:  'file?name=img/' + (optimize? '[name].[hash].[ext]' : '[name].[ext]')
             }
         ]
     },

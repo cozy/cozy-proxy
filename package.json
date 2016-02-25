@@ -53,7 +53,7 @@
   "scripts": {
     "build": "npm-run-all --parallel 'build:*'",
     "build:server": "coffee -cb --output build/server server && coffee -cb --output build/ server.coffee",
-    "build:client": "cd client && env NODE_ENV=production webpack",
+    "build:client": "cd client && env OPTIMIZE=true webpack",
     "build:views": "jade2commonjs --no-debug --out build/server/views --ignore '**/_*.jade' server/views",
     "clean": "rm -rf build",
     "copy:locales": "mkdir -p build/server/locales && cp -r server/locales/*.json build/server/locales/",

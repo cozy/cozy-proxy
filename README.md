@@ -11,7 +11,9 @@ We assume here that the Cozy platform is correctly [installed](https://raw.githu
 
 Type this command to install the proxy module:
 
-    cozy-monitor install proxy
+```sh
+$ cozy-monitor install proxy
+```
 
 ## Contribution
 
@@ -41,14 +43,14 @@ documentation](https://docs.cozy.io/en/hack/cookbooks/controller.html#configurat
 Just add the following lines into this file:
 
 ```json
-    "env": {
-      "proxy": {
-        "PORT": 443,
-        "USE_SSL": true,
-        "SSL_CRT_PATH": "/path/to/server.crt",
-        "SSL_KEY_PATH": "/path/to/server.key"
-      }
-    }
+"env": {
+  "proxy": {
+    "PORT": 443,
+    "USE_SSL": true,
+    "SSL_CRT_PATH": "/path/to/server.crt",
+    "SSL_KEY_PATH": "/path/to/server.key"
+  }
+}
 ```
 
 ## Hack
@@ -57,25 +59,19 @@ To be hacked, the Cozy Proxy dev environment requires that a CouchDB instance
 and a Cozy Data System instance are running. Then you can start the Cozy Proxy
 this way:
 
-    git clone https://github.com/cozy/cozy-proxy.git
-    cd cozy-proxy
-    npm install -g brunch coffee-script coffeelint
-    npm install
-    cd client
-    npm install
-    cd ..
-    coffee server.coffee
-
-Each modification requires a new build, here is how to run a build:
-
-    npm run build
+```sh
+$ git clone https://github.com/cozy/cozy-proxy.git
+$ cd cozy-proxy
+$ npm install
+$ npm run watch
+```
 
 ### To hack cozy-proxy using the cozy vagrant
 
 - Forward a new port from the virtual machine (for example: `config.vm.network :forwarded_port, guest: 9555, host: 9555` in file Vagrantfile)
 - Go in the shared folder `cd /vagrant` and `cd your-cozy-proxy-folder`
 - `rm -rf node_modules/bcrypt && npm install`
-- Launch cozy-proxy `PORT=9555 HOST="0.0.0.0" coffee server.coffee`
+- Launch cozy-proxy `PORT=9555 HOST="0.0.0.0" npm run watch`
 - You can now access the hacked proxy on `http://localhost:9555` with your navigator
 
 ## Tests
@@ -84,7 +80,9 @@ Each modification requires a new build, here is how to run a build:
 
 To run tests, type the following command into the Cozy Proxy folder:
 
-    npm run test
+```sh
+$ npm run test
+```
 
 Note: a running data-system is required for the tests.
 

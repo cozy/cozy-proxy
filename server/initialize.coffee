@@ -23,6 +23,10 @@ module.exports = (app, server, callback) ->
     # watch mode)
     try
         assets = require(path.join __dirname, '../webpack-assets').main
+    catch
+        assets =
+            js: 'app.js'
+            css: 'app.css'
     app.locals.assets = assets
 
     # initialize Proxy server

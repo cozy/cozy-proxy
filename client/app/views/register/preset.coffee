@@ -4,7 +4,9 @@ Presets view
 This view display the form for the preset step
 ###
 
-FormView = require 'views/lib/form_view'
+Bacon = require 'baconjs'
+
+FormView = require '../lib/form_view'
 
 
 module.exports = class RegisterPresetView extends FormView
@@ -15,11 +17,11 @@ module.exports = class RegisterPresetView extends FormView
         method: 'post'
         action: '/register'
 
-    template: require 'views/templates/view_register_preset'
+    template: require '../templates/view_register_preset'
 
 
     serializeData: ->
-        timezones: require 'lib/timezones'
+        timezones: require '../../lib/timezones'
 
 
     ###
@@ -28,7 +30,7 @@ module.exports = class RegisterPresetView extends FormView
     initialize: ->
         # Creates a new property in the state machine that contains the entered
         # email value to be used in later screens.
-        email = @$el.asEventStream 'blur', '#preset-email'
+        email = Bacon.$.asEventStream.call @$el, 'blur', '#preset-email'
             .map '.target.value'
             .toProperty ''
         @model.add 'email', email

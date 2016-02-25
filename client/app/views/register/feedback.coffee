@@ -4,9 +4,12 @@ Register feedback
 A view that display the current step in the register flow
 ###
 
-module.exports = class RegisterFeedbackView extends Mn.ItemView
+{ItemView} = require 'backbone.marionette'
 
-    template: require 'views/templates/view_register_feedback'
+
+module.exports = class RegisterFeedbackView extends ItemView
+
+    template: require '../templates/view_register_feedback'
 
 
     onRender: ->

@@ -8,15 +8,17 @@ flow easily. It declares 3 regions:
 - a feedback region to display the progression
 ###
 
-ControlsView = require 'views/register/controls'
-FeedbackView = require 'views/register/feedback'
+{LayoutView} = require 'backbone.marionette'
+
+ControlsView = require './controls'
+FeedbackView = require './feedback'
 
 
-module.exports = class RegisterView extends Mn.LayoutView
+module.exports = class RegisterView extends LayoutView
 
     className: 'register'
 
-    template: require 'views/templates/view_base'
+    template: require '../templates/view_base'
 
     regions:
         'content':  '[role=region]'
@@ -51,5 +53,5 @@ module.exports = class RegisterView extends Mn.LayoutView
     ###
     swapStep: (step) =>
         return unless step
-        StepView = require "views/register/#{step}"
+        StepView = require "./#{step}"
         @showChildView 'content', new StepView model: @model

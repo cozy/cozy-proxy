@@ -1,8 +1,13 @@
-module.exports = class RegisterImportView extends Mn.ItemView
+Bacon = require 'baconjs'
+
+{ItemView} = require 'backbone.marionette'
+
+
+module.exports = class RegisterImportView extends ItemView
 
     className: 'import'
 
-    template: require 'views/templates/view_register_import'
+    template: require '../templates/view_register_import'
 
     ui:
         google: '#import-google'
@@ -14,7 +19,7 @@ module.exports = class RegisterImportView extends Mn.ItemView
         #
         # NOTE: when we'll add more import choices, this code can already
         # streams right step depending on the element `[href]` attribute.
-        stream = @$el.asEventStream 'click', @ui.google
+        stream = Bacon.$.asEventStream.call @$el, 'click', @ui.google
             .doAction '.preventDefault'
             .map (e) -> e.target.href.split('=')[1]
         @model.setStepBus.plug stream

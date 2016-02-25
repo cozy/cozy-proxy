@@ -4,7 +4,10 @@ Auth state-machine
 Exposed streams and properties used by the Login and ResetPassword views.
 ###
 
-StateModel = require 'lib/state_model'
+Bacon = require 'baconjs'
+$     = require 'jquery'
+
+StateModel = require '../lib/state_model'
 
 
 module.exports = class Auth extends StateModel

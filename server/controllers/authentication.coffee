@@ -86,6 +86,7 @@ module.exports.loginIndex = (req, res, next) ->
             next new Error err
         else
             return res.redirect '/register' unless env.username
+            res.set 'X-Cozy-Login-Page', 'true'
             res.render 'index', env: env
 
 

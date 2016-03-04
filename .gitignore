@@ -9,5 +9,6 @@ bower_components
 
 locales
 !locales/en.json
+!build/server/locales
 
 client/public

@@ -4,9 +4,13 @@ Register controls
 A view dedicated to register flow control between its screens.
 ###
 
-module.exports = class RegisterControlsView extends Mn.ItemView
+Bacon      = require 'baconjs'
+{ItemView} = require 'backbone.marionette'
 
-    template: require 'views/templates/view_register_controls'
+
+module.exports = class RegisterControlsView extends ItemView
+
+    template: require '../templates/view_register_controls'
 
     ui:
         'next': 'a.btn'
@@ -22,7 +26,7 @@ module.exports = class RegisterControlsView extends Mn.ItemView
         # - gets its step/route/url from href
         # - ensure the button is enabled (if not, the event isn't propagated
         # into the stream)
-        clickStream = @$el.asEventStream 'click', @ui.next
+        clickStream = Bacon.$.asEventStream.call @$el, 'click', @ui.next
             .doAction '.preventDefault'
             .map (e) -> e.target.href.split('=')[1] or '/'
             .filter => @model.get('nextControl').map '.enabled'

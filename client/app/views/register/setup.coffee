@@ -6,6 +6,13 @@ This step display a counter as a progress bar that is:
 - indicates the import loading state, and have a minimal duration of 8 seconds
 ###
 
+_     = require 'underscore'
+$     = require 'jquery'
+Bacon = require 'baconjs'
+io    = require 'socket.io-client'
+
+{ItemView} = require 'backbone.marionette'
+
 ###
 Helpers
 
@@ -18,7 +25,7 @@ socket = null
 fromSocket = (event) ->
     # If the socket.io socket isn't available, open it
     unless socket
-        socket = window.io window.location.origin,
+        socket = io window.location.origin,
             path:                 '/apps/import-from-google/socket.io'
             reconnectionDelayMax: 60000
             reconectionDelay:     2000
@@ -68,11 +75,11 @@ fromSocket = (event) ->
 Setup View
 ###
 
-module.exports = class RegisterSetupView extends Mn.ItemView
+module.exports = class RegisterSetupView extends ItemView
 
     className: 'setup'
 
-    template: require 'views/templates/view_register_setup'
+    template: require '../templates/view_register_setup'
 
     ui:
         bar: 'progress'

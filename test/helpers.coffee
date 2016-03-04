@@ -109,7 +109,7 @@ helpers.login = (password) -> (done) ->
 helpers.createAllRequests = (done) ->
     @timeout 15000
     root = require('path').join __dirname, '..'
-    require('americano-cozy').configure root, null, (err) ->
+    require('americano').configure root, null, (err) ->
         done err
 
 User = require "#{helpers.prefix}server/models/user"

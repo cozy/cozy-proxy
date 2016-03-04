@@ -4,7 +4,10 @@ Registration state-machine
 Exposed streams and properties to the Register* views.
 ###
 
-StateModel = require 'lib/state_model'
+Bacon = require 'baconjs'
+$     = require 'jquery'
+
+StateModel = require '../lib/state_model'
 
 
 module.exports = class Registration extends StateModel
@@ -18,7 +21,7 @@ module.exports = class Registration extends StateModel
     - nocontrols: hide the flow controls
     ###
     steps: do ->
-        hasGoogleImport = 'import-from-google' in require('env').apps
+        hasGoogleImport = 'import-from-google' in window.ENV.apps
 
         preset:
             next:      if hasGoogleImport then 'import' else 'setup'

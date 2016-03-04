@@ -5,11 +5,16 @@ Main application that create a Mn.Application singleton and exposes it. Needs
 router and app_layout view.
 ###
 
-Router    = require 'routes'
-AppLayout = require 'views/app_layout'
+require 'normalize.css'
+require './styles/app.styl'
+
+{Application} = require 'backbone.marionette'
+
+Router    = require './routes'
+AppLayout = require './views/app_layout'
 
 
-class Application extends Backbone.Marionette.Application
+class App extends Application
 
     ###
     Sets application
@@ -33,4 +38,4 @@ class Application extends Backbone.Marionette.Application
 
 
 # Exports Application singleton instance
-module.exports = new Application()
+module.exports = new App()

@@ -5,12 +5,17 @@ This view do **not** rely on the machine state (except for the next stream push)
 and uses basical Marionette logics to handle its internal events
 ###
 
+Bacon = require 'baconjs'
+$     = require 'jquery'
 
-module.exports = class RegisterImportGoogleView extends Mn.ItemView
+{ItemView} = require 'backbone.marionette'
+
+
+module.exports = class RegisterImportGoogleView extends ItemView
 
     className: 'import-google'
 
-    template: require 'views/templates/view_register_import_google'
+    template: require '../templates/view_register_import_google'
 
     events:
         'click #cancel':            'cancel'
@@ -58,7 +63,7 @@ module.exports = class RegisterImportGoogleView extends Mn.ItemView
         @$('.step').hide()
         @$("#step-#{step}").show()
         if step is 'pastecode'
-            setTimeout (-> @$('#auth_code').focus()), 30
+            setTimeout (=> @$('#auth_code').focus()), 30
             @_authPopup()
 
 

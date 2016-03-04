@@ -1,11 +1,11 @@
 Client = require('request-json').JsonClient
-americano = require 'americano-cozy'
+cozydb = require 'cozydb'
 async = require 'async'
 logger = require('printit')
     date: false
     prefix: 'models:device'
 
-module.exports = Device = americano.getModel 'Device',
+module.exports = Device = cozydb.getModel 'Device',
     login: String
     password: String
     configuration: Object

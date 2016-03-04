@@ -1,6 +1,12 @@
-module.exports = class AuthFeedbackView extends Mn.ItemView
+_     = require 'underscore'
+Bacon = require 'baconjs'
 
-    template: require 'views/templates/view_auth_feedback'
+{ItemView} = require 'backbone.marionette'
+
+
+module.exports = class AuthFeedbackView extends ItemView
+
+    template: require '../templates/view_auth_feedback'
 
     ui:
         forgot: 'a.forgot'
@@ -21,6 +27,6 @@ module.exports = class AuthFeedbackView extends Mn.ItemView
             .assign @$el, 'attr', 'class'
 
         if @options.forgot
-            sendLink = @$el.asEventStream 'click', @ui.forgot
+            sendLink = Bacon.$.asEventStream.call @$el, 'click', @ui.forgot
                 .doAction '.preventDefault'
             @model.sendReset.plug sendLink

@@ -1,5 +1,5 @@
-americano = require 'americano-cozy'
-Client    = require('request-json').JsonClient
+cozydb = require 'cozydb'
+Client = require('request-json').JsonClient
 
 helpers      = require '../lib/helpers'
 timezones    = require '../lib/timezones'
@@ -11,7 +11,7 @@ if process.env.NODE_ENV in ['production', 'test']
     client.setBasicAuth process.env.NAME, process.env.TOKEN
 
 
-module.exports = User = americano.getModel 'User',
+module.exports = User = cozydb.getModel 'User',
     email: String
     password: String
     salt: String

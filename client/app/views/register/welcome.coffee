@@ -4,8 +4,11 @@ Welcome (last) step view
 This view display the welcome wording and permit to pass to the login screen
 ###
 
-module.exports = class RegisterWelcdomeView extends Mn.ItemView
+{ItemView} = require 'backbone.marionette'
+
+
+module.exports = class RegisterWelcdomeView extends ItemView
 
     className: 'welcome'
 
-    template: require 'views/templates/view_register_welcome'
+    template: require '../templates/view_register_welcome'

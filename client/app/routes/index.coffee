@@ -5,12 +5,8 @@ Handles routes exposed by the application. It generate views/viewModels couples
 when needed and show them in the app_layout regions.
 ###
 
-RegisterView      = require 'views/register'
-RegistrationModel = require 'states/registration'
-
-AuthView  = require 'views/auth'
-AuthModel = require 'states/auth'
-
+_        = require 'underscore'
+Backbone = require 'backbone'
 
 module.exports = class Router extends Backbone.Router
 
@@ -40,6 +36,9 @@ module.exports = class Router extends Backbone.Router
     the submitted form.
     ###
     auth: (path, options) ->
+        AuthView  = require '../views/auth'
+        AuthModel = require '../states/auth'
+
         # The `next` state-model option contains the path where the app must
         # redirect after a successful login.
         auth = new AuthModel next: path
@@ -75,7 +74,10 @@ module.exports = class Router extends Backbone.Router
     Register views uses the same layout view and the step content is a subview
     component determined by the step param.
     ###
-    register: (step = 'preset') ->
+    register: (step = 'preset') -> require.ensure [], =>
+        RegisterView      = require '../views/register'
+        RegistrationModel = require '../states/registration'
+
         currentView = @app.layout.getChildView 'content'
 
         # Ensure the current view in the app layout is a RegisterView. If not,

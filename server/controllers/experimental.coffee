@@ -4,7 +4,7 @@ router = require '../lib/router'
 # Return the host meta file
 # support only JSON format
 # @TODO : support xml
-module.exports.webfingerHostMeta = (req, res) ->
+module.exports.webfingerHostMeta = (req, res, next) ->
 
     return res.sendStatus 404 unless req.params.ext is 'json'
 
@@ -13,12 +13,10 @@ module.exports.webfingerHostMeta = (req, res) ->
     res.header 'Access-Control-Allow-Methods', 'GET'
 
     CozyInstance.first (err, instance) ->
-        return next err if err?
-        unless instance?.domain
+        domain = instance?.domain or req.headers.host
+        unless domain
             return next new Error "Cozy's domain has not been registered"
-
-        host = 'https://' + instance.domain
-        template = "#{host}/webfinger/json?resource={uri}"
+        template = "https://#{domain}/webfinger/json?resource={uri}"
 
         hostmeta = links:
             rel: 'lrdd'
@@ -33,10 +31,11 @@ module.exports.webfingerHostMeta = (req, res) ->
 module.exports.webfingerAccount = (req, res, next) ->
 
     CozyInstance.first (err, instance) ->
-        return next err if err?
-        return next new Error('no instance') unless instance?.domain
+        domain = instance?.domain or req.headers.host
+        unless domain
+            return next new Error "Cozy's domain has not been registered"
+        host = "https://#{domain}"
 
-        host = "https://#{instance.domain}"
         if req.params.module in ['caldav', 'carddav']
             routes = router.getRoutes()
             if routes['sync']?

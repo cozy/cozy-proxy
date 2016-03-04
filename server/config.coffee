@@ -33,7 +33,7 @@ config =
             americano.errorHandler
                 dumpExceptions: true
                 showStack: true
-            americano.static path.join __dirname, '/../client/public'
+            americano.static path.join __dirname, '../client/public'
             selectiveBodyParser
             usetracker
             authSteps[0]
@@ -58,7 +58,7 @@ config =
     ]
 
     plugins: [
-        'americano-cozy'
+        'cozydb'
     ]
 
 module.exports = config

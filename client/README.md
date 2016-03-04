@@ -7,22 +7,20 @@ This frontend application serves the cozy-proxy browser app. It relies on the se
 - onboarding (all its subscreens)
 
 
-## Requirements
+## Development
 
-You need a valid node.js/npm environment to develop the app. We use [Brunch](http://brunch.io/) as build tool, so you want it installed on your system:
-
-```sh
-$ npm -g i brunch
-```
-
-Before trying to develop the front app, you need to load its dependencies:
+*TL;DR*:
 
 ```sh
-npm i
-./node_modules/.bin/bower install
+# in your top-level cozy-proxy directory
+$ npm run watch
 ```
 
-_NOTE:_ we currently use Bower as deps manager to avoid deps in the app repository. We'll replace it by npm node_modules packages when Brunch will be stable enough to use it for the vendor files.
+Then point your browser to http://localhost:3000.
+
+***
+
+We use [Webpack](https://webpack.github.io/docs/) as build tool, and every dependencies are loaded _via_ NPM. All development tasks are loaded through NPM scripts at the project top-level, so you should launch the development watcher from the `cozy-proxy` directory by running `npm run watch`. It'll load the server part in watch mode, the webpack builder in watch mode too, and proxify the server behind [BrowserSync](https://browsersync.io/) for hot-reloading. BrowserSync exposes at [localhost:3000](http://localhost:3000) by default.
 
 
 ## Librairies
@@ -40,7 +38,7 @@ This front-end app have inline code documentation, so you can read it as well as
 The app is organized in the following way:
 
 ```txt
-app/
+- app/
   |- initialize.coffee       # sets the browser environment and launch app
   |- application.coffee      # Backbone.Marionette application singleton instance
   |
@@ -67,7 +65,10 @@ app/
   |  |- base                 # the shared rules framework
   |  `- components           # specific app stylesheets, organized per component
   |
-  `- assets                  # frontend assets copied directly by Brunch
+  `- assets                  # frontend assets referenced in modules
+
+- vendor
+  `- assets                  # frontend assets directly copied to build
   ```
 
 ### App workflow

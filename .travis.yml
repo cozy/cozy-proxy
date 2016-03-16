@@ -45,6 +45,7 @@ before_install:
     - cd ..
     - export NAME=proxy
     - export TOKEN=token
+    - export DEBUG=true
 
 script:
     - npm run build

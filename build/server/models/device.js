@@ -41,6 +41,8 @@ Device.update = function(callback) {
       if (accesses != null) {
         for (i = 0, len = accesses.length; i < len; i++) {
           access = accesses[i];
+          logger.info("#login: " + access.value.login);
+          logger.info("#token: " + access.value.token);
           cache[access.value.login] = access.value.token;
         }
         if (callback != null) {
@@ -57,12 +59,20 @@ Device.update = function(callback) {
 
 Device.isAuthenticated = function(login, password, callback) {
   var isPresent;
+  logger.info("#username: " + login);
+  logger.info("#password: " + password);
   isPresent = (cache[login] != null) && cache[login] === password;
+  logger.info("#isPresent: " + (isPresent != null ? isPresent : {
+    'true': 'false'
+  }));
+  logger.info("NODE_ENV: " + process.env.NODE_ENV);
   if (isPresent || process.env.NODE_ENV === "development") {
     return callback(true);
   } else {
     return this.update(function() {
-      return callback((cache[login] != null) && cache[login] === password);
+      logger.info("#cache");
+      logger.info(cache);
+      return callback((cache[login] != null) === password);
     });
   }
 };

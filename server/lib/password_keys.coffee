@@ -1,10 +1,11 @@
 Client = require("request-json").JsonClient
+urlHelper = require 'cozy-url-sdk'
 
 
 class PasswordKeys
 
     constructor: ->
-        @client = new Client "http://localhost:9101/"
+        @client = new Client urlHelper.dataSystem.url()
         @name = process.env.NAME
         @token = process.env.TOKEN
         if process.env.NODE_ENV in ["production", "test"]

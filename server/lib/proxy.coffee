@@ -8,6 +8,7 @@ httpProxy = require 'http-proxy'
 async = require 'async'
 passport = require 'passport'
 config = require '../config'
+urlHelper = require 'cozy-url-sdk'
 logger = require('printit')
     date: false
     prefix: 'lib:proxy'
@@ -49,9 +50,9 @@ module.exports.initializeProxy = (app, server) ->
             (callback) -> session req, fakeRes, callback
         ], (err) ->
 
-            proxyWS = (port) ->
+            proxyWS = (host, port) ->
                 proxy.ws req, socket, head,
-                    target: "ws://localhost:#{port}"
+                    target: "ws://#{host}:#{port}"
                     ws: true
 
             fail = (err) ->
@@ -66,19 +67,27 @@ module.exports.initializeProxy = (app, server) ->
             [_, publicOrPrivate, slug] = req.url.split '/'
             routes = router.getRoutes()
 
+            urlHelperSlug = slug.replace 'data-system', 'dataSystem'
+            host = 'localhost'
+            port = routes[slug]?.port
+
+            if urlHelper[urlHelperSlug]
+                host = urlHelper[urlHelperSlug].host()
+                port = urlHelper[urlHelperSlug].port()
+
             # /public/XXXXXX
             if publicOrPrivate is 'public'
                 req.url = req.url.replace "/public/#{slug}", '/public'
-                proxyWS routes[slug].port
+                proxyWS host, port
 
             # (AUTH) /apps/XXXXX
             else if publicOrPrivate is 'apps' and req.isAuthenticated()
                 req.url = req.url.replace "/apps/#{slug}", ''
-                proxyWS routes[slug].port
+                proxyWS host, port
 
             # (AUTH) /XXXXX -> HOME
             else if req.isAuthenticated()
-                proxyWS process.env.DEFAULT_REDIRECT_PORT
+                proxyWS urlHelper.home.host(), urlHelper.home.port()
 
             else
                 fail new Error('socket not authorized')

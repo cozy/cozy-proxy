@@ -1,5 +1,6 @@
 appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
+urlHelper = require 'cozy-url-sdk'
 send = require 'send'
 lockedpath = require 'lockedpath'
 logger = require('printit')
@@ -14,6 +15,12 @@ getPathForStaticApp = (appName, path, root, callback) ->
 
 forwardRequest = (req, res, errTemplate, next) ->
     appName = req.params.name
+    urlHelperSlug = appName.replace 'data-system', 'dataSystem'
+    appSchema = 'http'
+    appHost = 'localhost'
+    if urlHelper[urlHelperSlug]
+        appSchema = urlHelper[urlHelperSlug].schema()
+        appHost = urlHelper[urlHelperSlug].host()
     shouldStart = -1 is req.url.indexOf 'socket.io'
     appManager.ensureStarted appName, shouldStart, (err, result) ->
         if not res.connection or res.connection.destroyed
@@ -27,7 +34,8 @@ forwardRequest = (req, res, errTemplate, next) ->
             getPathForStaticApp appName, req.url, result.path, (url) ->
                 send(req, url).pipe res
         else
-            getProxy().web req, res, target: "http://localhost:#{result.port}"
+            url = "#{appSchema}://#{appHost}:#{result.port}"
+            getProxy().web req, res, target: url
 
 module.exports.app = (req, res, next) ->
     appName = req.params.name

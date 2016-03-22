@@ -53,8 +53,12 @@ helpers.patchCookieJar = ->
     # https://gist.github.com/jfromaniello/4087861
     # use request cookiejar with socket.io-client
     originalXHR = require('xmlhttprequest').XMLHttpRequest
-    xhrPackage = 'socket.io-client/node_modules/xmlhttprequest'
-    request = require 'request-json/node_modules/request'
+    try
+        xhrPackage = 'socket.io-client/node_modules/xmlhttprequest'
+        request = require 'request-json/node_modules/request'
+    catch
+        xhrPackage = 'xmlhttprequest'
+        request = require 'request'
     @jar = jar = {cookies:[]}
 
     require(xhrPackage).XMLHttpRequest = ->
@@ -76,7 +80,10 @@ helpers.patchSocketIO = ->
         query = ioutil.query this.socket.options.query
         self = this
 
-        Socket = require 'socket.io-client/node_modules/ws'
+        try
+            Socket = require 'socket.io-client/node_modules/ws'
+        catch
+            Socket = require 'ws'
 
         unless Socket
             Socket = global.MozWebSocket or global.WebSocket

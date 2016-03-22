@@ -1,14 +1,11 @@
 fs = require 'fs'
+urlHelper = require 'cozy-url-sdk'
 
 process.env.NODE_ENV ?= "development"
 
 process.on 'uncaughtException', (err) ->
     console.error err.message
     console.error err.stack
-
-# default value for the default port (home)
-unless process.env.DEFAULT_REDIRECT_PORT
-    process.env.DEFAULT_REDIRECT_PORT = 9103
 
 application = module.exports = (callback) ->
 
@@ -18,8 +15,8 @@ application = module.exports = (callback) ->
 
     options =
         name: 'proxy'
-        port: process.env.PORT or 9104
-        host: process.env.HOST or "127.0.0.1"
+        port: process.env.PORT or urlHelper.proxy.port()
+        host: process.env.HOST or urlHelper.proxy.host()
         root: __dirname
 
     if process.env.USE_SSL

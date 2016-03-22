@@ -1,4 +1,5 @@
 Client = require('request-json').JsonClient
+urlHelper = require 'cozy-url-sdk'
 logger = require('printit')
     date: false
     prefix: 'lib:app_manager'
@@ -8,8 +9,7 @@ class AppManager
     isStarting: []
 
     constructor: ->
-        homePort = process.env.DEFAULT_REDIRECT_PORT
-        @client = new Client "http://localhost:#{homePort}/"
+        @client = new Client urlHelper.home.url()
         @router = require './router'
 
     # check if an application's state, start the app if requested

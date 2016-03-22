@@ -1,11 +1,12 @@
-fs = require("fs")
+fs = require "fs"
 should = require('chai').Should()
-async = require('async')
+async = require 'async'
+urlHelper = require 'cozy-url-sdk'
 
 helpers = require './helpers'
 client = helpers.getClient()
 Client = require('request-json').JsonClient
-clientDS = new Client "http://localhost:9101/"
+clientDS = new Client urlHelper.dataSystem.url()
 
 describe "Devices", ->
 

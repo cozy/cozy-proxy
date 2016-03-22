@@ -1,7 +1,8 @@
 deviceManager = require '../models/device'
+urlHelper = require 'cozy-url-sdk'
 request = require('request-json')
 exec = require('child_process').exec
-controllerClient = request.newClient('http://localhost:9002')
+controllerClient = request.newClient urlHelper.controller.url()
 
 # helper functions
 extractCredentials = (header) ->

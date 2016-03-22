@@ -1,5 +1,6 @@
 Client = require('request-json').JsonClient
 cozydb = require 'cozydb'
+urlHelper = require 'cozy-url-sdk'
 async = require 'async'
 logger = require('printit')
     date: false
@@ -12,9 +13,7 @@ module.exports = Device = cozydb.getModel 'Device',
 
 cache = {}
 # Initialize ds client : usefull to retrieve all accesses
-dsHost = 'localhost'
-dsPort = '9101'
-client = new Client "http://#{dsHost}:#{dsPort}/"
+client = new Client urlHelper.dataSystem.url()
 if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
     client.setBasicAuth process.env.NAME, process.env.TOKEN
 

@@ -1,6 +1,7 @@
 http = require 'http'
 Client = require('request-json').JsonClient
 module.exports = helpers = {}
+urlHelper = require 'cozy-url-sdk'
 
 if process.env.COVERAGE
     helpers.prefix = '../instrumented/'
@@ -11,13 +12,13 @@ else
 
 # server management
 helpers.options =
-    serverHost: process.env.HOST or 'localhost'
-    serverPort: process.env.PORT or 9104
+    serverHost: process.env.HOST or urlHelper.proxy.host()
+    serverPort: process.env.PORT or urlHelper.proxy.port()
 
 localization = require "#{helpers.prefix}server/lib/localization_manager"
 
 # default client
-client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/", jar: true
+client = new Client "#{urlHelper.proxy.schema()}://#{helpers.options.serverHost}:#{helpers.options.serverPort}/", jar: true
 
 # set the configuration for the server
 process.env.HOST = helpers.options.serverHost

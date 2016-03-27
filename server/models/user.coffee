@@ -21,6 +21,9 @@ module.exports = User = cozydb.getModel 'User',
     owner: Boolean
     allow_stats: Boolean
     activated: Boolean
+    otpKey: String
+    hotpCounter: Number
+    authType: String
 
 
 User.createNew = (data, callback) ->

@@ -35,6 +35,7 @@ module.exports = class AuthView extends LayoutView
 
     ui:
         passwd: 'input[type=password]'
+        authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
 
 
@@ -47,6 +48,7 @@ module.exports = class AuthView extends LayoutView
     ###
     serializeData: ->
         username: window.ENV.username
+        otp:      window.ENV.otp
         prefix:   @options.type
 
 
@@ -60,6 +62,11 @@ module.exports = class AuthView extends LayoutView
         # Create property for password input, delegated from the input element
         # events, mapped to its value
         password = asEventStream.call @$el, 'focus keyup blur', @ui.passwd
+            .map '.target.value'
+            .toProperty('')
+
+        # Same as above, this one is for the authentication code (OTP)
+        auth = asEventStream.call @$el, 'focus keyup blur', @ui.authCode
             .map '.target.value'
             .toProperty('')
 
@@ -78,6 +85,7 @@ module.exports = class AuthView extends LayoutView
         # The property is sampled (changes occurs) by the form submit stream.
         formTpl =
             password: password
+            auth:     auth
             action:   @options.backend
         form = Bacon.combineTemplate formTpl
             .sampledBy submit

@@ -278,7 +278,8 @@ module.exports.replication = (req, res, next) ->
 
 module.exports.dsApi = (req, res, next) ->
     # Authenticate the request
-    [username, password] = extractCredentials req.headers['authorization']
+    authHeader = req.header('authorization') or req.query.authorization
+    [username, password] = extractCredentials authHeader
     deviceManager.isAuthenticated username, password, (auth) ->
         if auth
             # Forward request for DS.

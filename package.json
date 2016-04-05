@@ -16,6 +16,7 @@
     "async": "0.2.10",
     "cookie-parser": "1.4.1",
     "cookie-session": "1.2.0",
+    "cozy-url-sdk": "1.0.1",
     "cozydb": "0.1.10",
     "graceful-fs": "3.0.8",
     "http-proxy": "1.12.0",

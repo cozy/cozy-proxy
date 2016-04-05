@@ -1,5 +1,6 @@
 bcrypt = require 'bcrypt'
 Client = require('request-json').JsonClient
+urlHelper = require 'cozy-url-sdk'
 log = require('printit')
     date: false
     prefix: 'lib:helpers'
@@ -29,7 +30,7 @@ module.exports.sendResetEmail = (instance, user, key, callback) ->
             domain: instance.domain
             key: key
 
-    client = new Client "http://localhost:9101/"
+    client = new Client urlHelper.dataSystem.url()
     if process.env.NODE_ENV is "production"
         client.setBasicAuth process.env.NAME, process.env.TOKEN
     client.post "mail/to-user/", data, (err, res, body) ->

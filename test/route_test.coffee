@@ -1,6 +1,7 @@
 should = require('chai').Should()
 nock = require 'nock'
 helpers = require './helpers'
+urlHelper = require 'cozy-url-sdk'
 
 client = helpers.getClient()
 
@@ -112,8 +113,7 @@ private route (with params)", (done) ->
 
     describe "Autostarting", ->
         before ->
-            host = "http://localhost:#{process.env.DEFAULT_REDIRECT_PORT}"
-            @scope = nock host, allowUnmocked: true
+            @scope = nock urlHelper.home.url(), allowUnmocked: true
                .post '/api/applications/myapp2/start'
                .reply 200, {app: port: 4447, state: 'installed'}
 

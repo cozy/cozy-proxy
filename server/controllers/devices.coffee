@@ -1,16 +1,12 @@
 Client = require('request-json').JsonClient
 passport = require 'passport'
+urlHelper = require 'cozy-url-sdk'
 deviceManager = require '../models/device'
 appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
 
 
-couchdbHost = process.env.COUCH_HOST or 'localhost'
-couchdbPort = process.env.COUCH_PORT or '5984'
-
-dsHost = 'localhost'
-dsPort = '9101'
-clientDS = new Client "http://#{dsHost}:#{dsPort}/"
+clientDS = new Client urlHelper.dataSystem.url()
 
 if process.env.NODE_ENV is "production" or process.env.NODE_ENV is "test"
     clientDS.setBasicAuth process.env.NAME, process.env.TOKEN
@@ -273,7 +269,7 @@ module.exports.replication = (req, res, next) ->
     deviceManager.isAuthenticated username, password, (auth) ->
         if auth
             # Forward request for DS.
-            getProxy().web req, res, target: "http://#{dsHost}:#{dsPort}"
+            getProxy().web req, res, target: urlHelper.dataSystem.url()
         else
             error = new Error "Request unauthorized"
             error.status = 401
@@ -287,7 +283,7 @@ module.exports.dsApi = (req, res, next) ->
         if auth
             # Forward request for DS.
             req.url = req.url.replace 'ds-api/', ''
-            getProxy().web req, res, target: "http://#{dsHost}:#{dsPort}"
+            getProxy().web req, res, target: urlHelper.dataSystem.url()
         else
             error = new Error "Request unauthorized"
             error.status = 401
@@ -337,8 +333,7 @@ module.exports.oldReplication = (req, res, next) ->
             # the Cozy itself which is awesome because it would be easy to
             # add a permission layer and makes Cozy a true open platform
             # (easy desktop/mobile clients)
-            target = "http://#{couchdbHost}:#{couchdbPort}"
-            getProxy().web req, res, target: target
+            getProxy().web req, res, target: urlHelper.couch.url()
         else
             error = new Error "Request unauthorized"
             error.status = 401

@@ -7,8 +7,6 @@ experiment = require './experimental'
 sharing = require './sharing'
 utils = require '../middlewares/authentication'
 
-passport = require 'passport'
-
 module.exports =
 
     'routes': get: index.showRoutes
@@ -47,6 +45,7 @@ module.exports =
     'apps/:name*': all: [utils.isAuthenticated, apps.appWithSlash]
 
     'replication/*': all: devices.replication
+    # 'ds-api/socket.io': websocket -> DS axon (see lib/websocket)
     'ds-api/*': all: devices.dsApi
     'versions': get: devices.getVersions
     # Temporary - 01/05/14

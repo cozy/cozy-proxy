@@ -167,14 +167,14 @@ removeDevice = (device, cb) ->
         if err?
             error = new Error err
             error.status = 400
-            cd error
+            cb error
         else
             # Remove Device
             clientDS.del "data/#{id}/", (err, result, body) ->
                 if err?
                     error = new Error err
                     error.status = 400
-                    cd error
+                    cb error
                 else
                     cb null
 

@@ -5,6 +5,10 @@ deviceManager = require '../models/device'
 appManager = require '../lib/app_manager'
 {getProxy} = require '../lib/proxy'
 
+log = require('printit')
+    date: false
+    prefix: 'controllers:devices'
+
 
 clientDS = new Client urlHelper.dataSystem.url()
 
@@ -36,7 +40,7 @@ extractCredentials = (header) ->
     if header?
         authDevice = header.replace 'Basic ', ''
         authDevice = new Buffer(authDevice, 'base64').toString 'utf8'
-        # username should be 'owner'
+        # username should be 'owner' or a device name
         username = authDevice.substr(0, authDevice.indexOf(':'))
         password = authDevice.substr(authDevice.indexOf(':') + 1)
         return [username, password]
@@ -89,7 +93,9 @@ initAuth = (req, cb) ->
     [username, password] = extractCredentials req.headers['authorization']
     # Initialize user
     user = {}
-    user.body = password: password
+    user.body =
+        username: username
+        password: password
     req.headers['authorization'] = undefined
     cb user
 
@@ -122,32 +128,43 @@ createDevice = (device, cb) ->
 
 # Update device :
 #       * update device access
-updateDevice = (oldDevice, device, cb) ->
+updateDevice = (oldDevice, device, callback) ->
+
     path = "request/access/byApp/"
-    clientDS.post path, key: oldDevice.id, (err, result, accesses) ->
+    clientDS.post path, key: oldDevice._id, (err, result, accesses) ->
+
+        return callback err if err
+
+        if accesses.length is 0
+            error = new Error "No access to this app."
+            return callback error
+
+        oldAccess = accesses[0].value
+
         # Update access for this device
         access =
-            login: device.login
-            password: randomString 32
-            app: oldDevice.id
-            permissions: device.permissions or defaultPermissions
+            login: oldAccess.login
+            password: oldAccess.token
+            app: oldAccess.app
+            permissions: device.permissions or oldAccess.permissions
+
         path = "access/#{access.app}/"
         clientDS.put path, access, (err, result, body) ->
-            if err?
-                console.log err
-                error = new Error err
-                cb error
-            else
-                oldDevice.login = device.login
-                delete oldDevice.permissions
-                path = "data/#{oldDevice.id}"
-                clientDS.put path, oldDevice, (err, result, body) ->
-                    data =
-                        password: access.password
-                        login: device.login
-                        permissions: access.permissions
-                    # Return access to device
-                    cb null, data
+
+            return callback err if err
+
+            oldDevice.login = device.login
+            delete oldDevice.permissions
+            path = "data/#{oldDevice._id}"
+            clientDS.put path, oldDevice, (err, result, body) ->
+
+                data =
+                    login: access.login
+                    password: access.password
+                    permissions: access.permissions
+
+                # Return access to device
+                callback err, data
 
 
 # Remove device :
@@ -181,7 +198,7 @@ module.exports.create = (req, res, next) ->
     # Check if user is authenticated
     authenticator = passport.authenticate 'local', (err, user) ->
         if err
-            console.log err
+            log.warn err
             next err
         else if user is undefined or not user
             error = new Error "Bad credentials"
@@ -236,31 +253,44 @@ module.exports.update = (req, res, next) ->
 
 
 module.exports.remove = (req, res, next) ->
+    # Authenticate the request
+    [username, password] = extractCredentials req.headers['authorization']
+    deviceName = req.params.login
 
-    authenticator = passport.authenticate 'local', (err, user) ->
-        if err
-            console.log err
-            next err
-        else if user is undefined or not user
-            error = new Error "Bad credentials"
-            error.status = 401
-            next error
-        else
-            # Send request to the Data System
-            login = req.params.login
+    remove = =>
+        checkLogin deviceName, true, (err, device) ->
+            return next err if err?
+            # Remove device
+            removeDevice device, (err) ->
+                if err?
+                    next err
+                else
+                    res.sendStatus 204
 
-            checkLogin login, true, (err, device) ->
-                return next err if err?
-                # Remove device
-                removeDevice device, (err) ->
-                    if err?
-                        next err
-                    else
-                        res.sendStatus 204
+    if deviceName is username
+        deviceManager.isAuthenticated username, password, (auth) =>
+            if auth
+                remove()
+            else
+                error = new Error "Request unauthorized"
+                error.status = 401
+                next error
+    else
+        authenticator =
+            passport.authenticate 'local', (err, user) ->
+                if err
+                    console.log err
+                    next err
+                else if user is undefined or not user
+                    error = new Error "Bad credentials"
+                    error.status = 401
+                    next error
+                else
+                    remove()
 
-    initAuth req, (user) ->
-        # Check if request is authenticated
-        authenticator user, res
+        initAuth req, (user) ->
+            # Check if request is authenticated
+            authenticator user, res
 
 
 module.exports.replication = (req, res, next) ->

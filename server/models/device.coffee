@@ -24,15 +24,14 @@ Device.update = (callback) ->
         cache = {}
         if err?
             logger.error err
-            callback err
+            callback? err
         else
             if accesses?
                 # Retrieve all accesses
                 for access in accesses
                     cache[access.value.login] = access.value.token
-                callback() if callback?
-            else
-                callback() if callback?
+
+            callback?()
 
 # Check if device <login>:<password> is authenticated
 Device.isAuthenticated = (login, password, callback) ->

@@ -28,7 +28,10 @@ module.exports = User = cozydb.getModel('User', {
   timezone: String,
   owner: Boolean,
   allow_stats: Boolean,
-  activated: Boolean
+  activated: Boolean,
+  otpKey: String,
+  hotpCounter: Number,
+  authType: String
 });
 
 User.createNew = function(data, callback) {

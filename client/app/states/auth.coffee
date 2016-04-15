@@ -51,7 +51,7 @@ module.exports = class Auth extends StateModel
     - `form`: an object containing the form values
     ###
     signinSubmit: (form) =>
-        data = JSON.stringify password: form.password
+        data = JSON.stringify password: form.password, authcode: form.auth
         req = Bacon.fromPromise $.post form.action, data
 
         # Plug success response to `@success` stream and set `@alert` to false

@@ -6,6 +6,10 @@ block region
     label.with-input(for="#{prefix}-password", aria-describedby="#{prefix}-password-tip")
         span= t(prefix + ' password')
         input(id="#{prefix}-password" name="password" type="password" autofocus=true)
+    if otp
+        label.with-input(for="#{prefix}-otp")
+            span= t(prefix + ' otp')
+            input(id="#{prefix}-otp" name="otp" type="number" autofocus=true autocomplete="off")
 
 
 block controls

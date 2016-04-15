@@ -1,6 +1,8 @@
 bcrypt = require 'bcrypt'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
+HotpStrategy = require('passport-hotp').Strategy
+TotpStrategy = require('passport-totp').Strategy
 
 User = require '../models/user'
 
@@ -10,7 +12,7 @@ module.exports = ->
     passport.currentUser = null
 
     # serialize the user to cookie
-    passport.serializeUser = (user, req, done) ->
+    passport.serializeUser = (user, done) ->
         done null, user._id
 
     # deserialize the user from cookie
@@ -37,3 +39,34 @@ module.exports = ->
                         done err, user
                     else
                         done err, false
+
+    # hotp strategy
+    # we need a key (stored string) and a counter
+    passport.use new HotpStrategy { codeField: "authcode" }, (user, done) ->
+        User.first (err, user) ->
+            if err?
+                done err
+            else
+                done null, user.otpKey, user.hotpCounter
+    , (user, key, counter, delta, done) ->
+        User.first (err, user) ->
+            if err?
+                done err
+            else
+                if counter > user.hotpCounter
+                    User.updateAttributes user._id,
+                        otpKey: key
+                        hotpCounter: counter
+                    , (err) ->
+                        done err
+                else
+                    done "error otp weak counter"
+
+    # totp strategy
+    # we need a key (stored string)
+    passport.use new TotpStrategy { codeField: "authcode" }, (user, done) ->
+        User.first (err, user) ->
+            if err?
+                done err
+            else
+                done null, user.otpKey, 30

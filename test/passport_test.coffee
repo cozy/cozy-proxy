@@ -21,7 +21,7 @@ hotpToken = "348470"
 
 User = cozydb.getModel 'User',
     authType: String,
-    otpKey: String
+    encryptedOtpKey: String
     hotpCounter: Number
 
 
@@ -75,7 +75,7 @@ describe "Register / Login", ->
                 User.request "all", (error, users) ->
                     users[0].updateAttributes
                         authType: "totp",
-                        otpKey: otpKey
+                        encryptedOtpKey: otpKey
                     , (error) ->
                         done()
 

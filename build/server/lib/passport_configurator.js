@@ -16,7 +16,7 @@ User = require('../models/user');
 module.exports = function() {
   var options;
   passport.currentUser = null;
-  passport.serializeUser = function(user, done) {
+  passport.serializeUser = function(user, req, done) {
     return done(null, user._id);
   };
   passport.deserializeUser = function(id, req, done) {

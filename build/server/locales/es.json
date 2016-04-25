@@ -1,8 +1,8 @@
 {
-    "index title": "Cozy - Your Private Personal Cloud",
-    "index description": "Cozy is an app-based personal cloud you can host at home. It allows you to own and connect your data. It turns a low-cost piece of hardware like a Raspberry Pi 2 or an online VPS into a powerful app platform. It comes with common applications like a contacts manager, calendar, webmail and filebox.",
-    "index noscript title": "Sorry",
-    "index noscript message": "Cozy needs JavaScript and cookies to work but it looks like you have disabled one of them.",
+    "index title": "Cozy - Su Nube Personal Privada",
+    "index description": "Cozy es una nube personal con múltiples aplicaciones que usted puede alojar en un servidor casero. Permite controlar sus propios datos. Funciona en equipos de bajo coste tales como Raspberry Pi2 o en línea VPS en una poderosa pataforma de aplicaciones. Dispone de la aplicaciones comunes tales como gestión de contactos, agenda, webmail y un almacén de archivos.",
+    "index noscript title": "Lo sentimos",
+    "index noscript message": "Cozy requiere Javascipt y cookies para trabajar pero parece que usted ha desconectado alguno de ellos.",
     "error title": "¡Oh!, ha ocurrido un error",
     "error headline": "Parece que algo no funciona.",
     "error reinsurance": "¡No se preocupe, quizás no sea grave!",

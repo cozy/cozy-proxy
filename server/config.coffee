@@ -24,10 +24,13 @@ authSteps = [
 
 useBuildView = fs.existsSync path.resolve(__dirname, 'views/index.js')
 
+locales = fs.readdirSync(path.join(__dirname, 'locales')).map (file) ->
+    path.basename file, '.json'
+
 
 config =
     authSteps: authSteps
-    supportedLanguages: ['en', 'fr']
+    supportedLanguages: locales
     common:
         use: [
             americano.errorHandler

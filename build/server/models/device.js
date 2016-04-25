@@ -34,21 +34,15 @@ Device.update = function(callback) {
     cache = {};
     if (err != null) {
       logger.error(err);
-      return callback(err);
+      return typeof callback === "function" ? callback(err) : void 0;
     } else {
       if (accesses != null) {
         for (i = 0, len = accesses.length; i < len; i++) {
           access = accesses[i];
           cache[access.value.login] = access.value.token;
         }
-        if (callback != null) {
-          return callback();
-        }
-      } else {
-        if (callback != null) {
-          return callback();
-        }
       }
+      return typeof callback === "function" ? callback() : void 0;
     }
   });
 };

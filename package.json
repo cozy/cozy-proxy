@@ -25,6 +25,8 @@
     "node-polyglot": "2.0.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
+    "passport-hotp": "0.0.1",
+    "passport-totp": "0.0.2",
     "printit": "0.1.18",
     "pug-runtime": "2.0.0",
     "randomstring": "1.1.4",

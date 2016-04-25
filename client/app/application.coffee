@@ -5,7 +5,7 @@ Main application that create a Mn.Application singleton and exposes it. Needs
 router and app_layout view.
 ###
 
-require 'normalize.css'
+require 'normalize.css/normalize.css'
 require './styles/app.styl'
 
 {Application} = require 'backbone.marionette'

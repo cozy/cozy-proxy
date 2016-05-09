@@ -93,7 +93,6 @@ module.exports.isSharingAuthenticated = (header, callback) ->
 # This differs from the regular authentication as the recipient does not have
 # any access on the documents, but can still send some sharing requests
 module.exports.isTargetAuthenticated = (credential, callback) ->
-    console.log 'credentials : ' + JSON.stringify credential
     unless credential.shareID? and credential.token?
         return callback false
 
@@ -102,7 +101,6 @@ module.exports.isTargetAuthenticated = (credential, callback) ->
         if err or not doc?.targets?
             callback false
         else
-            console.log JSON.stringify doc.targets
             # Get the target by its token
             target = doc.targets.filter (t) ->
                 t.token is credential.token or t.preToken is credential.token

@@ -47,7 +47,7 @@ module.exports = ->
             if err?
                 done err
             else
-                done null, user.otpKey, user.hotpCounter
+                done null, user.encryptedOtpKey, user.hotpCounter
     , (user, key, counter, delta, done) ->
         User.first (err, user) ->
             if err?
@@ -55,7 +55,7 @@ module.exports = ->
             else
                 if counter > user.hotpCounter
                     User.updateAttributes user._id,
-                        otpKey: key
+                        encryptedOtpKey: key
                         hotpCounter: counter
                     , (err) ->
                         done err
@@ -69,4 +69,4 @@ module.exports = ->
             if err?
                 done err
             else
-                done null, user.otpKey, 30
+                done null, user.encryptedOtpKey, 30

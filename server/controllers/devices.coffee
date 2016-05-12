@@ -79,8 +79,8 @@ checkLogin = (login, wantExist, cb)->
 
 initAuth = (req, cb) ->
     # Authenticate the request
-    header = req.headers['authorization']
-    [username, password] = remoteAccess.extractCredentials header
+    authHeader = req.headers['authorization']
+    [username, password] = remoteAccess.extractCredentials authHeader
     # Initialize user
     user = {}
     user.body =
@@ -295,8 +295,8 @@ module.exports.replication = (req, res, next) ->
 
 module.exports.dsApi = (req, res, next) ->
     # Authenticate the request
-    header = req.headers['authorization'] or req.query.authorization
-    remoteAccessAccess.isDeviceAuthenticated header, (auth) ->
+    authHeader = req.headers['authorization'] or req.query.authorization
+    remoteAccessAccess.isDeviceAuthenticated authHeader, (auth) ->
         if auth
             # Forward request for DS.
             req.url = req.url.replace 'ds-api/', ''

@@ -121,12 +121,12 @@ module.exports.request = (req, res, next) ->
 module.exports.revoke = (req, res, next) ->
     revoke = req.body
 
-    header = req.headers['authorization']
+    authHeader = req.headers['authorization']
     # Authenticate the request
-    remoteAccess.isSharingAuthenticated header, (auth) ->
+    remoteAccess.isSharingAuthenticated authHeader, (auth) ->
         if auth
             # Extract the shareID
-            [shareID, token] = remoteAccess.extractCredentials header
+            [shareID, token] = remoteAccess.extractCredentials authHeader
             # Revoke the sharer
             revokeFromSharer shareID, (err, id) ->
                 return next err if err?
@@ -146,8 +146,8 @@ module.exports.revoke = (req, res, next) ->
 module.exports.revokeTarget = (req, res, next) ->
     revoke = req.body
 
-    header = req.headers['authorization']
-    [shareID, token] = remoteAccess.extractCredentials header
+    authHeader = req.headers['authorization']
+    [shareID, token] = remoteAccess.extractCredentials authHeader
     credential = {shareID, token}
 
     # Authenticate the request and get the target from its credentials
@@ -195,8 +195,8 @@ module.exports.answer = (req, res, next) ->
 
     # The token we extract from the header is actually the preToken that was
     # sent to the recipient
-    header           = req.headers['authorization']
-    [shareID, token] = remoteAccess.extractCredentials header
+    authHeader       = req.headers['authorization']
+    [shareID, token] = remoteAccess.extractCredentials authHeader
     credential       = {shareID, token}
 
     # Authenticate the request

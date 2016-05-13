@@ -15,7 +15,7 @@ In the future, the user will be able to chose which algorithme to use via a conf
 
 In order to store everything we need in the database, three fields have been added to the `User` doctype:
 
-* `otpKey` is the key (sort of a master password) we'll pass to the chosen Passport strategy. It's a 10 characters-long randomly-generated alphanumeric string, which generations rules don't differ from HOTP to TOTP (and vice-versa), so we don't have to have two "key" fields. Note that the key isn't the longer and all-capitalized code you enter in your 2FA app/device, which is a base32 encoding of the key, so we don't need to store it.
+* `encryptedOtpKey` is the key (sort of a master password) we'll pass to the chosen Passport strategy. It's a randomly-generated alphanumeric string, which generations rules don't differ from HOTP to TOTP (and vice-versa), so we don't have to have two "key" fields. Note that the key isn't the longer and all-capitalized code you enter in your 2FA app/device, which is a base32 encoding of the key, so we don't need to store it.
 * `hotpCounter` is only used when using the HOTP algorithm, to store the counter. This allows us to check wether the user enters a token with a lower counter than the last recorded one (which will mean that the entered token may have already been used) and invalidate it. It's also a necessary field required by the Passport strategy.
 * `authType` stores the selected algorithms. It can be `null` or even `undefined` if the user hasn't enabled 2FA (or has disabled it), which will be understood as no 2FA authentication, or have a value corresponding to the selected Passport strategy (right now, only "hotp" and "totp" won't trigger a Passport error as only these ones are implemented).
 

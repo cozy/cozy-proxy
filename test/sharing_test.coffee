@@ -7,7 +7,7 @@ urlHelper = require 'cozy-url-sdk'
 httpMocks = require 'node-mocks-http'
 events    = require 'events'
 
-sharing      = rewire "#{helpers.prefix}server/controllers/sharing"
+sharing      = rewire  "#{helpers.prefix}server/controllers/sharing"
 remoteAccess = require "#{helpers.prefix}server/lib/remote_access"
 
 client = helpers.getClient()
@@ -54,40 +54,6 @@ describe 'sharing unit tests', ->
                 doc.preToken.should.equal     sharing_request.preToken
                 doc.shareID.should.equal      sharing_request.shareID
             done()
-
-
-    describe 'revokeFromSharer inner module', ->
-
-        revokeFromSharer = sharing.__get__ 'revokeFromSharer'
-
-        # create a phony access for the sharing added above
-        #before (done) ->
-            #clientDS.post "data/",
-                #{docType: 'access', shareID: sharing_request.shareID},
-                #(err, res, doc) ->
-                    #console.log "DEBUG: doc: " + JSON.stringify doc
-            #done()
-
-        it 'When a sharing is revoked by a sharer'
-            #revokeFromSharer sharing_request.shareID, (err, id) ->
-                #should.not.exist err
-                #id.should.equal @docInfo._id
-                #done()
-
-        it 'Then the sharing document is removed'
-            #clientDS.get "data/exist/#{@docInfo._id}", (err, res, body) ->
-                #console.log "DEBUG: err: "  + JSON.stringify err
-                #console.log "DEBUG: body: " + JSON.stringify body
-                #done()
-
-        it 'And the correspondent access document'
-            #clientDS.post "request/access/byApp", key: @docInfo.id,
-                #(err, res, body) ->
-                    #console.log "DEBUG: body: " + JSON.stringify body
-                    #console.log "DEBUG: err: " + JSON.stringify err
-                    #should.exist body.error
-                    #body.error.should.equal "not_found: missing"
-                    #done()
 
 
     describe 'revokeFromRecipient inner module', ->
@@ -283,8 +249,6 @@ describe 'sharing unit tests', ->
                 err.should.deep.equal error
                 done()
 
-        it 'When a successful authorized request is made then 200 is returned'
-
 
     describe 'revokeTarget module', ->
 
@@ -427,13 +391,6 @@ describe 'sharing unit tests', ->
             sharing.answer req_copy, res, (err) ->
                 err.should.deep.equal error
                 done()
-
-        it 'When a successful authorized request is made then 200 is returned'
-        #(done) ->
-            #sharing.answer req, res
-            #res.on 'send', ->
-                #res.statusCode.should.equal 200
-                #done()
 
         it 'When an unauthorized request is made then an error is returned',
         (done) ->

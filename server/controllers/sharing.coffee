@@ -123,7 +123,7 @@ module.exports.revoke = (req, res, next) ->
 
     authHeader = req.headers['authorization']
     # Authenticate the request
-    remoteAccess.isSharingAuthenticated authHeader, (auth) ->
+    remoteAccess.isAuthenticated authHeader, (auth) ->
         if auth
             # Extract the shareID
             [shareID, token] = remoteAccess.extractCredentials authHeader
@@ -219,7 +219,7 @@ module.exports.answer = (req, res, next) ->
 # Forward the replication to the DS if the request is authenticated
 module.exports.replication = (req, res, next) ->
     # Authenticate the request
-    remoteAccess.isSharingAuthenticated req.headers['authorization'], (auth) ->
+    remoteAccess.isAuthenticated req.headers['authorization'], (auth) ->
         if auth
             # Forward request for DS.
             req.url = req.url.replace 'services/sharing/', ''

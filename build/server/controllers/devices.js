@@ -295,7 +295,7 @@ module.exports.remove = function(req, res, next) {
     });
   };
   if (deviceName === username) {
-    return remoteAccess.isDeviceAuthenticated(authHeader, function(auth) {
+    return remoteAccess.isAuthenticated(authHeader, function(auth) {
       var error;
       if (auth) {
         return remove();
@@ -326,7 +326,7 @@ module.exports.remove = function(req, res, next) {
 };
 
 module.exports.replication = function(req, res, next) {
-  return remoteAccess.isDeviceAuthenticated(req.headers['authorization'], function(auth) {
+  return remoteAccess.isAuthenticated(req.headers['authorization'], function(auth) {
     var error;
     if (auth) {
       return getProxy().web(req, res, {
@@ -343,7 +343,7 @@ module.exports.replication = function(req, res, next) {
 module.exports.dsApi = function(req, res, next) {
   var authHeader;
   authHeader = req.headers['authorization'] || req.query.authorization;
-  return remoteAccess.isDeviceAuthenticated(authHeader, function(auth) {
+  return remoteAccess.isAuthenticated(authHeader, function(auth) {
     var error;
     if (auth) {
       req.url = req.url.replace('ds-api/', '');
@@ -359,7 +359,7 @@ module.exports.dsApi = function(req, res, next) {
 };
 
 module.exports.getVersions = function(req, res, next) {
-  return remoteAccess.isDeviceAuthenticated(req.headers['authorization'], function(auth) {
+  return remoteAccess.isAuthenticated(req.headers['authorization'], function(auth) {
     var error;
     if (auth) {
       return appManager.versions(function(err, apps) {
@@ -381,7 +381,7 @@ module.exports.getVersions = function(req, res, next) {
 };
 
 module.exports.oldReplication = function(req, res, next) {
-  return remoteAccess.isDeviceAuthenticated(req.headers['authorization'], function(auth) {
+  return remoteAccess.isAuthenticated(req.headers['authorization'], function(auth) {
     var error;
     if (auth) {
       if (process.env.NODE_ENV === "production") {

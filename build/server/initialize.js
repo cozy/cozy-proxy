@@ -31,12 +31,10 @@ module.exports = function(app, server, callback) {
   }
   app.locals.assets = assets;
   initializeProxy(app, server);
-  return remoteAccess.updateCredentials('Device', function() {
-    return remoteAccess.updateCredentials('Sharing', function() {
-      return router.reset(function() {
-        return router.displayRoutes(function() {
-          return callback(app, server);
-        });
+  return remoteAccess.updateCredentials(function() {
+    return router.reset(function() {
+      return router.displayRoutes(function() {
+        return callback(app, server);
       });
     });
   });

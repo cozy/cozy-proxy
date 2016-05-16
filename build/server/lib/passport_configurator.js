@@ -55,7 +55,7 @@ module.exports = function() {
       if (err != null) {
         return done(err);
       } else {
-        return done(null, user.otpKey, user.hotpCounter);
+        return done(null, user.encryptedOtpKey, user.hotpCounter);
       }
     });
   }, function(user, key, counter, delta, done) {
@@ -65,7 +65,7 @@ module.exports = function() {
       } else {
         if (counter > user.hotpCounter) {
           return User.updateAttributes(user._id, {
-            otpKey: key,
+            encryptedOtpKey: key,
             hotpCounter: counter
           }, function(err) {
             return done(err);
@@ -83,7 +83,7 @@ module.exports = function() {
       if (err != null) {
         return done(err);
       } else {
-        return done(null, user.otpKey, 30);
+        return done(null, user.encryptedOtpKey, 30);
       }
     });
   }));

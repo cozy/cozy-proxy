@@ -6,6 +6,8 @@ module.exports = function(req, res, next) {
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/password") !== 0;
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/register") !== 0;
   isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/device") !== 0;
+  isNoAuthRoute = isNoAuthRoute && req.url.indexOf("/services/sharing") !== 0;
+  isNoAuthRoute = isNoAuthRoute || req.url.indexOf("/services/sharing/replication") === 0;
   if (isNoAuthRoute) {
     return next();
   } else {

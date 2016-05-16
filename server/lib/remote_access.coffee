@@ -3,7 +3,7 @@ logger = require('printit')
     date: false
     prefix: 'lib:remote_access'
 
-# Keep in memory the logins/passwords
+# Keep in memory the logins/passwords
 devices = {}
 sharings = {}
 

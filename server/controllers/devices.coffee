@@ -257,7 +257,7 @@ module.exports.remove = (req, res, next) ->
                     res.sendStatus 204
 
     if deviceName is username
-        remoteAccess.isAuthenticated username, password, (auth) ->
+        remoteAccess.isDeviceAuthenticated authHeader, (auth) ->
             if auth
                 remove()
             else

@@ -16,6 +16,8 @@ describe "Devices", ->
     after  helpers.stopApp
     after helpers.deleteAllUsers
 
+    devicePassword = null
+
     describe "Add device", =>
 
         describe 'Unauthorized request', ->
@@ -59,7 +61,7 @@ describe "Devices", ->
                     @err = err
                     @res = res
                     @body = body
-                    @password = @body.password
+                    devicePassword = @body.password
                     @id = body.id
                     done()
 
@@ -68,7 +70,7 @@ describe "Devices", ->
                 @res.statusCode.should.equal 201
 
             it "And device has access to its permissions", (done) ->
-                clientDS.setBasicAuth 'test_device_2', @password
+                clientDS.setBasicAuth 'test_device_2', devicePassword
                 data =
                     docType: 'contact'
                     slug: 'blabla'
@@ -82,7 +84,7 @@ describe "Devices", ->
                 @res.statusCode.should.equal 201
 
             it "And device hasn't access to its permissions", (done) ->
-                clientDS.setBasicAuth 'test_device_2', @password
+                clientDS.setBasicAuth 'test_device_2', devicePassword
                 data =
                     docType: 'test'
                     slug: 'blabla'
@@ -192,8 +194,8 @@ describe "Devices", ->
 
             it "can't delete a device from another device login", (done) ->
                 @timeout 10 * 1000
-                client.setBasicAuth  'test_device_2', @password
-                client.del "device/test_device", (err, res, body) =>
+                client.setBasicAuth  'test_device_2', devicePassword
+                client.del "device/test_device", (err, res, body) ->
                     should.exist body.error
                     res.statusCode.should.equal 401
                     body.error.should.equal 'Bad credentials'
@@ -215,7 +217,7 @@ describe "Devices", ->
 
             it "Delete a device from device login", (done) ->
                 @timeout 10 * 1000
-                client.setBasicAuth 'test_device_2', @password
+                client.setBasicAuth 'test_device_2', devicePassword
                 client.del "device/test_device_2", (err, res, body) =>
                     @err = err
                     @res = res

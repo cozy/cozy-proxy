@@ -213,7 +213,7 @@ describe 'sharing unit tests', ->
                 done()
 
         it 'When a correct request is made then 200 is returned', (done) ->
-            sharing.request req, res
+            sharing.request req, res, ->
             res.on 'send', ->
                 res.statusCode.should.equal 200
                 done()

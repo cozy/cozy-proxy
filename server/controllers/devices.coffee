@@ -257,7 +257,7 @@ module.exports.remove = (req, res, next) ->
                     res.sendStatus 204
 
     if deviceName is username
-        remoteAccess.isDeviceAuthenticated authHeader, (auth) ->
+        remoteAccess.isAuthenticated authHeader, (auth) ->
             if auth
                 remove()
             else
@@ -284,7 +284,7 @@ module.exports.remove = (req, res, next) ->
 
 module.exports.replication = (req, res, next) ->
     # Authenticate the request
-    remoteAccess.isDeviceAuthenticated req.headers['authorization'], (auth) ->
+    remoteAccess.isAuthenticated req.headers['authorization'], (auth) ->
         if auth
             # Forward request for DS.
             getProxy().web req, res, target: urlHelper.dataSystem.url()
@@ -297,7 +297,7 @@ module.exports.replication = (req, res, next) ->
 module.exports.dsApi = (req, res, next) ->
     # Authenticate the request
     authHeader = req.headers['authorization'] or req.query.authorization
-    remoteAccess.isDeviceAuthenticated authHeader, (auth) ->
+    remoteAccess.isAuthenticated authHeader, (auth) ->
         if auth
             # Forward request for DS.
             req.url = req.url.replace 'ds-api/', ''
@@ -310,7 +310,7 @@ module.exports.dsApi = (req, res, next) ->
 
 module.exports.getVersions = (req, res, next) ->
     # Authenticate the request
-    remoteAccess.isDeviceAuthenticated req.headers['authorization'], (auth) ->
+    remoteAccess.isAuthenticated req.headers['authorization'], (auth) ->
         if auth
             # Forward request for DS.
             appManager.versions (err, apps) ->
@@ -331,7 +331,7 @@ module.exports.getVersions = (req, res, next) ->
 module.exports.oldReplication = (req, res, next) ->
 
     # Authenticate the request
-    remoteAccess.isDeviceAuthenticated req.headers['authorization'], (auth) ->
+    remoteAccess.isAuthenticated req.headers['authorization'], (auth) ->
         if auth
             # Add his creadentials for CouchDB
             if process.env.NODE_ENV is "production"

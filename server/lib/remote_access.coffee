@@ -3,9 +3,8 @@ logger = require('printit')
     date: false
     prefix: 'lib:remote_access'
 
-# Keep in memory the logins/passwords
-devices = {}
-sharings = {}
+# Keep in memory the accesses
+cache = {}
 
 # Initialize ds client : useful to retrieve all accesses
 dsHost = 'localhost'
@@ -29,64 +28,32 @@ extractCredentials = module.exports.extractCredentials = (header) ->
 
 
 # Update credentials in memory
-updateCredentials = module.exports.updateCredentials = (model, callback) ->
-    if model is 'Device'
-        path = "request/device/all"
-        devices = {}
-        cache = devices
-    else if model is "Sharing"
-        path = "request/sharing/all"
-        sharings = {}
-        cache = sharings
-    else
-        callback() if callback?
-
-    # Retrieve all model's results
-    client.post path, {}, (err, res, results) ->
-        if err? or results?.error?
+updateCredentials = module.exports.updateCredentials = (callback) ->
+    # Retrieve all accesses
+    client.post "request/access/all/", {}, (err, res, accesses) ->
+        cache = {}
+        if err?
             logger.error err
             callback? err
         else
-            if results?
+            if accesses?
                 # Retrieve all accesses
-                results = results.map (result) ->
-                    return result.id
-                client.post "request/access/byApp/", {}, (err, res, accesses) ->
-                    if err?
-                        logger.error err
-                        callback err
-                    else
-                        for access in accesses
-                            # Check if access correspond to a result
-                            if access.key in results
-                                cache[access.value.login] = access.value.token
-                    callback?()
-            else
-                callback?()
+                for access in accesses
+                    cache[access.value.login] = access.value.token
+
+            callback?()
 
 
-# Check if <login>:<password> is authenticated for a device
-module.exports.isDeviceAuthenticated = (header, callback) ->
+# Check if <login>:<password> is authenticated
+module.exports.isAuthenticated = (header, callback) ->
     [login, password] = extractCredentials header
-    isPresent = devices[login]? and devices[login] is password
+    isPresent = cache[login]? and cache[login] is password
 
     if isPresent or process.env.NODE_ENV is "development"
         callback true
     else
-        updateCredentials 'Device', ->
-            callback(devices[login]? and devices[login] is password)
-
-
-# Check if <login>:<password> is authenticated for a sharing
-module.exports.isSharingAuthenticated = (header, callback) ->
-    [login, password] = extractCredentials header
-    isPresent = sharings[login]? and sharings[login] is password
-
-    if isPresent or process.env.NODE_ENV is "development"
-        callback true
-    else
-        updateCredentials 'Sharing', ->
-            callback(sharings[login]? and sharings[login] is password)
+        updateCredentials () ->
+            callback(cache[login]? and cache[login] is password)
 
 
 # Check if a sharing recipient is authenticated by its token

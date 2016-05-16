@@ -120,7 +120,7 @@ module.exports.revoke = function(req, res, next) {
   var authHeader, revoke;
   revoke = req.body;
   authHeader = req.headers['authorization'];
-  return remoteAccess.isSharingAuthenticated(authHeader, function(auth) {
+  return remoteAccess.isAuthenticated(authHeader, function(auth) {
     var error, ref, shareID, token;
     if (auth) {
       ref = remoteAccess.extractCredentials(authHeader), shareID = ref[0], token = ref[1];
@@ -213,7 +213,7 @@ module.exports.answer = function(req, res, next) {
 };
 
 module.exports.replication = function(req, res, next) {
-  return remoteAccess.isSharingAuthenticated(req.headers['authorization'], function(auth) {
+  return remoteAccess.isAuthenticated(req.headers['authorization'], function(auth) {
     var error;
     if (auth) {
       req.url = req.url.replace('services/sharing/', '');

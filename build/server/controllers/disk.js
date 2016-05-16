@@ -56,7 +56,7 @@ getAuthController = function() {
 };
 
 module.exports.getSpace = function(req, res, next) {
-  return remoteAccess.isDeviceAuthenticated(req.headers['authorization'], function(auth) {
+  return remoteAccess.isAuthenticated(req.headers['authorization'], function(auth) {
     var error;
     if (auth) {
       controllerClient.setToken(getAuthController());

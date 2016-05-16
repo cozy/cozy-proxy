@@ -242,10 +242,11 @@ module.exports.update = (req, res, next) ->
 
 module.exports.remove = (req, res, next) ->
     # Authenticate the request
-    [username, password] = extractCredentials req.headers['authorization']
+    authHeader = req.headers['authorization']
+    [username, password] = remoteAccess.extractCredentials authHeader
     deviceName = req.params.login
 
-    remove = =>
+    remove = ->
         checkLogin deviceName, true, (err, device) ->
             return next err if err?
             # Remove device
@@ -256,7 +257,7 @@ module.exports.remove = (req, res, next) ->
                     res.sendStatus 204
 
     if deviceName is username
-        deviceManager.isAuthenticated username, password, (auth) =>
+        deviceManager.isAuthenticated username, password, (auth) ->
             if auth
                 remove()
             else
@@ -296,7 +297,7 @@ module.exports.replication = (req, res, next) ->
 module.exports.dsApi = (req, res, next) ->
     # Authenticate the request
     authHeader = req.headers['authorization'] or req.query.authorization
-    remoteAccessAccess.isDeviceAuthenticated authHeader, (auth) ->
+    remoteAccess.isDeviceAuthenticated authHeader, (auth) ->
         if auth
             # Forward request for DS.
             req.url = req.url.replace 'ds-api/', ''

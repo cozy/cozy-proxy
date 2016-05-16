@@ -62,7 +62,7 @@ updateCredentials = module.exports.updateCredentials = (model, callback) ->
                                 cache[access.value.login] = access.value.token
                     callback?()
             else
-                callback()?
+                callback?()
 
 
 # Check if <login>:<password> is authenticated for a device

@@ -295,7 +295,7 @@ module.exports.remove = function(req, res, next) {
     });
   };
   if (deviceName === username) {
-    return deviceManager.isAuthenticated(username, password, function(auth) {
+    return remoteAccess.isDeviceAuthenticated(authHeader, function(auth) {
       var error;
       if (auth) {
         return remove();

@@ -15,6 +15,7 @@ client.setBasicAuth "home", "token"
 
 Client = require('request-json').JsonClient
 clientDS = new Client urlHelper.dataSystem.url()
+clientDS.setBasicAuth "home", "token"
 
 
 describe 'sharing unit tests', ->

@@ -15,6 +15,7 @@ client.setBasicAuth "home", "token"
 
 Client = require('request-json').JsonClient
 clientDS = new Client urlHelper.dataSystem.url()
+clientDS.setBasicAuth "home", "token"
 
 
 describe 'sharing unit tests', ->
@@ -227,17 +228,17 @@ describe 'sharing unit tests', ->
             headers:
                 authorization: "1:A ring to rule them all"
 
-        stubIsSharingAuthenticated = {}
+        stubIsAuthenticated = {}
 
         before (done) ->
-            stubIsSharingAuthenticated = sinon.stub remoteAccess,
-                'isSharingAuthenticated', (header, callback) ->
+            stubIsAuthenticated = sinon.stub remoteAccess,
+                'isAuthenticated', (header, callback) ->
                     callback false
 
             done()
 
         after (done) ->
-            stubIsSharingAuthenticated.restore()
+            stubIsAuthenticated.restore()
             done()
 
 
@@ -415,17 +416,17 @@ describe 'sharing unit tests', ->
             headers:
                 authorization: 'james-bond@mi6.cozy.uk:my_name_is_bond'
 
-        stubIsSharingAuthenticated = {}
+        stubIsAuthenticated = {}
 
         before (done) ->
-            stubIsSharingAuthenticated = sinon.stub remoteAccess,
-                'isSharingAuthenticated', (credentials, callback) ->
+            stubIsAuthenticated = sinon.stub remoteAccess,
+                'isAuthenticated', (credentials, callback) ->
                     callback false
 
             done()
 
         after (done) ->
-            stubIsSharingAuthenticated.restore()
+            stubIsAuthenticated.restore()
             done()
 
 

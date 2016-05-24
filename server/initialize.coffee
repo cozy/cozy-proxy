@@ -32,6 +32,12 @@ module.exports = (app, server, callback) ->
     # initialize Proxy server
     initializeProxy app, server
 
+
+    Realtimer = require 'cozy-realtime-adapter'
+    realtime = Realtimer server, ['device.*']
+    realtime.on 'device.*', -> remoteAccess.updateCredentials()
+
+
     # initialize device authentication
     # reset (load) and display the routes
 

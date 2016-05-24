@@ -5,6 +5,7 @@ router            = require './lib/router'
 {initializeProxy} = require './lib/proxy'
 localization      = require './lib/localization_manager'
 remoteAccess      = require './lib/remote_access'
+axon              = require 'axon'
 
 
 module.exports = (app, server, callback) ->
@@ -33,9 +34,9 @@ module.exports = (app, server, callback) ->
     initializeProxy app, server
 
 
-    Realtimer = require 'cozy-realtime-adapter'
-    realtime = Realtimer server, ['device.*']
-    realtime.on 'device.*', -> remoteAccess.updateCredentials()
+    socket = axon.socket 'sub-emitter'
+    socket.connect 9105
+    socket.on 'device.*', -> remoteAccess.updateCredentials()
 
 
     # initialize device authentication

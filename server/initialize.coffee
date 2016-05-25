@@ -5,6 +5,7 @@ router            = require './lib/router'
 {initializeProxy} = require './lib/proxy'
 localization      = require './lib/localization_manager'
 remoteAccess      = require './lib/remote_access'
+axon              = require 'axon'
 
 
 module.exports = (app, server, callback) ->
@@ -31,6 +32,12 @@ module.exports = (app, server, callback) ->
 
     # initialize Proxy server
     initializeProxy app, server
+
+
+    socket = axon.socket 'sub-emitter'
+    socket.connect 9105
+    socket.on 'device.*', -> remoteAccess.updateCredentials()
+
 
     # initialize device authentication
     # reset (load) and display the routes

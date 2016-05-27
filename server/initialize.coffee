@@ -17,8 +17,8 @@ module.exports = (app, server, callback) ->
     configurePassport()
 
     # Pass localization helpers to app.locals to access them in templates
-    app.locals.t         = localization.t
-    app.locals.getLocale = localization.getLocale
+    app.locals.t      = localization.t
+    app.locals.locale = localization.locale
 
     # Try to get assets definitions from root (only valid in build, not on
     # watch mode)

@@ -1,4 +1,4 @@
-fs = require 'fs'
+fs        = require 'fs'
 urlHelper = require 'cozy-url-sdk'
 
 process.env.NODE_ENV ?= "development"

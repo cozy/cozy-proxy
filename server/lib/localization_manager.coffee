@@ -1,57 +1,63 @@
-Locale   = require 'locale'
+locale   = require 'locale'
 Polyglot = require 'node-polyglot'
 
 Instance = require '../models/instance'
 
 {supportedLanguages} = require '../config'
-supported            = new Locale.Locales supportedLanguages
+
+
+# Get locale from instance model and execute the given callback with it
+getInstanceLocale = (callback) ->
+    Instance.getLocale (err, lang) ->
+        unless lang
+            console.warn 'Fallback to "en" locale'
+            lang = 'en'
+
+        callback new locale.Locales(lang).toString()
 
 
 class LocalizationManager
     # Polyglot instance in the given locale
     polyglot: null
 
+    # Assume the locale returned by the Instance model is supported, and create
+    # a polyglot container without validation.
     constructor: ->
-        Instance.getLocale (err, locale) =>
-            locale = 'en' if err
-            @setLocale locale
+        getInstanceLocale (lang) =>
+            @polyglot = new Polyglot locale: lang
 
 
-    setLocale: (locale) ->
+    setLocale: (lang, force) =>
         # Early return if locale is already the loaded one
-        return if @polyglot?.locale is locale
+        return lang if @polyglot.locale() is lang and not force
 
-        # Trying to find and use the best locale available in config
-        locales = new Locale.Locales locale
-        @setPolyglot locales.best supported
-
-
-    setPolyglot: (locale) ->
-        @requiredLocale = locale
-        try
-            phrases = require "../locales/#{locale}"
-
-        catch err
-            locale    = 'en'
-            phrases = require '../locales/en'
-
-        @polyglot = new Polyglot locale: locale, phrases: phrases
-        return @polyglot
+        # Trying to find and use the best locale available in config: create a
+        # `Locale` from the gioven lang and compare it to the best supported
+        # available locales.
+        lang = (new locale.Locales lang).best(supportedLanguages).toString()
+        @polyglot.locale lang
+        @polyglot.extend require "../locales/#{lang}"
+        return lang
 
 
-    getPolyglot: ->
-        @setPolyglot @requiredLocale unless @polyglot
+    _getPolyglot: ->
+        getInstanceLocale (lang) =>
+            @setLocale lang
+        # Early return polyglot after forced locale update
         return @polyglot
 
 
     # Expose Polyglot interns (i.e. for templating)
     # Those functions ensure polyglot is properly loaded before returning
     # content.
-    getLocale: =>
-        return @getPolyglot()?.locale()
+    locale: (lang) =>
+        if lang
+            @setLocale lang
+        else
+            @_getPolyglot().locale()
 
     t: (key, params = {}) =>
-        return @getPolyglot()?.t key, params
+        @_getPolyglot().t key, params
 
 
 module.exports = new LocalizationManager()

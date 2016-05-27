@@ -13,26 +13,26 @@ otpManager   = require '../lib/2fa_manager'
 
 getEnv = (callback) ->
     async.parallel(
-        env: (callback) ->
+        env: (done) ->
             User.getUsername (err, username) ->
-                return callback err if err
+                return done err if err
 
-                callback null,
+                done null,
                     username: username
                     apps:     Object.keys require('../lib/router').getRoutes()
 
-        otp: (callback) ->
+        otp: (done) ->
             otpManager.getAuthType (err, otp) ->
-                return callback err if err
+                return done err if err
 
-                callback null, !!otp
+                done null, !!otp
 
-        locale: (callback) ->
+        locale: (done) ->
             Instance.getLocale (err, locale) ->
-                return callback err if err
+                return done err if err
 
                 localization.locale locale
-                callback null, locale
+                done null, locale
 
     , (err, res) ->
         env     = res.env

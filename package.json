@@ -34,7 +34,8 @@
     "pug-runtime": "2.0.0",
     "randomstring": "1.1.4",
     "request-json": "0.5.5",
-    "send": "0.13.2"
+    "send": "0.13.2",
+    "socket.io": "1.4.5"
   },
   "devDependencies": {
     "chai": "3.5.0",

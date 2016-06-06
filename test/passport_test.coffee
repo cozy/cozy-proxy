@@ -18,11 +18,26 @@ otpKey = "7lmt5npm7p"
 incorrectOtpToken = "133742"
 expectedHotpCounter = 23
 hotpToken = "348470"
+recoveryCodes = [
+    24383427
+    94122669
+    66187413
+    95999368
+    955875
+    34514463
+    94504055
+    61096172
+    93430255
+    63856009
+]
+recoveryTokenStr = "24383427"
+recoveryToken = 24383427
 
 User = cozydb.getModel 'User',
     authType: String,
     encryptedOtpKey: String
     hotpCounter: Number
+    encryptedRecoveryCodes: Array
 
 
 describe "Register / Login", ->
@@ -76,6 +91,7 @@ describe "Register / Login", ->
                     users[0].updateAttributes
                         authType: "totp",
                         encryptedOtpKey: otpKey
+                        encryptedRecoveryCodes: recoveryCodes
                     , (error) ->
                         done()
 
@@ -160,6 +176,32 @@ describe "Register / Login", ->
         it "After successful auth, the counter is set in base", (done) ->
             User.request "all", (error, users) ->
                 users[0].hotpCounter.should.equal expectedHotpCounter
+                done()
+        
+    describe "Recovery tokens", ->
+        before (done) ->
+            client.get "logout", (error, response, body) ->
+                done()
+        
+        it "Login requests with a recovery code", (done) ->
+            client.post "login",
+                password: password,
+                authcode: recoveryTokenStr
+            , (error, response, body) =>
+                response.statusCode.should.equal 200
+                done()
+                
+        it "Now, the user is authenticated", (done) ->
+            client.get "authenticated", (error, response, body) ->
+                response.statusCode.should.equal 200
+                body.should.have.property 'isAuthenticated'
+                body.isAuthenticated.should.be.ok
+                done()
+            
+        it "And the recovery code is no longer usable", (done) ->
+            User.request "all", (error, users) ->
+                tokens = users[0].encryptedRecoveryCodes[0]
+                (recoveryToken in tokens).should.be.false
                 done()
 
     describe "Logout", ->

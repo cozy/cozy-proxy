@@ -1,3 +1,4 @@
+localization = require '../lib/localization_manager'
 logger = require('printit')
     date: true
     prefix: 'app:error'
@@ -16,7 +17,9 @@ module.exports = (err, req, res, next) ->
     if err.headers? and Object.keys(err.headers).length > 0 and !res.headersSent
         res.set header, value for header, value of err.headers
 
-    content = error: message
+    content =
+        error: message
+        trans: localization.t message
     content.errors = err.errors if err.errors
 
     if res.headersSent

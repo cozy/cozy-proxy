@@ -90,4 +90,4 @@ module.exports.initializeProxy = (app, server) ->
                 proxyWS urlHelper.home.host(), urlHelper.home.port()
 
             else
-                fail new Error('socket not authorized')
+                fail new Error 'socket not authorized'

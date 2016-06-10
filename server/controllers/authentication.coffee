@@ -137,7 +137,7 @@ module.exports.resetPassword = (req, res, next) ->
         if err? then next new Error err
 
         else if not user?
-            err = new Error localization.t "reset error no user"
+            err = new Error 'reset error no user'
             err.status = 400
             err.headers = 'Location': '/register/'
             next err
@@ -167,7 +167,7 @@ module.exports.resetPassword = (req, res, next) ->
                     next error
 
             else
-                error = new Error localization.t "reset error invalid key"
+                error = new Error 'reset error invalid key'
                 error.status = 400
                 next error
 

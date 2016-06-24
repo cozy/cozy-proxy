@@ -189,7 +189,7 @@ module.exports.resetPassword = function(req, res, next) {
     if (err != null) {
       return next(new Error(err));
     } else if (user == null) {
-      err = new Error(localization.t("reset error no user"));
+      err = new Error('reset error no user');
       err.status = 400;
       err.headers = {
         'Location': '/register/'
@@ -224,7 +224,7 @@ module.exports.resetPassword = function(req, res, next) {
           return next(error);
         }
       } else {
-        error = new Error(localization.t("reset error invalid key"));
+        error = new Error('reset error invalid key');
         error.status = 400;
         return next(error);
       }

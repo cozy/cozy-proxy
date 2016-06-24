@@ -1,6 +1,6 @@
 {
   "name": "cozy-proxy",
-  "version": "2.5.7",
+  "version": "2.5.9",
   "author": "Cozy Cloud <contact@cozycloud.cc> (http://cozycloud.cc)",
   "license": "AGPL-3.0",
   "repository": {
@@ -14,6 +14,7 @@
   "dependencies": {
     "americano": "0.4.5",
     "async": "1.5.2",
+    "axon": "0.6.1",
     "cookie-parser": "1.4.1",
     "cookie-session": "1.2.0",
     "cozy-notifications-helper": "1.1.0",

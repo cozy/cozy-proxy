@@ -14,15 +14,17 @@ User = require '../models/user'
 module.exports.authenticate = (req, res, next) ->
     process = (err, user) ->
         if err
-            next new Error localization.t 'error server'
+            error = new Error 'error server'
+            next error
         else if user is undefined or not user
-            error = new Error localization.t 'error bad credentials'
+            error = new Error 'error bad credentials'
             error.status = 401
             next error
         else
             passwordKeys.initializeKeys req.body.password, (err) ->
                 if err
-                    next new Error localization.t 'error keys not intialized'
+                    error = new Error 'error keys not intialized'
+                    next error
                 else
                     postLogin user
 
@@ -30,15 +32,13 @@ module.exports.authenticate = (req, res, next) ->
     postLogin = (user) ->
         otpManager.getAuthType (err, otpAuth) ->
             if err
-                msg = localization.t "error login failed"
-                error = new Error msg
+                error = new Error 'error login failed'
                 error.status = 401
                 next error
             else unless otpAuth
                 req.logIn user, (err, info) ->
                     if err
-                        msg = localization.t "error login failed"
-                        error = new Error msg
+                        error = new Error 'error login failed'
                         error.status = 401
                         next error
                     else
@@ -48,10 +48,10 @@ module.exports.authenticate = (req, res, next) ->
 
     processOtp = (err, user) ->
         if err
-            msg = localization.t err
-            error = new Error msg
+            error = new Error err
             next error
         else if not user and user isnt undefined
+<<<<<<< HEAD
             msg = localization.t "error otp invalid code"
             User.first (err, user) ->
                 recoveryCodes = user.encryptedRecoveryCodes[0]
@@ -91,6 +91,20 @@ module.exports.authenticate = (req, res, next) ->
                     next error
                 else
                     res.status(200).send success: true
+=======
+            error = new Error 'error otp invalid code'
+            error.status = 401
+            next error
+        else
+            User.first (err, user) ->
+                req.logIn user, (err, info) ->
+                    if err
+                        error = new Error 'error login failed'
+                        error.status = 401
+                        next error
+                    else
+                        res.status(200).send success: true
+>>>>>>> 1cddd2558e75ceafcbba6f238db8b9aa7879865d
 
     passport.authenticate('local', process)(req, res, next)
 

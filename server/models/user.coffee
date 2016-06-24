@@ -24,6 +24,7 @@ module.exports = User = cozydb.getModel 'User',
     encryptedOtpKey: String
     hotpCounter: Number
     authType: String
+    encryptedRecoveryCodes: Array
 
 
 User.createNew = (data, callback) ->

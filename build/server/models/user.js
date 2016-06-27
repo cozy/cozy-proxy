@@ -31,7 +31,8 @@ module.exports = User = cozydb.getModel('User', {
   activated: Boolean,
   encryptedOtpKey: String,
   hotpCounter: Number,
-  authType: String
+  authType: String,
+  encryptedRecoveryCodes: Array
 });
 
 User.createNew = function(data, callback) {

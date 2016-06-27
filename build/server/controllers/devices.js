@@ -193,13 +193,13 @@ removeDevice = function(device, cb) {
     if (err != null) {
       error = new Error(err);
       error.status = 400;
-      return cd(error);
+      return cb(error);
     } else {
       return clientDS.del("data/" + id + "/", function(err, result, body) {
         if (err != null) {
           error = new Error(err);
           error.status = 400;
-          return cd(error);
+          return cb(error);
         } else {
           return cb(null);
         }

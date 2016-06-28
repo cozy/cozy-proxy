@@ -53,26 +53,27 @@ module.exports.authenticate = (req, res, next) ->
         else if not user and user isnt undefined
             msg = new Error 'error otp invalid code'
             User.first (err, user) ->
-                recoveryCodes = user.encryptedRecoveryCodes[0]
-                if parseInt(req.body.authcode) in recoveryCodes
-                    # Disabling recovery code
-                    index = recoveryCodes.indexOf(parseInt req.body.authcode)
-                    recoveryCodes.splice index, 1
-                    user.updateAttributes
-                        encryptedRecoveryCodes: recoveryCodes
-                    , ->
-                        # Allowing the authentication
-                        str = localization.t "authenticated with recovery code"
-                        str += recoveryCodes.length + " "
-                        str += localization.t "recovery codes left"
-                        notificationHelper.createTemporary
-                            text: str
+                codes = user.encryptedRecoveryCodes[0]
+                if typeof codes isnt undefined
+                    if parseInt(req.body.authcode) in codes
+                        # Disabling recovery code
+                        index = codes.indexOf(parseInt req.body.authcode)
+                        codes.splice index, 1
+                        user.updateAttributes
+                            encryptedRecoveryCodes: codes
                         , ->
-                            if recoveryCodes.length is 0
-                                str = localization.t "recovery codes warning"
-                                notificationHelper.createTemporary
-                                    text: str
-                            authSuccess()
+                            # Allowing the authentication
+                            str = localization.t "authenticated with recovery code"
+                            str += codes.length + " "
+                            str += localization.t "recovery codes left"
+                            notificationHelper.createTemporary
+                                text: str
+                            , ->
+                                if codes.length is 0
+                                    str = localization.t "recovery codes warning"
+                                    notificationHelper.createTemporary
+                                        text: str
+                                authSuccess()
                 else
                     error = new Error msg
                     error.status = 401

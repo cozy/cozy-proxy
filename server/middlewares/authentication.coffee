@@ -36,7 +36,7 @@ module.exports.authenticate = (req, res, next) ->
                 error.status = 401
                 next error
             else unless otpAuth
-                req.logIn user, (err, info) ->
+                req.logIn user, (err) ->
                     if err
                         error = new Error 'error login failed'
                         error.status = 401
@@ -63,14 +63,16 @@ module.exports.authenticate = (req, res, next) ->
                             encryptedRecoveryCodes: codes
                         , ->
                             # Allowing the authentication
-                            str = localization.t "authenticated with recovery code"
+                            str = localization.t "authenticated with" +
+                                                                "recovery code"
                             str += codes.length + " "
                             str += localization.t "recovery codes left"
                             notificationHelper.createTemporary
                                 text: str
                             , ->
                                 if codes.length is 0
-                                    str = localization.t "recovery codes warning"
+                                    str = localization.t "recovery codes" +
+                                                                    " warning"
                                     notificationHelper.createTemporary
                                         text: str
                                 authSuccess()
@@ -81,9 +83,9 @@ module.exports.authenticate = (req, res, next) ->
         else
             authSuccess()
 
-    authSuccess = () ->
+    authSuccess = ->
         User.first (err, user) ->
-            req.logIn user, (err, info) ->
+            req.logIn user, (err) ->
                 if err
                     msg = new Error 'error login failed'
                     error = new Error msg

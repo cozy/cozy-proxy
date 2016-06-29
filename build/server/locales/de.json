@@ -1,8 +1,8 @@
 {
     "index title": "Cozy - Ihre private persönliche Cloud",
-    "index description": "Cozy is an app-based personal cloud you can host at home. It allows you to own and connect your data. It turns a low-cost piece of hardware like a Raspberry Pi 2 or an online VPS into a powerful app platform. It comes with common applications like a contacts manager, calendar, webmail and filebox.",
+    "index description": "Cozy ist eine App-basierte persönliche Cloud, die du Zuhause verwenden kannst. Du kannst all deine Daten in Cozy speichern. Es verwandelt günstiger Hardware wie dem Raspberry Pi 2 oder online VPS in eine mächtige App-Plattform. An Board sind Standardanwendungen wie Kontaktmanager, Kalender, Webmail und Dateispeicher.",
     "index noscript title": "Sorry",
-    "index noscript message": "Cozy needs JavaScript and cookies to work but it looks like you have disabled one of them.",
+    "index noscript message": "Cozy benötigt JavaScript und Cookies. Es scheint als hast du eines davon deaktiviert.",
     "error title": "Ups, ein Fehler ist aufgetreten",
     "error headline": "Es scheint als ob etwas schief gelaufen ist.",
     "error reinsurance": "Keine Bange, wahrscheinlich ist es nicht so schlimm!",
@@ -21,15 +21,15 @@
     "error public info": "Bitte warten Sie für 5 Minuten, sollte dann nichts passiert sein, kontaktieren Sie den Cozy Besitzer!",
     "error server": "Ein interner Fehler ist aufgetreten.",
     "error bad credentials": "Ungültiges Passwort.",
-    "error otp weak counter": "OTP code no longer usable.",
-    "error otp invalid code": "Invalid OTP code.",
-    "error otp unknown": "Cannot authenticate through OTP.",
+    "error otp weak counter": "OTP-Code ist nicht mehr benutzbar.",
+    "error otp invalid code": "Ungültiger OTP-Code.",
+    "error otp unknown": "Authentifizierung mittels OTP nicht möglich.",
     "error keys not initialized": "Die Schlüssel sind nicht initialisiert.",
     "error login failed": "Anmeldung fehlgeschlagen.",
     "reset password email from": "Ihr Cozy <no-reply@%{domain}>",
-    "reset password email subject": "[Cozy] Rücksetzen Sie Ihr Passwort",
+    "reset password email subject": "[Cozy] Passwort rücksetzen",
     "reset password email text": "Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\nKeine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\n\nhttps://%{domain}/password/reset/%{key}\n\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!",
-    "invalid email format": "Your email address seems to be invalid.",
-    "invalid timezone": "This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York.",
-    "password too short": "Your password is too short, it should contain at least 8 characters."
+    "invalid email format": "Deine E-Mail Adresse scheint ungültig zu sein",
+    "invalid timezone": "Die Zeitzone ist ungültig. Bitte benutze das <Kontinent>/<Land> Format, e.g. Europe/Berlin.",
+    "password too short": "Dein Passwort ist zu kurz. Es muss mindestens 8 Zeichen haben."
 }

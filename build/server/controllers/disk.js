@@ -9,7 +9,7 @@ request = require('request-json');
 
 exec = require('child_process').exec;
 
-controllerClient = request.newClient(urlHelper.controller.url());
+controllerClient = request.createClient(urlHelper.controller.url());
 
 recoverDiskSpace = function(cb) {
   return exec('df -h', function(err, rawDiskSpace) {

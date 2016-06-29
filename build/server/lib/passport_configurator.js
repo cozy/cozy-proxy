@@ -51,40 +51,22 @@ module.exports = function() {
   passport.use(new HotpStrategy({
     codeField: "authcode"
   }, function(user, done) {
-    return User.first(function(err, user) {
-      if (err != null) {
-        return done(err);
-      } else {
-        return done(null, user.encryptedOtpKey, user.hotpCounter);
-      }
-    });
+    return done(null, user.encryptedOtpKey, user.hotpCounter);
   }, function(user, key, counter, delta, done) {
-    return User.first(function(err, user) {
-      if (err != null) {
+    if (counter > user.hotpCounter) {
+      return User.updateAttributes(user._id, {
+        encryptedOtpKey: key,
+        hotpCounter: counter
+      }, function(err) {
         return done(err);
-      } else {
-        if (counter > user.hotpCounter) {
-          return User.updateAttributes(user._id, {
-            encryptedOtpKey: key,
-            hotpCounter: counter
-          }, function(err) {
-            return done(err);
-          });
-        } else {
-          return done("error otp weak counter");
-        }
-      }
-    });
+      });
+    } else {
+      return done("error otp weak counter");
+    }
   }));
   return passport.use(new TotpStrategy({
     codeField: "authcode"
   }, function(user, done) {
-    return User.first(function(err, user) {
-      if (err != null) {
-        return done(err);
-      } else {
-        return done(null, user.encryptedOtpKey, 30);
-      }
-    });
+    return done(null, user.encryptedOtpKey, 30);
   }));
 };

@@ -49,7 +49,7 @@ attemptRecoveryCodes = (user, req, res, next) ->
             next makeError 401, 'error otp invalid code'
         else
             index = codes.indexOf(parseInt req.body.authcode)
-            if index == -1 # invalid code
+            if index is -1 # invalid code
                 next makeError 401, 'error otp invalid code'
             else
                 disableRecoveryCode user, codes, index, (err) ->

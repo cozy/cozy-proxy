@@ -37,7 +37,7 @@ User = cozydb.getModel 'User',
     authType: String,
     encryptedOtpKey: String
     hotpCounter: Number
-    encryptedRecoveryCodes: Array
+    encryptedRecoveryCodes: String
 
 
 describe "Register / Login", ->
@@ -91,7 +91,7 @@ describe "Register / Login", ->
                     users[0].updateAttributes
                         authType: "totp",
                         encryptedOtpKey: otpKey
-                        encryptedRecoveryCodes: recoveryCodes
+                        encryptedRecoveryCodes: JSON.stringify(recoveryCodes)
                     , (error) ->
                         done()
 

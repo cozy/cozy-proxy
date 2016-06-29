@@ -2,7 +2,7 @@ remoteAccess = require '../lib/remote_access'
 urlHelper = require 'cozy-url-sdk'
 request = require('request-json')
 exec = require('child_process').exec
-controllerClient = request.newClient urlHelper.controller.url()
+controllerClient = request.createClient urlHelper.controller.url()
 
 recoverDiskSpace = (cb) ->
     exec 'df -h', (err, rawDiskSpace) ->

@@ -43,30 +43,18 @@ module.exports = ->
     # hotp strategy
     # we need a key (stored string) and a counter
     passport.use new HotpStrategy { codeField: "authcode" }, (user, done) ->
-        User.first (err, user) ->
-            if err?
-                done err
-            else
-                done null, user.encryptedOtpKey, user.hotpCounter
+        done null, user.encryptedOtpKey, user.hotpCounter
     , (user, key, counter, delta, done) ->
-        User.first (err, user) ->
-            if err?
+        if counter > user.hotpCounter
+            User.updateAttributes user._id,
+                encryptedOtpKey: key
+                hotpCounter: counter
+            , (err) ->
                 done err
-            else
-                if counter > user.hotpCounter
-                    User.updateAttributes user._id,
-                        encryptedOtpKey: key
-                        hotpCounter: counter
-                    , (err) ->
-                        done err
-                else
-                    done "error otp weak counter"
+        else
+            done "error otp weak counter"
 
     # totp strategy
     # we need a key (stored string)
     passport.use new TotpStrategy { codeField: "authcode" }, (user, done) ->
-        User.first (err, user) ->
-            if err?
-                done err
-            else
-                done null, user.encryptedOtpKey, 30
+        done null, user.encryptedOtpKey, 30

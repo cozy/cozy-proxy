@@ -9,92 +9,93 @@ passwordKeys = require '../lib/password_keys'
 otpManager = require '../lib/2fa_manager'
 url = require 'url'
 User = require '../models/user'
+logger = require('printit')
+    date: true
+    prefix: 'mid:auth'
+
+
+
+makeError = (code, msg, original) ->
+    err = new Error msg
+    err.stack += "\n\nCaused by #{original}" if original
+    err.status = code
+    return err
+
+loginFirstUser = (req, res, next) ->
+    User.first (err, user) ->
+        return next err if err
+        req.logIn user, (err) ->
+            if err then next makeError 401, 'error login failed', err
+            else res.status(200).send success: true
+
+createNotificationRecovery = (length, callback)->
+    # Allowing the authentication
+    # @TODO use polyglot interpolation
+    text = localization.t "authenticated with recovery code"
+    text += length + " "
+    text += localization.t "recovery codes left"
+    notificationHelper.createTemporary {text} , callback
+
+disableRecoveryCode = (user, codes, index, callback) ->
+    changes = encryptedRecoveryCodes: JSON.stringify(codes.splice index, 1)
+    user.updateAttributes  codes, changes, callback
+
+attemptRecoveryCodes = (user, req, res, next) ->
+    User.first (err, user) ->
+        codes = JSON.parse(user.encryptedRecoveryCodes)
+        if err
+            next makeError 401, 'no user found', err
+        else if not user.encryptedRecoveryCodes?
+            next makeError 401, 'error otp invalid code'
+        else
+            index = codes.indexOf(parseInt req.body.authcode)
+            if index == -1 # invalid code
+                next makeError 401, 'error otp invalid code'
+            else
+                disableRecoveryCode user, codes, index, (err) ->
+                    if err
+                        next makeError 401, 'error otp invalid code', err
+                    else
+                        createNotificationRecovery codes.length, (err) ->
+                            # ignore err
+                            logger.error(err) if err
+                            loginFirstUser req, res, next
+
+# passport API is not very convenient
+simplepass = (strategy, req, res, next, handler) ->
+    passport.authenticate(strategy, handler)(req, res, next)
 
 # customize passport authenticate
 module.exports.authenticate = (req, res, next) ->
-    process = (err, user) ->
-        if err
-            error = new Error 'error server'
-            next error
-        else if user is undefined or not user
-            error = new Error 'error bad credentials'
-            error.status = 401
-            next error
-        else
-            passwordKeys.initializeKeys req.body.password, (err) ->
-                if err
-                    error = new Error 'error keys not intialized'
-                    next error
-                else
-                    postLogin user
 
-    # Dispatching the process to the right 2FA method (none, HOTP or TOTP)
-    postLogin = (user) ->
-        otpManager.getAuthType (err, otpAuth) ->
+    otpManager.getAuthType (err, otpAuth) ->
+        return next makeError 401, 'error login failed', err if err
+
+        simplepass 'local', req, res, next, (err, user) ->
             if err
-                error = new Error 'error login failed'
-                error.status = 401
-                next error
-            else unless otpAuth
-                req.logIn user, (err) ->
-                    if err
-                        error = new Error 'error login failed'
-                        error.status = 401
-                        next error
-                    else
-                        res.status(200).send success: true
+                next makeError 401, 'error server', err
+            else if not user
+                next makeError 401, 'error bad credentials'
             else
-                passport.authenticate(otpAuth, processOtp)(req, res, next)
-
-    processOtp = (err, user) ->
-        if err
-            error = new Error err
-            next error
-        else if not user and user isnt undefined
-            msg = new Error 'error otp invalid code'
-            User.first (err, user) ->
-                codes = user.encryptedRecoveryCodes[0]
-                if typeof codes isnt undefined
-                    if parseInt(req.body.authcode) in codes
-                        # Disabling recovery code
-                        index = codes.indexOf(parseInt req.body.authcode)
-                        codes.splice index, 1
-                        user.updateAttributes
-                            encryptedRecoveryCodes: codes
-                        , ->
-                            # Allowing the authentication
-                            str = localization.t "authenticated with" +
-                                                                "recovery code"
-                            str += codes.length + " "
-                            str += localization.t "recovery codes left"
-                            notificationHelper.createTemporary
-                                text: str
-                            , ->
-                                if codes.length is 0
-                                    str = localization.t "recovery codes" +
-                                                                    " warning"
-                                    notificationHelper.createTemporary
-                                        text: str
-                                authSuccess()
-                else
-                    error = new Error msg
-                    error.status = 401
-                    next error
-        else
-            authSuccess()
-
-    authSuccess = ->
-        User.first (err, user) ->
-            req.logIn user, (err) ->
-                if err
-                    msg = new Error 'error login failed'
-                    error = new Error msg
-                    error.status = 401
-                    next error
-                else
-                    res.status(200).send success: true
-
-    passport.authenticate('local', process)(req, res, next)
+                # initializeKeys now as we need them for OTP auth.
+                passwordKeys.initializeKeys req.body.password, (err) ->
+                    if err
+                        next makeError 500, 'error keys not intialized', err
+                    else if not otpAuth
+                        req.logIn user, (err) ->
+                            if err
+                                next makeError 401, 'error login failed', err
+                            else
+                                res.status(200).send success: true
+                    else # oauthStrategy
+                        req.user = user
+                        simplepass otpAuth, req, res, next, (err, user) ->
+                            if err
+                                next makeError(500, 'server error', err)
+                            else if user
+                                loginFirstUser req, res, next
+                            else
+                                attemptRecoveryCodes user, req, res, next
 
 module.exports.isAuthenticated = (req, res, next) ->
     if req.isAuthenticated()

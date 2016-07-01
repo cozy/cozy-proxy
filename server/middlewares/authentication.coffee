@@ -37,8 +37,9 @@ createNotificationRecovery = (length, callback)->
     notificationHelper.createTemporary {text} , callback
 
 disableRecoveryCode = (user, codes, index, callback) ->
-    changes = encryptedRecoveryCodes: JSON.stringify(codes.splice index, 1)
-    user.updateAttributes  codes, changes, callback
+    codes.splice index, 1
+    changes = encryptedRecoveryCodes: JSON.stringify(codes)
+    user.updateAttributes changes, callback
 
 attemptRecoveryCodes = (user, req, res, next) ->
     User.first (err, user) ->

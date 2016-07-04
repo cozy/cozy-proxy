@@ -63,10 +63,11 @@ createNotificationRecovery = function(length, callback) {
 
 disableRecoveryCode = function(user, codes, index, callback) {
   var changes;
+  codes.splice(index, 1);
   changes = {
-    encryptedRecoveryCodes: JSON.stringify(codes.splice(index, 1))
+    encryptedRecoveryCodes: JSON.stringify(codes)
   };
-  return user.updateAttributes(codes, changes, callback);
+  return user.updateAttributes(changes, callback);
 };
 
 attemptRecoveryCodes = function(user, req, res, next) {

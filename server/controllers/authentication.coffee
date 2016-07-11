@@ -12,18 +12,33 @@ otpManager   = require '../lib/2fa_manager'
 
 
 getEnv = (callback) ->
-    User.getUsername (err, username) ->
-        return callback err if err
+    async.parallel(
+        env: (done) ->
+            User.getUsername (err, username) ->
+                return done err if err
 
-        otpManager.getAuthType (err, otp) ->
-            return callback err if err
+                done null,
+                    username: username
+                    apps:     Object.keys require('../lib/router').getRoutes()
 
-            env =
-                username: username
-                otp:      !!otp
-                apps:     Object.keys require('../lib/router').getRoutes()
+        otp: (done) ->
+            otpManager.getAuthType (err, otp) ->
+                return done err if err
 
-            callback null, env
+                done null, !!otp
+
+        locale: (done) ->
+            Instance.getLocale (err, locale) ->
+                return done err if err
+
+                localization.locale locale
+                done null, locale
+
+    , (err, res) ->
+        env     = res.env
+        env.otp = res.otp
+        callback err, env
+    )
 
 
 module.exports.registerIndex = (req, res, next) ->
@@ -38,7 +53,7 @@ module.exports.registerIndex = (req, res, next) ->
             res.redirect '/login'
 
         else
-            localization.setLocale req.headers['accept-language']
+            localization.locale req.headers['accept-language']
             res.render 'index', env: env
 
 
@@ -76,7 +91,7 @@ module.exports.register = (req, res, next) ->
 
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
-                        localization.setLocale req.body.locale
+                        localization.locale req.body.locale
                         next()
     else
         error        = new Error 'Errors in validation'

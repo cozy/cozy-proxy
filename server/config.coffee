@@ -1,12 +1,14 @@
-fs = require 'fs'
-path = require 'path'
-americano = require 'americano'
-cookieParser = require 'cookie-parser'
-cookieSession = require 'cookie-session'
-passport = require 'passport'
-randomstring = require 'randomstring'
-usetracker = require './middlewares/usetracker'
+fs                  = require 'fs'
+path                = require 'path'
+americano           = require 'americano'
+cookieParser        = require 'cookie-parser'
+cookieSession       = require 'cookie-session'
+passport            = require 'passport'
+randomstring        = require 'randomstring'
+usetracker          = require './middlewares/usetracker'
 selectiveBodyParser = require './middlewares/selective_body_parser'
+locale              = require 'locale'
+
 
 # /!\ CAREFUL /!\
 # Middlewares order matters to authenticate websockets
@@ -24,13 +26,14 @@ authSteps = [
 
 useBuildView = fs.existsSync path.resolve(__dirname, 'views/index.js')
 
+# Extract locales names from all available JSON locales files
 locales = fs.readdirSync(path.join(__dirname, 'locales')).map (file) ->
     path.basename file, '.json'
 
 
 config =
     authSteps: authSteps
-    supportedLanguages: locales
+    supportedLanguages: new locale.Locales locales
     common:
         use: [
             americano.errorHandler

@@ -43,12 +43,12 @@ disableRecoveryCode = (user, codes, index, callback) ->
 
 attemptRecoveryCodes = (user, req, res, next) ->
     User.first (err, user) ->
-        codes = JSON.parse(user.encryptedRecoveryCodes)
         if err
             next makeError 401, 'no user found', err
         else if not user.encryptedRecoveryCodes?
             next makeError 401, 'error otp invalid code'
         else
+            codes = JSON.parse(user.encryptedRecoveryCodes)
             index = codes.indexOf(parseInt req.body.authcode)
             if index is -1 # invalid code
                 next makeError 401, 'error otp invalid code'

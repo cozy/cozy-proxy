@@ -73,12 +73,12 @@ disableRecoveryCode = function(user, codes, index, callback) {
 attemptRecoveryCodes = function(user, req, res, next) {
   return User.first(function(err, user) {
     var codes, index;
-    codes = JSON.parse(user.encryptedRecoveryCodes);
     if (err) {
       return next(makeError(401, 'no user found', err));
     } else if (user.encryptedRecoveryCodes == null) {
       return next(makeError(401, 'error otp invalid code'));
     } else {
+      codes = JSON.parse(user.encryptedRecoveryCodes);
       index = codes.indexOf(parseInt(req.body.authcode));
       if (index === -1) {
         return next(makeError(401, 'error otp invalid code'));

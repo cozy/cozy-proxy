@@ -43,11 +43,10 @@ module.exports = ->
     # hotp strategy
     # we need a key (stored string) and a counter
     passport.use new HotpStrategy { codeField: "authcode" }, (user, done) ->
-        done null, user.encryptedOtpKey, user.hotpCounter
+        done null, new Buffer(user.encryptedOtpKey, 'hex'), user.hotpCounter
     , (user, key, counter, delta, done) ->
         if counter > user.hotpCounter
             User.updateAttributes user._id,
-                encryptedOtpKey: key
                 hotpCounter: counter
             , (err) ->
                 done err

@@ -14,10 +14,10 @@ public_name = "John"
 locale = "fr"
 
 # 2FA constants
-otpKey = "7lmt5npm7p"
+otpKey = "660c18ef036b0f6f5dc542e67b4718608b283d53"
 incorrectOtpToken = "133742"
-expectedHotpCounter = 23
-hotpToken = "348470"
+expectedHotpCounter = 9
+hotpToken = "754184"
 recoveryCodes = [
     24383427
     94122669
@@ -177,12 +177,12 @@ describe "Register / Login", ->
             User.request "all", (error, users) ->
                 users[0].hotpCounter.should.equal expectedHotpCounter
                 done()
-        
+
     describe "Recovery tokens", ->
         before (done) ->
             client.get "logout", (error, response, body) ->
                 done()
-        
+
         it "Login requests with a recovery code", (done) ->
             client.post "login",
                 password: password,
@@ -190,14 +190,14 @@ describe "Register / Login", ->
             , (error, response, body) =>
                 response.statusCode.should.equal 200
                 done()
-                
+
         it "Now, the user is authenticated", (done) ->
             client.get "authenticated", (error, response, body) ->
                 response.statusCode.should.equal 200
                 body.should.have.property 'isAuthenticated'
                 body.isAuthenticated.should.be.ok
                 done()
-            
+
         it "And the recovery code is no longer usable", (done) ->
             User.request "all", (error, users) ->
                 tokens = users[0].encryptedRecoveryCodes[0]

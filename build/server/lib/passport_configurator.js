@@ -51,11 +51,10 @@ module.exports = function() {
   passport.use(new HotpStrategy({
     codeField: "authcode"
   }, function(user, done) {
-    return done(null, user.encryptedOtpKey, user.hotpCounter);
+    return done(null, new Buffer(user.encryptedOtpKey, 'hex'), user.hotpCounter);
   }, function(user, key, counter, delta, done) {
     if (counter > user.hotpCounter) {
       return User.updateAttributes(user._id, {
-        encryptedOtpKey: key,
         hotpCounter: counter
       }, function(err) {
         return done(err);

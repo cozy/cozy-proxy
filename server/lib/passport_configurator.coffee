@@ -56,4 +56,4 @@ module.exports = ->
     # totp strategy
     # we need a key (stored string)
     passport.use new TotpStrategy { codeField: "authcode" }, (user, done) ->
-        done null, user.encryptedOtpKey, 30
+        done null, new Buffer(user.encryptedOtpKey, 'hex'), 30

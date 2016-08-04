@@ -66,6 +66,6 @@ module.exports = function() {
   return passport.use(new TotpStrategy({
     codeField: "authcode"
   }, function(user, done) {
-    return done(null, user.encryptedOtpKey, 30);
+    return done(null, new Buffer(user.encryptedOtpKey, 'hex'), 30);
   }));
 };

@@ -68,11 +68,11 @@ $ npm run watch
 
 ### To hack cozy-proxy using the cozy vagrant
 
-- Forward a new port from the virtual machine (for example: `config.vm.network :forwarded_port, guest: 9555, host: 9555` in file Vagrantfile)
+- Forward a new port from the virtual machine (for example: `config.vm.network :forwarded_port, guest: 9104, host: 9104` in file Vagrantfile)
 - Go in the shared folder `cd /vagrant` and `cd your-cozy-proxy-folder`
 - `rm -rf node_modules/bcrypt && npm install`
-- Launch cozy-proxy `PORT=9555 HOST="0.0.0.0" npm run watch`
-- You can now access the hacked proxy on `http://localhost:9555` with your navigator
+- Launch cozy-proxy `PORT=9104 HOST="0.0.0.0" npm run watch`
+- You can now access the hacked proxy on `http://localhost:9104` with your navigator
 
 ## Tests
 

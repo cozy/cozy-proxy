@@ -33,6 +33,17 @@ URI = {
 </pre>
 
 
+### Getters
+
+<pre>
+    getNextStepURI: (state) ->
+        // Route getter should "know" the relation
+        // between screens
+        // check state values
+        // return <URI> URI
+</pre>
+
+
 ### actions
 
 <pre>

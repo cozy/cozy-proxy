@@ -29,6 +29,24 @@ step = {
 </pre>
 
 
+### Getters
+
+<pre>
+    getPasswordComplexity: (state) ->
+        // Apply algorithm to know
+        // if password value is secured enough
+        // Add a value >= 0 and =< 1
+        // return { complexity, value }
+
+
+    getNextStepURI: (state) ->
+        // Route getter should "know" the relation
+        // between screens
+        // check state values
+        // return <URI> URI
+</pre>
+
+
 ### actions
 
 <pre>

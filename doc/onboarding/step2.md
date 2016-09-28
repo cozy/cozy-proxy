@@ -4,7 +4,7 @@
 
 ### URI
 
-`/login-/:userID`
+`:userID/share`
 
 
 ### data

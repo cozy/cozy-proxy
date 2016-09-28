@@ -1,0 +1,83 @@
+
+
+## Step 3/5
+
+### URI
+
+`:userID/password`
+
+
+### data
+
+<pre>
+user = {
+	&lt;id&gt; id,
+}
+</pre>
+<pre>
+form = {
+    &lt;string&gt; label: 'Password'
+    &lt;password&gt; value
+    &lt;boolean&gt; disabled: true
+}
+</pre>
+<pre>
+step = {
+	&lt;string&gt; slug: 'set_password',
+	&lt;step&gt; value: 3/5,
+}
+</pre>
+
+
+### actions
+
+<pre>
+    getFormData: ->
+        return { password: @state.password, id: @state.userID }
+
+
+    validate: ->
+        { password } = @getFormData()
+
+        // Should return an object
+        // ie. label='weak', value=0.2
+        complexity = Getter.getPasswordComplexity({ value: password })        
+
+        // Form cant be submitted while
+        // password is not secured enought
+        validate = complexity.label is 'strong'
+
+        // Update password complexity infos
+        // to display update PasswordComplexityComponent
+        @setState {complexity, disabled: !validate }
+
+        return validate
+
+
+    onSuccess: ->
+        hash = Getter.getNextStepURI(@state)
+        @navigate hash, true
+</pre>
+
+
+### markup
+<pre>
+div key='password-@state.userId'
+	h1
+		content=@state.userName
+
+    input
+        label=@state.fieldLabel
+        value=@state.password
+        type='password'
+
+	step
+		slug=@state.stepSlug
+		value=@state.stepValue
+        type='checkbox'
+
+	button
+		label='next'
+        disabled=@state.disabled
+		action=@send
+</pre>

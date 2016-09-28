@@ -3,7 +3,7 @@
 
 ### URI
 
-`/welcome/:userID`
+`:userID/welcome`
 
 ### data
 

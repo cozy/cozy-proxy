@@ -35,9 +35,15 @@ Can we define specific data types such as :
 		// ...
 
 
+    // Dispatched after success request
+    onSuccess: ->
+        // ...
+
+
 	// Dispatched after all error
-	onError: ->
-		// ...
+	onError: (err) ->
+        message = Getter.getErrorTitle(err)
+        @setState { error: message }
 
 
 	// Dispatched after hiding component
@@ -48,6 +54,35 @@ Can we define specific data types such as :
 	// Dispatched before removing component
 	onRemove: ->
 		// ...
+
+
+    validate: () ->
+        data = @getFormData()
+
+        // Should test if all required fields
+        // have a correct value (see @stateTypes)
+        // If not return false
+        // otherwhise return data
+        formValuesAreOK = ->
+            // ...
+
+        unless (areValuesOK())
+            return false
+        else
+            return data
+
+
+    send: ->
+        if (data = @validate())
+            // Send data to server
+            // ie. Use Bacon or basics XHR methods?
+            DATA.send
+                data
+            ,
+                success: @onSuccess
+                error: @onError
+        else
+            @onError 'invalid'
 
 
 	// Return markdown that will be

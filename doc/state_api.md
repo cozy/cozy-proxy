@@ -1,8 +1,17 @@
 # State
 
-## Questions
+## Definition
+1. State defines the status of the application for one given time,
+2. State value should be reflected to URI to keep consistency,
+3. more?
 
-### Adding specific `data.types` ?
+See theory there: https://en.wikipedia.org/wiki/Finite-state_machine.
+
+
+
+### Questions
+
+#### Adding specific `data.types` ?
 In the aim to remove data logic from views to models.
 To have relevant form types used every where into the application.
 
@@ -14,15 +23,9 @@ Can we define specific data types such as :
  - step: number between 0 and 1,
  - etc.
 
-### Immutability
+#### Immutability?
 How to avoid mutation? (no functional programing without avoiding mutation).
 
-## Definition
-1. State defines the status of the application for one given time,
-2. State value should be reflected to URI to keep consistency,
-3. more?
-
-See theory there: https://en.wikipedia.org/wiki/Finite-state_machine.
 
 ## API
 

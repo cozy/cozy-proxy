@@ -51,7 +51,6 @@ div key='password-@state.userId'
 		slug=@state.stepSlug
 		value=@state.stepValue
 
-    # Shoul goto
 	button
 		label='browse'
 		action=() -> @gotoNextStep()

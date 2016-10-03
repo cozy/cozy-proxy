@@ -6,8 +6,8 @@ Locate onboarding progression
 ie.
 ````
 step = {
-	&lt;string&gt; slug: 'welcome',
-	&lt;step&gt; value: 1/5,
+	<string> slug: 'welcome',
+	<step> value: 1/5,
 }
 ````
 

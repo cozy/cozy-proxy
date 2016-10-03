@@ -1,4 +1,4 @@
-# Step Model
+# `step` State
 
 ## Definition
 Locate onboarding progression

@@ -16,8 +16,14 @@ user = {
 </pre>
 <pre>
 form = {
-    &lt;string&gt; field_label: 'Do you accept?'
-    &lt;boolean&gt; is_share: false
+    &lt;boolean&gt; disabled: false
+	&lt;array&gt; fields: [
+		{
+		    &lt;string&gt; label: 'Do you accept?',
+		    &lt;string&gt; type: 'checkbox',
+		    &lt;boolean&gt; value: false,
+		}
+	]
 }
 </pre>
 <pre>

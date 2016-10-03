@@ -16,9 +16,14 @@ user = {
 </pre>
 <pre>
 form = {
-    &lt;string&gt; label: 'Password'
-    &lt;password&gt; value
-    &lt;boolean&gt; disabled: true
+	&lt;boolean&gt; disabled: true
+	fields: [
+		{
+		    &lt;string&gt; label: 'Password'
+		    &lt;string&gt; type: 'password'
+		    &lt;password&gt; value
+		}
+	]
 }
 </pre>
 <pre>

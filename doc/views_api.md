@@ -4,6 +4,8 @@
 <pre>
 &lt;class&gt; StateComponent extends Backbone.BaseView
 
+    state: new ProxyState()
+
 	initialize: (props) ->
 
 		// Here is a Backbone listener

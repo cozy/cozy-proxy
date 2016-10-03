@@ -63,11 +63,11 @@ div key='share-@state.userId'
     input
         label=@state.fieldLabel
         value=@state.is_share
+        type='checkbox'
 
 	step
 		slug=@state.stepSlug
 		value=@state.stepValue
-        type='checkbox'
 
 	button
 		label='next'

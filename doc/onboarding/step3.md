@@ -92,7 +92,6 @@ div key='password-@state.userId'
 	step
 		slug=@state.stepSlug
 		value=@state.stepValue
-        type='checkbox'
 
 	button
 		label='next'

@@ -10,6 +10,7 @@ State of a form that includes its values but also :
     <boolean> disabled: false
 	<array> fields: [
 		{
+		    <slug> name: 'share',
 		    <string> label: 'Do you accept?',
 		    <string> type: 'checkbox',
 		    <boolean> value: false,

@@ -19,6 +19,7 @@ form = {
     &lt;boolean&gt; disabled: false
 	&lt;array&gt; fields: [
 		{
+		    &lt;slug&gt; name: 'share',
 		    &lt;string&gt; label: 'Do you accept?',
 		    &lt;string&gt; type: 'checkbox',
 		    &lt;boolean&gt; value: false,

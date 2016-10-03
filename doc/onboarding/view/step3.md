@@ -19,6 +19,7 @@ form = {
 	&lt;boolean&gt; disabled: true
 	fields: [
 		{
+		    &lt;slug&gt; name: 'password',
 		    &lt;string&gt; label: 'Password'
 		    &lt;string&gt; type: 'password'
 		    &lt;password&gt; value

@@ -7,8 +7,6 @@
 
 See theory there: https://en.wikipedia.org/wiki/Finite-state_machine.
 
-
-
 ### Questions
 
 #### Adding specific `data.types` ?
@@ -30,7 +28,6 @@ How to avoid mutation? (no functional programing without avoiding mutation).
 ## API
 
 ```
-
     class state extend collection
 
         //...

@@ -1,13 +1,13 @@
 
 
-## Step 3/5
+## Step 3/5 : Create a password
 
 ### URI
 
 `:userID/password`
 
 
-### data
+### Models
 
 <pre>
 user = {
@@ -47,7 +47,7 @@ step = {
 </pre>
 
 
-### actions
+### Actions
 
 <pre>
     getFormData: ->
@@ -78,7 +78,7 @@ step = {
 </pre>
 
 
-### markup
+### Markup
 <pre>
 div key='password-@state.userId'
 	h1

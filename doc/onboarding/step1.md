@@ -5,7 +5,7 @@
 
 `:userID/welcome`
 
-### data
+### Models
 
 <pre>
 user = {
@@ -33,7 +33,7 @@ step = {
 </pre>
 
 
-### actions
+### Actions
 
 <pre>
     gotoNextStep: ->
@@ -43,7 +43,7 @@ step = {
 </pre>
 
 
-### markup
+### Markup
 <pre>
 div key='welcome-@state.userId'
 	h1

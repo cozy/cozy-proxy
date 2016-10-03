@@ -1,6 +1,6 @@
 
 
-## Step 2/5
+## Step 2/5 : Share anonymously data
 
 ### URI
 
@@ -44,7 +44,7 @@ URI = {
 </pre>
 
 
-### actions
+### Actions
 
 <pre>
     gotoNextStep: ->
@@ -54,7 +54,7 @@ URI = {
 </pre>
 
 
-### markup
+### Markup
 <pre>
 div key='share-@state.userId'
 	h1

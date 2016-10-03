@@ -1,19 +1,3 @@
-## Questions
-
-### Adding specific `data.types` ?
-In the aim to remove data logic from views to models.
-To have relevant form types used every where into the application.
-
-I actually think about `React.propTypes`.
-Can we define specific data types such as :
- - email (max length? is there any? etc.),
- - id: how may number, how many string char?
- - password,
- - step: number between 0 and 1,
- - etc.
-
-### Immutability
-How to avoid mutation? (no functional programing without avoiding mutation).
 
 ## `StateComponent` API
 
@@ -122,11 +106,3 @@ How to avoid mutation? (no functional programing without avoiding mutation).
 
 
 </pre>
-
-## State API
-
-### Getters
- - Called directly by `StateComponent`,
- - takes given `state` in arguments,
- - get information from `model` or `collection`,
- - should return the expected data.

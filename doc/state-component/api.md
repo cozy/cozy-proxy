@@ -1,5 +1,8 @@
+## Questions
 
-Questions :
+### Adding specific `data.types` ?
+In the aim to remove data logic from views to models.
+To have relevant form types used every where into the application.
 
 I actually think about `React.propTypes`.
 Can we define specific data types such as :
@@ -9,6 +12,8 @@ Can we define specific data types such as :
  - step: number between 0 and 1,
  - etc.
 
+### Immutability
+How to avoid mutation? (no functional programing without avoiding mutation).
 
 ## `StateComponent` API
 

@@ -1,4 +1,4 @@
-# State API
+# State
 
 ## Questions
 
@@ -24,8 +24,34 @@ How to avoid mutation? (no functional programing without avoiding mutation).
 
 See theory there: https://en.wikipedia.org/wiki/Finite-state_machine.
 
+## API
+
+```
+
+    class state extend collection
+
+        //...
+
+
+        // Should test if all required fields
+        // have a correct value (see @stateTypes)
+        // If not return false
+        // otherwhise return data
+        validate: (data) ->
+            formValuesAreOK = ->
+                // ...
+
+            unless (areValuesOK())
+                return false
+            else
+                return data
+
+```
+
+
+
 ## Getters
-They are called directly by `ViewComponent` to get data from the global `state`.
+They are called directly from `ViewComponent` to get data from the global `state`.
  - takes given `state` in arguments,
  - get information from `model` (ie. `user`, `form`),
  - should return the expected data.

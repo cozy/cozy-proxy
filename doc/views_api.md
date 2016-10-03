@@ -47,26 +47,16 @@
 
     validate: () ->
         data = @getFormData()
-
-        // Should test if all required fields
-        // have a correct value (see @stateTypes)
-        // If not return false
-        // otherwhise return data
-        formValuesAreOK = ->
-            // ...
-
-        unless (areValuesOK())
-            return false
-        else
-            return data
+        return @state.validate(data)
 
 
     send: ->
-        if (data = @validate())
+        var input = @getFormData()
+        if ( output = @state.validate(input) )
             // Send data to server
             // ie. Use Bacon or basics XHR methods?
             DATA.send
-                data
+                data: output
             ,
                 success: @onSuccess
                 error: @onError

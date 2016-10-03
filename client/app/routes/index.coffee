@@ -14,7 +14,6 @@ module.exports = class Router extends Backbone.Router
         'login(?next=*path)':        'login'
         'login(/*path)':             'login'
         'password/reset/:key':       'resetPassword'
-        'register(?step=:step)':     'register'
 
 
     ###

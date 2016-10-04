@@ -101,7 +101,7 @@ module.exports = class Onboarding
 
     # Trigger a 'done' pseudo-event, corresponding to onboarding end.
     triggerDone: ()->
-        throw 'Not implemented yet';
+        throw new Error 'Not implemented yet'
 
 
     # Returns an internal step by its name.

@@ -1,10 +1,12 @@
 # Local class Step
 class Step
     # Retrieves properties from config Step plain object
-    constructor: (step) ->
-        if step
-            ['name', 'route', 'view'].forEach (property) =>
-                @[property] = step[property]
+    constructor: (step={}) ->
+        @validatedHandlers = []
+
+        ['name', 'route', 'view'].forEach (property) =>
+            @[property] = step[property]
+
 
 
     # Record handlers for 'validated' internal pseudo-event

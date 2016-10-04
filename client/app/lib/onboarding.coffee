@@ -48,8 +48,8 @@ module.exports = class Onboarding
         @user = user
         @steps = steps.map (step) =>
             stepModel = new Step step
-            stepModel.onValidated (step) =>
-                @handleStepSubmitted step
+            stepModel.onValidated () =>
+                @handleStepSubmitted()
             return stepModel
 
 
@@ -66,8 +66,8 @@ module.exports = class Onboarding
     # when it has been successfully submitted
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
-    handleStepSubmitted: (step) ->
-        @goNext()
+    handleStepSubmitted: () ->
+        @goToNext()
 
 
     # Go to the next step in the list.

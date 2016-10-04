@@ -4,9 +4,7 @@
 
 This class, located in `lib/onboarding`, is an agnostic and framework free onboarding manager. It manages the different steps of onboarding and handle event triggered by steps object.
 
-The goal of this class is facilitate migration to another framework in the future.
-
-At this time, the framework used is Backbone/Marionette and Onboarding is implemented like a classical POO object.
+This class has to facilitate migration to another framework in the future. At this time, the framework used is Backbone/Marionette and Onboarding is implemented like a classical POO object.
 
 ## Step class
 
@@ -18,7 +16,9 @@ The main idea is to be able to describe what the onboarding steps are showing/co
 ## Methods
 ### Onboarding
 #### initialize(user, steps)
-Set the user and the steps list for the current onboarding. Called by the constructor method. The steps list should look like :
+Set the user and the steps list for the current onboarding.
+Called by the constructor method.
+The steps list should look like :
 ```javascript
 [{
     name: 'Step 1', // Name should be unique
@@ -53,7 +53,7 @@ Go directly to the given step and trigger required events. Useful for go back in
 Returns a step by its name.
 
 ### Step
-#### onSumbitted(callback)
+#### onSubmitted(callback)
 ##### Parameters
 * `callback`: function
 

@@ -71,7 +71,7 @@ module.exports = class Onboarding
 
 
     # Go to the next step in the list.
-    goNext: () ->
+    goToNext: () ->
         currentIndex = @steps.indexOf(@currentStep)
 
         if @currentStep? and currentIndex is -1

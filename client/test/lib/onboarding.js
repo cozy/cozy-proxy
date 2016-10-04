@@ -145,16 +145,16 @@ describe('Onboarding', () => {
     });
 
     describe('#handleStepSubmitted', () => {
-        it('should call Onboarding#goNext', () => {
+        it('should call Onboarding#goToNext', () => {
             // arrange
             let onboarding = new Onboarding(null, []);
-            onboarding.goNext = sinon.spy();
+            onboarding.goToNext = sinon.spy();
 
             // act
             onboarding.handleStepSubmitted(null);
 
             // assert
-            assert(onboarding.goNext.calledOnce);
+            assert(onboarding.goToNext.calledOnce);
         });
     });
 
@@ -264,7 +264,7 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#goNext', () => {
+    describe('#goToNext', () => {
         it('should call goToStep with first step', () => {
             // arrange
             let onboarding = new Onboarding(null, [
@@ -283,7 +283,7 @@ describe('Onboarding', () => {
             onboarding.goToStep = sinon.spy();
 
             // act
-            onboarding.goNext();
+            onboarding.goToNext();
 
             // assert
             assert(onboarding.goToStep.calledOnce);
@@ -314,7 +314,7 @@ describe('Onboarding', () => {
             onboarding.goToStep = sinon.spy();
 
             // act
-            onboarding.goNext();
+            onboarding.goToNext();
 
             // assert
             assert(onboarding.goToStep.calledOnce);
@@ -344,7 +344,7 @@ describe('Onboarding', () => {
             onboarding.triggerDone = sinon.spy();
 
             // act
-            onboarding.goNext();
+            onboarding.goToNext();
 
             // assert
             assert(onboarding.triggerDone.calledOnce);

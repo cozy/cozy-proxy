@@ -37,7 +37,7 @@ Set the user and the steps list for the current onboarding. Called by the constr
 
 Record the function callback as handler for every time the current onboarding step will change.
 
-#### goNext()
+#### goToNext()
 Select the next step on the list and trigger the related events.
 
 #### goToStep(step)

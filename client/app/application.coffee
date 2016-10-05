@@ -27,7 +27,7 @@ class App extends Application
     - layout: the application layout view, rendered.
     ###
     initialize: ->
-        steps = require './steps/config'
+        steps = require './config/steps/all'
         @on 'start', (options) =>
 
             @onboarding = new Onboarding({}, steps)

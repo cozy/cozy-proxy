@@ -1,17 +1,25 @@
 ## Onboarding component
 
+### Modelisation naive diagram
+![Modelisation naive diagram](assets/onboarding-modelisation.jpg "Diagram")
+
 ### Onboarding class
 
 This class, located in `lib/onboarding`, is an agnostic and framework free onboarding manager. It manages the different steps of onboarding and handle event triggered by steps object.
 
 This class has to facilitate migration to another framework in the future. At this time, the framework used is Backbone/Marionette and Onboarding is implemented like a classical POO object.
 
-## Step class
+### Step object
+Step objects are simple configurationJavaScript object declared in separated files. Their role is to describe each onboarding step, with properties, but also with methods when needed, as validation methods for example. They are located in `steps` directory.
+
+#### Step class
 
 The class represents an onboarding step, for example the greetings step or the password definition step.
 
-It's in charge of describing what a step have to do and how it may do that.
-The main idea is to be able to describe what the onboarding steps are showing/containing in external files, and to easily integrates them in the onboarding engine.
+It takes as parameter a simple JavaScript object described in previous paragraph.
+It also ensures that each step will have defaults mandatory methods like `submit`.
+
+Howerver, it will be possible to override class methods in config objects (not implemented yet).
 
 ## Methods
 ### Onboarding

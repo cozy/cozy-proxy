@@ -1,5 +1,8 @@
 ## Onboarding component
 
+### Modelisation naive diagram
+![Modelisation naive diagram](assets/onboarding-modelisation.jpg "Diagram")
+
 ### Onboarding class
 
 This class, located in `lib/onboarding`, is an agnostic and framework free onboarding manager. It manages the different steps of onboarding and handle event triggered by steps object.

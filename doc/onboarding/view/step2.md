@@ -9,60 +9,61 @@
 
 ### Models
 
-<pre>
-user = {
-	&lt;id&gt; id,
+[&lt;UserModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/user.coffee)
+```
+<UserModel> user = {
+	<id> id,
 }
-</pre>
-<pre>
+```
+```
 form = {
-    &lt;boolean&gt; disabled: false
-	&lt;array&gt; fields: [
+    <boolean> disabled: false
+	<array> fields: [
 		{
-		    &lt;slug&gt; name: 'share',
-		    &lt;string&gt; label: 'Do you accept?',
-		    &lt;string&gt; type: 'checkbox',
-		    &lt;boolean&gt; value: false,
+		    <slug> name: 'share',
+		    <string> label: 'Do you accept?',
+		    <string> type: 'checkbox',
+		    <boolean> value: false,
 		}
 	]
 }
-</pre>
-<pre>
-step = {
-	&lt;string&gt; slug: 'share_data',
-	&lt;step&gt; value: 2/5,
+```
+[&lt;StepModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/step.coffee)
+```
+<StepModel> step = {
+	<string> slug: 'share_data',
+	<step> value: 2/5,
 }
 </pre>
 <pre>
 URI = {
-	&lt;uri&gt; CGU: 'cgu/',
+	<uri> CGU: 'cgu/',
 }
-</pre>
+```
 
 
 ### Getters
 
-<pre>
+```
     getNextStepURI: (state) ->
         // Route getter should "know" the relation
         // between screens
         // check state values
         // return <URI> URI
-</pre>
+```
 
 
 ### Actions
 
-<pre>
+```
     gotoNextStep: ->
         hash = Getter.getNextStepURI(@state)
         @navigate hash, true
-
-</pre>
+```
 
 
 ### Markup
-<pre>
+```
 div key='share-@state.userId'
 	h1
 		content=@state.userName
@@ -79,4 +80,4 @@ div key='share-@state.userId'
 	button
 		label='next'
 		action=() -> @gotoNextStep()
-</pre>
+```

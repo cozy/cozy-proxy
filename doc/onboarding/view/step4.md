@@ -7,42 +7,43 @@
 
 ### Models
 
-<pre>
-user = {
-	&lt;id&gt; id,
+[&lt;UserModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/user.coffee)
+```
+<UserModel> user = {
+	<id> id,
 }
-</pre>
-<pre>
-step = {
-	&lt;string&gt; slug: 'validated',
-	&lt;step&gt; value: 4/5,
+```
+[&lt;StepModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/step.coffee)
+```
+<StepModel> step = {
+	<string> slug: 'validated',
+	<step> value: 4/5,
 }
-</pre>
+```
 
 
 ### Getters
 
-<pre>
+```
     getNextStepURI: (state) ->
         // Route getter should "know" the relation
         // between screens
         // check state values
         // return <URI> URI
-</pre>
+```
 
 
 ### Actions
 
-<pre>
+```
     gotoNextStep: ->
         hash = Getter.getNextStepURI(@state)
         @navigate hash, true
-
-</pre>
+```
 
 
 ### Markup
-<pre>
+```
 div key='password-@state.userId'
 	h1
 		content=@state.userName
@@ -54,4 +55,4 @@ div key='password-@state.userId'
 	button
 		label='browse'
 		action=() -> @gotoNextStep()
-</pre>
+```

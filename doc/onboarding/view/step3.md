@@ -9,35 +9,36 @@
 
 ### Models
 
-<pre>
-user = {
-	&lt;id&gt; id,
+[&lt;UserModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/user.coffee)
+```
+<UserModel> user = {
+	<id> id,
 }
-</pre>
-<pre>
+```
+```
 form = {
-	&lt;boolean&gt; disabled: true
+	<boolean> disabled: true
 	fields: [
 		{
-		    &lt;slug&gt; name: 'password',
-		    &lt;string&gt; label: 'Password'
-		    &lt;string&gt; type: 'password'
-		    &lt;password&gt; value
+		    <slug> name: 'password',
+		    <string> label: 'Password'
+		    <string> type: 'password'
+		    <password> value
 		}
 	]
 }
-</pre>
-<pre>
-step = {
-	&lt;string&gt; slug: 'set_password',
-	&lt;step&gt; value: 3/5,
+```
+[&lt;StepModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/step.coffee)
+```
+	<string> slug: 'set_password',
+	<step> value: 3/5,
 }
-</pre>
+```
 
 
 ### Getters
 
-<pre>
+```
     getPasswordComplexity: (value) ->
         // Apply algorithm to know
         // if password value is secured enough
@@ -51,12 +52,12 @@ step = {
         // between screens
         // check state values
         // return <URI> URI
-</pre>
+```
 
 
 ### Actions
 
-<pre>
+```
     getFormData: ->
         return { password: @state.password, id: @state.userID }
 
@@ -80,11 +81,11 @@ step = {
     onSuccess: ->
         hash = Getter.getNextStepURI(@state)
         @navigate hash, true
-</pre>
+```
 
 
 ### Markup
-<pre>
+```
 div key='password-@state.userId'
 	h1
 		content=@state.userName
@@ -102,4 +103,4 @@ div key='password-@state.userId'
 		label='next'
         disabled=@state.disabled
 		action=@send
-</pre>
+```

@@ -7,20 +7,22 @@
 
 ### Models
 
-<pre>
-user = {
-	&lt;string&gt; name,
-	&lt;id&gt; id,
-	&lt;email&gt; email,
-	&lt;boolean&gt; is_registered: false
+[&lt;UserModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/user.coffee)
+```
+<UserModel> user = {
+	<string> name,
+	<id> id,
+	<email> email,
+	<boolean> is_registered: false
 }
-</pre>
-<pre>
-step = {
-	&lt;string&gt; slug: 'welcome',
-	&lt;step&gt; value: 1/5
+```
+[&lt;StepModel&gt;] (https://github.com/cozy/cozy-proxy/blob/development/client/app/models/step.coffee)
+```
+<StepModel> step = {
+	<string> slug: 'welcome',
+	<step> value: 1/5
 }
-</pre>
+```
 
 ### Getters
 

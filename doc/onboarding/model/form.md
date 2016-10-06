@@ -7,7 +7,6 @@ State of a form that includes its values but also :
 
 ```
 {
-    <boolean> disabled: false
 	<array> fields: [
 		{
 		    <slug> name: 'share',

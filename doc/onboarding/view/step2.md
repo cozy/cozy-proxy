@@ -17,7 +17,6 @@
 ```
 ```
 form = {
-    <boolean> disabled: false
 	<array> fields: [
 		{
 		    <slug> name: 'share',

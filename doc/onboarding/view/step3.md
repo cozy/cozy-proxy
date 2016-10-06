@@ -17,7 +17,6 @@
 ```
 ```
 form = {
-	<boolean> disabled: true
 	fields: [
 		{
 		    <slug> name: 'password',

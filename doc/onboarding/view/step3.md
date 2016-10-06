@@ -37,14 +37,24 @@ form = {
 
 
 ### Getters
+`Getters` are methods implemented here into `StateModel` to get global state.
+All views get data from this `State`.
 
 ```
+	getFormData: ->
+		password = @get('password')
+		return {
+			complexity: getPasswordComplexity(password),
+			password,
+			id: @get('userID'),
+		}
+
     getPasswordComplexity: (value) ->
         // Apply algorithm to know
         // if password value is secured enough
         // Add a value >= 0 and =< 1
         // return { complexity, value }
-		// ie. { key='weak', value: 0.2 }
+		return { key='weak', value: 0.2 }
 
 
     getNextStepURI: (state) ->
@@ -56,26 +66,23 @@ form = {
 
 
 ### Actions
+Actions are handled by `StateMachineController`.
+It is here a single `BackboneView` that will listen to `StateMachineModel` changes et events triggered by ``BackboneView`.
 
 ```
-    getFormData: ->
-        return { password: @state.password, id: @state.userID }
+	initialize: ->
+		// Event triggered from View
+		@on 'submit:form', @doSubmit
+
+		// Update views from State
+		StateMachineModel.on 'change, @render
 
 
-    validate: ->
-        { password } = @getFormData()
-
-        // Should return an object
-        // ie. label='weak', value=0.2
-        complexity = Getter.getPasswordComplexity(password)        
-
-        // Update view with:
-		// 1. password complexity infos,
-		// 2. save password tmp value,
-        // to update PasswordComplexityComponent
-        @setState {complexity, password }
-
-        return true
+	doSubmit: (data) ->
+		// Save ComponentData into State
+		// then State will change
+		// then Controller will render all app
+		return StateMachineModel.save()
 
 
     onSuccess: ->
@@ -102,5 +109,5 @@ div key='password-@state.userId'
 	button
 		label='next'
         disabled=@state.disabled
-		action=@send
+		action= () -> StateMachineController.trigger 'form:submit'
 ```

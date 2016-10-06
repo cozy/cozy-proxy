@@ -58,8 +58,7 @@ module.exports = class Onboarding
     onStepChanged: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @stepChangedHandlers = @stepChangedHandlers or []
-        @stepChangedHandlers.push callback
+        @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
 
 
     # Handler for 'stepSubmitted' pseudo-event, triggered by a step

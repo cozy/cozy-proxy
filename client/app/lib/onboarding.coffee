@@ -1,11 +1,12 @@
 # Local class Step
 class Step
     # Retrieves properties from config Step plain object
+    # @param step : config step, i.e. plain object containing custom properties
+    #   and methods.
     constructor: (step={}) ->
-        @validatedHandlers = []
-
-        ['name', 'route', 'view'].forEach (property) =>
-            @[property] = step[property]
+        ['name', 'route', 'view', 'isActive'].forEach (property) =>
+            if step[property]
+                @[property] = step[property]
 
 
 
@@ -23,6 +24,13 @@ class Step
             @validatedHandlers.forEach (handler) =>
                 handler(@)
 
+    # Returns true if the step has to be submitted by the user
+    # This method returns true by default, but can be overriden
+    # by config steps
+    # @param user : plain JS object. Not used in this abstract default method
+    #  but should be in overriding ones.
+    isActive: (user) ->
+        return true;
 
     # Submit the step
     # This method should be overriden by step given as parameter to add
@@ -46,11 +54,15 @@ module.exports = class Onboarding
         throw new Error 'Missing mandatory `steps` parameter' unless steps
 
         @user = user
-        @steps = steps.map (step) =>
-            stepModel = new Step step
-            stepModel.onValidated () =>
-                @handleStepSubmitted()
-            return stepModel
+        @steps = steps
+            .reduce (activeSteps, step) =>
+                stepModel = new Step step
+                if stepModel.isActive user
+                    activeSteps.push stepModel
+                    stepModel.onValidated () =>
+                        @handleStepSubmitted()
+                return activeSteps
+            , []
 
 
     # Records handler for 'stepChanged' pseudo-event, triggered when

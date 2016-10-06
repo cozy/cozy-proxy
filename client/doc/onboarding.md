@@ -61,6 +61,30 @@ Go directly to the given step and trigger required events. Useful for go back in
 Returns a step by its name.
 
 ### Step
+
+#### isActive(user)
+* `user`: JS Object
+
+Returns true if the step has to be active for the given `user`. Returns `true` by default.
+This method can be overriden by specifying an `isActive` method in constructor parameter.
+
+##### Example
+```javascript
+let step = new Step({
+    isActive: (user) => {
+        // This step will be active only for Claude
+        return user.name === 'Claude'
+    }
+});
+
+let result1 = step.isActive({name: Claude});
+// result1 = true
+
+let result2 = step.isActive({name: Claudia});
+// result = false
+```
+
+
 #### onSubmitted(callback)
 ##### Parameters
 * `callback`: function

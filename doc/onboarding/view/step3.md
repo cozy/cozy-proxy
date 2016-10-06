@@ -68,18 +68,13 @@ step = {
         // ie. label='weak', value=0.2
         complexity = Getter.getPasswordComplexity(password)        
 
-        // Form cant be submitted while
-        // password is not secured enought
-        validate = complexity.label is 'strong'
-
         // Update view with:
 		// 1. password complexity infos,
 		// 2. save password tmp value,
-		// 3. define `disabled` value.
-        // to display update PasswordComplexityComponent
-        @setState {complexity, disabled: !validate, password }
+        // to update PasswordComplexityComponent
+        @setState {complexity, password }
 
-        return validate
+        return true
 
 
     onSuccess: ->

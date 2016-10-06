@@ -1,15 +1,18 @@
 # State
 
 ## Definition
-1. State defines the status of the application for one given time,
-2. State value should be reflected to URI to keep consistency,
-3. more?
+This is an adaptation of state machine pattern : https://en.wikipedia.org/wiki/Finite-state_machine.
 
-See theory there: https://en.wikipedia.org/wiki/Finite-state_machine.
+Choices have been taken for a small application.
+Enhancement should be done in the future to handle more complex cases.
 
-### Questions
+Here is the implementation context:
+ - was though as an agnostic one,
+ - but will be used with Backbone that
+ - prevent using Immutability pattern..
 
-#### Adding specific `data.types` ?
+
+### Adding specific `data.types` (see for later)
 In the aim to remove data logic from views to models.
 To have relevant form types used every where into the application.
 
@@ -21,9 +24,12 @@ Can we define specific data types such as :
  - step: number between 0 and 1,
  - etc.
 
-#### Immutability?
-How to avoid mutation? (no functional programing without avoiding mutation).
+ Maybe adding this stuff into https://github.com/cozy/cozy-ui
 
+### Immutability (see for later)
+Avoiding mutation with `Backbonejs` is an anti-pattern because this framework is based on mutation (collection, models, views).
+
+We have decided to avoid this part for the the moment; see next time.
 
 ## API
 

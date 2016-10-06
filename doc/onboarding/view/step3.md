@@ -38,11 +38,12 @@ step = {
 ### Getters
 
 <pre>
-    getPasswordComplexity: (state) ->
+    getPasswordComplexity: (value) ->
         // Apply algorithm to know
         // if password value is secured enough
         // Add a value >= 0 and =< 1
         // return { complexity, value }
+		// ie. { key='weak', value: 0.2 }
 
 
     getNextStepURI: (state) ->
@@ -65,15 +66,18 @@ step = {
 
         // Should return an object
         // ie. label='weak', value=0.2
-        complexity = Getter.getPasswordComplexity({ value: password })        
+        complexity = Getter.getPasswordComplexity(password)        
 
         // Form cant be submitted while
         // password is not secured enought
         validate = complexity.label is 'strong'
 
-        // Update password complexity infos
+        // Update view with:
+		// 1. password complexity infos,
+		// 2. save password tmp value,
+		// 3. define `disabled` value.
         // to display update PasswordComplexityComponent
-        @setState {complexity, disabled: !validate }
+        @setState {complexity, disabled: !validate, password }
 
         return validate
 
@@ -90,10 +94,10 @@ div key='password-@state.userId'
 	h1
 		content=@state.userName
 
-    input
-        label=@state.fieldLabel
+    password
+        label=t('passwordLabel')
         value=@state.password
-        type='password'
+		complexity=@state.complexity
 
 	step
 		slug=@state.stepSlug

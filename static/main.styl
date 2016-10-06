@@ -1,0 +1,75 @@
+// out: ./main.css, compress: true, sourcemap: true
+
+@import "../client/app/styles/base/_colors.styl"
+
+
+a
+    color: $blue
+    text-decoration: none
+
+
+[role=button]
+    display:          block
+    padding:          .55em
+    text-align:       center
+    background-color: $blue
+    border-radius:    4px
+    text-transform:   uppercase
+    color:            white
+
+
+[role=application]
+    display:     flex
+    min-height:  100vh
+    font-family: 'Source Sans Pro', sans-serif
+
+
+main
+    max-width: (600/16)em
+    margin:    auto
+    padding:   1em
+
+
+header
+    display:   flex
+    flex-wrap: wrap
+
+    .cozy
+        margin:  0 auto 2em
+        display: block
+
+    h1
+        flex:   1 0 100%
+        margin: 0
+
+
+footer
+    margin-top: 2em
+
+    ol
+        display: flex
+        margin:  .3em 0 0
+        padding: 0
+
+    li
+        flex:             1 1 1em
+        margin:           3px
+        height:           3px
+        background-color: $grey-02
+        border-radius:    3px
+        list-style-type:  none
+        text-indent:      -9999em
+
+        &:first-child
+            margin-left: 0
+
+        &:last-child
+            margin-right: 0
+
+        &[aria-selected]
+            background-color: $blue
+
+
+[role=region]
+footer
+    font-size: 1.24em

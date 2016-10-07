@@ -16,11 +16,6 @@ AppLayout = require './views/app_layout'
 Onboarding = require './lib/onboarding'
 StepModel = require './models/step'
 
-
-# TODO faire un Router Backbone ici
-# TODO: @onboarding.onStepChanged -> utiliser BackboneModel.on 'change'
-
-
 class App extends Application
 
     ###
@@ -32,12 +27,13 @@ class App extends Application
     - layout: the application layout view, rendered.
     ###
     initialize: ->
+        steps = require './config/steps/all'
         @on 'start', (options) =>
 
-            @onboarding = new Onboarding()
-            document.addEventListener 'onboardingModel:change', @doChange
+            @onboarding = new Onboarding({}, steps)
+            @onboarding.onStepChanged (step) => @handleStepChanged(step)
 
-            @router = new Router app: @
+            @initializeRouter @onboarding.steps
 
             @layout = new AppLayout()
             @layout.render()
@@ -48,13 +44,43 @@ class App extends Application
             Object.freeze @ if typeof Object.freeze is 'function'
 
 
+    # Initialize routes relative to onboarding step.
+    # The idea is to configure the router externally as a "native"
+    # Backbone Router
+    # @param steps a list of Step instance
+    initializeRouter: (steps) ->
+        @router = new Router
+            app: @
+            routes:
+                # Override legacy route for new onboarding
+                'register(?step=:step)': (stepName) => @handleStepRoute stepName
+
+        steps.forEach (step) => @initializeStepRoute @router, step
+
+
+    # Initialize one route only
+    # @param router Backbone.Router instance
+    # @param step Step instance
+    initializeStepRoute: (router, step) ->
+        StepView = require "./views/#{step.view}"
+        @router.route "#{step.route}", "route:#{step.route}", () =>
+            @layout.showChildView 'content',
+                new StepView
+                    model: new StepModel step: step
+
 
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    doChange: (step) ->
+    handleStepChanged: (step) ->
         @router.navigate step.route, trigger: true
 
+
+    # Register is the default main route for Onboarding
+    handleStepRoute: (stepName='preset') ->
+        step = @onboarding.getStepByName stepName
+        throw new Error 'Step does not exist' unless step
+        @onboarding.goToStep @onboarding.getStepByName stepName
 
 
 # Exports Application singleton instance

@@ -65,7 +65,7 @@ All views get data from this `State`.
 
 
 ### Actions
-Actions are handled by `StateMachineController` (ie. see [`onboardingComponent`](client/app/application.coffee)).
+Actions are handled by `StateMachineController`.
 It is here a single `BackboneView` that will listen to `StateMachineModel` changes et events triggered by ``BackboneView`.
 
 ```
@@ -74,7 +74,7 @@ It is here a single `BackboneView` that will listen to `StateMachineModel` chang
 		@on 'submit:form', @doSubmit
 
 		// Update views from State
-		StateMachineModel.on 'change, @navigate
+		StateMachineModel.on 'change, @render
 
 
 	doSubmit: (data) ->
@@ -84,7 +84,6 @@ It is here a single `BackboneView` that will listen to `StateMachineModel` chang
 		return StateMachineModel.save()
 
 
-	// TODO : Move this into controller
     onSuccess: ->
         hash = Getter.getNextStepURI(@state)
         @navigate hash, true
@@ -108,5 +107,6 @@ div key='password-@state.userId'
 
 	button
 		label='next'
+        disabled=@state.disabled
 		action= () -> StateMachineController.trigger 'form:submit'
 ```

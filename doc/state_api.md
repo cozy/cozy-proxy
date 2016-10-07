@@ -1,4 +1,9 @@
-# State
+
+<!--  -->Renommer le fichier en machinestate
+<!-- QUID de son emplacement/pertinence? -->
+# MachineState Controller
+// TODO : renommer, supprimer
+// comment compléter?
 
 ## Definition
 This is an adaptation of state machine pattern : https://en.wikipedia.org/wiki/Finite-state_machine.
@@ -25,6 +30,7 @@ Can we define specific data types such as :
  - etc.
 
  Maybe adding this stuff into https://github.com/cozy/cozy-ui
+
 
 ### Immutability (see for later)
 Avoiding mutation with `Backbonejs` is an anti-pattern because this framework is based on mutation (collection, models, views).
@@ -54,10 +60,23 @@ We have decided to avoid this part for the the moment; see next time.
 
 ```
 
+## Controller
+
+-> Ici une BackboneView
+-> A quoi ça sert? (voir autres fichiers)
 
 
 ## Getters
+-> Voir description dans autres fichiers)
 They are called directly from `ViewComponent` to get data from the global `state`.
+
+-> Ici implémentation backbone -> BackboneModel
+
  - takes given `state` in arguments,
  - get information from `model` (ie. `user`, `form`),
  - should return the expected data.
+
+
+## Views
+-> Qui vont etre détaillée dans view/
+-> faire un sommaire de la vue de onboarding

@@ -1,0 +1,96 @@
+
+<!--
+Data put as props
+label=@state.fieldLabel
+value=@state.password
+type=@state.type (par défaut: password - mode caché)
+complexity=@state.complexity
+
+error = 'typeError'
+
+-->
+
+<script>
+
+    // TODO: ce caclcul de donnée ce fait
+    // avant de render la vue
+    // après que le model ai été mis à jour
+    PasswordComplexityConfig = {
+        'weak': {
+            'title': 'Weak!',
+            'description': 'plop',
+            'className': 'weak'
+        },
+        'moderate': {
+            'title': 'moderate!',
+            'description': 'BURP',
+            'className': 'moderate'
+        },
+        'strong': {
+            'title': 'strong!',
+            'description': 'OK',
+            'className': 'strong'
+        }
+    }
+
+    ComplexityGetter = function(slug) {
+        return PasswordComplexityConfig[key]
+    }
+
+    props = new ComplexityGetter(@state.complexity.label);
+
+    if (@state.error) {
+        { type, data } = @state.error
+        props.error = t(ERRORS_TRANSLATE[type], data)
+    }
+</script>
+
+<!-- ProgressBar -->
+<script>
+    // TODO: ce caclcul de donnée ce fait
+    // avant de render la vue
+    // après que le model ai été mis à jour
+    props = {
+        width: `${@state.value * 100}%`
+    }
+</script>
+<p data-type="progressBar"
+    data-label=`@state.label`
+    data-value=`@state.value`
+    className=`@state.className`>
+
+    <span style=`width: ${props.width};`>...</span>
+</p>
+
+
+<!-- Password -->
+<script>
+    doShowPassword: () -> {
+        @setState { input: 'text' }
+    }
+    doHidePassword: () -> {
+        @setState { input: 'password' }
+    }
+</script>
+<form>
+    <fieldset data-component="password">
+
+        if @state.error
+            <p>props.error</p>
+
+        <div data-type="field">
+            <label for="password">@state.label</label>
+            <p>
+                <button onClick=`@doShowPassword`>t('showPasswordLabel')</button>
+                <input type=`${@state.input}` name="password" value=`${@state.password}` />
+            <p>
+        </div>
+
+        <div for="password" data-type="complexity-input">
+            <h4>@state.complexity.label</h4>
+            <p>props.description</p>
+            <ProgressBar {props...} />
+        </div>
+
+    </fieldset>
+</form>

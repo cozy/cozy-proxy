@@ -30,8 +30,8 @@ class App extends Application
     initialize: ->
         @on 'start', (options) =>
 
-            @onboarding = new Onboarding()
-            document.addEventListener 'onboardingModel:change', @doChange
+            actions = { 'change': @doChange }
+            @onboarding = new Onboarding { actions }
 
             @router = new Router app: @
 

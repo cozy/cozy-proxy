@@ -12,8 +12,19 @@ class State
         confirmation = require './model/confirmation',
     ]
 
-    constructor: () ->
+    constructor: (actions) ->
         @_index = 0;
+
+        @actions = actions
+
+
+    trigger: (name, data) ->
+        # Global action
+        console.info '(event)', name, data
+
+        # Specific action
+        if name is 'change' and (callback = @actions['change'])
+            callback data
 
 
     getCurrent: ->
@@ -50,18 +61,19 @@ class State
 
             # Listen to this event
             # to redirect to other views
-            _trigger 'onboardingModel:change', {
+            @trigger 'change', {
                 step: @getCurrent(),
                 previous: @getPrevious()
+            }
 
 
 # Main class
 # StateController is the component in charge of managing steps
 module.exports.StateController = class StateController
 
-    constructor: (user={}) ->
+    constructor: ({ user, actions }) ->
         @user = user
-        @state = new State()
+        @state = new State actions
 
 
     doValidate: (data) ->
@@ -102,12 +114,3 @@ module.exports.StateController = class StateController
 
     getState: ->
         return @state
-
-
-_trigger = (name, data) ->
-    event = new CustomEvent name, { detail: data }
-    document.dispatchEvent event
-
-
-_listenTo = (name, callback) ->
-    document.addEventListener name, callback

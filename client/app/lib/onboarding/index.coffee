@@ -39,6 +39,9 @@ class State
                 index = i
                 return true
 
+        if -1 is index
+            throw new Error 'Step does not exist'
+
         return index
 
 
@@ -84,12 +87,12 @@ module.exports.StateController = class StateController
     # Force step selection
     # ie. route cases
     doSelectStep: (name) ->
-        if (index = @model.getIndexOfStep name) is -1
-            throw new Error 'Step does not exist'
-            return false
-
-        @state.save {index}
-        return true
+        try {
+          index = @model.getIndexOfStep name
+          @state.save {index}
+        } catch e {
+          console.error(e)
+        }
 
     #
     # TODO: move this into

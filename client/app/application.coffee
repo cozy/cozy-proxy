@@ -14,8 +14,10 @@ Router    = require './routes'
 AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
-StepModel = require './models/step'
-
+welcome = require './config/onboarding/welcome',
+agreement = require './config/onboarding/agreement',
+password = require './config/onboarding/password',
+confirmation = require './config/onboarding/confirmation',
 
 class App extends Application
 
@@ -30,6 +32,8 @@ class App extends Application
     initialize: ->
         @on 'start', (options) =>
 
+
+            steps = [welcome, agreement, password, confirmation]
             actions = { 'change': @doChange }
             @onboarding = new Onboarding { actions }
 

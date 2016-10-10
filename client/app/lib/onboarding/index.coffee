@@ -1,19 +1,9 @@
-# TODO: fournir un getter ici
-# TODO: fournir un 2Nd oublet pour les actions
-# TODO: séparer le state/store du getter!
 
-# Local class Step
 class State
 
-    steps: [
-        welcome = require './model/welcome',
-        agreement = require './model/agreement',
-        password = require './model/password',
-        confirmation = require './model/confirmation',
-    ]
-
     constructor: (actions) ->
-        @_index = 0;
+        # TODO: naviguer par l'URI et non par l'index
+        @value = @steps[0]
 
         @actions = actions
 

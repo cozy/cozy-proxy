@@ -14,6 +14,7 @@ module.exports = class Router extends Backbone.Router
         'login(?next=*path)':        'login'
         'login(/*path)':             'login'
         'password/reset/:key':       'resetPassword'
+        'register(?step=:step)':     'onboarding'
 
 
     ###
@@ -59,6 +60,20 @@ module.exports = class Router extends Backbone.Router
         @auth path,
             backend: '/login'
             type:    'login'
+
+
+    # Register Onboarding Step
+    # Select OnboardingState from route
+    onboarding: (stepName='preset') ->
+        # Select state into Onboarding
+        @app.onboarding.doSelectStep stepName
+
+        # Create backbone view
+        # to handle each step
+        stepView = @app.onboarding.getStepView()
+        actionsCreator = @app.onboarding
+        @layout.showChildView 'content', new stepView { actionsCreator }
+
 
 
     resetPassword: (key) ->

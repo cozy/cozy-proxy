@@ -2,12 +2,133 @@
 let assert = require('chai').assert;
 let sinon = require('sinon');
 
-let Onboarding = require('../../app/lib/onboarding.coffee');
-let Step = require('../../app/lib/onboarding.coffee').Step;
+let Onboarding = require('../../app/lib/onboarding/index.coffee');
+
+describe('OnboardingState', () => {
+    let user;
+    let steps;
+    let state;
+    let actions;
+
+    beforeEach(() => {
+        user = null;
+        steps = [
+            {
+                name: 'test',
+                route: 'testroute',
+                view: 'testview'
+            }, {
+                name: 'test2',
+                route: 'testroute2',
+                view: 'testview2'
+            }, {
+                name: 'test3',
+                route: 'testroute3',
+                view: 'testview3'
+            }
+        ];
+        actions = { 'change': sinon.spy() }
+
+        // arrange
+        let onboarding = new Onboarding({ user, steps, actions });
+        state = onboarding.state
+    })
+
+
+    describe('.getCurrent()', () =>
+        it('should return step[0]', () => {
+            assert.deepEqual(steps[0], state.getCurrent())
+        }
+    });
+
+    describe('.getNext()', () => {
+        it('should return step[1]', () => {
+            assert.deepEqual(steps[1], state.getNext())
+        }
+    });
+
+    describe('.getPrevious()', () => {
+        it.skip('should throw an error', () => {
+            // assert.deepEqual(undefined, state.getPrevious())
+        }
+        it.skip('should return step[0]', () => {
+            // assert.deepEqual(undefined, state.getPrevious())
+        }
+    });
+
+    describe('.getIndexOfStep(name)', () => {
+        it('should return 0', () => {
+            assert.equal(0, state.getIndexOfStep('test1'));
+        }
+        it('should return 1', () => {
+            assert.equal(1, state.getIndexOfStep('test2'));
+        }
+        it('should return 2', () => {
+            assert.equal(2, state.getIndexOfStep('test3'));
+        }
+    });
+
+
+    describe.skip('.save()', () => {
+        it('should savec `previous` and `current` value', () => {
+        });
+
+        it('should call `actions.change` callback', () => {
+        });
+
+        it('should not trigger `change` when update with the same step', () => {
+
+        });
+    });
+
+
+    describe('.getIndexOfStep(name)', () => {
+        let user;
+        let steps;
+        let onboarding;
+
+        beforeEach(() => {
+            user = null;
+            steps = [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ];
+
+            // arrange
+            onboarding = new Onboarding({ user, steps });
+        });
+
+
+        it('should retrieve `step` by its name', () => {
+            let result = onboarding.getIndexOfStep(steps[1].name);
+
+            assert.equal(steps[1], result);
+        });
+
+
+        it.skip('should throw error when step isnt found', () => {
+            // let result = onboarding.getIndexOfStep('notExisting');
+            //
+            // assert.isUndefined(result);
+        });
+    });
+}
+
 
 describe('Onboarding', () => {
 
-    describe('#initialize', () => {
+    describe('.initialize()', () => {
 
         it('should set `user` property', () => {
             // arrange
@@ -16,37 +137,25 @@ describe('Onboarding', () => {
                 lastname: 'Causi'
             };
 
-            let steps = [];
-
             // act
-            let onboarding = new Onboarding(user, steps);
+            let onboarding = new Onboarding({user, steps: []});
 
             // assert
             assert.deepEqual(onboarding.user, user);
         });
 
-        it('should set `steps` property', () => {
+        it('should set `actions` property', () => {
             // arrange
-            let user = null;
-            let steps = [{
-                name: 'test',
-                route: 'testroute',
-                view: 'testview'
-            }, {
-                name: 'test2',
-                route: 'testroute2',
-                view: 'testview2'
-            }];
+            let actions = { 'change': function() {} };
 
             // act
-            let onboarding = new Onboarding(user, steps);
+            let onboarding = new Onboarding({ actions });
 
             // assert
-            assert.isDefined(onboarding.steps);
-            assert.equal(2, onboarding.steps.length);
+            assert.deepEqual(actions, onboarding.actions);
         });
 
-        it('should map steps objects to Steps instances', () => {
+        it('should select first `step` as default', () => {
             // arrange
             let user = null;
             let steps = [{
@@ -60,26 +169,11 @@ describe('Onboarding', () => {
             }];
 
             // act
-            let onboarding = new Onboarding(user, steps);
+            let onboarding = new Onboarding({user, steps});
 
             // assert
-            let step1 = onboarding.steps[0];
-            assert('Step', step1.constructor.name);
-            assert.equal('test', step1.name);
-            assert.equal('testroute', step1.route);
-            assert.equal('testview', step1.view);
-            assert.isFunction(step1.onValidated);
-            assert.isFunction(step1.triggerValidated);
-            assert.isFunction(step1.submit);
-
-            let step2 = onboarding.steps[1];
-            assert('Step', step2.constructor.name);
-            assert.equal('test2', step2.name);
-            assert.equal('testroute2', step2.route);
-            assert.equal('testview2', step2.view);
-            assert.isFunction(step2.onValidated);
-            assert.isFunction(step2.triggerValidated);
-            assert.isFunction(step2.submit);
+            assert.isDeepEqual(steps[0], onboarding.getState());
+            assert.isDeepEqual(steps, onboarding.getAllSteps());
         });
 
         it('should not map unexpected steps properties', () => {
@@ -93,10 +187,10 @@ describe('Onboarding', () => {
             }];
 
             // act
-            let onboarding = new Onboarding(user, steps);
+            let onboarding = new Onboarding({user, steps});
 
             // assert
-            let step = onboarding.steps[0];
+            let step = onboarding.getState();
             assert.equal('test', step.name);
             assert.equal('testroute', step.route);
             assert.equal('testview', step.view);
@@ -104,120 +198,32 @@ describe('Onboarding', () => {
         });
 
         it('should throw error when `steps` parameter is missing', () => {
-            // arrange
             let fn = () => {
-                // act
                 let onboarding = new Onboarding();
             }
-
-            // assert
             assert.throw(fn, 'Missing mandatory `steps` parameter');
         });
     });
 
-    describe('#onStepChanged', () => {
 
-        it('should add given callback to step changed handlers', () => {
-            // arrange
-            let onboarding = new Onboarding(null, []);
-            let callback = (step) => {};
+    describe.skip('.getStepView(name)', () => {});
 
-            // act
-            onboarding.onStepChanged(callback);
 
-            // assert
-            assert.isDefined(onboarding.stepChangedHandlers);
-            assert.equal(1, onboarding.stepChangedHandlers.length);
-            assert.include(onboarding.stepChangedHandlers, callback);
-        });
+    describe.skip('.getState()', () => {});
 
-        it('should throw an error when callback is not a function', () => {
-            // arrange
-            let onboarding = new Onboarding(null, []);
-            let randomString = 'abc';
-            let fn = () => {
-                // act
-                onboarding.onStepChanged(randomString);
-            };
 
-            assert.throws(fn, 'Callback parameter should be a function');
-        });
-    });
+    describe.skip('.getAllSteps()', () => {});
 
-    describe('#handleStepSubmitted', () => {
-        it('should call Onboarding#goToNext', () => {
-            // arrange
-            let onboarding = new Onboarding(null, []);
-            onboarding.goToNext = sinon.spy();
 
-            // act
-            onboarding.handleStepSubmitted(null);
+    describe('.doSelectStep(name)', () => {
+        let user;
+        let steps;
+        let onboarding;
+        let actions;
 
-            // assert
-            assert(onboarding.goToNext.calledOnce);
-        });
-    });
-
-    describe('#triggerStepChanged', () => {
-        it('should not throw error when `stepChangedHandlers` is empty', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [{
-                name: 'test',
-                route: 'testroute',
-                view: 'testview'
-            }, {
-                name: 'test2',
-                route: 'testroute2',
-                view: 'testview2'
-            }]);
-
-            let stepToTrigger = onboarding.steps[0];
-
-            let fn = () => {
-                // act
-                onboarding.triggerStepChanged(stepToTrigger);
-            };
-
-            // assert
-            assert.doesNotThrow(fn);
-        });
-
-        it('should call registered callbacks', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [{
-                name: 'test',
-                route: 'testroute',
-                view: 'testview'
-            }, {
-                name: 'test2',
-                route: 'testroute2',
-                view: 'testview2'
-            }]);
-
-            let stepToTrigger = onboarding.steps[0];
-
-            let callback1 = sinon.spy();
-            let callback2 = sinon.spy();
-
-            onboarding.onStepChanged(callback1);
-            onboarding.onStepChanged(callback2);
-
-            // act
-            onboarding.triggerStepChanged(stepToTrigger);
-
-            // assert
-            assert(callback1.calledOnce);
-            assert(callback2.calledOnce);
-            assert(callback1.calledWith(stepToTrigger));
-            assert(callback2.calledWith(stepToTrigger));
-
-        });
-    });
-
-    describe('#goToStep', () => {
-        it('should set new current step', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
+        beforeEach(() => {
+            user = null;
+            steps = [
                 {
                     name: 'test',
                     route: 'testroute',
@@ -227,72 +233,36 @@ describe('Onboarding', () => {
                     route: 'testroute2',
                     view: 'testview2'
                 }
-            ]);
+            ];
+            actions = { 'change': sinon.spy() }
 
-            let firstStep = onboarding.steps[0];
-
-            // act
-            onboarding.goToStep(firstStep);
-
-            // assert
-            assert.equal(firstStep, onboarding.currentStep);
-        });
-
-        it('should call `triggerStepChanged`', () => {
             // arrange
-            let onboarding = new Onboarding(null, [
-                {
-                    name: 'test',
-                    route: 'testroute',
-                    view: 'testview'
-                }, {
-                    name: 'test2',
-                    route: 'testroute2',
-                    view: 'testview2'
-                }
-            ]);
+            onboarding = new Onboarding({ user, steps, actions });
+        })
 
-            let firstStep = onboarding.steps[0];
-            onboarding.triggerStepChanged = sinon.spy();
-
-            // act
-            onboarding.goToStep(firstStep);
+        it('should select step called in parameter', () => {
+            // Goto next step
+            onboarding.doSelectStep('test2');
 
             // assert
-            assert(onboarding.triggerStepChanged.calledOnce);
-            assert(onboarding.triggerStepChanged.calledWith(firstStep));
+            const previousStep = steps[0];
+            const currentStep = steps[1];
+            assert(actions['change'].calledOnce);
+            assert(actions['change'].withArgs(currentStep, previousStep));
         });
     });
 
-    describe('#goToNext', () => {
-        it('should call goToStep with first step', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
-                {
-                    name: 'test',
-                    route: 'testroute',
-                    view: 'testview'
-                }, {
-                    name: 'test2',
-                    route: 'testroute2',
-                    view: 'testview2'
-                }
-            ]);
+    describe.skip('.doValidate(data)', () => {});
 
-            let firstStep = onboarding.steps[0];
-            onboarding.goToStep = sinon.spy();
+    describe('.doSubmit(data)', () => {
+        let user;
+        let steps;
+        let onboarding;
+        let actions;
 
-            // act
-            onboarding.goToNext();
-
-            // assert
-            assert(onboarding.goToStep.calledOnce);
-            assert(onboarding.goToStep.calledWith(firstStep));
-        });
-
-        it('should call goToStep with next step', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
+        beforeEach(() => {
+            user = null;
+            steps = [
                 {
                     name: 'test',
                     route: 'testroute',
@@ -306,220 +276,44 @@ describe('Onboarding', () => {
                     route: 'testroute3',
                     view: 'testview3'
                 }
-            ]);
+            ];
+            actions = { 'change': sinon.spy() }
 
-            let secondStep = onboarding.steps[1];
-            let thirdStep = onboarding.steps[2];
-            onboarding.goToStep(secondStep);
-            onboarding.goToStep = sinon.spy();
+            // arrange
+            onboarding = new Onboarding({ user, steps, actions });
+        })
 
-            // act
-            onboarding.goToNext();
 
-            // assert
-            assert(onboarding.goToStep.calledOnce);
-            assert(onboarding.goToStep.calledWith(thirdStep));
+        it('should update step with given value', () => {
+            onboarding.doSubmit(steps[1]);
+            assert.equal(steps[1], onboarding.getState());
+
+            onboarding.doSubmit(steps[0]);
+            assert.equal(steps[0], onboarding.getState());
         });
 
-        it('should call triggerDone when current step is the last one', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
-                {
-                    name: 'test',
-                    route: 'testroute',
-                    view: 'testview'
-                }, {
-                    name: 'test2',
-                    route: 'testroute2',
-                    view: 'testview2'
-                }, {
-                    name: 'test3',
-                    route: 'testroute3',
-                    view: 'testview3'
-                }
-            ]);
 
-            let thirdStep = onboarding.steps[2];
-            onboarding.goToStep(thirdStep);
-            onboarding.triggerDone = sinon.spy();
+        it('should trigger `change`', () => {
+            // Select 2nd step
+            onboarding.doSubmit(steps[1]);
+            let previousStep = steps[0];
+            let currentStep = steps[1];
+            assert.equal(1, actions['change'].callCount);
+            assert(actions['change'].withArgs(currentStep, previousStep));
 
-            // act
-            onboarding.goToNext();
+            // Then go back to 1rst step
+            onboarding.doSubmit(steps[0]);
+            previousStep = steps[1];
+            currentStep = steps[0];
+            assert.equal(2, actions['change'].callCount);
+            assert(actions['change'].withArgs(currentStep, previousStep));
 
-            // assert
-            assert(onboarding.triggerDone.calledOnce);
-        });
-    });
-
-    describe('#triggerDone', () => {
-        // to implement later
-    });
-
-    describe('#getStepByName', () => {
-        it('should retrieve step by its name', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
-                {
-                    name: 'test',
-                    route: 'testroute',
-                    view: 'testview'
-                }, {
-                    name: 'test2',
-                    route: 'testroute2',
-                    view: 'testview2'
-                }, {
-                    name: 'test3',
-                    route: 'testroute3',
-                    view: 'testview3'
-                }
-            ]);
-
-            let secondStep = onboarding.steps[1];
-
-            // act
-            let result = onboarding.getStepByName('test2');
-
-            // assert
-            assert.equal(secondStep, result);
-        });
-
-        it('should return undefined when the given name does not match', () => {
-            // arrange
-            let onboarding = new Onboarding(null, [
-                {
-                    name: 'test',
-                    route: 'testroute',
-                    view: 'testview'
-                }, {
-                    name: 'test2',
-                    route: 'testroute2',
-                    view: 'testview2'
-                }, {
-                    name: 'test3',
-                    route: 'testroute3',
-                    view: 'testview3'
-                }
-            ]);
-
-            // act
-            let result = onboarding.getStepByName('notExisting');
-
-            // assert
-            assert.isUndefined(result);
-        });
-    });
-});
-
-describe('Onboarding.Step', () => {
-    describe('#constructor', () => {
-        it('should map expected properties', () => {
-            // arrange
-            let options = {
-                name: 'test',
-                route: 'testroute',
-                view: 'testview'
-            };
-
-            // act
-            let result = new Step(options);
-
-            // assert
-            assert.isDefined(result.name);
-            assert.isDefined(result.route);
-            assert.isDefined(result.view);
-
-            assert.equal(result.name, options.name);
-            assert.equal(result.route, options.route);
-            assert.equal(result.view, options.view);
-        });
-
-        it('should not mal unexpected properties', () => {
-            // arrange
-            let options = {
-                inject: 'inject'
-            };
-
-            // act
-            let result = new Step(options);
-
-            // assert
-            assert.isUndefined(result.inject);
-        });
-    });
-
-    describe('#onValidated', () => {
-        it('should add given callback to step changed handlers', () => {
-            // arrange
-            let step = new Step();
-            let callback = () => {};
-
-            // act
-            step.onValidated(callback);
-
-            // assert
-            assert.include(step.validatedHandlers, callback);
-        });
-
-        it('should throw an error when callback is not a function', () => {
-            // arrange
-            let step = new Step();
-            let callback = 'I am a string';
-            let fn = () => {
-                // act
-                step.onValidated(callback);
-            }
-
-            // assert
-            assert.throws(fn, 'Callback parameter should be a function')
-        });
-    });
-
-    describe('#triggerValidated', () => {
-        it('should not throw an error when validatedHandlers is empty', () => {
-            // arrange
-            let step = new Step();
-
-            let fn = () => {
-                // act
-                step.triggerValidated();
-            }
-
-            // assert
-            assert.doesNotThrow(fn);
-        });
-
-        it('should call callback list', () => {
-            // arrange
-            let step = new Step();
-
-            let callback1 = sinon.spy();
-            let callback2 = sinon.spy();
-
-            step.onValidated(callback1);
-            step.onValidated(callback2);
-
-            // act
-            step.triggerValidated();
-
-            // assert
-            assert(callback1.calledOnce);
-            assert(callback2.calledOnce);
-            assert(callback1.calledWith(step));
-            assert(callback2.calledWith(step));
-        });
-    });
-
-    describe('#submit', () => {
-        it('should call triggerValidated', () => {
-            // arrange
-            let step = new Step();
-            step.triggerValidated = sinon.spy();
-
-            // act
-            step.submit();
-
-            // assert
-            assert(step.triggerValidated.calledOnce);
+            // and go to last step
+            onboarding.doSubmit(steps[2]);
+            previousStep = steps[0];
+            currentStep = steps[2];
+            assert.equal(3, actions['change'].callCount);
+            assert(actions['change'].withArgs(currentStep, previousStep));
         });
     });
 });

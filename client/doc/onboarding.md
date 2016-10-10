@@ -1,16 +1,67 @@
 ## Onboarding component
 
 ### Modelisation naive diagram
-![Modelisation naive diagram](assets/onboarding-modelisation.jpg "Diagram")
+```
+—————————————————————————————-
+| StateModel (agnostic)						|
+—————————————————————————————-
+| >> Update model value						|
+| >> Trigger events related to changes				|
+| ie. trigger `onboardingModel:change`			|
+—————————————————————————————-
+	|			^	 
+	| 			|
+	|			|
+	|			|
+	|		——————————————————————————-
+	|		| StateController (i.e. on boarding)			|
+	|		| @state = new StateModel(step)				|
+	|		| @ doSelectStep: (data) -> @state.set(data)		|
+	|		——————————————————————————-
+	|			^
+	|			|
+	^			|
+—————————————————————————————-
+| StateView 								|
+| @controller = new StateController()				|
+——————————-———————————————————
+| >> ListenTo StateModel						|
+| ie. on ‘onboardingModel:change’, @doChange		|
+|									|
+| >> Display Actions						|
+| ie. doSomething: -> @controller. doSelectStep(data)	|
+——————————-———————————————————
+```
 
-### Onboarding class
 
-This class, located in `lib/onboarding`, is an agnostic and framework free onboarding manager. It manages the different steps of onboarding and handle event triggered by steps object.
+### Onboarding Controller `./lib/onboarding`
 
-This class has to facilitate migration to another framework in the future. At this time, the framework used is Backbone/Marionette and Onboarding is implemented like a classical POO object.
+It manages navigation between each step of user onboarding.
 
-### Step object
-Step objects are simple configurationJavaScript object declared in separated files. Their role is to describe each onboarding step, with properties, but also with methods when needed, as validation methods for example. They are located in `steps` directory.
+This file contains two class `<class> StateModel` and  `<class> StateController`.
+
+`<class> StateController` able to:
+ - make actions to update `StateModel`,
+ - or get values from `StateModel`.
+
+It is framework agnostic to make migration easier with other frameworks later.
+
+
+### Onboarding Models `./lib/onboarding/models`
+
+Each step is described into its own configuration file by properties and specific methods if needed.
+
+ie. `./lib/onboarding/models`
+````
+module.exports = {
+    name: 'agreement',
+    route: 'agreement',
+    view : './views/steps/agreement'
+    props: {
+        validate: (data) -> return data
+    }
+}
+````
 
 #### Step class
 

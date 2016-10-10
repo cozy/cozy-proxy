@@ -2,8 +2,11 @@
 class State
 
     constructor: ({steps, actions}) ->
-        @steps = steps
-        @actions = actions
+        unless steps
+            throw new Error 'Missing mandatory `steps` parameter'
+
+        @steps = steps or []
+        @actions = actions or {}
 
         # Initialize
         @value = @steps[0]
@@ -32,10 +35,10 @@ class State
         return @steps[--index]
 
 
-    getIndexOfStep: (stepName) ->
+    getIndexOfStep: (name) ->
         index = -1
         @steps.find (step, i) ->
-            if (stepName is step.name)
+            if (name is step.name)
                 index = i
                 return true
 
@@ -65,7 +68,6 @@ module.exports.StateController = class StateController
 
     constructor: ({ user, actions, steps }) ->
         @user = user
-
         @state = new State {steps, actions}
 
 
@@ -102,8 +104,13 @@ module.exports.StateController = class StateController
     # Return Current View
     # related to current State
     getStepView: ->
-        return require @state.view
+        step = @state.value
+        return require step.view
 
 
     getState: ->
-        return @state
+        return @state.value
+
+
+    getAllSteps: ->
+        return @state.steps

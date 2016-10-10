@@ -1,69 +1,69 @@
 
 class State
 
-    constructor: (actions) ->
-        # TODO: naviguer par l'URI et non par l'index
-        @value = @steps[0]
-
+    constructor: ({steps, actions}) ->
+        @steps = steps
         @actions = actions
 
+        # Initialize
+        @value = @steps[0]
 
-    trigger: (name, data) ->
+
+    trigger: (name, [current, previous]) ->
         # Global action
         console.info '(event)', name, data
 
         # Specific action
         if name is 'change' and (callback = @actions['change'])
-            callback data
+            callback current, previous
 
 
     getCurrent: ->
-        @steps[@_index]
+        return @value
 
 
     getNext: ->
-        index = @_index + 1
-        @steps[nextIndex]
+        index = @steps.indexOf @value
+        return @steps[++index]
 
 
     getPrevious: ->
-        index = @_index - 1
-        @steps[nextIndex]
+        index = @steps.indexOf @value
+        return @steps[--index]
 
 
-    # Returns an internal step by its name.
     getIndexOfStep: (stepName) ->
-        steps = @steps.map (step) -> return stepName
-        steps.indexOf stepName
+        index = -1
+        @steps.find (step, i) ->
+            if (stepName is step.name)
+                index = i
+                return true
+
+        return index
 
 
     # Save current data
     # and keep trace of previous stateIndex
     # enable state history navigation
     # such as stateMachine
-    save: ({ index }) ->
-        unless (nextState = @steps[index])?
-            throw Error 'Current step cannot be found in steps list'
-
-        if index isnt @_index
-            @_previousIndex = @_index
-            @_index = index
+    save: (model) ->
+        if model isnt @value
+            @previousValue = @value
+            @value = model
 
             # Listen to this event
             # to redirect to other views
-            @trigger 'change', {
-                step: @getCurrent(),
-                previous: @getPrevious()
-            }
+            @trigger 'change', [@getCurrent(), @getPrevious()]
 
 
 # Main class
 # StateController is the component in charge of managing steps
 module.exports.StateController = class StateController
 
-    constructor: ({ user, actions }) ->
+    constructor: ({ user, actions, steps }) ->
         @user = user
-        @state = new State actions
+
+        @state = new State {steps, actions}
 
 
     doValidate: (data) ->
@@ -75,7 +75,7 @@ module.exports.StateController = class StateController
     doSubmit: (data) ->
         if (model = @state.getCurrent().validate(data))
             # Select Next Step
-            @state.save {index: @_index + 1}
+            @state.save model
             return true
 
         return false

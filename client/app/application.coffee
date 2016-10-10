@@ -32,10 +32,9 @@ class App extends Application
     initialize: ->
         @on 'start', (options) =>
 
-
             steps = [welcome, agreement, password, confirmation]
             actions = { 'change': @doChange }
-            @onboarding = new Onboarding { actions }
+            @onboarding = new Onboarding { steps, actions }
 
             @router = new Router app: @
 

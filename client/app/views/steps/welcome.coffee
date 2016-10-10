@@ -5,7 +5,7 @@ module.exports = class WelcomeView extends LayoutView
     template: require '../templates/view_steps_welcome'
 
     events:
-        'click button': 'goToNext'
+        'click button': 'onSubmit'
 
 
     initialize: (params={}) ->
@@ -13,6 +13,6 @@ module.exports = class WelcomeView extends LayoutView
         super params
 
 
-    goToNext: (event) ->
+    onSubmit: (event) ->
         event?.preventDefault()
         @actionsCreator.doSubmit()

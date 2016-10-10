@@ -5,13 +5,13 @@ module.exports = class ConfirmationView extends LayoutView
     template: require '../templates/view_steps_confirmation'
 
     events:
-        'click button': 'goToNext'
+        'click button': 'onSubmit'
 
     initialize: (params={}) ->
         @actionsCreator = params.actionsCreator
         super params
 
 
-    goToNext: (event) ->
+    onSubmit: (event) ->
         event?.preventDefault()
         @actionsCreator.doSubmit()

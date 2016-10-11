@@ -7,4 +7,7 @@ module.exports = {
     # if not return an Array of errors
     validate: (data) ->
         return null
+
+    submit: (data) ->
+        $.post '/register', JSON.stringify data
 }

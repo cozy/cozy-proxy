@@ -22,5 +22,6 @@ module.exports = class StepModel extends Backbone.Model
 
 
     # Encapsulate call to step.submit
-    submit: () ->
-        @step.submit()
+    submit: (data) ->
+        @step.submit(data)
+        return true

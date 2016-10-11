@@ -11,11 +11,10 @@ module.exports = {
         return null
 
     save: (data) ->
-        data = JSON.stringify data
         return new Promise((resolve, reject) ->
             jQuery.post({
                 url: '/register'
-                data: data
+                data: JSON.stringify data
                 success: resolve
                 error: reject
             })).then @handleSaveSuccess, @handleSaveError

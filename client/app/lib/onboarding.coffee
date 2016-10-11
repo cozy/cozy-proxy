@@ -119,5 +119,17 @@ module.exports = class Onboarding
         return @steps.find (step) ->
             return step.name is stepName
 
+
+    # Returns progression associated to the given step object
+    # @param step Step which we want to know the related progression
+    # returns the current index of the step, from 1 to length. 0 if the step
+    # does not exist in the onboarding.
+    getProgression: (step) ->
+        return \
+            current: @steps.indexOf(step)+1,
+            total: @steps.length,
+            labels: @steps.map (step) -> step.name
+
+
 # Step is exposed for test purposes only
 module.exports.Step = Step

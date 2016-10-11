@@ -12,6 +12,8 @@ module.exports = class StepModel extends Backbone.Model
     initialize: ({step, next}) ->
         @step = step
 
+        @errors = null
+
         # We map the defaults steps properties in the current model
         # There will be more properties/functions in the future.
         ['name', 'route', 'view', 'username'].forEach (property) =>

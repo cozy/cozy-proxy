@@ -45,7 +45,7 @@ module.exports.registerIndex = (req, res, next) ->
                     next error
 
                 # Check steps changes
-                OnboardingStepsIsUnchanged = userData?.onboardedSteps is ONBOARDING_STEPS
+                onboardingStepsIsUnchanged = userData?.onboardedSteps is ONBOARDING_STEPS
                 if onboardingStepsIsUnchanged
                     res.redirect '/login'
                 else

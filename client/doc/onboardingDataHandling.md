@@ -77,7 +77,7 @@ The complete ```onboardedSteps``` value, considered here, is ```['welcome', 'agr
 According to the ```user``` document properties:
 
 * If __```onboardedSteps```__ is __```['welcome']```__ => ```agreement``` step.
-* If ```isCGUaccepted``` AND __```onboardedSteps```__ is __```['welcome', 'agreement']```__ => ```password``` step.
+* If __```onboardedSteps```__ is __```['welcome', 'agreement']```__ => ```password``` step.
 * If ```isCGUaccepted``` AND ```password``` AND __```onboardedSteps```__ is __```['welcome', 'agreement', 'password']```__ => ```login``` then ```infos``` step to get ```email``` and ```timezone``` informations.
 * If ```isCGUaccepted``` AND ```password``` AND ```email``` AND ```timezone``` AND ```public_name``` AND __```onboardedSteps```__ is __```['welcome', 'agreement', 'password']```__ => ```login``` then ```accounts``` step with ```onboardedSteps``` set to ```['welcome', 'agreement', 'password', 'infos']``` (skip unecessary ```infos``` step)
 * If __```onboardedSteps```__ is __```['welcome', 'agreement', 'password', 'infos']```__ => ```accounts``` step with user authenticated

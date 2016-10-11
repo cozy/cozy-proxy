@@ -10,7 +10,7 @@ module.exports = {
 
     # If OK, return null
     # if not return an Array of errors
-    # that will be triggered throw onboarding
+    # Triggered throw onboarding
     # to dispatch error into app
     validate: (data={}) ->
         unless data.password?

@@ -9,5 +9,6 @@ module.exports = {
         return null
 
     submit: (data) ->
-        $.post '/register', JSON.stringify data
+        data = JSON.stringify data
+        $.post('/register', data)
 }

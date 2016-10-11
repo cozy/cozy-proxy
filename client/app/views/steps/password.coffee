@@ -10,8 +10,10 @@ module.exports = class PasswordView extends StepView
 
     serializeData: ->
         {
-            title: 'Votre mot de passe'
-            buttonLabel: 'CONTINUER'
+            title: t 'step password title'
+            description: t 'step password description'
+            fieldLabel: t 'preset password'
+            buttonLabel: t 'step password submit'
         }
 
 

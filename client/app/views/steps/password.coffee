@@ -21,4 +21,5 @@ module.exports = class PasswordView extends StepView
 
     onSubmit: (event)->
         event?.preventDefault()
+
         @model.submit @getDataFromDOM()

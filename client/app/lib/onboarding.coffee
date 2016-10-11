@@ -30,7 +30,7 @@ class Step
     # @param user : plain JS object. Not used in this abstract default method
     #  but should be in overriding ones.
     isActive: (user) ->
-        return true;
+        return true
 
     # Submit the step
     # This method should be overriden by step given as parameter to add

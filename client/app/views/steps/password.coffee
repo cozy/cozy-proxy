@@ -8,14 +8,16 @@ module.exports = class PasswordView extends StepView
 
 
     serializeData: ->
-        value = 'fakePasswordValue'
         {
             title: 'Votre mot de passe'
             buttonLabel: 'CONTINUER'
-            value
         }
+
+
+    getDataFromDOM: ->
+        return { password: @$('input[name=password]').val() }
 
 
     onSubmit: (event)->
         event?.preventDefault()
-        @model.submit()
+        @model.submit @getDataFromDOM()

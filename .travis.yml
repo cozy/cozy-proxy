@@ -48,7 +48,6 @@ before_install:
 
 script:
     - npm run build
-    - npm run test:build
 
 after_failure:
     - pwd

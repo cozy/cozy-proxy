@@ -19,6 +19,10 @@ module.exports = class PasswordView extends StepView
         }
 
 
+    getDataFromDOM: ->
+        return { password: @$('input[name=password]').val() }
+
+
     onSubmit: (event)->
         event?.preventDefault()
 

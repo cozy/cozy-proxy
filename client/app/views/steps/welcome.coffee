@@ -6,5 +6,10 @@ module.exports = class WelcomeView extends LayoutView
     events:
         'click button': 'onSubmit'
 
+    serializeData: ->
+        {
+            username: ENV.username
+        }
+
     onSubmit: (event)->
         @model.submit()

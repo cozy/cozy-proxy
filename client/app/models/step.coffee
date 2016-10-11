@@ -13,6 +13,8 @@ module.exports = class StepModel extends Backbone.Model
     initialize: ({step, next}) ->
         @step = step
 
+        @errors = null
+
         # We map the defaults steps properties in the current model
         # There will be more properties/functions in the future.
         ['name', 'route', 'view', 'username'].forEach (property) =>
@@ -22,8 +24,12 @@ module.exports = class StepModel extends Backbone.Model
 
 
     submit: (data) ->
-        # TODO: should handle errors here
+        # Save Errors to display
+        # them into views
         if @step.validate? and (errors = @step.validate(data))
+            @errors?= []
+            @errors.push errors
+            error errors
             return false
 
         @step.submit(data)

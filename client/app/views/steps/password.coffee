@@ -6,9 +6,16 @@ module.exports = class PasswordView extends StepView
     events:
         'click button': 'onSubmit'
 
-    render: ->
-        super()
+
+    serializeData: ->
+        value = 'fakePasswordValue'
+        {
+            title: 'Votre mot de passe'
+            buttonLabel: 'CONTINUER'
+            value
+        }
+
 
     onSubmit: (event)->
-        event.preventDefault()
+        event?.preventDefault()
         @model.submit()

@@ -5,7 +5,7 @@ module.exports = class PasswordView extends StepView
     template: require '../templates/view_steps_password'
 
     events:
-        'click button': 'onSubmit'
+        'click button': 'doSubmit'
 
 
     # Get 1rst error only
@@ -30,7 +30,7 @@ module.exports = class PasswordView extends StepView
         return { password: @$('input[name=password]').val() }
 
 
-    onSubmit: (event)->
+    doSubmit: (event)->
         event?.preventDefault()
 
         @model.submit @getDataFromDOM()

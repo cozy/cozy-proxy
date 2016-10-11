@@ -82,7 +82,7 @@ According to the ```user``` document properties:
 * If ```isCGUaccepted``` AND ```password``` AND ```email``` AND ```timezone``` AND ```public_name``` AND __```onboardedSteps```__ is __```['welcome', 'agreement', 'password']```__ => ```login``` then ```accounts``` step with ```onboardedSteps``` set to ```['welcome', 'agreement', 'password', 'infos']``` (skip unecessary ```infos``` step)
 * If __```onboardedSteps```__ is __```['welcome', 'agreement', 'password', 'infos']```__ => ```accounts``` step with user authenticated
 * If __```onboardedSteps ```__ is __```['welcome', 'agreement', 'password', 'infos', 'accounts']```__ => ```ending``` step with authenticated user
-* If __```onboardedSteps ```__ is __```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']```__ => cozy home with user authenticated
+* If __```onboardedSteps ```__ is __```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']```__ => cozy home with authenticated user
 * If no ```user``` document => ```welcome``` step (without username)
 * If only ```public_name``` => ```welcome``` step (with username)
 * __Default__ => ```welcome``` step with ```onboardedSteps``` set to ```[]```
@@ -95,7 +95,7 @@ According to the ```user``` document properties:
     * Only the username (if exists) is used throught the view
     * At the step validation, new data are saved to the ```user``` document
 3. For ```password``` step:
-    * Only the username (if exists) is used in the view$
+    * Only the username (if exists) is used in the view
     * At the validation, new data are saved to the ```user``` document
     * At the validation, the user will be redirected to the login page for the authentication
 4. For ```infos``` step:

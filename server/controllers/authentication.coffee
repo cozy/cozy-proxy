@@ -12,9 +12,6 @@ otpManager   = require '../lib/2fa_manager'
 
 # hardcoded onboarding steps order and slug names
 ONBOARDING_STEPS = ['welcome', 'agreement', 'extraInfos', 'password', 'accounts', 'ending']
-# Flag to affect changes to not automatically affetc new ONBOARDING_STEPS
-# changes to already onboarded user
-AFFECT_ONBOARDING_CHANGES = false
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -42,14 +39,14 @@ module.exports.registerIndex = (req, res, next) ->
             # get user data
             User.first (err, userData) ->
                 if err
-                    error          = new Error "[Error to access cozy user] #{err.code}"
+                    error = new Error "[Error to access cozy user] #{err.code}"
                     error.status   = 500
                     error.template = name: 'error'
                     next error
 
                 # Check steps changes
-                isOnboardingStepsUnchanged = not AFFECT_ONBOARDING_CHANGES or userData?.onboardedSteps is ONBOARDING_STEPS
-                if userData?.activated and isOnboardingStepsUnchanged
+                OnboardingStepsIsUnchanged = userData?.onboardedSteps is ONBOARDING_STEPS
+                if onboardingStepsIsUnchanged
                     res.redirect '/login'
                 else
                     localization.setLocale req.headers['accept-language']

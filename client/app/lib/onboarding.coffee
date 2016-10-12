@@ -63,6 +63,7 @@ class Step
             handler(@, error)
 
 
+
     # Returns true if the step has to be submitted by the user
     # This method returns true by default, but can be overriden
     # by config steps

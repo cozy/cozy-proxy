@@ -133,6 +133,12 @@ module.exports = {
         filename: optimize? 'app.[hash].js' : 'app.js',
         chunkFilename: optimize? 'register.[hash].js' : 'register.js'
     },
+    alias: {
+      // Force all modules to use versions of backbone and underscore defined
+      // in package.json to prevent duplicate dependencies
+      'backbone': path.join(__dirname, 'node_modules', 'backbone', 'backbone.js'),
+      'underscore': path.join(__dirname, 'node_modules', 'underscore', 'underscore.js')
+    },
     resolve: {
         extensions: ['', '.js', '.coffee', '.jade', '.json']
     },

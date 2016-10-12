@@ -9,7 +9,9 @@ class Step
           'route',
           'view',
           'isActive',
-          'fetchUser'
+          'fetchUser',
+          'validate',
+          'submit'
         ].forEach (property) =>
             if step[property]
                 @[property] = step[property]
@@ -38,6 +40,7 @@ class Step
         if @completedHandlers
             @completedHandlers.forEach (handler) =>
                 handler(@)
+
 
     # Returns true if the step has to be submitted by the user
     # This method returns true by default, but can be overriden

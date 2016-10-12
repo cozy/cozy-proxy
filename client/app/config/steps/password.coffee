@@ -1,3 +1,5 @@
+$ = require 'jQuery'
+
 module.exports = {
     name: 'password',
     route: 'password',

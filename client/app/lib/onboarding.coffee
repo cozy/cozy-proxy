@@ -59,8 +59,7 @@ module.exports = class Onboarding
                 stepModel = new Step step
                 if stepModel.isActive user
                     activeSteps.push stepModel
-                    stepModel.onValidated () =>
-                        @handleStepSubmitted()
+                    stepModel.onValidated @handleStepSubmitted
                 return activeSteps
             , []
 
@@ -77,7 +76,7 @@ module.exports = class Onboarding
     # when it has been successfully submitted
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
-    handleStepSubmitted: () ->
+    handleStepSubmitted: =>
         @goToNext()
 
 

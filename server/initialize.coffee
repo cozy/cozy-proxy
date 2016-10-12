@@ -20,15 +20,13 @@ module.exports = (app, server, callback) ->
     app.locals.t         = localization.t
     app.locals.getLocale = localization.getLocale
 
-    # Try to get assets definitions from root (only valid in build, not on
-    # watch mode)
+    # Try to get assets definitions from root
+    # (only valid in build, not on watch mode)
     try
-        assets = require(path.join __dirname, '../webpack-assets').main
+        hash = ".#{require('../assets').hash}"
     catch
-        assets =
-            js: 'app.js'
-            css: 'app.css'
-    app.locals.assets = assets
+        hash = ''
+    app.locals.hash = hash
 
     # initialize Proxy server
     initializeProxy app, server

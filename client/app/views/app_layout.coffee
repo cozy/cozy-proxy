@@ -5,6 +5,10 @@ Attach itself to the `[role=application] DOM node and declares the application
 main region for its subviews.
 ###
 
+# Normalize styles
+require 'normalize.css/normalize.css'
+
+
 {LayoutView} = require 'backbone.marionette'
 
 

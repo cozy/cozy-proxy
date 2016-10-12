@@ -1,14 +1,21 @@
 var path = require('path');
+var fs   = require('fs');
 
 var webpack = require('webpack');
 
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyPlugin        = require('copy-webpack-plugin');
-var AssetsPlugin      = require('assets-webpack-plugin');
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 // use the `OPTIMIZE` env VAR to switch from dev to production build
 var optimize = process.env.OPTIMIZE === 'true';
+
+
+// Stylesheets extractors
+var CSSCommon     = new ExtractTextPlugin(optimize? 'common.[hash].css' : 'common.css')
+var CSSApp        = new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css')
+var CSSOnBoarding = new ExtractTextPlugin(optimize? 'onboarding.[hash].css' : 'onboarding.css', {allChunks: true})
+
 
 /**
  * Loaders used by webpack
@@ -26,13 +33,17 @@ var loaders = [
         loader: 'coffee'
     },
     {
-        test: /\.styl$/,
-        loader: ExtractTextPlugin.extract('style', cssOptions + '!stylus')
+        test: /app\.styl$/,
+        loader: CSSApp.extract('style', cssOptions + '!stylus')
+    },
+    {
+        test: /onboarding\.styl$/,
+        loader: CSSOnBoarding.extract('style', cssOptions + '!stylus')
     },
     {
         test: /\.css$/,
         exclude: /vendor/,
-        loader: ExtractTextPlugin.extract('style', cssOptions)
+        loader: CSSCommon.extract('style', cssOptions)
     },
     {
         test: /\.jade$/,
@@ -74,7 +85,9 @@ var loaders = [
  *   http://localhost:3000, proxified to the server app port
  */
 var plugins = [
-    new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
+    CSSCommon,
+    CSSApp,
+    CSSOnBoarding,
     new webpack.optimize.CommonsChunkPlugin({
         name:      'main',
         children:  true,
@@ -87,9 +100,6 @@ var plugins = [
 
 if (optimize) {
     plugins = plugins.concat([
-        new AssetsPlugin({
-            filename: '../build/webpack-assets.json'
-        }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -102,7 +112,15 @@ if (optimize) {
             __SERVER__:      !optimize,
             __DEVELOPMENT__: !optimize,
             __DEVTOOLS__:    !optimize
-        })
+        }),
+        function() {
+            this.plugin("done", function(stats) {
+                fs.writeFileSync(
+                    path.join(__dirname, '..', 'build', 'assets.json'),
+                    '{"hash":"' + stats.hash + '"}'
+                );
+            });
+        }
     ]);
 } else {
     plugins = plugins.concat([

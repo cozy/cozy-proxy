@@ -35,6 +35,9 @@ module.exports = class Router extends Backbone.Router
     the submitted form.
     ###
     auth: (path, options) ->
+        # Load app stylesheet
+        AppStyles = require '../styles/app.styl'
+
         AuthView  = require '../views/auth'
         AuthModel = require '../states/auth'
 
@@ -74,6 +77,9 @@ module.exports = class Router extends Backbone.Router
     component determined by the step param.
     ###
     register: (step = 'preset') -> require.ensure [], =>
+        # Load onboarding stylesheet
+        AppStyles = require '../styles/onboarding.styl'
+
         RegisterView      = require '../views/register'
         RegistrationModel = require '../states/registration'
 

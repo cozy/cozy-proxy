@@ -48,20 +48,20 @@ class App extends Application
     # The idea is to configure the router externally as a "native"
     # Backbone Router
     # @param steps a list of Step instance
-    initializeRouter: (steps) ->
-        @router = new Router
-            app: @
-            routes:
-                # Override legacy route for new onboarding
-                'register(?step=:step)': (stepName) => @handleStepRoute stepName
+    initializeRouter: (steps) =>
+        @router = new Router app: @
+        @router.route \
+            'register(?step=:step)',
+            'register',
+            (step) => @handleStepRoute(step)
 
-        steps.forEach (step) => @initializeStepRoute @router, step
+        steps.forEach (step) => @initializeStepRoute step
 
 
     # Initialize one route only
     # @param router Backbone.Router instance
     # @param step Step instance
-    initializeStepRoute: (router, step) ->
+    initializeStepRoute: (step) =>
         StepView = require "./views/#{step.view}"
         @router.route "#{step.route}", "route:#{step.route}", () =>
             @layout.showChildView 'content',
@@ -77,7 +77,7 @@ class App extends Application
 
 
     # Register is the default main route for Onboarding
-    handleStepRoute: (stepName='preset') ->
+    handleStepRoute: (stepName='preset') =>
         step = @onboarding.getStepByName stepName
         throw new Error 'Step does not exist' unless step
         @onboarding.goToStep @onboarding.getStepByName stepName

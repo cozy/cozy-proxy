@@ -8,15 +8,6 @@ module.exports = class PasswordView extends StepView
         'click button': 'doSubmit'
 
 
-    serializeData: ->
-        {
-            title: t 'step password title'
-            description: t 'step password description'
-            fieldLabel: t 'preset password'
-            buttonLabel: t 'step password submit'
-        }
-
-
     getDataFromDOM: ->
         return { password: @$('input[name=password]').val() }
 

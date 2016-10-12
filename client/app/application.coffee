@@ -75,6 +75,9 @@ class App extends Application
 
     # Register is the default main route for Onboarding
     handleStepRoute: (stepName='preset') ->
+        # Load onboarding stylesheet
+        AppStyles = require './styles/onboarding.styl'
+
         step = @onboarding.getStepByName stepName
         throw new Error 'Step does not exist' unless step
         @onboarding.goToStep @onboarding.getStepByName stepName

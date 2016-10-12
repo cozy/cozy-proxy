@@ -51,6 +51,7 @@
     "npm-run-all": "1.7.0",
     "rewire": "2.5.1",
     "sinon": "1.17.4",
+    "svg-sprite-loader": "0.0.29",
     "webpack": "1.12.15",
     "xmlhttprequest": "1.8.0"
   },

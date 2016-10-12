@@ -43,8 +43,13 @@ var loaders = [
         loader: 'json'
     },
     {
+        test: /\.svg$/,
+        include: /sprites/,
+        loader: 'svg-sprite?name=[name]_[hash]'
+    },
+    {
         test: /\.(png|gif|jpe?g|svg)$/i,
-        exclude: /vendor/,
+        exclude: /(vendor|sprites)/,
         loader: 'file?name=' + imgPath
     }
 ];

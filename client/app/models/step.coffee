@@ -21,7 +21,10 @@ module.exports = class StepModel extends Backbone.Model
         @set 'next', next
 
 
-    # Encapsulate call to step.submit
     submit: (data) ->
+        # TODO: should handle errors here
+        if @step.validate? and (errors = @step.validate(data))
+            return false
+
         @step.submit(data)
         return true

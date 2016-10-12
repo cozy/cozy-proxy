@@ -1,5 +1,4 @@
 Backbone = require 'backbone'
-$ = require 'jQuery'
 
 # StepModel
 # Backbone wrapper for Onboarding's Step models

@@ -27,7 +27,8 @@ html(lang=getLocale().language)
         meta(name="theme-color", content="#20a8f1")
 
         link(rel="stylesheet", href="/fonts/fonts.css")
-        link(rel="stylesheet", href="/#{assets.css}")
+        link(rel="stylesheet", href="/common#{hash}.css")
+        link(rel="stylesheet", href="/#{onBoarding?'onboarding':'app'}#{hash}.css")
 
         block js
 

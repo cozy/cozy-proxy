@@ -77,9 +77,6 @@ module.exports = class Router extends Backbone.Router
     component determined by the step param.
     ###
     register: (step = 'preset') -> require.ensure [], =>
-        # Load onboarding stylesheet
-        AppStyles = require '../styles/onboarding.styl'
-
         RegisterView      = require '../views/register'
         RegistrationModel = require '../states/registration'
 

@@ -14,10 +14,11 @@ class Step
           'submit'
         ].forEach (property) =>
             if step[property]?
-                if typeof @[property] is 'function'
 
-                    # Do not override native methods
-                    # such as @submit that allow to goto next step
+                # Do not override submit
+                # such as @submit that allow to goto next step
+                # @submit mussnt be overidden but @isActive yes
+                if property is 'submit'
                     nativeCallback = @[property]
                     @[property] = (args...) =>
                         step[property].call @, args...

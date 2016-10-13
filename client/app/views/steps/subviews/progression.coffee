@@ -1,4 +1,4 @@
-{LayoutView} = require 'backbone.marionette'
+{ItemView} = require 'backbone.marionette'
 
-module.exports = class ProgressionView extends LayoutView
+module.exports = class ProgressionView extends ItemView
     template: require '../../templates/progression'

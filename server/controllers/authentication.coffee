@@ -11,7 +11,7 @@ passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
 
 # hardcoded onboarding steps order and slug names
-ONBOARDING_STEPS = ['welcome', 'agreement', 'extraInfos', 'password', 'accounts', 'ending']
+ONBOARDING_STEPS = ['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->

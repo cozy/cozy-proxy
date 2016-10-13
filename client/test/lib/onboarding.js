@@ -601,6 +601,7 @@ describe('Onboarding', () => {
         });
     });
 
+
     describe('#getNextStep', () => {
         it('should throw error when no step is given in parameter', () => {
             // arrange

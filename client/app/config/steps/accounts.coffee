@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'accounts', # named 'preset' to match existing codebase.
+    name: 'accounts',
     route: 'accounts',
-    view : 'steps/accounts'
+    view: 'steps/accounts'
 }

@@ -13,8 +13,17 @@ class Step
           'validate',
           'submit'
         ].forEach (property) =>
-            if step[property]
-                @[property] = step[property]
+            if step[property]?
+                if typeof @[property] is 'function'
+
+                    # Do not override native methods
+                    # such as @submit that allow to goto next step
+                    nativeCallback = @[property]
+                    @[property] = (args...) =>
+                        step[property].call @, args...
+                        nativeCallback.call @, args...
+                else
+                    @[property] = step[property]
 
         @fetchUser user
 

@@ -673,6 +673,7 @@ describe('Onboarding', () => {
             assert.isNull(result);
         });
     });
+
 });
 
 describe('Onboarding.Step', () => {
@@ -832,7 +833,10 @@ describe('Onboarding.Step', () => {
             assert(callback2.calledWith(step));
         });
     });
+
+
     describe('#submit', () => {
+
         it('should call triggerCompleted (default #submit)', () => {
             // arrange
             let step = new Step();

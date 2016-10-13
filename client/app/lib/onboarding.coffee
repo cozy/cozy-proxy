@@ -9,19 +9,18 @@ class Step
                 @[property] = step[property]
 
 
-
-    # Record handlers for 'validated' internal pseudo-event
-    onValidated: (callback) ->
+    # Record handlers for 'completed' internal pseudo-event
+    onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @validatedHandlers = @validatedHandlers or []
-        @validatedHandlers.push callback
+        @completedHandlers = @completedHandlers or []
+        @completedHandlers.push callback
 
 
-    # Trigger 'validated' pseudo-event
-    triggerValidated: () ->
-        if @validatedHandlers
-            @validatedHandlers.forEach (handler) =>
+    # Trigger 'completed' pseudo-event
+    triggerCompleted: () ->
+        if @completedHandlers
+            @completedHandlers.forEach (handler) =>
                 handler(@)
 
     # Returns true if the step has to be submitted by the user
@@ -38,7 +37,7 @@ class Step
     # Maybe it should return a Promise or a call a callback couple
     # in the near future
     submit: () ->
-        @triggerValidated()
+        @triggerCompleted()
 
 
 # Main class
@@ -59,7 +58,7 @@ module.exports = class Onboarding
                 stepModel = new Step step
                 if stepModel.isActive user
                     activeSteps.push stepModel
-                    stepModel.onValidated @handleStepSubmitted
+                    stepModel.onCompleted @handleStepCompleted
                 return activeSteps
             , []
 
@@ -76,7 +75,7 @@ module.exports = class Onboarding
     # when it has been successfully submitted
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
-    handleStepSubmitted: =>
+    handleStepCompleted: =>
         @goToNext()
 
 

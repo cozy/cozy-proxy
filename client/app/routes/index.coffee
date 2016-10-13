@@ -35,6 +35,9 @@ module.exports = class Router extends Backbone.Router
     the submitted form.
     ###
     auth: (path, options) ->
+        # Load app stylesheet
+        AppStyles = require '../styles/app.styl'
+
         AuthView  = require '../views/auth'
         AuthModel = require '../states/auth'
 

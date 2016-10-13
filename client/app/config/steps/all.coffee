@@ -3,12 +3,14 @@
 # At this time there is only proper
 welcome = require './welcome'
 agreement = require './agreement'
+infos = require './infos'
 password = require './password'
 confirmation = require './confirmation'
 
 module.exports = [
     welcome,
     agreement,
+    infos,
     password,
     confirmation
 ]

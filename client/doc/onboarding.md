@@ -60,7 +60,60 @@ Go directly to the given step and trigger required events. Useful for go back in
 
 Returns a step by its name.
 
+#### getProgression(step)
+#### Parameters
+* `step`: Step
+
+Returns a JS object representing the progression in onboarding for the given `step`. This object contains the following properties :
+* `current` (int): The current index, from 1 to the number of steps in the onboarding. 0 means that the step is not in the onboarding steps list.
+* `total` (int): Total number of steps in the onboarding.
+* `labels` (Array): Used for accessibility in views. It an ordered list of all the step names. Should be used as keys for Transifex.
+
+#### Example
+```javascript
+let user = retrieveUserInAWayOrAnother();
+let step1Options = {name: 'example1'};
+let step2Options = {name: 'example2'};
+
+let onboarding = new Onboarding(user, [step1, step2]);
+
+let step2 = onboarding.getStepByName('example2');
+let progression = onboarding.getProgression(step);
+```
+progression will be
+```javascript
+{
+    current: 2,
+    total: 2,
+    labels: ['example1', 'example2']
+}
+```
+
 ### Step
+
+#### isActive(user)
+* `user`: JS Object
+
+Returns true if the step has to be active for the given `user`. Returns `true` by default.
+This method can be overriden by specifying an `isActive` method in constructor parameter.
+
+##### Example
+```javascript
+let step = new Step({
+    isActive: (user) => {
+        // This step will be active only for Claude
+        return user.name === 'Claude'
+    }
+});
+
+let result1 = step.isActive({name: Claude});
+// result1 = true
+
+let result2 = step.isActive({name: Claudia});
+// result = false
+```
+
+
 #### onSubmitted(callback)
 ##### Parameters
 * `callback`: function

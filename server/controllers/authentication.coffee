@@ -50,7 +50,7 @@ module.exports.registerIndex = (req, res, next) ->
                     res.redirect '/login'
                 else
                     localization.setLocale req.headers['accept-language']
-                    res.render 'index', env: env
+                    res.render 'index', {env: env, onBoarding: true}
 
 
 module.exports.register = (req, res, next) ->

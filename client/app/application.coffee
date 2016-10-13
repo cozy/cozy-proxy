@@ -5,9 +5,6 @@ Main application that create a Mn.Application singleton and exposes it. Needs
 router and app_layout view.
 ###
 
-require 'normalize.css/normalize.css'
-require './styles/app.styl'
-
 {Application} = require 'backbone.marionette'
 
 Router    = require './routes'
@@ -15,6 +12,7 @@ AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
 StepModel = require './models/step'
+ProgressionModel = require './models/progression'
 
 class App extends Application
 
@@ -30,7 +28,10 @@ class App extends Application
         steps = require './config/steps/all'
         @on 'start', (options) =>
 
-            @onboarding = new Onboarding({}, steps)
+            # TODO: Get the user with a better way later
+            user = {}
+
+            @onboarding = new Onboarding(user, steps)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
 
             @initializeRouter @onboarding.steps
@@ -48,25 +49,27 @@ class App extends Application
     # The idea is to configure the router externally as a "native"
     # Backbone Router
     # @param steps a list of Step instance
-    initializeRouter: (steps) ->
-        @router = new Router
-            app: @
-            routes:
-                # Override legacy route for new onboarding
-                'register(?step=:step)': (stepName) => @handleStepRoute stepName
+    initializeRouter: (steps) =>
+        @router = new Router app: @
+        @router.route \
+            'register(?step=:step)',
+            'register',
+            (step) => @handleStepRoute(step)
 
-        steps.forEach (step) => @initializeStepRoute @router, step
+        steps.forEach (step) => @initializeStepRoute step
 
 
     # Initialize one route only
     # @param router Backbone.Router instance
     # @param step Step instance
-    initializeStepRoute: (router, step) ->
+    initializeStepRoute: (step) =>
         StepView = require "./views/#{step.view}"
         @router.route "#{step.route}", "route:#{step.route}", () =>
             @layout.showChildView 'content',
                 new StepView
                     model: new StepModel step: step
+                    progression: new ProgressionModel \
+                        @onboarding.getProgression step
 
 
     # Internal handler called when the onboarding's internal step has just
@@ -78,6 +81,9 @@ class App extends Application
 
     # Register is the default main route for Onboarding
     handleStepRoute: (stepName='preset') ->
+        # Load onboarding stylesheet
+        AppStyles = require './styles/onboarding.styl'
+
         step = @onboarding.getStepByName stepName
         throw new Error 'Step does not exist' unless step
         @onboarding.goToStep @onboarding.getStepByName stepName

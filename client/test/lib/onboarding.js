@@ -82,27 +82,6 @@ describe('Onboarding', () => {
             assert.isFunction(step2.submit);
         });
 
-        it('should not map unexpected steps properties', () => {
-            // arrange
-            let user = null;
-            let steps = [{
-                name: 'test',
-                route: 'testroute',
-                view: 'testview',
-                unexpected: 'do not map'
-            }];
-
-            // act
-            let onboarding = new Onboarding(user, steps);
-
-            // assert
-            let step = onboarding.steps[0];
-            assert.equal('test', step.name);
-            assert.equal('testroute', step.route);
-            assert.equal('testview', step.view);
-            assert.isUndefined(step.unexpected);
-        });
-
         it('should throw error when `steps` parameter is missing', () => {
             // arrange
             let fn = () => {
@@ -112,6 +91,33 @@ describe('Onboarding', () => {
 
             // assert
             assert.throw(fn, 'Missing mandatory `steps` parameter');
+        });
+
+        it('should not map inActive steps', () => {
+            // arrange
+            // arrange
+            let user = null;
+            let steps = [{
+                name: 'test',
+                route: 'testroute',
+                view: 'testview'
+            }, {
+                name: 'test2',
+                route: 'testroute2',
+                view: 'testview2',
+                isActive: () => false
+            }];
+
+            // act
+            let onboarding = new Onboarding(user, steps);
+
+            // assert
+            assert.equal(1, onboarding.steps.length)
+            let step1 = onboarding.steps[0];
+            assert('Step', step1.constructor.name);
+            assert.equal('test', step1.name);
+            assert.equal('testroute', step1.route);
+            assert.equal('testview', step1.view);
         });
     });
 
@@ -408,6 +414,148 @@ describe('Onboarding', () => {
             assert.isUndefined(result);
         });
     });
+
+    describe('#getProgression', () => {
+        it('should return expected total', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test');
+
+            // act
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.equal(3, result.total);
+        });
+
+        it('should return first step as current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.equal(1, result.current);
+        });
+
+        it('should return expected current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test2');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+
+            // assert
+            assert.equal(2, result.current);
+        });
+
+        it('should return last step as current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test3');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+
+            // assert
+            assert.equal(3, result.current);
+        });
+
+        it('should return expected labels', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+            let step = onboarding.getStepByName('test');
+            let expectedLabels = ['test', 'test2', 'test3'];
+
+            // act
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.deepEqual(expectedLabels, result.labels);
+        });
+    });
 });
 
 describe('Onboarding.Step', () => {
@@ -433,7 +581,7 @@ describe('Onboarding.Step', () => {
             assert.equal(result.view, options.view);
         });
 
-        it('should not mal unexpected properties', () => {
+        it('should not map unexpected properties', () => {
             // arrange
             let options = {
                 inject: 'inject'
@@ -444,6 +592,65 @@ describe('Onboarding.Step', () => {
 
             // assert
             assert.isUndefined(result.inject);
+        });
+
+        it('should override default isActive with new one', () => {
+            // arrange
+            let overridingIsActive = (user) => {};
+            let options = {
+                isActive: overridingIsActive
+            };
+
+            // act
+            let step = new Step(options);
+
+            // assert
+            assert.equal(overridingIsActive, step.isActive);
+        });
+    });
+
+    describe('#isActive', () => {
+        it('should return true by default', () => {
+            // arrange
+            let step = new Step();
+
+            // act
+            let result = step.isActive();
+
+            // assert
+            assert.isTrue(result);
+        });
+
+        it('should call overriding method', () => {
+            // arrange
+            let spy = sinon.spy();
+            let step = new Step({
+                isActive: spy
+            });
+
+            // act
+            let result = step.isActive();
+
+            // assert
+            assert(spy.calledOnce);
+        });
+
+        it('should not call overriding method on other steps', () => {
+            // arrange
+            let spy = sinon.spy();
+            let step = new Step({
+                isActive: spy
+            });
+
+            let step2 = new Step();
+
+            // act
+            let result = step.isActive();
+            let result2 = step2.isActive();
+
+            // assert
+            assert(spy.calledOnce);
+            assert.isTrue(result2);
         });
     });
 

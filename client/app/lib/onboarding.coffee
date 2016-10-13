@@ -1,11 +1,12 @@
 # Local class Step
 class Step
     # Retrieves properties from config Step plain object
+    # @param step : config step, i.e. plain object containing custom properties
+    #   and methods.
     constructor: (step={}) ->
-        @validatedHandlers = []
-
-        ['name', 'route', 'view'].forEach (property) =>
-            @[property] = step[property]
+        ['name', 'route', 'view', 'isActive'].forEach (property) =>
+            if step[property]
+                @[property] = step[property]
 
 
 
@@ -23,6 +24,13 @@ class Step
             @validatedHandlers.forEach (handler) =>
                 handler(@)
 
+    # Returns true if the step has to be submitted by the user
+    # This method returns true by default, but can be overriden
+    # by config steps
+    # @param user : plain JS object. Not used in this abstract default method
+    #  but should be in overriding ones.
+    isActive: (user) ->
+        return true
 
     # Submit the step
     # This method should be overriden by step given as parameter to add
@@ -46,11 +54,14 @@ module.exports = class Onboarding
         throw new Error 'Missing mandatory `steps` parameter' unless steps
 
         @user = user
-        @steps = steps.map (step) =>
-            stepModel = new Step step
-            stepModel.onValidated () =>
-                @handleStepSubmitted()
-            return stepModel
+        @steps = steps
+            .reduce (activeSteps, step) =>
+                stepModel = new Step step
+                if stepModel.isActive user
+                    activeSteps.push stepModel
+                    stepModel.onValidated @handleStepSubmitted
+                return activeSteps
+            , []
 
 
     # Records handler for 'stepChanged' pseudo-event, triggered when
@@ -65,7 +76,7 @@ module.exports = class Onboarding
     # when it has been successfully submitted
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
-    handleStepSubmitted: () ->
+    handleStepSubmitted: =>
         @goToNext()
 
 
@@ -107,6 +118,18 @@ module.exports = class Onboarding
     getStepByName: (stepName) ->
         return @steps.find (step) ->
             return step.name is stepName
+
+
+    # Returns progression associated to the given step object
+    # @param step Step which we want to know the related progression
+    # returns the current index of the step, from 1 to length. 0 if the step
+    # does not exist in the onboarding.
+    getProgression: (step) ->
+        return \
+            current: @steps.indexOf(step)+1,
+            total: @steps.length,
+            labels: @steps.map (step) -> step.name
+
 
 # Step is exposed for test purposes only
 module.exports.Step = Step

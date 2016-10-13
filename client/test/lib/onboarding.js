@@ -884,17 +884,6 @@ describe('Onboarding.Step', () => {
             let savePromise = Promise.resolve();
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
-
-        it('should call `triggerCompleted` (default #submit)', () => {
-            // arrange
-            let step = new Step();
-            step.triggerCompleted = sinon.spy();
-
-            // act
-            step.submit();
-
-            // assert
-            assert(step.triggerCompleted.calledOnce);
         });
 
 

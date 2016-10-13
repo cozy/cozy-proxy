@@ -49,6 +49,11 @@ module.exports.registerIndex = (req, res, next) ->
                 if onboardingStepsIsUnchanged
                     res.redirect '/login'
                 else
+                    hasEmail = userData?.email
+                    hasUserName = userData?.public_name
+                    hasTimezone = userData?.timezone
+                    if hasEmail and hasUserName and hasTimezone
+                        env.hasInfos = true
                     localization.setLocale req.headers['accept-language']
                     res.render 'index', {env: env, onBoarding: true}
 

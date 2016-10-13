@@ -885,13 +885,31 @@ describe('Onboarding.Step', () => {
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
 
-            // onboarding.steps are not the same than steps
-            // submit and error methods from Onboarding
-            const selectStep = onboarding.steps[0]
-            onboarding.triggerStepChanged(selectStep);
+        it('should call `triggerCompleted` (default #submit)', () => {
+            // arrange
+            let step = new Step();
+            step.triggerCompleted = sinon.spy();
 
-            // assertd
-            assert(step.save.calledOnce);
+            // act
+            step.submit();
+
+            // assert
+            assert(step.triggerCompleted.calledOnce);
+        });
+
+
+        it('should call `triggerCompleted` (overwritten #submit)', () => {
+            // arrange
+            let configSubmit = sinon.spy();
+            let step = new Step({ submit: configSubmit });
+            step.triggerCompleted = sinon.spy();
+
+            // act
+            step.submit();
+
+            // assert
+            assert(configSubmit.calledOnce);
+            assert(step.triggerCompleted.calledOnce);
         });
     });
 

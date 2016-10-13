@@ -5,11 +5,10 @@ let infos = require('../../../app/config/steps/infos.coffee');
 
 describe('Step: infos', () => {
     describe('#isActive', () => {
-        it('should return true for user with invalid email', () => {
+        it('should return true for user.hasInfos is false', () => {
             // arrange
             let user = {
-                email: '',
-                timezone: 'Europe/Paris'
+                hasInfos: false
             };
 
             // act
@@ -19,25 +18,10 @@ describe('Step: infos', () => {
             assert.isTrue(result);
         });
 
-        it('should return true for user with invalid timezone', () => {
+        it('should return false for user.hasInfos is true', () => {
             // arrange
             let user = {
-                email: 'claude@example.org',
-                timezone: 'not a timezone'
-            };
-
-            // act
-            let result = infos.isActive(user);
-
-            // assert
-            assert.isTrue(result);
-        });
-
-        it('should return false for user with valid email and timezone', () => {
-            // arrange
-            let user = {
-                email: 'claude@example.org',
-                timezone: 'Europe/Paris'
+                hasInfos: true
             };
 
             // act

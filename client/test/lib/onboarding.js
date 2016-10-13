@@ -875,8 +875,11 @@ describe('Onboarding.Step', () => {
             assert(callback2.calledWith(step));
         });
     });
+<<<<<<< da96882f5b8a010ad48cf9608ab4efe6207d6392
 
 
+=======
+>>>>>>> [test] config.password
     describe('#submit', () => {
         it('should call save', () => {
             // arrange

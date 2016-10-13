@@ -29,6 +29,17 @@ getEnv = (callback) ->
             callback null, env
 
 
+# check if user infos (email, timezones, public_name) exist and are valid
+checkUserInfos = (userData) ->
+    userEmail = userData?.email
+    hasEmail = if userEmail then helpers.checkEmail(userEmail) else false
+    hasUserName = userData?.public_name
+    userTimezone = userData?.timezone
+    timezoneNotExist = timezones.indexOf(userTimezone) is -1
+    hasTimezone = if userTimezone then not timezoneNotExist else false
+    return hasEmail and hasUserName and hasTimezone
+
+
 module.exports.registerIndex = (req, res, next) ->
     getEnv (err, env) ->
         if err
@@ -45,18 +56,12 @@ module.exports.registerIndex = (req, res, next) ->
                     error.template = name: 'error'
                     next error
 
-                # Check steps changes
-                onboardingStepsIsUnchanged = userData?.onboardedSteps is ONBOARDING_STEPS
-                if onboardingStepsIsUnchanged
+                # According to steps changes
+                if userData?.onboardedSteps is ONBOARDING_STEPS
                     res.redirect '/login'
                 else
-                    userEmail = userData?.email
-                    hasEmail = if userEmail then helpers.checkEmail(userEmail) else false
-                    hasUserName = userData?.public_name
-                    userTimezone = userData?.timezone
-                    hasTimezone = if userTimezone then not(timezones.indexOf(userTimezone) is -1) else false
-                    if hasEmail and hasUserName and hasTimezone
-                        env.hasValidInfos = true
+                    hasValidInfos = checkUserInfos(userData)
+                    env.hasValidInfos = hasValidInfos
                     localization.setLocale req.headers['accept-language']
                     res.render 'index', {env: env, onBoarding: true}
 

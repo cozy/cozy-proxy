@@ -832,7 +832,6 @@ describe('Onboarding.Step', () => {
             assert(callback2.calledWith(step));
         });
     });
-
     describe('#submit', () => {
         it('should call triggerCompleted (default #submit)', () => {
             // arrange

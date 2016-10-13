@@ -1,10 +1,27 @@
 'use strict';
 let assert = require('chai').assert;
+let sinon = require('sinon');
 
-let PasswordConfig = require('../../../app/config/steps/password.coffee');
-let TimeZones = require('../../../app/lib/timezones.coffee');
 
 describe('Step: password', () => {
+
+    let jQuery;
+    let jsdom;
+    let PasswordConfig;
+    let TimeZones;
+
+
+    before(function () {
+      jsdom = require('jsdom-global')();
+      global.jQuery = require('jquery');
+      PasswordConfig = require('../../../app/config/steps/password.coffee');
+      TimeZones = require('../../../app/lib/timezones.coffee');
+    });
+
+    after(function () {
+      jsdom();
+    });
+
 
     describe('#validate', () => {
 
@@ -21,5 +38,20 @@ describe('Step: password', () => {
         it.skip('should return [errors]', () => {
 
         });
+    });
+
+
+    describe('#submit', () => {
+
+        it('should send POST request', () => {
+            global.jQuery.post = sinon.spy()
+            let data = { email: '', password: 'plop', timezone: TimeZones[0]}
+            PasswordConfig.submit(data);
+
+            data = JSON.stringify(data);
+            assert(global.jQuery.post.calledOnce);
+            assert(global.jQuery.post.calledWith('/register', data));
+        });
+
     });
 });

@@ -1,5 +1,3 @@
-$ = require 'jQuery'
-
 module.exports = {
     name: 'password',
     route: 'password',
@@ -11,6 +9,9 @@ module.exports = {
         return null
 
     submit: (data) ->
+        jQuery = global.jQuery
+        jQuery ?= require 'jQuery'
+
         data = JSON.stringify data
-        $.post('/register', data)
+        jQuery.post('/register', data)
 }

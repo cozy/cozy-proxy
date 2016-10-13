@@ -1,92 +1,43 @@
-## Models
-How to call these data into views?
-```
-user = OnboardingLib.getUser()
-step = OnboardingLib.getState()
-```
 
 
-## Actions
-
-```
-    doSubmit: ->
-        OnboardingLib.doSubmit()
-```
-
-## Markup
+# How to add a `new step`?
 
 
-### Step 1/5 `:userID/welcome`
+### 1. Update workflow
 
-```
-user = OnboardingLib.getUser()
-step = OnboardingLib.getState()
-
-div key='welcome-${user.id}-${step.name.id}'
-    h1
-        content='${user.name} ${step.name}'
-
-    step
-        slug=step.name
-        value=step.value
-
-    button
-        label='next'
-        action=@doSubmit
-```
+Add your step name [here](https://github.com/cozy/cozy-proxy/blob/6e92cde0d5f382008098f8ddf993628c1b202f5d/client/app/config/steps/all.coffee#L12) if you want it in 2nd place.
 
 
-### Step 2/5 : Share data agreement as anonymous `:userID/share`
-```
-div key='welcome-${user.id}-${step.name.id}'
-    h1
-        content='${user.name} ${step.name}'
+### 2. Add config file
 
-    input
-        label=step.field.label
-        value=step.field.value
-        type='checkbox'
+Create a file with the right name.
+ie. `client/app/config/steps/newStep.coffee`.
 
-    step
-        slug=step.name
-        value=step.value
+Be careful `name`, `route` and `view` properties are required!
 
-    button
-        label='next'
-        action=@doSubmit
-```
 
-### Step 3/5 : Create a password `:userID/password`
-```
-div key='welcome-${user.id}-${step.name}'
-    h1
-        content='${user.name} ${step.name}'
+### 3. Add markup
 
-    password
-        label=t(step.field.label)
-        value=step.field.value
-        complexity=step.field.complexity
+Create a file with the right name.
+ie. `client/app/views/templates/view_steps_newStep.jade`
 
-    step
-        slug=step.name
-        value=step.value
+Add markup needed into a template.
 
-    button
-        label='next'
-        action= @doSubmit
-```
 
-### Step 4/5 : Password was validated `:userID/validated`
-```
-div key='welcome-${user.id}-${step.name}'
-    h1
-        content='${user.name} ${step.name}'
+# How to add a `new method`?
 
-    step
-        slug=step.name
-        value=step.value
+If you need to add a new method not handled by `lib/onboarding`, you should :
 
-    button
-        label='browse'
-        action=@doSubmit
-```
+
+### 1. Add new to model wrapper
+Add the method to step model such as [here] (https://github.com/cozy/cozy-proxy/blob/6e92cde0d5f382008098f8ddf993628c1b202f5d/client/app/models/step.coffee#L21) with `submit method`.
+
+Then call [`step.myNewMethod`](https://github.com/cozy/cozy-proxy/blob/6e92cde0d5f382008098f8ddf993628c1b202f5d/client/app/models/step.coffee#L26) into this new method.
+
+### 2. Make Onboarding use it
+
+Add [here](https://github.com/cozy/cozy-proxy/blob/6e92cde0d5f382008098f8ddf993628c1b202f5d/client/app/lib/onboarding.coffee#L7) then name of this method into the array.
+
+### 3. Lets go!
+
+It's time to write your method into [your config file](https://github.com/cozy/cozy-proxy/blob/6e92cde0d5f382008098f8ddf993628c1b202f5d/client/app/config/steps/password.coffee#L13)

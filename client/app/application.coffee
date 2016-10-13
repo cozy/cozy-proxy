@@ -29,7 +29,8 @@ class App extends Application
         @on 'start', =>
 
             user = {
-                username: ENV.username
+                username: ENV.username,
+                hasInfos: ENV.hasInfos
             }
 
             @onboarding = new Onboarding(user, steps)

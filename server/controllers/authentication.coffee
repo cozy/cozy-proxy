@@ -6,6 +6,7 @@ async        = require 'async'
 User         = require '../models/user'
 Instance     = require '../models/instance'
 helpers      = require '../lib/helpers'
+timezones    = require '../lib/timezones'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
@@ -49,11 +50,13 @@ module.exports.registerIndex = (req, res, next) ->
                 if onboardingStepsIsUnchanged
                     res.redirect '/login'
                 else
-                    hasEmail = userData?.email
+                    userEmail = userData?.email
+                    hasEmail = if userEmail then helpers.checkEmail(userEmail) else false
                     hasUserName = userData?.public_name
-                    hasTimezone = userData?.timezone
+                    userTimezone = userData?.timezone
+                    hasTimezone = if userTimezone then not(timezones.indexOf(userTimezone) is -1) else false
                     if hasEmail and hasUserName and hasTimezone
-                        env.hasInfos = true
+                        env.hasValidInfos = true
                     localization.setLocale req.headers['accept-language']
                     res.render 'index', {env: env, onBoarding: true}
 

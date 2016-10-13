@@ -1,6 +1,6 @@
-{LayoutView} = require 'backbone.marionette'
+StepView = require '../step'
 
-module.exports = class WelcomeView extends LayoutView
+module.exports = class WelcomeView extends StepView
     template: require '../templates/view_steps_welcome'
 
     events:

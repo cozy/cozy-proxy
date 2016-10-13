@@ -414,6 +414,148 @@ describe('Onboarding', () => {
             assert.isUndefined(result);
         });
     });
+
+    describe('#getProgression', () => {
+        it('should return expected total', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test');
+
+            // act
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.equal(3, result.total);
+        });
+
+        it('should return first step as current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.equal(1, result.current);
+        });
+
+        it('should return expected current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test2');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+
+            // assert
+            assert.equal(2, result.current);
+        });
+
+        it('should return last step as current', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step = onboarding.getStepByName('test3');
+
+            // act
+            onboarding.goToStep(step);
+            let result = onboarding.getProgression(step);
+
+
+            // assert
+            assert.equal(3, result.current);
+        });
+
+        it('should return expected labels', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+            let step = onboarding.getStepByName('test');
+            let expectedLabels = ['test', 'test2', 'test3'];
+
+            // act
+            let result = onboarding.getProgression(step);
+
+            // assert
+            assert.deepEqual(expectedLabels, result.labels);
+        });
+    });
 });
 
 describe('Onboarding.Step', () => {

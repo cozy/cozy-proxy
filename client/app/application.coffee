@@ -12,6 +12,7 @@ AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
 StepModel = require './models/step'
+ProgressionModel = require './models/progression'
 
 class App extends Application
 
@@ -27,7 +28,10 @@ class App extends Application
         steps = require './config/steps/all'
         @on 'start', (options) =>
 
-            @onboarding = new Onboarding({}, steps)
+            # TODO: Get the user with a better way later
+            user = {}
+
+            @onboarding = new Onboarding(user, steps)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
 
             @initializeRouter @onboarding.steps
@@ -64,6 +68,8 @@ class App extends Application
             @layout.showChildView 'content',
                 new StepView
                     model: new StepModel step: step
+                    progression: new ProgressionModel \
+                        @onboarding.getProgression step
 
 
     # Internal handler called when the onboarding's internal step has just

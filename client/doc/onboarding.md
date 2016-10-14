@@ -69,6 +69,16 @@ Returns a JS object representing the progression in onboarding for the given `st
 * `total` (int): Total number of steps in the onboarding.
 * `labels` (Array): Used for accessibility in views. It an ordered list of all the step names. Should be used as keys for Transifex.
 
+#### getNextStep(step)
+##### Parameters
+* `step`: Step
+
+Returns the next Step in onboarding step list.
+
+Returns null if the given step is the last one.
+
+Throw error if step does not exist in onboarding step list or if step parameter is missing.
+
 #### Example
 ```javascript
 let user = retrieveUserInAWayOrAnother();

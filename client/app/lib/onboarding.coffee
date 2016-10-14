@@ -130,5 +130,24 @@ module.exports = class Onboarding
             labels: @steps.map (step) -> step.name
 
 
+    # Returns next step for the given step. Useful for knowing wich route to
+    # use in a link-to-next.
+    getNextStep: (step) ->
+        if not step
+            throw new Error 'Mandatory parameter step is missing'
+
+        stepIndex = @steps.indexOf step
+
+        if stepIndex is -1
+            throw new Error 'Given step missing in onboarding step list'
+
+        nextStepIndex = stepIndex+1
+
+        if nextStepIndex is @steps.length
+            return null
+
+        return @steps[nextStepIndex]
+
+
 # Step is exposed for test purposes only
 module.exports.Step = Step

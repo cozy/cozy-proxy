@@ -65,9 +65,10 @@ class App extends Application
     initializeStepRoute: (step) =>
         StepView = require "./views/#{step.view}"
         @router.route "#{step.route}", "route:#{step.route}", () =>
+            nextStep = @onboarding.getNextStep step
             @layout.showChildView 'content',
                 new StepView
-                    model: new StepModel step: step
+                    model: new StepModel step: step, next: nextStep
                     progression: new ProgressionModel \
                         @onboarding.getProgression step
 

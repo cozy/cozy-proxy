@@ -556,6 +556,123 @@ describe('Onboarding', () => {
             assert.deepEqual(expectedLabels, result.labels);
         });
     });
+
+    describe('#getNextStep', () => {
+        it('should throw error when no step is given in parameter', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let fn = () => {
+                // act
+                let result = onboarding.getNextStep();
+            };
+
+            // assert
+            assert.throw(fn, 'Mandatory parameter step is missing');
+        });
+
+        it('should throw error when given step is not in step list', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let otherStep = new Step({
+                name: 'otherStep',
+                route: 'otherRoute',
+                view: 'otherView'
+            });
+
+            let fn = () => {
+                // act
+                let result = onboarding.getNextStep(otherStep);
+            };
+
+            // assert
+            assert.throw(fn, 'Given step missing in onboarding step list');
+        });
+
+        it('should return next step', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step1 = onboarding.getStepByName('test');
+            let step2 = onboarding.getStepByName('test2');
+
+            // act
+            let result = onboarding.getNextStep(step1);
+
+            // assert
+            assert.equal(step2, result);
+        });
+
+        it('should return null when current step is last step', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step3 = onboarding.getStepByName('test3');
+
+            // act
+            let result = onboarding.getNextStep(step3);
+
+            // assert
+            assert.isNull(result);
+        });
+    });
 });
 
 describe('Onboarding.Step', () => {

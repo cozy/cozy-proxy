@@ -63,7 +63,6 @@ class Step
             handler(@, error)
 
 
-
     # Returns true if the step has to be submitted by the user
     # This method returns true by default, but can be overriden
     # by config steps
@@ -201,6 +200,15 @@ module.exports = class Onboarding
         @currentStep = step
         @currentError = err
         @triggerStepErrors step, err
+
+        # Trigger a 'StapChanged' pseudo-event.
+        @stepChangedHandlers?.forEach (handler) ->
+            handler step
+
+
+    # Trigger a 'StapFailed' pseudo-event
+    triggerStepErrors: (step, args...) =>
+        @stepFailedHandlers?.forEach (handler) ->
 
 
     # Trigger a 'StapFailed' pseudo-event

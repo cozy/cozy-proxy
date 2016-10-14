@@ -101,6 +101,39 @@ progression will be
 
 ### Step
 
+#### constructor(options, user)
+* `options`: JS Object containing step properties and specific methods
+* `user`: JS Object containing user properties
+
+#### fetchUser(user)
+* `user`: JS Object
+
+Map some given user properties to the step. By default, the method just map the `username` for every step.
+
+This method may be overriden by specifying a `fetchUser` method in constructor parameter.
+
+__This method is called in the constructor__.
+
+##### Example
+```javascript
+let user = {
+    username: 'Claude',
+    email: 'claude@example.org'
+};
+
+let step = new Step({
+    fetchUser: (user) => {
+        @username = user.username
+        @useremail = user.email
+    }, user
+});
+
+console.log(step.username);
+// > Claude
+console.log(step.useremail);
+// > claude@example.org
+```
+
 #### isActive(user)
 * `user`: JS Object
 

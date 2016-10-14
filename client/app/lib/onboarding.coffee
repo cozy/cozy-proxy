@@ -11,7 +11,8 @@ class Step
           'isActive',
           'fetchUser',
           'validate',
-          'save'
+          'save',
+          'error'
         ].forEach (property) =>
             if step[property]?
                 @[property] = step[property]
@@ -27,19 +28,32 @@ class Step
         @username = user.username
 
 
+
     # Record handlers for 'completed' internal pseudo-event
     onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @completedHandlers = @completedHandlers or []
+        @completedHandlers ?= []
         @completedHandlers.push callback
 
 
+    onFailed: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+        @failedHandlers ?= []
+        @failedHandlers.push callback
+
+
     # Trigger 'completed' pseudo-event
+    # returnValue is from configStep.submit
     triggerCompleted: () ->
-        if @completedHandlers
-            @completedHandlers.forEach (handler) =>
-                handler(@)
+        @completedHandlers?.forEach (handler) =>
+            handler(@)
+
+
+    triggerFailed: (args...) ->
+        @failedHandlers?.forEach (handler) =>
+            handler(@, args...)
 
 
     # Returns true if the step has to be submitted by the user
@@ -77,13 +91,19 @@ class Step
     save: (data={}) ->
         return Promise.resolve(data)
 
+
     # Success handler for save() call
     handleSaveSuccess: (data) =>
         return data
 
+
     # Error handler for save() call
     handleSaveError: =>
         throw new Error 'Error occured during save'
+
+
+    error: (args...) ->
+        @triggerFailed args...
 
 
 # Main class
@@ -103,8 +123,9 @@ module.exports = class Onboarding
             .reduce (activeSteps, step) =>
                 stepModel = new Step step, user
                 if stepModel.isActive user
-                    activeSteps.push stepModel
                     stepModel.onCompleted @handleStepCompleted
+                    stepModel.onFailed @triggerStepErrors
+                    activeSteps.push stepModel
                 return activeSteps
             , []
 
@@ -119,7 +140,17 @@ module.exports = class Onboarding
     onStepChanged: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
+
+        @stepChangedHandlers ?= []
+        @stepChangedHandlers = @stepChangedHandlers.concat callback
+
+
+    onStepFailed: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+
+        @stepFailedHandlers ?= []
+        @stepFailedHandlers = @stepFailedHandlers.concat callback
 
 
     # Handler for 'stepSubmitted' pseudo-event, triggered by a step
@@ -127,11 +158,6 @@ module.exports = class Onboarding
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
     handleStepCompleted: =>
-        @goToNext()
-
-
-    # Go to the next step in the list.
-    goToNext: () ->
         currentIndex = @steps.indexOf(@currentStep)
 
         if @currentStep? and currentIndex is -1
@@ -141,22 +167,25 @@ module.exports = class Onboarding
         nextIndex = currentIndex+1
 
         if @steps[nextIndex]
-            @goToStep @steps[nextIndex]
+            @triggerStepChange @steps[nextIndex]
         else
             @triggerDone()
 
 
     # Go directly to a given step.
-    goToStep: (step) ->
+    triggerStepChange: (step) =>
         @currentStep = step
-        @triggerStepChanged step
+
+        # Trigger a 'StapChanged' pseudo-event.
+        @stepChangedHandlers?.forEach (handler) ->
+            handler step
 
 
-    # Trigger a 'StepChanged' pseudo-event.
-    triggerStepChanged: (step) ->
-        if @stepChangedHandlers
-            @stepChangedHandlers.forEach (handler) ->
-                handler step
+    # Trigger a 'StapFailed' pseudo-event
+    triggerStepErrors: (step, args...) =>
+        @stepFailedHandlers?.forEach (handler) ->
+
+            handler step, args...
 
 
     # Trigger a 'done' pseudo-event, corresponding to onboarding end.

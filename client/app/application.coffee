@@ -11,8 +11,12 @@ Router    = require './routes'
 AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
+
 StepModel = require './models/step'
 ProgressionModel = require './models/progression'
+
+timezones = require './lib/timezones'
+
 
 class App extends Application
 
@@ -35,6 +39,7 @@ class App extends Application
 
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
+            @onboarding.onStepFailed (step) => @handleStepFailed(step)
 
             @initializeRouter()
 
@@ -61,7 +66,7 @@ class App extends Application
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    handleStepChanged: (step) ->
+    handleStepChanged: (step) =>
         @router.navigate step.route, trigger: true
 
 
@@ -84,6 +89,7 @@ class App extends Application
                 model: new StepModel step: step, next: nextStep
                 progression: new ProgressionModel \
                     @onboarding.getProgression step
+
 
 
 # Exports Application singleton instance

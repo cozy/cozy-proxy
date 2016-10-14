@@ -1,5 +1,4 @@
 StepView = require '../step'
-timezones = require '../../lib/timezones'
 
 
 module.exports = class PasswordView extends StepView
@@ -11,8 +10,6 @@ module.exports = class PasswordView extends StepView
 
 
     getDataFromDOM: ->
-        # TODO: get user info
-        # from server
         return {
             password: @$('input[name=password]').val()
             onboardedSteps: ['welcome', 'agreement', 'password']

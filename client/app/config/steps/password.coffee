@@ -17,6 +17,5 @@ module.exports = {
                 url: '/register'
                 data: JSON.stringify data
                 success: resolve
-                error: reject
+                error: (req) => reject req.responseJSON
             })).then @handleSaveSuccess, @handleSaveError
-}

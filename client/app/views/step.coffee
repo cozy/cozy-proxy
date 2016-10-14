@@ -3,15 +3,18 @@ Backbone = require 'backbone'
 
 ProgressionView = require './steps/subviews/progression'
 
-module.exports = class StepView extends LayoutView
 
+module.exports = class StepView extends LayoutView
 
     regions:
         progression: '.progression'
 
 
-    initialize: (options) ->
-        super(options)
+    initialize: (options={}) ->
+        super options
+
+        @userModel = options.userModel
+
         @progressionView = new ProgressionView \
             model: options.progression
 

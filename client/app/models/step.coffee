@@ -26,10 +26,10 @@ module.exports = class StepModel extends Backbone.Model
     submit: (data) ->
         # Save Errors to display
         # them into views
+        # TODO: use these errors into OnboardingLib
         if @step.validate? and (errors = @step.validate(data))
             @errors?= []
             @errors.push errors
-            error errors
             return false
 
         @step.submit(data)

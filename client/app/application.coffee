@@ -11,8 +11,12 @@ Router    = require './routes'
 AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
+
 StepModel = require './models/step'
 ProgressionModel = require './models/progression'
+
+timezones = require './lib/timezones'
+
 
 class App extends Application
 
@@ -27,7 +31,6 @@ class App extends Application
     initialize: ->
         steps = require './config/steps/all'
         @on 'start', =>
-
             user = {
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
@@ -70,7 +73,7 @@ class App extends Application
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    handleStepChanged: (step) ->
+    handleStepChanged: (step) =>
         @router.navigate step.route, trigger: true
 
 

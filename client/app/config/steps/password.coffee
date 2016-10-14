@@ -26,5 +26,4 @@ module.exports = {
                 error: (req) -> reject req.responseJSON
             }))
             .then @handleSaveSuccess, @handleSaveError
-
 }

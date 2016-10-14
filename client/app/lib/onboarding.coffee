@@ -116,7 +116,6 @@ class Step
 # Onboarding is the component in charge of managing steps
 module.exports = class Onboarding
 
-
     constructor: (user, steps, currentStepName) ->
         @initialize user, steps, currentStepName
 

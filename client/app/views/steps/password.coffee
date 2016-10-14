@@ -19,6 +19,13 @@ module.exports = class PasswordView extends StepView
             figureid:   require '../../assets/sprites/illustrate-password.svg'
         }
 
+    serializeData: ->
+        # Get 1rst error
+        if(error = _.values(@errors?.errors).shift())
+            return { error }
+        else
+            return {}
+
 
     getDataFromDOM: ->
         return {

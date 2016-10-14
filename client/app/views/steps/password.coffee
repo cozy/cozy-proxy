@@ -1,8 +1,5 @@
 StepView = require '../step'
-<<<<<<< 0a3d128e0708b9e0f239c57f0707bb27e6f6d0a7
-=======
-
->>>>>>> [feature] display errors into onboarding
+_ = require 'underscore'
 
 module.exports = class PasswordView extends StepView
 
@@ -10,6 +7,13 @@ module.exports = class PasswordView extends StepView
 
     events:
         'click button': 'doSubmit'
+
+    serializeData: ->
+        # Get 1rst error
+        if(error = _.values(@errors?.errors).shift())
+            return { error }
+        else
+            return {}
 
 
     # Get 1rst error only

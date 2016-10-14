@@ -186,12 +186,12 @@ module.exports = class Onboarding
 
 
     # Go directly to a given step.
-    triggerStepChanged: (step) =>
+    triggerStepChanged: (step, err) =>
         @currentStep = step
 
         # Trigger a 'StapChanged' pseudo-event.
         @stepChangedHandlers?.forEach (handler) ->
-            handler step
+            handler step, err
 
 
     # Trigger a 'StapFailed' pseudo-event

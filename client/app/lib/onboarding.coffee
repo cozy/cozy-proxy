@@ -167,13 +167,13 @@ module.exports = class Onboarding
         nextIndex = currentIndex+1
 
         if @steps[nextIndex]
-            @triggerStepChange @steps[nextIndex]
+            @triggerStepChanged @steps[nextIndex]
         else
             @triggerDone()
 
 
     # Go directly to a given step.
-    triggerStepChange: (step) =>
+    triggerStepChanged: (step) =>
         @currentStep = step
 
         # Trigger a 'StapChanged' pseudo-event.

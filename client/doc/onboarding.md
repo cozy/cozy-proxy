@@ -50,20 +50,30 @@ The steps list should look like :
 
 Record the function callback as handler for every time the current onboarding step will change.
 
-#### goToNext()
+
+#### onStepFailed(callback)
+
+
+#### handleStepCompleted()
 Select the next step on the list and trigger the related events.
 
-#### goToStep(step)
+
+#### triggerStepChanged(step)
 ##### Parameters
 * `step`: Step
 
 Go directly to the given step and trigger required events. Useful for go back in onboarding.
+
+
+#### triggerStepErrors(step, req)
+
 
 #### getStepByName(stepName)
 ##### Parameters
 * `stepName`: String
 
 Returns a step by its name.
+
 
 #### getProgression(step)
 #### Parameters
@@ -171,12 +181,19 @@ let result2 = step.isActive({name: Claudia});
 ```
 
 
-#### onSubmitted(callback)
+#### onCompleted(callback)
+
 ##### Parameters
 * `callback`: function
 
 Add the given callback to the list of handlers to call when a step is submitted.
 
+
 #### submit()
 Submit the step, i.e. try to register it as done. This method should be overriden in config steps to manage specific submits or validation, for steps with forms for example.
 Also, maybe it should return a Promise to handle correctly remote synchronisation.
+
+
+#### onFailed(callback)
+
+#### error()

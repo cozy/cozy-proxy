@@ -6,7 +6,7 @@ block title
 
 
 block content
-    main(role='application')
+    div(role='application')
       noscript
         section.popup
           header
@@ -20,3 +20,4 @@ block js
         script.
             ENV = !{JSON.stringify(env)};
     script(src="/app#{hash}.js" defer=true)
+        

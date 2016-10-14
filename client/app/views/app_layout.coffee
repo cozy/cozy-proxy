@@ -14,9 +14,9 @@ require 'normalize.css/normalize.css'
 
 module.exports = class AppLayout extends LayoutView
 
-    template: require './templates/layout_app'
+    template: -> '<main/>'
 
     el: '[role=application]'
 
     regions:
-        content: '.container'
+        content: 'main'

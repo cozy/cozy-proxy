@@ -26,7 +26,7 @@ class App extends Application
     ###
     initialize: ->
         steps = require './config/steps/all'
-        @on 'start', (options) =>
+        @on 'start', =>
 
             # TODO: Get the user with a better way later
             user = {}

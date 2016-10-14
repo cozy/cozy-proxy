@@ -1,8 +1,12 @@
-extends view_base
+extends _view_step_base
+
+
+block header
+    h1= t('step welcome user', {name: username})
+    a(href="#")= t('setp welcome logout', {name: username})
 
 block region
-    h1=t('Bonjour Claude')
-    footer
-        .controls
-            button=t('CONTINUER')
-        .progression
+    p= t('step welcome congrats')
+
+block controls
+    a(href="#" role="button")= t('step welcome next')

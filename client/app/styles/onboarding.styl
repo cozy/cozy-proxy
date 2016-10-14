@@ -1,3 +1,98 @@
 /**
  * OnBoarding Styles
  */
+
+@import "./base/_colors.styl"
+
+
+// LAYOUTS
+[role=application]
+    display:     flex
+    min-height:  100vh
+    font-family: 'Source Sans Pro', sans-serif
+
+
+main
+    max-width: (600/16)em
+    margin:    auto
+    padding:   1em
+
+
+header
+    display:   flex
+    flex-wrap: wrap
+
+    figure
+        margin:     0 auto 2em
+        text-align: center
+
+        a
+            display: block
+
+        svg
+            width: 100%
+            max-width: (320/16)em
+
+    h1
+        flex:   1 0 100%
+        margin: 0
+
+
+footer
+    margin-top: 2em
+
+    ol
+        margin:  .3em 0 0
+        padding: 0
+
+
+
+
+// FOREGROUNDS / FONTS
+
+a
+    color: $blue
+    text-decoration: none
+
+
+[role=region]
+footer
+    font-size: 1.24em
+
+
+
+// FORMS
+[role=button]
+    display:          block
+    padding:          .55em
+    border-radius:    4px
+    background-color: $blue
+    text-align:       center
+    text-transform:   uppercase
+    color:            white
+
+
+
+// BREADCRUMB
+footer
+    ol
+        display:         flex
+        list-style-type: none
+
+    li
+        flex:             1 1 1em
+        margin:           3px
+        height:           3px
+        border-radius:    3px
+        background-color: $blue
+        text-indent:      -9999em
+
+        &:first-child
+            margin-left: 0
+
+        &:last-child
+            margin-right: 0
+
+        // mark upcoming items in grey
+        &[aria-selected=true] ~ li
+            background-color: $grey-02

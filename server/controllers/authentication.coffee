@@ -39,6 +39,9 @@ module.exports.registerIndex = (req, res, next) ->
 
         else
             localization.setLocale req.headers['accept-language']
+            # We need to pass a flag to signal the view is in registration mode
+            # TODO: this one is temporary, and need to be removed when we merge
+            #       CSS again.
             res.render 'index', {env: env, onBoarding: true}
 
 

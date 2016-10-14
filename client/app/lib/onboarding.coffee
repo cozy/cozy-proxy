@@ -28,11 +28,12 @@ class Step
         @username = user.username
 
 
+
     # Record handlers for 'completed' internal pseudo-event
     onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @completedHandlers = @completedHandlers or []
+        @completedHandlers ?= []
         @completedHandlers.push callback
 
 
@@ -46,9 +47,13 @@ class Step
     # Trigger 'completed' pseudo-event
     # returnValue is from configStep.submit
     triggerCompleted: () ->
-        if @completedHandlers
-            @completedHandlers.forEach (handler) =>
-                handler(@)
+        @completedHandlers?.forEach (handler) =>
+            handler(@)
+
+
+    triggerFailed: (args...) ->
+        @failedHandlers?.forEach (handler) =>
+            handler(@, args...)
 
 
     triggerFailed: (error) ->
@@ -92,14 +97,20 @@ class Step
     save: (data={}) ->
         return Promise.resolve(data)
 
+
     # Success handler for save() call
     handleSaveSuccess: (data) =>
         return data
+
 
     # Error handler for save() call
     handleSaveError: (err) =>
         error = Object.values err.errors
         throw new Error error
+
+
+    error: (args...) ->
+        @triggerFailed args...
 
 
 # Main class
@@ -136,7 +147,17 @@ module.exports = class Onboarding
     onStepChanged: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
+
+        @stepChangedHandlers ?= []
+        @stepChangedHandlers = @stepChangedHandlers.concat callback
+
+
+    onStepFailed: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+
+        @stepFailedHandlers ?= []
+        @stepFailedHandlers = @stepFailedHandlers.concat callback
 
 
     onStepFailed: (callback) ->
@@ -150,11 +171,6 @@ module.exports = class Onboarding
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
     handleStepCompleted: =>
-        @goToNext()
-
-
-    # Go to the next step in the list.
-    goToNext: () ->
         currentIndex = @steps.indexOf(@currentStep)
 
         if @currentStep? and currentIndex is -1
@@ -164,22 +180,25 @@ module.exports = class Onboarding
         nextIndex = currentIndex+1
 
         if @steps[nextIndex]
-            @goToStep @steps[nextIndex]
+            @triggerStepChange @steps[nextIndex]
         else
             @triggerDone()
 
 
     # Go directly to a given step.
-    goToStep: (step) ->
+    triggerStepChange: (step) =>
         @currentStep = step
-        @triggerStepChanged step
+
+        # Trigger a 'StapChanged' pseudo-event.
+        @stepChangedHandlers?.forEach (handler) ->
+            handler step
 
 
-    # Trigger a 'StepChanged' pseudo-event.
-    triggerStepChanged: (step) ->
-        if @stepChangedHandlers
-            @stepChangedHandlers.forEach (handler) ->
-                handler step
+    # Trigger a 'StapFailed' pseudo-event
+    triggerStepErrors: (step, args...) =>
+        @stepFailedHandlers?.forEach (handler) ->
+
+            handler step, args...
 
 
     handleStepError: (step, err) =>

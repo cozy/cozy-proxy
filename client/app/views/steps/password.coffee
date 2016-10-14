@@ -1,4 +1,8 @@
 StepView = require '../step'
+<<<<<<< 0a3d128e0708b9e0f239c57f0707bb27e6f6d0a7
+=======
+
+>>>>>>> [feature] display errors into onboarding
 
 module.exports = class PasswordView extends StepView
 

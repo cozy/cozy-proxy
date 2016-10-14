@@ -58,10 +58,10 @@ isCGUaccepted: Boolean
 
 ### Constraints
 
-* The ```user``` document data mustn't be exposed before user authentication, except ```public_name ``` only.
+* The ```user``` document data mustn't be exposed before user authentication, except ```public_name ``` string and ```hasValidInfos``` boolean only.
 * The existing ```login``` mustn't be broken before its specific refactoring later on.
 * The user can not get back to the previous step.
-* Some steps can be reached only with user authentication : ```infos```, ```accounts``` and ```ending```
+* Some steps are reachable only with user authentication : ```infos```, ```accounts``` and ```ending```
 
 ### Processes
 
@@ -89,23 +89,26 @@ According to the ```user``` document properties:
 
 ##### Views data behaviour (client side)
 
+> ```hasValidInfos``` is a boolean used here to know if the onboarding will have 5 or 6 steps (if the user will need the ```infos``` step or not), specially for the progress indicator feature.
+
 1. For ```welcome``` step:
-    * Only the username (if exists) is used throught the view
+    * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
+    * At validation, ```welcome``` step name are sent to server side to be saved in user ```user``` document (```onboardedSteps``` property)
 2. For ```agreement``` step:
-    * Only the username (if exists) is used throught the view
-    * At the step validation, new data are saved to the ```user``` document
+    * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
+    * At validation, ```agreement``` step name and ```{CGUaccepted: true}``` are sent to server side to be saved in ```user``` document
 3. For ```password``` step:
-    * Only the username (if exists) is used in the view
-    * At the validation, new data are saved to the ```user``` document
+    * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
+    * At validation, ```password``` step name and ```{password: 'userpasswordhere'}``` are sent to server side to be saved in ```user``` document
     * At the validation, the user will be redirected to the login page for the authentication
 4. For ```infos``` step:
     * User __authentication required__
     * At the step rendering, the ```user``` document is requested
-    * At the step rendering, if ```email```, ```timezone``` and ```public_name``` properties exist : the user will be automatically redirected to the next step with ```infos``` added in the ```onboardedSteps``` steps and saved to the ```user``` document.
-    * Otherwise, at the step validation, new data are saved to the ```user``` document
+    * At validation, ```infos``` step name and ```{email: 'userpasswordhere', public_name: 'username', timezone: 'country/town'}``` are sent to server side to be saved in ```user``` document
 5. For ```accounts``` step:
     * User __authentication required__
     * At the step validation, the user will be redirected to the "My Accounts" application (using probably an argument to specify that is from the onboarding process)
+    * At the "My accounts" callback, ```accounts``` step name is sent to server side to be saved in ```user``` document
 6. For the ```ending``` step:
     * User __authentication required__
     * The step must be reachable from an URL that follows these rules:
@@ -113,8 +116,6 @@ According to the ```user``` document properties:
         * If the ```activated``` is ```false``` AND ```onboardedSteps ``` is ```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']``` => ```ending``` step
         * If the ```activated``` is ```true``` AND ```onboardedSteps ``` is ```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']``` => cozy home
         * __Default__ => ```welcome``` step with ```onboardedSteps``` set to ```[]```
-    * At the step rendering, the ```user``` document is requested
-    * At the step validation, new data are saved to the ```user``` document and ```activated``` property is turn to true.
 
 ##### Handle onboarding changes
 
@@ -123,4 +124,4 @@ At the entry connexion (after login or at the home connexion):
 * If ```activated``` is ```true```, the ```onboardedSteps``` is compared to the steps hardcoded in the cozy-proxy:
     * If it's the same => login page then the cozy home as authenticated user (__usual case__)
     * Otherwise, ```onboardedSteps``` is changed (that means the order or the steps have changed in the proxy) and the user will be redirected to a specific step (or not) according to the ```onboardedSteps``` value. This way will be used when __in case of future onboarding steps updates__.
-* If ```activated``` is ```false```, see server side part (previous part 1)
+* If ```activated``` is ```false```, see server side "Step situation detection" part

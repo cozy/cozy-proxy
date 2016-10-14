@@ -201,10 +201,6 @@ module.exports = class Onboarding
         @currentError = err
         @triggerStepErrors step, err
 
-        # Trigger a 'StapChanged' pseudo-event.
-        @stepChangedHandlers?.forEach (handler) ->
-            handler step
-
 
     # Trigger a 'StapFailed' pseudo-event
     triggerStepErrors: (step, args...) =>

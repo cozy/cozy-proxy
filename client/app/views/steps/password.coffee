@@ -8,6 +8,13 @@ module.exports = class PasswordView extends StepView
     events:
         'click button': 'doSubmit'
 
+    serializeData: ->
+        # Get 1rst error
+        if(error = _.values(@errors?.errors).shift())
+            return { error }
+        else
+            return {}
+
 
     # Get 1rst error only
     # err is an object such as:

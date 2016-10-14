@@ -539,7 +539,6 @@ describe('Onboarding', () => {
             onboarding.triggerStepChange(step);
             let result = onboarding.getProgression(step);
 
-
             // assert
             assert.equal(2, result.current);
         });

@@ -1,4 +1,5 @@
 StepView = require '../step'
+_ = require 'underscore'
 
 
 module.exports = class PasswordView extends StepView
@@ -7,6 +8,13 @@ module.exports = class PasswordView extends StepView
 
     events:
         'click button': 'doSubmit'
+
+    serializeData: ->
+        # Get 1rst error
+        if(error = _.values(@errors?.errors).shift())
+            return { error }
+        else
+            return {}
 
 
     getDataFromDOM: ->

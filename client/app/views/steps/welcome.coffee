@@ -5,10 +5,14 @@ StepView = require '../step'
 module.exports = class WelcomeView extends StepView
     template: require '../templates/view_steps_welcome'
 
-    events:
-        'click button': 'onSubmit'
+    ui:
+        next: '.controls .next'
 
-    onSubmit: (event)->
+    events:
+        'click @ui.next': 'onSubmit'
+
+    onSubmit: (event) ->
+        event.preventDefault()
         @model.submit()
 
 

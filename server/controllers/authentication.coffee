@@ -13,7 +13,14 @@ passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
 
 # hardcoded onboarding steps order and slug names
-ONBOARDING_STEPS = ['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']
+ONBOARDING_STEPS = [
+    'welcome',
+    'agreement',
+    'password',
+    'infos',
+    'accounts',
+    'ending'
+]
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -30,8 +37,7 @@ getEnv = (callback) ->
             callback null, env
 
 
-# check if user infos (email, timezones, public_name) exist and are valid
-checkUserInfos = (userData) ->
+checkUserInfosValidity = (userData) ->
     userEmail = userData?.email
     hasEmail = if userEmail then helpers.checkEmail(userEmail) else false
     hasUserName = userData?.public_name
@@ -61,7 +67,7 @@ module.exports.registerIndex = (req, res, next) ->
                 if userData?.onboardedSteps is ONBOARDING_STEPS
                     res.redirect '/login'
                 else
-                    hasValidInfos = checkUserInfos(userData)
+                    hasValidInfos = checkUserInfosValidity(userData)
                     env.hasValidInfos = hasValidInfos
                     localization.setLocale req.headers['accept-language']
                     res.render 'index', {env: env, onBoarding: true}

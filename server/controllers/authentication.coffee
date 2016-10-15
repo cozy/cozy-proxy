@@ -2,6 +2,7 @@ passport     = require 'passport'
 randomstring = require 'randomstring'
 request      = require 'request-json'
 async        = require 'async'
+jwt          = require 'jsonwebtoken'
 
 User         = require '../models/user'
 Instance     = require '../models/instance'

@@ -22,6 +22,7 @@
     "cozydb": "0.1.12",
     "graceful-fs": "4.1.4",
     "http-proxy": "1.14.0",
+    "jsonwebtoken": "7.1.9",
     "limiter": "1.1.0",
     "locale": "0.1.0",
     "lockedpath": "0.1.1",

@@ -36,18 +36,28 @@ getEnv = (callback) ->
 
             callback null, env
 
+verifyRegistrationToken = (token, tokenSalt, callback) ->
+    User.getRegistrationToken (err, tokenData) ->
+        return callback err if err
 
-checkUserInfosValidity = (userData) ->
-    userEmail = userData?.email
-    hasEmail = if userEmail then helpers.checkEmail(userEmail) else false
-    hasUserName = userData?.public_name
-    userTimezone = userData?.timezone
-    timezoneNotExist = timezones.indexOf(userTimezone) is -1
-    hasTimezone = if userTimezone then not timezoneNotExist else false
-    return hasEmail and hasUserName and hasTimezone
+        if !tokenData.token or !tokenData.salt
+            return callback null, false
+        try
+            decoded = jwt.verify(token, salt)
+            # TODO: verify token options according to options stored in DS like
+            # matchingOption1 = decoded.option1 is tokenData.option1
+            matchingToken = token is tokenData.token
+            matchingSalt = salt is tokenData.salt
+            if matchingToken and matchingSalt
+                # correct given token
+                return callback null, true
+            else
+                return callback null, false
+        catch err
+            return callback err if err
 
 
-module.exports.registerIndex = (req, res, next) ->
+module.exports.onboarding = (req, res, next) ->
     getEnv (err, env) ->
         if err
             error          = new Error "[Error to access cozy user] #{err.code}"
@@ -67,50 +77,122 @@ module.exports.registerIndex = (req, res, next) ->
                 if userData?.onboardedSteps is ONBOARDING_STEPS
                     res.redirect '/login'
                 else
-                    hasValidInfos = checkUserInfosValidity(userData)
-                    env.hasValidInfos = hasValidInfos
+                    if userData
+                        hasValidInfos = User.checkInfos userData
+                        env.hasValidInfos = hasValidInfos
                     localization.setLocale req.headers['accept-language']
                     res.render 'index', {env: env, onBoarding: true}
 
 
-module.exports.register = (req, res, next) ->
-    hash = helpers.cryptPassword req.body.password
-    userData =
-        email:       req.body.email
-        owner:       true
-        password:    hash.hash
-        salt:        hash.salt
-        public_name: req.body.public_name
-        timezone:    req.body.timezone
-        activated:   true
-        allow_stats: req.body.allow_stats
-        docType:     'User'
+# Save unauthenticated user document according to token existence and validity
+# Expected request body format (? means optionnal)
+# ?password
+# ?allowStats
+# ?CGUaccepted
+# onboardedSteps
+# token
+# tokenSalt
+module.exports.saveUnauthenticatedUser = (req, res, next) ->
+    requestData = req.body
 
-    instanceData = locale: req.body.locale
+    token = requestData.token
+    tokenSalt = requestData.tokenSalt
+    verifyRegistrationToken token tokenSalt (err, isValid) ->
+        if err
+            error = new Error "[Error decoding registration token] #{err.code}"
+            error.status   = 500
+            error.template = name: 'error'
+            next error
+        if isValid
+            userToSave = {}
+            errors = {}
+            if requestData.password
+                hash = helpers.cryptPassword req.body.password
+                userToSave.password = hash.hash
+                userToSave.salt = hash.salt
+                passwdValidationError =
+                    User.validatePassword requestData.password
+                if passwdValidationError
+                    errors.password = localization.t 'password too short'
+            if requestData.allowStats
+                userToSave.allow_stats = requestData.allowStats
+            if requestData.CGUaccepted
+                userToSave.CGUaccepted = requestData.CGUaccepted
+            # if password step done, reset token data
+            if requestData.stepSlug = "password"
+                userToSave.token = ""
+                userToSave.salt = ""
+            # onboarded steps update
+            userToSave.onboardedSteps = requestData.onboardedSteps
 
-    passwdValidationError = User.validatePassword req.body.password
-    validationErrors = User.validate userData, passwdValidationError
+            # other data
+            userToSave.owner = true
+            instanceData = locale: requestData.locale
 
-    unless Object.keys(validationErrors).length
+        else
+            error          = new Error "[Not authorized] 401"
+            error.status   = 401
+            error.template = name: 'error'
+            next error
+
+    unless Object.keys(errors).length
         User.all (err, users) ->
-            if err? then next new Error err
-            else if users.length isnt 0
-                error        = new Error 'User already registered.'
-                error.status = 409
-                next error
-            else
-                Instance.createOrUpdate instanceData, (err) ->
-                    return next new Error err if err
+            return next new Error err if err
+            Instance.createOrUpdate instanceData, (err) ->
+                return next new Error err if err
 
+                if users.length
+                    users[0].merge userToSave, (err) ->
+                        return next new Error err if err
+                        next()
+                else
                     User.createNew userData, (err) ->
                         return next new Error err if err
 
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
-                        localization.setLocale req.body.locale
+                        localization.setLocale requestData.locale
                         next()
     else
-        error        = new Error 'Errors in validation'
+        error        = new Error 'Errors with data'
+        error.errors = errors
+        error.status = 400
+        next error
+
+
+# Save user document if authenticated
+# Expected request body format (? means optionnal)
+# ?username
+# ?timezone
+# ?email
+# onboardedSteps
+module.exports.saveAuthenticatedUser = (req, res, next) ->
+    requestData = req.body
+
+    userToSave = {}
+    errors = {}
+    if requestData.username
+        userToSave.public_name = requestData.username
+    if requestData.email
+        userToSave.email = requestData.email
+    if requestData.timezone
+        userToSave.timezone = requestData.timezone
+    # if ending step done, user is registred
+    if requestData.stepSlug = "ending"
+        userToSave.activated = true
+    # onboarded steps update
+    validationErrors = User.validate userToSave
+    userToSave.onboardedSteps = requestData.onboardedSteps
+
+    unless Object.keys(validationErrors).length
+        User.all (err, users) ->
+            return next new Error err if err
+            if users.length
+                users[0].merge userToSave, (err) ->
+                    return next new Error err if err
+                    next()
+    else
+        error        = new Error 'Errors with validation'
         error.errors = validationErrors
         error.status = 400
         next error

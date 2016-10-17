@@ -1,7 +1,5 @@
 jQuery = require 'jquery'
 
-REQUIRED_KEYS = ['username', 'email', 'public_name', 'timezone', 'allow_stats']
-
 
 module.exports = {
     name: 'password',

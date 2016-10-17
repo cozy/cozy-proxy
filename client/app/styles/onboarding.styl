@@ -3,6 +3,7 @@
  */
 
 @import "./base/_colors.styl"
+@import "./cozy-ui/icons.styl"
 
 
 // LAYOUTS
@@ -58,14 +59,33 @@ footer
 
 
 // FORMS
+button
 [role=button]
     display:          block
+    box-sizing:       border-box
+    width:            100%
     padding:          .55em
+    border:           none
     border-radius:    4px
     background-color: $blue
     text-align:       center
     text-transform:   uppercase
     color:            white
+
+    &[disabled]
+    &[aria-disabled=true]
+        opacity: .5
+        cursor:  default
+
+    &[aria-busy=true]
+        position: relative
+
+        &::before
+            width:      1em
+            height:     1em
+            @extend     $icon-spinner-white
+            margin-top: -.5em
+            left:       1em
 
 
 

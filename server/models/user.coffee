@@ -20,11 +20,13 @@ module.exports = User = cozydb.getModel 'User',
     timezone: String
     owner: Boolean
     allow_stats: Boolean
+    isCGUaccepted: Boolean
     activated: Boolean
     encryptedOtpKey: String
     hotpCounter: Number
     authType: String
     encryptedRecoveryCodes: Array
+    onboardedSteps: Array
 
 
 User.createNew = (data, callback) ->

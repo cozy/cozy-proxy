@@ -885,8 +885,10 @@ describe('Onboarding.Step', () => {
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
 
-            // act
-            step.submit();
+            // onboarding.steps are not the same than steps
+            // submit and error methods from Onboarding
+            const selectStep = onboarding.steps[0]
+            onboarding.triggerStepChanged(selectStep);
 
             // assertd
             assert(step.save.calledOnce);

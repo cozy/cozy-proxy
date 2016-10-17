@@ -25,27 +25,27 @@ describe('Step: password', () => {
 
     describe('#validate', () => {
 
-        it('should return null', () => {
+        it('should return `null`', () => {
             const data = {
                 'username': 'plop',
                 'email': 'plop',
                 'public_name': 'plop',
                 'timezone': 'plop',
-                'allow_stats': 'plop'
+                'allow_stats': 'plop',
+                'password': 'plop'
             }
             assert.equal(null, PasswordConfig.validate(data))
         });
 
         it('Should return {errors} when `data` is empty', () => {
-            const type = 'step empty fields';
             let error = PasswordConfig.validate({});
-            assert.equal('step empty fields', error.type);
+            assert.equal('user', error.type);
 
             error = PasswordConfig.validate();
-            assert.equal('step empty fields', error.type);
+            assert.equal('user', error.type);
 
             error = PasswordConfig.validate('');
-            assert.equal('step empty fields', error.type);
+            assert.equal('user', error.type);
         });
 
         it('Should return {errors} when missing `data.keys`', () => {
@@ -53,16 +53,23 @@ describe('Step: password', () => {
                 'username': 'plop',
                 'email': 'plop',
                 'public_name': 'plop',
-                'timezone': 'plop'
+                'timezone': 'plop',
+                'allow_stats': false,
+                'password': null
             }
             let error = PasswordConfig.validate(data);
-            assert.equal('allow_stats', error.errors);
+            assert.equal('password', error.type);
+            assert.equal('step empty fields', error.text);
 
             error = PasswordConfig.validate({ username: 'username' });
-            assert.equal('email', error.errors);
+            assert.equal('email', error.error);
+            assert.equal('user', error.type);
 
             error = PasswordConfig.validate({});
-            assert.equal('username', error.errors);
+            assert.equal('username', error.error);
+            assert.equal('user', error.type);
+
+
         });
     });
 

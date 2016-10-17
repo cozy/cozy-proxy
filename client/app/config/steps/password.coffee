@@ -15,8 +15,9 @@ module.exports = {
     # to dispatch error into app
     validate: (data={}) ->
         if (error = REQUIRED_KEYS.find (key) -> not data[key]?)
-            type = 'user' if error isnt 'password'
-            return { type, error, text:'step empty fields' }
+            return { type: 'user', text:'step empty fields', error}
+        else unless data.password?
+            return { type: 'password', text:'step empty fields'}
         else
             return null
 

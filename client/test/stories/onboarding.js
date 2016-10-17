@@ -65,7 +65,7 @@ describe('Password Stories', () => {
             global.jQuery.post.yieldsTo('success');
 
             // Select StepPassword
-            onboarding.goToStep(passwordStep);
+            onboarding.triggerStepChanged(passwordStep);
 
             // Submit password value
             passwordStep.submit({ password: 'toto' })

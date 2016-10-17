@@ -1,9 +1,13 @@
 jQuery = require 'jquery'
 
+REQUIRED_KEYS = ['username', 'email', 'public_name', 'timezone', 'allow_stats']
+
+
 module.exports = {
     name: 'password',
     route: 'register/password',
     view : 'steps/password'
+
 
     # If OK, return null
     # if not return an Array of errors
@@ -14,7 +18,6 @@ module.exports = {
             return { type: 'password', text:'step empty fields'}
         else
             return null
-
 
 
     save: (data) ->

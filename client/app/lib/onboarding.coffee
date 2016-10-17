@@ -109,8 +109,8 @@ class Step
         throw new Error error
 
 
-    error: (args...) ->
-        @triggerFailed args...
+    error: (err) ->
+        @triggerFailed err
 
 
 # Main class
@@ -197,7 +197,6 @@ module.exports = class Onboarding
     # Trigger a 'StapFailed' pseudo-event
     triggerStepErrors: (step, args...) =>
         @stepFailedHandlers?.forEach (handler) ->
-
             handler step, args...
 
 

@@ -8,10 +8,17 @@ module.exports = class PasswordView extends StepView
     events:
         'click button': 'doSubmit'
 
-    serializeData: ->
-        # Get 1rst error
-        if(error = _.values(@errors?.errors).shift())
-            return { error }
+
+    # Get 1rst error only
+    # err is an object such as:
+    # {type: 'step empty fields', error: 'username' }
+    #
+    # Error can only come from:
+    # user values or password value
+    serializeData: () ->
+        if (err = @errors)? and 'object' is typeof err
+            err = err.shift() if err.length
+            return { error: t(err.text, {name: err.error}) }
         else
             return {}
 

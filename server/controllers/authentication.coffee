@@ -67,44 +67,109 @@ module.exports.onboarding = (req, res, next) ->
                     res.render 'index', {env: env, onBoarding: true}
 
 
-module.exports.register = (req, res, next) ->
-    hash = helpers.cryptPassword req.body.password
-    userData =
-        email:       req.body.email
-        owner:       true
-        password:    hash.hash
-        salt:        hash.salt
-        public_name: req.body.public_name
-        timezone:    req.body.timezone
-        activated:   true
-        allow_stats: req.body.allow_stats
-        docType:     'User'
+# Save unauthenticated user document (only if password doesn't exist)
+# Expected request body format (? means optionnal)
+# ?password
+# ?allowStats
+# ?CGUaccepted
+# onboardedSteps
+module.exports.saveUnauthenticatedUser = (req, res, next) ->
+    requestData = req.body
 
-    instanceData = locale: req.body.locale
+    userToSave = {}
+    dataErrors = {}
+    # grab data from the request body
+    if requestData.password
+        hash = helpers.cryptPassword requestData.password
+        userToSave.password = hash.hash
+        userToSave.salt = hash.salt
+        passwdValidationError =
+            User.validatePassword requestData.password
+        if passwdValidationError
+            dataErrors.password = localization.t 'password too short'
+    [
+        'allowStats',
+        'CGUaccepted',
+        'onboardedSteps'
+    ].forEach(property) =>
+        if requestData[property]
+            userToSave[property] = requestData[property]
 
-    passwdValidationError = User.validatePassword req.body.password
-    validationErrors = User.validate userData, passwdValidationError
+    # other data
+    userToSave.owner = true
+    instanceData = locale: requestData.locale
 
-    unless Object.keys(validationErrors).length
+    unless Object.keys(dataErrors).length
         User.all (err, users) ->
-            if err? then next new Error err
-            else if users.length isnt 0
-                error        = new Error 'User already registered.'
-                error.status = 409
-                next error
-            else
-                Instance.createOrUpdate instanceData, (err) ->
-                    return next new Error err if err
+            return next new Error err if err
+            # if existing user document with password -> request rejected
+            if users[0]?.password
+                error        = new Error 'Not authorized 401'
+                error.status = 401
+                return next error
+            Instance.createOrUpdate instanceData, (err) ->
+                return next new Error err if err
 
+                if users.length
+                    users[0].merge userToSave, (err) ->
+                        return next new Error err if err
+                        next()
+                else
                     User.createNew userData, (err) ->
                         return next new Error err if err
 
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
-                        localization.setLocale req.body.locale
+                        localization.setLocale requestData.locale
                         next()
     else
-        error        = new Error 'Errors in validation'
+        error        = new Error 'Errors with data'
+        error.errors = errors
+        error.status = 400
+        next error
+
+
+# Save user document if authenticated
+# Expected request body format (? means optionnal)
+# ?public_name
+# ?timezone
+# ?email
+# onboardedSteps
+module.exports.saveAuthenticatedUser = (req, res, next) ->
+    if not req.isAuthenticated()
+        error        = new Error 'Not authorized 401'
+        error.status = 401
+        return next error
+
+    requestData = req.body
+
+    userToSave = {}
+    errors = {}
+    # grab data from the request body
+    [
+        'public_name',
+        'email',
+        'timezone',
+        'onboardedSteps'
+    ].forEach(property) =>
+        if requestData[property]
+            userToSave[property] = requestData[property]
+
+    # if ending step done, user is registred
+    if requestData.stepSlug = "ending"
+        userToSave.activated = true
+    # onboarded steps update
+    validationErrors = User.validate userToSave
+
+    unless Object.keys(validationErrors).length
+        User.all (err, users) ->
+            return next new Error err if err
+            if users.length
+                users[0].merge userToSave, (err) ->
+                    return next new Error err if err
+                    next()
+    else
+        error        = new Error 'Errors with validation'
         error.errors = validationErrors
         error.status = 400
         next error

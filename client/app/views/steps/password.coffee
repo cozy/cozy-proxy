@@ -11,14 +11,15 @@ module.exports = class PasswordView extends StepView
 
     # Get 1rst error only
     # err is an object such as:
-    # {type: 'step empty fields', error: 'username' }
-    #
-    # Error can only come from:
-    # user values or password value
+    # {type: 'user', text: 'step empty fields', error: 'username' }
     serializeData: () ->
         if (err = @errors)? and 'object' is typeof err
             err = err.shift() if err.length
-            return { error: t(err.text, {name: err.error}) }
+
+            text = err.errors?.password
+            text ?= t err.text, {name: err.error}
+
+            return { error: text }
         else
             return {}
 

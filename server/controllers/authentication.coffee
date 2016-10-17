@@ -108,23 +108,25 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             dataErrors = {}
             # grab data from the request body
             if requestData.password
-                hash = helpers.cryptPassword req.body.password
+                hash = helpers.cryptPassword requestData.password
                 userToSave.password = hash.hash
                 userToSave.salt = hash.salt
                 passwdValidationError =
                     User.validatePassword requestData.password
                 if passwdValidationError
                     dataErrors.password = localization.t 'password too short'
-            if requestData.allowStats
-                userToSave.allow_stats = requestData.allowStats
-            if requestData.CGUaccepted
-                userToSave.CGUaccepted = requestData.CGUaccepted
+            [
+                'allowStats',
+                'CGUaccepted',
+                'onboardedSteps'
+            ].forEach(property) =>
+                if requestData[property]
+                    userToSave[property] = requestData[property]
+
             # if password step done, reset token data
             if requestData.stepSlug = "password"
                 userToSave.token = ""
                 userToSave.salt = ""
-            # onboarded steps update
-            userToSave.onboardedSteps = requestData.onboardedSteps
 
             # other data
             userToSave.owner = true
@@ -163,7 +165,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
 
 # Save user document if authenticated
 # Expected request body format (? means optionnal)
-# ?username
+# ?public_name
 # ?timezone
 # ?email
 # onboardedSteps
@@ -178,18 +180,20 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
     userToSave = {}
     errors = {}
     # grab data from the request body
-    if requestData.username
-        userToSave.public_name = requestData.username
-    if requestData.email
-        userToSave.email = requestData.email
-    if requestData.timezone
-        userToSave.timezone = requestData.timezone
+    [
+        'public_name',
+        'email',
+        'timezone',
+        'onboardedSteps'
+    ].forEach(property) =>
+        if requestData[property]
+            userToSave[property] = requestData[property]
+
     # if ending step done, user is registred
     if requestData.stepSlug = "ending"
         userToSave.activated = true
     # onboarded steps update
     validationErrors = User.validate userToSave
-    userToSave.onboardedSteps = requestData.onboardedSteps
 
     unless Object.keys(validationErrors).length
         User.all (err, users) ->

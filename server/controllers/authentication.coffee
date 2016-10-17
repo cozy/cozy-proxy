@@ -110,7 +110,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             else if users.length
                 users[0].merge userToSave, (err) ->
                     return next new Error err if err
-                    res.status(200).send('User data correctly updated')
+                    res.status(200).send(result: 'User data correctly updated')
             else
                 Instance.createOrUpdate instanceData, (err) ->
                     return next new Error err if err
@@ -120,7 +120,9 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
                         localization.setLocale requestData.locale
-                        res.status(201).send('User data correctly created')
+                        res.status(201).send(
+                            result: 'User data correctly created'
+                        )
     else
         error        = new Error 'Errors with data'
         error.errors = dataErrors
@@ -161,7 +163,7 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
             if users.length
                 users[0].merge userToSave, (err) ->
                     return next new Error err if err
-                    res.status(200).send('User data correctly updated')
+                    res.status(200).send(result: 'User data correctly updated')
             else
                 error        = new Error 'User document not found'
                 error.status = 404

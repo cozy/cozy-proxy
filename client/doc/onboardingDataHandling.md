@@ -96,25 +96,66 @@ According to the ```user``` document properties:
     * Reachable via ```/onboarding/welcome``` path
     * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
     * At validation, ```welcome``` step name are sent to server side to be saved in user ```user``` document (```onboardedSteps``` property)
+    * __Save request__ format:
+        ```
+        POST /register
+        {
+            "onboardedSteps": Array(String)
+        }
+        ```
 2. For ```agreement``` step:
     * Reachable via ```/onboarding/agreement``` path
     * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
     * At validation, ```agreement``` step name and ```{CGUaccepted: true}``` are sent to server side to be saved in ```user``` document
+    * __Save request__ format:
+        ```
+        POST /register
+        {
+            "isCGUaccepted": Boolean,
+            "allow_stats": Boolean,
+            "onboardedSteps": Array(String)
+        }
+        ```
 3. For ```password``` step:
     * Reachable via ```/onboarding/password``` path
     * Only the ```username``` and ```hasValidInfos``` (if exist) are used throught the view
     * At validation, ```password``` step name and ```{password: 'userpasswordhere'}``` are sent to server side to be saved in ```user``` document
     * At the validation, the user will be redirected to the login page for the authentication
+    * __Save request__ format:
+        ```
+        POST /register
+        {
+            "password": String,
+            "onboardedSteps": Array(String)
+        }
+        ```
 4. For ```infos``` step:
     * User __authentication required__
     * Reachable via ```/onboarding/infos``` path
     * At the step rendering, the ```user``` document is requested
     * At validation, ```infos``` step name and ```{email: 'userpasswordhere', public_name: 'username', timezone: 'country/town'}``` are sent to server side to be saved in ```user``` document
+    * __Save request__ format:
+        ```
+        PUT /register
+        {
+            "public_name": String,
+            "email": String,
+            "timezone": String,
+            "onboardedSteps": Array(String)
+        }
+        ```
 5. For ```accounts``` step:
     * User __authentication required__
     * Reachable via ```/onboarding/accounts``` path
     * At the step validation, the user will be redirected to the "My Accounts" application (using probably an argument to specify that is from the onboarding process)
     * At the "My accounts" callback, ```accounts``` step name is sent to server side to be saved in ```user``` document
+    * __Save request__ format:
+        ```
+        PUT /register
+        {
+            "onboardedSteps": Array(String)
+        }
+        ```
 6. For the ```ending``` step:
     * User __authentication required__
     * Reachable via ```/onboarding/ending``` path
@@ -123,6 +164,13 @@ According to the ```user``` document properties:
         * If the ```activated``` is ```false``` AND ```onboardedSteps ``` is ```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']``` => ```ending``` step
         * If the ```activated``` is ```true``` AND ```onboardedSteps ``` is ```['welcome', 'agreement', 'password', 'infos', 'accounts', 'ending']``` => cozy home
         * __Default__ => ```welcome``` step with ```onboardedSteps``` set to ```[]```
+    * __Save request__ format:
+        ```
+        PUT /register
+        {
+            "onboardedSteps": Array(String)
+        }
+        ```
 
 #### Handle onboarding changes
 

@@ -104,24 +104,23 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             return next new Error err if err
             # if existing user document with password -> request rejected
             if users[0]?.password
-                error        = new Error 'Not authorized 401'
+                error        = new Error 'Not authorized'
                 error.status = 401
                 return next error
-            Instance.createOrUpdate instanceData, (err) ->
-                return next new Error err if err
-
-                if users.length
-                    users[0].merge userToSave, (err) ->
-                        return next new Error err if err
-                        next()
-                else
+            else if users.length
+                users[0].merge userToSave, (err) ->
+                    return next new Error err if err
+                    res.status(200).send('User data correctly updated')
+            else
+                Instance.createOrUpdate instanceData, (err) ->
+                    return next new Error err if err
                     User.createNew userData, (err) ->
                         return next new Error err if err
 
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
                         localization.setLocale requestData.locale
-                        next()
+                        res.status(201).send('User data correctly created')
     else
         error        = new Error 'Errors with data'
         error.errors = dataErrors
@@ -136,11 +135,6 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
 # ?email
 # onboardedSteps
 module.exports.saveAuthenticatedUser = (req, res, next) ->
-    if not req.isAuthenticated()
-        error        = new Error 'Not authorized 401'
-        error.status = 401
-        return next error
-
     requestData = req.body
 
     userToSave = {}
@@ -167,7 +161,12 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
             if users.length
                 users[0].merge userToSave, (err) ->
                     return next new Error err if err
-                    next()
+                    res.status(200).send('User data correctly updated')
+            else
+                error        = new Error 'User document not found'
+                error.status = 404
+                return next error
+
     else
         error        = new Error 'Errors with validation'
         error.errors = validationErrors

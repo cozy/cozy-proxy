@@ -88,7 +88,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         if Object.keys(passwordValidationError).length
             dataErrors.password = localization.t 'password not valid'
     [
-        'allowStats',
+        'allow_stats',
         'isCGUaccepted',
         'onboardedSteps'
     ].forEach (property) =>
@@ -155,10 +155,10 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         if requestData[property]
             userToSave[property] = requestData[property]
 
-    # if ending step done, user is registred
-    if requestData.stepSlug = "ending"
+    # if final step done, user is registred
+    if userToSave?.onboardedSteps is ONBOARDING_STEPS
         userToSave.activated = true
-    # onboarded steps update
+
     validationErrors = User.validate userToSave
 
     unless Object.keys(validationErrors).length

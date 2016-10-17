@@ -2,14 +2,25 @@ passport     = require 'passport'
 randomstring = require 'randomstring'
 request      = require 'request-json'
 async        = require 'async'
+jwt          = require 'jsonwebtoken'
 
 User         = require '../models/user'
 Instance     = require '../models/instance'
 helpers      = require '../lib/helpers'
+timezones    = require '../lib/timezones'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
 
+# hardcoded onboarding steps order and slug names
+ONBOARDING_STEPS = [
+    'welcome',
+    'agreement',
+    'password',
+    'infos',
+    'accounts',
+    'ending'
+]
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -25,64 +36,174 @@ getEnv = (callback) ->
 
             callback null, env
 
+verifyRegistrationToken = (token, tokenSalt, callback) ->
+    User.getRegistrationToken (err, tokenData) ->
+        return callback err if err
 
-module.exports.registerIndex = (req, res, next) ->
+        if !tokenData.token or !tokenData.salt
+            return callback null, false
+        try
+            decoded = jwt.verify(token, salt)
+            # TODO: verify token options according to options stored in DS like
+            # matchingOption1 = decoded.option1 is tokenData.option1
+            matchingToken = token is tokenData.token
+            matchingSalt = salt is tokenData.salt
+            if matchingToken and matchingSalt
+                # correct given token
+                return callback null, true
+            else
+                return callback null, false
+        catch err
+            return callback err if err
+
+
+module.exports.onboarding = (req, res, next) ->
     getEnv (err, env) ->
         if err
             error          = new Error "[Error to access cozy user] #{err.code}"
             error.status   = 500
             error.template = name: 'error'
             next error
+        else
+            # get user data
+            User.first (err, userData) ->
+                if err
+                    error = new Error "[Error to access cozy user] #{err.code}"
+                    error.status   = 500
+                    error.template = name: 'error'
+                    next error
 
-        else if env.username
-            res.redirect '/login'
+                # According to steps changes
+                if userData?.onboardedSteps is ONBOARDING_STEPS
+                    res.redirect '/login'
+                else
+                    if userData
+                        hasValidInfos = User.checkInfos userData
+                        env.hasValidInfos = hasValidInfos
+                    localization.setLocale req.headers['accept-language']
+                    res.render 'index', {env: env, onBoarding: true}
+
+
+# Save unauthenticated user document according to token existence and validity
+# Expected request body format (? means optionnal)
+# ?password
+# ?allowStats
+# ?CGUaccepted
+# onboardedSteps
+# token
+# tokenSalt
+module.exports.saveUnauthenticatedUser = (req, res, next) ->
+    requestData = req.body
+
+    token = requestData.token
+    tokenSalt = requestData.tokenSalt
+    verifyRegistrationToken token tokenSalt (err, isValid) ->
+        if err
+            error = new Error "[Error decoding registration token] #{err.code}"
+            error.status   = 500
+            error.template = name: 'error'
+            next error
+        if isValid
+            userToSave = {}
+            dataErrors = {}
+            # grab data from the request body
+            if requestData.password
+                hash = helpers.cryptPassword requestData.password
+                userToSave.password = hash.hash
+                userToSave.salt = hash.salt
+                passwdValidationError =
+                    User.validatePassword requestData.password
+                if passwdValidationError
+                    dataErrors.password = localization.t 'password too short'
+            [
+                'allowStats',
+                'CGUaccepted',
+                'onboardedSteps'
+            ].forEach(property) =>
+                if requestData[property]
+                    userToSave[property] = requestData[property]
+
+            # if password step done, reset token data
+            if requestData.stepSlug = "password"
+                userToSave.token = ""
+                userToSave.salt = ""
+
+            # other data
+            userToSave.owner = true
+            instanceData = locale: requestData.locale
 
         else
-            localization.setLocale req.headers['accept-language']
-            # We need to pass a flag to signal the view is in registration mode
-            # TODO: this one is temporary, and need to be removed when we merge
-            #       CSS again.
-            res.render 'index', {env: env, onBoarding: true}
+            error          = new Error "[Not authorized] 401"
+            error.status   = 401
+            error.template = name: 'error'
+            next error
 
-
-module.exports.register = (req, res, next) ->
-    hash = helpers.cryptPassword req.body.password
-    userData =
-        email:       req.body.email
-        owner:       true
-        password:    hash.hash
-        salt:        hash.salt
-        public_name: req.body.public_name
-        timezone:    req.body.timezone
-        activated:   true
-        allow_stats: req.body.allow_stats
-        docType:     'User'
-
-    instanceData = locale: req.body.locale
-
-    passwdValidationError = User.validatePassword req.body.password
-    validationErrors = User.validate userData, passwdValidationError
-
-    unless Object.keys(validationErrors).length
+    unless Object.keys(dataErrors).length
         User.all (err, users) ->
-            if err? then next new Error err
-            else if users.length isnt 0
-                error        = new Error 'User already registered.'
-                error.status = 409
-                next error
-            else
-                Instance.createOrUpdate instanceData, (err) ->
-                    return next new Error err if err
+            return next new Error err if err
+            Instance.createOrUpdate instanceData, (err) ->
+                return next new Error err if err
 
+                if users.length
+                    users[0].merge userToSave, (err) ->
+                        return next new Error err if err
+                        next()
+                else
                     User.createNew userData, (err) ->
                         return next new Error err if err
 
                         # at first load, 'en' is the default locale
                         # we must change it now if it has changed
-                        localization.setLocale req.body.locale
+                        localization.setLocale requestData.locale
                         next()
     else
-        error        = new Error 'Errors in validation'
+        error        = new Error 'Errors with data'
+        error.errors = errors
+        error.status = 400
+        next error
+
+
+# Save user document if authenticated
+# Expected request body format (? means optionnal)
+# ?public_name
+# ?timezone
+# ?email
+# onboardedSteps
+module.exports.saveAuthenticatedUser = (req, res, next) ->
+    if not req.isAuthenticated()
+        error        = new Error 'Not authorized 401'
+        error.status = 401
+        return next error
+
+    requestData = req.body
+
+    userToSave = {}
+    errors = {}
+    # grab data from the request body
+    [
+        'public_name',
+        'email',
+        'timezone',
+        'onboardedSteps'
+    ].forEach(property) =>
+        if requestData[property]
+            userToSave[property] = requestData[property]
+
+    # if ending step done, user is registred
+    if requestData.stepSlug = "ending"
+        userToSave.activated = true
+    # onboarded steps update
+    validationErrors = User.validate userToSave
+
+    unless Object.keys(validationErrors).length
+        User.all (err, users) ->
+            return next new Error err if err
+            if users.length
+                users[0].merge userToSave, (err) ->
+                    return next new Error err if err
+                    next()
+    else
+        error        = new Error 'Errors with validation'
         error.errors = validationErrors
         error.status = 400
         next error

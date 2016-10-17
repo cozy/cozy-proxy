@@ -105,7 +105,8 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             next error
         if isValid
             userToSave = {}
-            errors = {}
+            dataErrors = {}
+            # grab data from the request body
             if requestData.password
                 hash = helpers.cryptPassword req.body.password
                 userToSave.password = hash.hash
@@ -113,7 +114,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
                 passwdValidationError =
                     User.validatePassword requestData.password
                 if passwdValidationError
-                    errors.password = localization.t 'password too short'
+                    dataErrors.password = localization.t 'password too short'
             if requestData.allowStats
                 userToSave.allow_stats = requestData.allowStats
             if requestData.CGUaccepted
@@ -135,7 +136,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             error.template = name: 'error'
             next error
 
-    unless Object.keys(errors).length
+    unless Object.keys(dataErrors).length
         User.all (err, users) ->
             return next new Error err if err
             Instance.createOrUpdate instanceData, (err) ->
@@ -167,10 +168,16 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
 # ?email
 # onboardedSteps
 module.exports.saveAuthenticatedUser = (req, res, next) ->
+    if not req.isAuthenticated()
+        error        = new Error 'Not authorized 401'
+        error.status = 401
+        return next error
+
     requestData = req.body
 
     userToSave = {}
     errors = {}
+    # grab data from the request body
     if requestData.username
         userToSave.public_name = requestData.username
     if requestData.email

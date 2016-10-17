@@ -5,6 +5,7 @@ welcome = require './welcome'
 agreement = require './agreement'
 infos = require './infos'
 password = require './password'
+accounts = require './accounts'
 confirmation = require './confirmation'
 
 module.exports = [
@@ -12,5 +13,6 @@ module.exports = [
     agreement,
     infos,
     password,
+    accounts,
     confirmation
 ]

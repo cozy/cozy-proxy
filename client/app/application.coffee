@@ -26,10 +26,11 @@ class App extends Application
     ###
     initialize: ->
         steps = require './config/steps/all'
-        @on 'start', (options) =>
+        @on 'start', =>
 
-            # TODO: Get the user with a better way later
-            user = {}
+            user = {
+                username: ENV.username
+            }
 
             @onboarding = new Onboarding(user, steps)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
@@ -65,9 +66,10 @@ class App extends Application
     initializeStepRoute: (step) =>
         StepView = require "./views/#{step.view}"
         @router.route "#{step.route}", "route:#{step.route}", () =>
+            nextStep = @onboarding.getNextStep step
             @layout.showChildView 'content',
                 new StepView
-                    model: new StepModel step: step
+                    model: new StepModel step: step, next: nextStep
                     progression: new ProgressionModel \
                         @onboarding.getProgression step
 

@@ -1,3 +1,2 @@
-ol
-    each label, i in labels
-        li(aria-selected=i==current-1)=label
+each label, i in labels
+    li(aria-selected=(i==current-1)?'true':'false')= label

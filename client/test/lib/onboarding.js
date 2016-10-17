@@ -68,8 +68,8 @@ describe('Onboarding', () => {
             assert.equal('test', step1.name);
             assert.equal('testroute', step1.route);
             assert.equal('testview', step1.view);
-            assert.isFunction(step1.onValidated);
-            assert.isFunction(step1.triggerValidated);
+            assert.isFunction(step1.onCompleted);
+            assert.isFunction(step1.triggerCompleted);
             assert.isFunction(step1.submit);
 
             let step2 = onboarding.steps[1];
@@ -77,8 +77,8 @@ describe('Onboarding', () => {
             assert.equal('test2', step2.name);
             assert.equal('testroute2', step2.route);
             assert.equal('testview2', step2.view);
-            assert.isFunction(step2.onValidated);
-            assert.isFunction(step2.triggerValidated);
+            assert.isFunction(step2.onCompleted);
+            assert.isFunction(step2.triggerCompleted);
             assert.isFunction(step2.submit);
         });
 
@@ -150,14 +150,14 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#handleStepSubmitted', () => {
+    describe('#handleStepCompleted', () => {
         it('should call Onboarding#goToNext', () => {
             // arrange
             let onboarding = new Onboarding(null, []);
             onboarding.goToNext = sinon.spy();
 
             // act
-            onboarding.handleStepSubmitted(null);
+            onboarding.handleStepCompleted(null);
 
             // assert
             assert(onboarding.goToNext.calledOnce);
@@ -556,6 +556,123 @@ describe('Onboarding', () => {
             assert.deepEqual(expectedLabels, result.labels);
         });
     });
+
+    describe('#getNextStep', () => {
+        it('should throw error when no step is given in parameter', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let fn = () => {
+                // act
+                let result = onboarding.getNextStep();
+            };
+
+            // assert
+            assert.throw(fn, 'Mandatory parameter step is missing');
+        });
+
+        it('should throw error when given step is not in step list', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let otherStep = new Step({
+                name: 'otherStep',
+                route: 'otherRoute',
+                view: 'otherView'
+            });
+
+            let fn = () => {
+                // act
+                let result = onboarding.getNextStep(otherStep);
+            };
+
+            // assert
+            assert.throw(fn, 'Given step missing in onboarding step list');
+        });
+
+        it('should return next step', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step1 = onboarding.getStepByName('test');
+            let step2 = onboarding.getStepByName('test2');
+
+            // act
+            let result = onboarding.getNextStep(step1);
+
+            // assert
+            assert.equal(step2, result);
+        });
+
+        it('should return null when current step is last step', () => {
+            // arrange
+            let onboarding = new Onboarding(null, [
+                {
+                    name: 'test',
+                    route: 'testroute',
+                    view: 'testview'
+                }, {
+                    name: 'test2',
+                    route: 'testroute2',
+                    view: 'testview2'
+                }, {
+                    name: 'test3',
+                    route: 'testroute3',
+                    view: 'testview3'
+                }
+            ]);
+
+            let step3 = onboarding.getStepByName('test3');
+
+            // act
+            let result = onboarding.getNextStep(step3);
+
+            // assert
+            assert.isNull(result);
+        });
+    });
 });
 
 describe('Onboarding.Step', () => {
@@ -654,17 +771,17 @@ describe('Onboarding.Step', () => {
         });
     });
 
-    describe('#onValidated', () => {
+    describe('#onCompleted', () => {
         it('should add given callback to step changed handlers', () => {
             // arrange
             let step = new Step();
             let callback = () => {};
 
             // act
-            step.onValidated(callback);
+            step.onCompleted(callback);
 
             // assert
-            assert.include(step.validatedHandlers, callback);
+            assert.include(step.completedHandlers, callback);
         });
 
         it('should throw an error when callback is not a function', () => {
@@ -673,7 +790,7 @@ describe('Onboarding.Step', () => {
             let callback = 'I am a string';
             let fn = () => {
                 // act
-                step.onValidated(callback);
+                step.onCompleted(callback);
             }
 
             // assert
@@ -681,14 +798,14 @@ describe('Onboarding.Step', () => {
         });
     });
 
-    describe('#triggerValidated', () => {
-        it('should not throw an error when validatedHandlers is empty', () => {
+    describe('#triggerCompleted', () => {
+        it('should not throw an error when completedHandlers is empty', () => {
             // arrange
             let step = new Step();
 
             let fn = () => {
                 // act
-                step.triggerValidated();
+                step.triggerCompleted();
             }
 
             // assert
@@ -702,11 +819,11 @@ describe('Onboarding.Step', () => {
             let callback1 = sinon.spy();
             let callback2 = sinon.spy();
 
-            step.onValidated(callback1);
-            step.onValidated(callback2);
+            step.onCompleted(callback1);
+            step.onCompleted(callback2);
 
             // act
-            step.triggerValidated();
+            step.triggerCompleted();
 
             // assert
             assert(callback1.calledOnce);
@@ -717,16 +834,58 @@ describe('Onboarding.Step', () => {
     });
 
     describe('#submit', () => {
-        it('should call triggerValidated', () => {
+        it('should call triggerCompleted', () => {
             // arrange
             let step = new Step();
-            step.triggerValidated = sinon.spy();
+            step.triggerCompleted = sinon.spy();
 
             // act
             step.submit();
 
             // assert
-            assert(step.triggerValidated.calledOnce);
+            assert(step.triggerCompleted.calledOnce);
+        });
+    });
+
+    describe('#fetchUser', () => {
+        it('should fetch username by default', () => {
+            // arrange
+            let username = 'Claude';
+
+            // act
+            let step = new Step({}, {username: username});
+
+            // assert
+            assert.equal(username, step.username);
+        });
+
+        it('should call overriding method', () => {
+            // arrange
+            let spy = sinon.spy();
+
+            // act
+            // fetchUser is called in constructor
+            let step = new Step({
+                fetchUser: spy
+            });
+
+            // assert
+            assert(spy.calledOnce);
+        });
+
+        it('should not call overriding method on other steps', () => {
+            // arrange
+            let spy = sinon.spy();
+
+            // act
+            let step = new Step({
+                fetchUser: spy
+            });
+
+            let step2 = new Step();
+
+            // assert
+            assert(spy.calledOnce);
         });
     });
 });

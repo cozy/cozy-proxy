@@ -3,25 +3,40 @@ class Step
     # Retrieves properties from config Step plain object
     # @param step : config step, i.e. plain object containing custom properties
     #   and methods.
-    constructor: (step={}) ->
-        ['name', 'route', 'view', 'isActive'].forEach (property) =>
+    constructor: (step={}, user={}) ->
+        [
+          'name',
+          'route',
+          'view',
+          'isActive',
+          'fetchUser'
+        ].forEach (property) =>
             if step[property]
                 @[property] = step[property]
 
+        @fetchUser user
 
 
-    # Record handlers for 'validated' internal pseudo-event
-    onValidated: (callback) ->
+    # Map some user properties to current step object
+    # @param user : JS object representing the user.
+    # This method can be overriden by passing another fetchUser function
+    # in constructor parameters
+    fetchUser: (user={}) ->
+        @username = user.username
+
+
+    # Record handlers for 'completed' internal pseudo-event
+    onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @validatedHandlers = @validatedHandlers or []
-        @validatedHandlers.push callback
+        @completedHandlers = @completedHandlers or []
+        @completedHandlers.push callback
 
 
-    # Trigger 'validated' pseudo-event
-    triggerValidated: () ->
-        if @validatedHandlers
-            @validatedHandlers.forEach (handler) =>
+    # Trigger 'completed' pseudo-event
+    triggerCompleted: () ->
+        if @completedHandlers
+            @completedHandlers.forEach (handler) =>
                 handler(@)
 
     # Returns true if the step has to be submitted by the user
@@ -38,7 +53,7 @@ class Step
     # Maybe it should return a Promise or a call a callback couple
     # in the near future
     submit: () ->
-        @triggerValidated()
+        @triggerCompleted()
 
 
 # Main class
@@ -56,10 +71,10 @@ module.exports = class Onboarding
         @user = user
         @steps = steps
             .reduce (activeSteps, step) =>
-                stepModel = new Step step
+                stepModel = new Step step, user
                 if stepModel.isActive user
                     activeSteps.push stepModel
-                    stepModel.onValidated @handleStepSubmitted
+                    stepModel.onCompleted @handleStepCompleted
                 return activeSteps
             , []
 
@@ -76,7 +91,7 @@ module.exports = class Onboarding
     # when it has been successfully submitted
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
-    handleStepSubmitted: =>
+    handleStepCompleted: =>
         @goToNext()
 
 
@@ -129,6 +144,25 @@ module.exports = class Onboarding
             current: @steps.indexOf(step)+1,
             total: @steps.length,
             labels: @steps.map (step) -> step.name
+
+
+    # Returns next step for the given step. Useful for knowing wich route to
+    # use in a link-to-next.
+    getNextStep: (step) ->
+        if not step
+            throw new Error 'Mandatory parameter step is missing'
+
+        stepIndex = @steps.indexOf step
+
+        if stepIndex is -1
+            throw new Error 'Given step missing in onboarding step list'
+
+        nextStepIndex = stepIndex+1
+
+        if nextStepIndex is @steps.length
+            return null
+
+        return @steps[nextStepIndex]
 
 
 # Step is exposed for test purposes only

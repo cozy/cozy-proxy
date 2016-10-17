@@ -757,18 +757,15 @@ describe('Onboarding.Step', () => {
             assert.isUndefined(result.inject);
         });
 
-        it('should override default isActive with new one', () => {
+        it('should overwrite default `isActive`', () => {
             // arrange
-            let overridingIsActive = (user) => {};
-            let options = {
-                isActive: overridingIsActive
-            };
+            let configIsActive = (user) => {};
 
             // act
-            let step = new Step(options);
+            let step = new Step({ isActive: configIsActive });
 
             // assert
-            assert.equal(overridingIsActive, step.isActive);
+            assert.equal(configIsActive, step.isActive);
         });
     });
 
@@ -894,7 +891,7 @@ describe('Onboarding.Step', () => {
     });
 
     describe('#fetchUser', () => {
-        it('should fetch username by default', () => {
+        it('should fetch `username` by default', () => {
             // arrange
             let username = 'Claude';
 
@@ -905,7 +902,7 @@ describe('Onboarding.Step', () => {
             assert.equal(username, step.username);
         });
 
-        it('should call overriding method', () => {
+        it('should call `specific` method', () => {
             // arrange
             let spy = sinon.spy();
 
@@ -919,7 +916,7 @@ describe('Onboarding.Step', () => {
             assert(spy.calledOnce);
         });
 
-        it('should not call overriding method on other steps', () => {
+        it('should call `default` method on other steps', () => {
             // arrange
             let spy = sinon.spy();
 

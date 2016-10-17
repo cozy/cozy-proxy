@@ -4,18 +4,46 @@ describe('Password Stories', () => {
 
     let assert;
     let sinon;
+    let jsdom;
 
     let onboarding;
     let currentIndex;
+    let spyStepChanged;
+    let spyPasswordValidate;
+    let spyPasswordSubmit;
 
+
+    let StepModel;
+
+    // TODO: tester la méthode validate de config/password
+    // -> vérifier que StepModel.submit prends bien en compte ce validate
+    // -> OSEF pour la partie server
 
     before(() => {
         assert = require('chai').assert;
         sinon = require('sinon');
+        StepModel = require('../../app/models/step.coffee');
 
         const Onboarding = require('../../app/lib/onboarding.coffee');
         const Steps = require('../../app/config/steps/all.coffee');
+
+        // No need to send a POST request to the server
+        // we just need to know if inner workflow works
+        // when data is OK or not
+        const PasswordStep = require('../../app/config/steps/password.coffee');
+        PasswordStep.submit = (data, success, error) => {
+            // console.log(data, success, error)
+            success(data);
+        }
+        spyPasswordSubmit = sinon.spy(PasswordStep, 'submit');
+        spyPasswordValidate = sinon.spy(PasswordStep, 'validate');
+
+        // Initialize Onboarding
         onboarding = new Onboarding({}, Steps);
+
+        // Listen to Step Change event
+        spyStepChanged = sinon.spy();
+        onboarding.onStepChanged(spyStepChanged);
     })
 
 
@@ -27,6 +55,12 @@ describe('Password Stories', () => {
 
             // Select password step
             onboarding.goToStep(onboarding.getStepByName('password'));
+        });
+
+        afterEach(() => {
+            // Select 1rst step
+            currentIndex = 3;
+            spyStepChanged.reset();
         });
 
 
@@ -50,7 +84,6 @@ describe('Password Stories', () => {
                 global.jQuery.post.restore();
                 done()
             }, 10);
-
         });
 
 

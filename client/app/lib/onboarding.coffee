@@ -102,8 +102,8 @@ class Step
         throw new Error 'Error occured during save'
 
 
-    error: (args...) ->
-        @triggerFailed args...
+    error: (err) ->
+        @triggerFailed err
 
 
 # Main class
@@ -184,7 +184,6 @@ module.exports = class Onboarding
     # Trigger a 'StapFailed' pseudo-event
     triggerStepErrors: (step, args...) =>
         @stepFailedHandlers?.forEach (handler) ->
-
             handler step, args...
 
 

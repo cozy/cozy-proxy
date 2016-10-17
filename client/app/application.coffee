@@ -28,8 +28,9 @@ class App extends Application
         steps = require './config/steps/all'
         @on 'start', =>
 
-            # TODO: Get the user with a better way later
-            user = {}
+            user = {
+                username: ENV.username
+            }
 
             @onboarding = new Onboarding(user, steps)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)

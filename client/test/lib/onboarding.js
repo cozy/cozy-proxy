@@ -846,4 +846,46 @@ describe('Onboarding.Step', () => {
             assert(step.triggerCompleted.calledOnce);
         });
     });
+
+    describe('#fetchUser', () => {
+        it('should fetch username by default', () => {
+            // arrange
+            let username = 'Claude';
+
+            // act
+            let step = new Step({}, {username: username});
+
+            // assert
+            assert.equal(username, step.username);
+        });
+
+        it('should call overriding method', () => {
+            // arrange
+            let spy = sinon.spy();
+
+            // act
+            // fetchUser is called in constructor
+            let step = new Step({
+                fetchUser: spy
+            });
+
+            // assert
+            assert(spy.calledOnce);
+        });
+
+        it('should not call overriding method on other steps', () => {
+            // arrange
+            let spy = sinon.spy();
+
+            // act
+            let step = new Step({
+                fetchUser: spy
+            });
+
+            let step2 = new Step();
+
+            // assert
+            assert(spy.calledOnce);
+        });
+    });
 });

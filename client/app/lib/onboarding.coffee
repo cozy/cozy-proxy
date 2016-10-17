@@ -3,10 +3,26 @@ class Step
     # Retrieves properties from config Step plain object
     # @param step : config step, i.e. plain object containing custom properties
     #   and methods.
-    constructor: (step={}) ->
-        ['name', 'route', 'view', 'isActive'].forEach (property) =>
+    constructor: (step={}, user={}) ->
+        [
+          'name',
+          'route',
+          'view',
+          'isActive',
+          'fetchUser'
+        ].forEach (property) =>
             if step[property]
                 @[property] = step[property]
+
+        @fetchUser user
+
+
+    # Map some user properties to current step object
+    # @param user : JS object representing the user.
+    # This method can be overriden by passing another fetchUser function
+    # in constructor parameters
+    fetchUser: (user={}) ->
+        @username = user.username
 
 
     # Record handlers for 'completed' internal pseudo-event
@@ -55,7 +71,7 @@ module.exports = class Onboarding
         @user = user
         @steps = steps
             .reduce (activeSteps, step) =>
-                stepModel = new Step step
+                stepModel = new Step step, user
                 if stepModel.isActive user
                     activeSteps.push stepModel
                     stepModel.onCompleted @handleStepCompleted

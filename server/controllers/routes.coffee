@@ -16,7 +16,7 @@ module.exports =
 
     'register':
         get: [utils.isNotAuthenticated, auth.onboarding]
-        post: auth.saveUnauthenticatedUser
+        post: [utils.isNotAuthenticated, auth.saveUnauthenticatedUser]
         put: auth.saveAuthenticatedUser
 
     'login':

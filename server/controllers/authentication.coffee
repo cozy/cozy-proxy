@@ -83,15 +83,15 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         hash = helpers.cryptPassword requestData.password
         userToSave.password = hash.hash
         userToSave.salt = hash.salt
-        passwdValidationError =
+        passwordValidationError =
             User.validatePassword requestData.password
-        if passwdValidationError
-            dataErrors.password = localization.t 'password too short'
+        if Object.keys(passwordValidationError).length
+            dataErrors.password = localization.t 'password not valid'
     [
         'allowStats',
-        'CGUaccepted',
+        'isCGUaccepted',
         'onboardedSteps'
-    ].forEach(property) =>
+    ].forEach (property) =>
         if requestData[property]
             userToSave[property] = requestData[property]
 
@@ -124,7 +124,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
                         next()
     else
         error        = new Error 'Errors with data'
-        error.errors = errors
+        error.errors = dataErrors
         error.status = 400
         next error
 
@@ -151,7 +151,7 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         'email',
         'timezone',
         'onboardedSteps'
-    ].forEach(property) =>
+    ].forEach (property) =>
         if requestData[property]
             userToSave[property] = requestData[property]
 

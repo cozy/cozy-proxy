@@ -74,13 +74,23 @@ User.getUsername = (callback) ->
 
 
 User.validate = (data, errors = {}) ->
-    if not helpers.checkEmail data.email
+    if data.email and not helpers.checkEmail data.email
         errors.email = localization.t 'invalid email format'
 
-    if not (data.timezone in timezones)
+    if data.timezone and not (data.timezone in timezones)
         errors.timezone = localization.t 'invalid timezone'
 
     return errors
+
+
+User.checkInfos = (data) ->
+    hasEmail = if data.email then helpers.checkEmail(data.email) else false
+    hasUserName = data?.public_name
+    hasTimezone = if data.timezone
+        not timezones.indexOf(data.timezone) is -1
+    else
+        false
+    return hasEmail and hasUserName and hasTimezone
 
 
 User.validatePassword = (password, errors = {}) ->

@@ -31,10 +31,6 @@ describe('Password Stories', () => {
 
         // Initialize Onboarding
         onboarding = new Onboarding({}, Steps);
-
-        // Listen to Step Change event
-        spyStepChanged = sinon.spy();
-        onboarding.onStepChanged(spyStepChanged);
     })
 
 

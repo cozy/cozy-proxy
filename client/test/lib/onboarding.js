@@ -882,11 +882,6 @@ describe('Onboarding.Step', () => {
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
 
-            // act
-            step.submit();
-
-            // assert
-            assert(step.save.calledOnce);
         });
     });
 

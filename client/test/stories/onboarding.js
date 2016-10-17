@@ -7,7 +7,6 @@ describe('Password Stories', () => {
 
     let onboarding;
     let currentIndex;
-    let spyStepChanged;
     let spyPasswordValidate;
     let spyPasswordSubmit;
 
@@ -26,19 +25,12 @@ describe('Password Stories', () => {
         // we just need to know if inner workflow works
         // when data is OK or not
         const PasswordStep = require('../../app/config/steps/password.coffee');
-        PasswordStep.submit = (data, success, error) => {
-            // console.log(data, success, error)
-            success(data);
-        }
+        PasswordStep.submit = (data, success, error) => { success(data); }
         spyPasswordSubmit = sinon.spy(PasswordStep, 'submit');
         spyPasswordValidate = sinon.spy(PasswordStep, 'validate');
 
         // Initialize Onboarding
         onboarding = new Onboarding({}, Steps);
-
-        // Listen to Step Change event
-        spyStepChanged = sinon.spy();
-        onboarding.onStepChanged(spyStepChanged);
     })
 
 
@@ -54,8 +46,7 @@ describe('Password Stories', () => {
 
         afterEach(() => {
             // Select 1rst step
-            currentIndex = 3;
-            spyStepChanged.reset();
+            currentIndex = undefined;
         });
 
 

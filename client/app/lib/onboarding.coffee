@@ -107,7 +107,6 @@ class Step
         error = Object.values err.errors
         throw new Error error
 
-
     error: (err) ->
         @triggerFailed err
 

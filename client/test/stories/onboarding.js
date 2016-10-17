@@ -4,7 +4,6 @@ describe('Password Stories', () => {
 
     let assert;
     let sinon;
-    let jsdom;
 
     let onboarding;
     let currentIndex;
@@ -13,12 +12,6 @@ describe('Password Stories', () => {
 
     let StepModel;
 
-
-    let StepModel;
-
-    // TODO: tester la méthode validate de config/password
-    // -> vérifier que StepModel.submit prends bien en compte ce validate
-    // -> OSEF pour la partie server
 
     before(() => {
         assert = require('chai').assert;

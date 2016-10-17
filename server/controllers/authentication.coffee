@@ -114,7 +114,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             else
                 Instance.createOrUpdate instanceData, (err) ->
                     return next new Error err if err
-                    User.createNew userData, (err) ->
+                    User.createNew userToSave, (err) ->
                         return next new Error err if err
 
                         # at first load, 'en' is the default locale

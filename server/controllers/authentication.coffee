@@ -10,6 +10,16 @@ localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
 
+# hardcoded onboarding steps order and slug names
+ONBOARDING_STEPS = [
+    'welcome',
+    'agreement',
+    'password',
+    'infos',
+    'accounts',
+    'ending'
+]
+
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -26,23 +36,35 @@ getEnv = (callback) ->
             callback null, env
 
 
-module.exports.registerIndex = (req, res, next) ->
+module.exports.onboarding = (req, res, next) ->
     getEnv (err, env) ->
         if err
             error          = new Error "[Error to access cozy user] #{err.code}"
             error.status   = 500
             error.template = name: 'error'
             next error
-
-        else if env.username
-            res.redirect '/login'
-
         else
-            localization.setLocale req.headers['accept-language']
-            # We need to pass a flag to signal the view is in registration mode
-            # TODO: this one is temporary, and need to be removed when we merge
-            #       CSS again.
-            res.render 'index', {env: env, onBoarding: true}
+            # get user data
+            User.first (err, userData) ->
+                if err
+                    error = new Error "[Error to access cozy user] #{err.code}"
+                    error.status   = 500
+                    error.template = name: 'error'
+                    next error
+
+                # According to steps changes
+                if userData?.onboardedSteps is ONBOARDING_STEPS
+                    res.redirect '/login'
+                else
+                    if userData
+                        hasValidInfos = User.checkInfos userData
+                        env.hasValidInfos = hasValidInfos
+                    localization.setLocale req.headers['accept-language']
+                    # We need to pass a flag to signal the view is in
+                    # registration mode
+                    # TODO: this one is temporary, and need to be removed
+                    # when we merge CSS again.
+                    res.render 'index', {env: env, onBoarding: true}
 
 
 module.exports.register = (req, res, next) ->

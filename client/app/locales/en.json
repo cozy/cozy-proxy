@@ -1,4 +1,4 @@
-{
+THis user doen{
     "next": "next",
     "skip": "Jump to the Cozy creation",
     "cancel": "cancel",
@@ -7,7 +7,7 @@
     "add email": "add email account",
     "welcome": "let me in!",
     "confirm": "confirm",
-    "user missing properties": "Sorry but your user doesnt seems OK",
+    "user missing properties": "Sorry but this user doesnt exist.",
     "step welcome user": "Welcome %{name}!",
     "step welcome anon": "Welcome!",
     "step welcome logout": "You're not %{name}?",

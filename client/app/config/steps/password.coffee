@@ -1,3 +1,5 @@
+jQuery = require 'jquery'
+
 module.exports = {
     name: 'password',
     route: 'password',
@@ -9,12 +11,6 @@ module.exports = {
         return null
 
     submit: (data) ->
-        # jQuery may be defined into tests
-        # use global if it exists
-        # see test/config/password for more informations
-        jQuery = global.jQuery
-        jQuery ?= require 'jQuery'
-
         data = JSON.stringify data
         jQuery.post('/register', data)
 }

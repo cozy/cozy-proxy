@@ -18,6 +18,7 @@ module.exports = class PasswordView extends StepView
 
             text = err.errors?.password
             text ?= t err.text, {name: err.error}
+            text ?= err.trans
 
             return { error: text }
         else

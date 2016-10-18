@@ -30,13 +30,13 @@ class App extends Application
 
             user = {
                 username: ENV.username,
-                hasInfos: ENV.hasInfos
+                hasValidInfos: ENV.hasValidInfos
             }
 
-            @onboarding = new Onboarding(user, steps)
+            @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
 
-            @initializeRouter @onboarding.steps
+            @initializeRouter()
 
             @layout = new AppLayout()
             @layout.render()

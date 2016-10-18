@@ -5,10 +5,10 @@ let infos = require('../../../app/config/steps/infos.coffee');
 
 describe('Step: infos', () => {
     describe('#isActive', () => {
-        it('should return true for user.hasInfos is false', () => {
+        it('should return true for user.hasValidInfos is false', () => {
             // arrange
             let user = {
-                hasInfos: false
+                hasValidInfos: false
             };
 
             // act
@@ -18,10 +18,10 @@ describe('Step: infos', () => {
             assert.isTrue(result);
         });
 
-        it('should return false for user.hasInfos is true', () => {
+        it('should return false for user.hasValidInfos is true', () => {
             // arrange
             let user = {
-                hasInfos: true
+                hasValidInfos: true
             };
 
             // act

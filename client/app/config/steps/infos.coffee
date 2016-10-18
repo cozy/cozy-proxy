@@ -3,5 +3,5 @@ module.exports = {
     route: 'infos',
     view : 'steps/infos',
     isActive: (user) ->
-        return not user.hasInfos
+        return not user.hasValidInfos
 }

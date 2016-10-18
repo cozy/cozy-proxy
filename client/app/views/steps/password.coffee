@@ -1,6 +1,5 @@
 StepView = require '../step'
-_ = require 'underscore'
-
+HeaderIllustration = require '../../assets/sprites/illustrate-password.svg'
 
 module.exports = class PasswordView extends StepView
 
@@ -14,16 +13,26 @@ module.exports = class PasswordView extends StepView
     # err is an object such as:
     # {type: 'user', text: 'step empty fields', error: 'username' }
     serializeData: () ->
+        data = {}
+
         if (err = @errors)? and 'object' is typeof err
             err = err.shift() if err.length
 
+            # Get Server Password Error
             text = err.errors?.password
+
+            # otherwhise get client error (ie. empty case)
             text ?= t err.text, {name: err.error}
+
+            # otherwhise get basic server error
             text ?= err.trans
 
-            return { error: text }
-        else
-            return {}
+            Object.assign data, { error: text }
+
+        Object.assign(data, {
+            stepName: @model.get 'name'
+            figureid: HeaderIllustration
+        })
 
 
     getDataFromDOM: ->

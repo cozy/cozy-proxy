@@ -35,6 +35,13 @@ getEnv = (callback) ->
 
             callback null, env
 
+# Return the expected onboarding step for given userData
+getCurrentOnboardingStep = (userData) ->
+    return ONBOARDING_STEPS[0] unless userData and userData.onboardedSteps
+
+    return ONBOARDING_STEPS.find (step) ->
+        return userData.onboardedSteps.indexOf(step) is -1
+
 
 module.exports.onboarding = (req, res, next) ->
     getEnv (err, env) ->
@@ -64,7 +71,8 @@ module.exports.onboarding = (req, res, next) ->
                     # registration mode
                     # TODO: this one is temporary, and need to be removed
                     # when we merge CSS again.
-                    res.render 'index', {env: env, onBoarding: true}
+                    env.currentStep = getCurrentOnboardingStep userData
+                    res.render 'index', {env: env, onboarding: true}
 
 
 # Save unauthenticated user document (only if password doesn't exist)

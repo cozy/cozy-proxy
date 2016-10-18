@@ -95,7 +95,6 @@ describe('Onboarding', () => {
 
         it('should not map inActive steps', () => {
             // arrange
-            // arrange
             let user = null;
             let steps = [{
                 name: 'test',
@@ -118,6 +117,51 @@ describe('Onboarding', () => {
             assert.equal('test', step1.name);
             assert.equal('testroute', step1.route);
             assert.equal('testview', step1.view);
+        });
+
+        it('should set current step', () => {
+            // arrange
+            let user = null;
+            let steps = [{
+                name: 'test',
+                route: 'testroute',
+                view: 'testview'
+            }, {
+                name: 'test2',
+                route: 'testroute2',
+                view: 'testview2'
+            }];
+
+            let step2Name = 'test2'
+
+            // act
+            let onboarding = new Onboarding(user, steps, step2Name);
+            let step2 = onboarding.getStepByName(step2Name);
+
+            // assert
+            assert.deepEqual(step2, onboarding.currentStep)
+        });
+
+        it('should throw an error if given current step does not exist', () => {
+            // arrange
+            let user = null;
+            let steps = [{
+                name: 'test',
+                route: 'testroute',
+                view: 'testview'
+            }, {
+                name: 'test2',
+                route: 'testroute2',
+                view: 'testview2'
+            }];
+
+            let fn = () => {
+                // act
+                let onboarding = new Onboarding(user, steps, 'test3');
+            };
+
+            // assert
+            assert.throw(fn, 'Given current step does not exist in step list');
         });
     });
 

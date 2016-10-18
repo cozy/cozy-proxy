@@ -15,8 +15,9 @@ module.exports =
     'routes/reset*': get: index.resetRoutes
 
     'register':
-        get: [utils.isNotAuthenticated, auth.registerIndex]
-        post: [auth.register, utils.authenticate]
+        get: [utils.isNotAuthenticated, auth.onboarding]
+        post: [utils.isNotAuthenticated, auth.saveUnauthenticatedUser]
+        put: [utils.isAuthenticated, auth.saveAuthenticatedUser]
 
     'login':
         get: [utils.isNotAuthenticated, auth.loginIndex]

@@ -79,6 +79,22 @@ footer
 form
     font-size: .9em
 
+    .line
+        position: relative
+
+        button[action="password-visibility"]
+            position:   absolute
+            top:        0
+            right:      0
+
+
+        .hide-password
+            background: red
+
+        .show-password
+            background: aqua
+
+
 label
     display: block
     text-transform: uppercase
@@ -88,18 +104,16 @@ label
 
 input[type=text]
 input[type=password]
-    display: inline-block
-    width: 100%
-    padding: 0.75em 0.75em 0.9em
-    border-radius: 4px
-
-button
-    border: 0
-    width: 100%
+    display:        inline-block
+    width:          100%
+    padding:        0.75em 0.75em 0.9em
+    border-radius:  4px
+    box-sizing:     border-box;
 
 
 [role=button]
 button
+    border:           0
     display:          block
     padding:          .55em
     border-radius:    4px
@@ -114,6 +128,9 @@ button
 
 // BREADCRUMB
 footer
+    button
+        width: 100%
+
     ol
         display:         flex
         list-style-type: none

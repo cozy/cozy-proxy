@@ -23,6 +23,8 @@
     "step password title": "Secure your password",
     "step password label": "password",
     "step password submit": "confirm",
+    "step password show": "Show password",
+    "step password hide": "Hide password",
     "step password description": "Your password has to be as complicated as possible. It will prevent malicious people to access your own cloud. Using an uppercase, a number and a special character is mandatory.",
     "preset name tip": "It's displayed when you share files with people or invite them to events.",
     "preset password": "password",

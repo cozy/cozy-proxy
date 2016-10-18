@@ -10,6 +10,7 @@ module.exports = {
     validate: (data) ->
         return null
 
+
     save: (data) ->
         return new Promise((resolve, reject) ->
             jQuery.post({

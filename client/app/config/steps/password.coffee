@@ -9,6 +9,9 @@ module.exports = {
         return null
 
     submit: (data) ->
+        # jQuery may be defined into tests
+        # use global if it exists
+        # see test/config/password for more informations
         jQuery = global.jQuery
         jQuery ?= require 'jQuery'
 

@@ -140,6 +140,11 @@ console.log(step.useremail);
 Returns true if the step has to be active for the given `user`. Returns `true` by default.
 This method can be overriden by specifying an `isActive` method in constructor parameter.
 
+#### save(data)
+* `data`: Data to send to the server
+
+This method returns by default a resolved Promise. This method may be overriden in a step object config. To work, it just needs to return a Promise.
+
 ##### Example
 ```javascript
 let step = new Step({

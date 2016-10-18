@@ -63,16 +63,9 @@ User.getUsername = (callback) ->
     User.first (err, user) ->
         return callback err if err
 
-        return callback() unless user
+        return callback() unless user and user.public_name
 
-        username = if user.public_name?.length > 0
-            user.public_name
-        else
-            helpers.hideEmail user.email
-                .split ' '
-                .map (word) -> word[0].toUpperCase() + word.slice(1)
-                .join ' '
-        callback null, username
+        callback null, user.public_name
 
 
 User.validate = (data, errors = {}) ->

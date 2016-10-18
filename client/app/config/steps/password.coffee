@@ -2,7 +2,7 @@ jQuery = require 'jquery'
 
 module.exports = {
     name: 'password',
-    route: 'password',
+    route: 'register/password',
     view : 'steps/password'
 
     # If OK, return null

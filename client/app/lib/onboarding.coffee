@@ -91,11 +91,11 @@ class Step
 module.exports = class Onboarding
 
 
-    constructor: (user, steps) ->
-        @initialize user, steps
+    constructor: (user, steps, currentStepName) ->
+        @initialize user, steps, currentStepName
 
 
-    initialize: (user, steps, options) ->
+    initialize: (user, steps, currentStepName) ->
         throw new Error 'Missing mandatory `steps` parameter' unless steps
 
         @user = user
@@ -107,6 +107,12 @@ module.exports = class Onboarding
                     stepModel.onCompleted @handleStepCompleted
                 return activeSteps
             , []
+
+        if currentStepName
+            @currentStep = @getStepByName currentStepName
+            if not @currentStep
+                throw new Error 'Given current step does not exist in step list'
+
 
     # Records handler for 'stepChanged' pseudo-event, triggered when
     # the internal current step in onboarding has changed.
@@ -192,6 +198,10 @@ module.exports = class Onboarding
             return null
 
         return @steps[nextStepIndex]
+
+
+    getCurrentStep: () =>
+        return @currentStep
 
 
 # Step is exposed for test purposes only

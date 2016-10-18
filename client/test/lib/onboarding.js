@@ -834,32 +834,18 @@ describe('Onboarding.Step', () => {
 
 
     describe('#submit', () => {
-
-        it('should call triggerCompleted (default #submit)', () => {
+        it('should call save', () => {
             // arrange
             let step = new Step();
-            step.triggerCompleted = sinon.spy();
+            let savePromise = Promise.resolve();
+            let promiseStub = sinon.stub(step, 'save');
+            promiseStub.returns(savePromise);
 
             // act
             step.submit();
 
             // assert
-            assert(step.triggerCompleted.calledOnce);
-        });
-
-
-        it('should call triggerCompleted (overriden #submit)', () => {
-            // arrange
-            let configSubmit = sinon.spy();
-            let step = new Step({ submit: configSubmit });
-            step.triggerCompleted = sinon.spy();
-
-            // act
-            step.submit();
-
-            // assert
-            assert(configSubmit.calledOnce);
-            assert(step.triggerCompleted.calledOnce);
+            assert(step.save.calledOnce);
         });
     });
 

@@ -1,5 +1,4 @@
 StepView = require '../step'
-HeaderIllustration = require '../../assets/sprites/illustrate-password.svg'
 
 module.exports = class PasswordView extends StepView
 
@@ -31,7 +30,7 @@ module.exports = class PasswordView extends StepView
 
         Object.assign(data, {
             stepName: @model.get 'name'
-            figureid: HeaderIllustration
+            figureid: require '../../assets/sprites/illustrate-password.svg'
         })
 
 

@@ -27,11 +27,6 @@ describe('Step: password', () => {
 
         it('should return `null`', () => {
             const data = {
-                'username': 'plop',
-                'email': 'plop',
-                'public_name': 'plop',
-                'timezone': 'plop',
-                'allow_stats': 'plop',
                 'password': 'plop'
             }
             assert.equal(null, PasswordConfig.validate(data))
@@ -39,37 +34,7 @@ describe('Step: password', () => {
 
         it('Should return {errors} when `data` is empty', () => {
             let error = PasswordConfig.validate({});
-            assert.equal('user', error.type);
-
-            error = PasswordConfig.validate();
-            assert.equal('user', error.type);
-
-            error = PasswordConfig.validate('');
-            assert.equal('user', error.type);
-        });
-
-        it('Should return {errors} when missing `data.keys`', () => {
-            const data = {
-                'username': 'plop',
-                'email': 'plop',
-                'public_name': 'plop',
-                'timezone': 'plop',
-                'allow_stats': false,
-                'password': null
-            }
-            let error = PasswordConfig.validate(data);
             assert.equal('password', error.type);
-            assert.equal('step empty fields', error.text);
-
-            error = PasswordConfig.validate({ username: 'username' });
-            assert.equal('email', error.error);
-            assert.equal('user', error.type);
-
-            error = PasswordConfig.validate({});
-            assert.equal('username', error.error);
-            assert.equal('user', error.type);
-
-
         });
     });
 

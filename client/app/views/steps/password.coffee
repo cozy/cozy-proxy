@@ -2,7 +2,6 @@ StepView = require '../step'
 passwordHelper = require '../../lib/password_helper'
 _ = require 'underscore'
 
-
 module.exports = class PasswordView extends StepView
 
     template: require '../templates/view_steps_password'
@@ -36,6 +35,14 @@ module.exports = class PasswordView extends StepView
         # Update Button Icon
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
 
+    initialize: (args...) ->
+        super args...
+        @passwordStrength = 0
+
+    checkPasswordStrength: ->
+        password = @$('input[name=password]').val()
+        @passwordStrength = passwordHelper.getComplexityPercentage password
+        @$('progress').attr 'value', @passwordStrength
 
     initialize: (args...) ->
         super args...
@@ -97,6 +104,11 @@ module.exports = class PasswordView extends StepView
         return {
             password: @$inputPassword.val()
             onboardedSteps: ['welcome', 'agreement', 'password']
+        }
+
+    serializeData: ->
+        {
+            passwordStrength: @passwordStrength
         }
 
 

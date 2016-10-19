@@ -94,7 +94,7 @@ User.checkInfos = (data) ->
     hasEmail = if data.email then helpers.checkEmail(data.email) else false
     hasUserName = data?.public_name
     hasTimezone = if data.timezone
-        not timezones.indexOf(data.timezone) is -1
+        not (timezones.indexOf(data.timezone) is -1)
     else
         false
     return hasEmail and hasUserName and hasTimezone

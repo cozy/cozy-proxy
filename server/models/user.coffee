@@ -5,12 +5,22 @@ urlHelper = require 'cozy-url-sdk'
 helpers      = require '../lib/helpers'
 timezones    = require '../lib/timezones'
 localization = require '../lib/localization_manager'
-
+ArrayHelper = require '../lib/array_helper'
 
 client = new Client urlHelper.dataSystem.url()
 if process.env.NODE_ENV in ['production', 'test']
     client.setBasicAuth process.env.NAME, process.env.TOKEN
 
+# hardcoded onboarding steps order and slug names
+# TODO: find a way to define those step only server side or only client site.
+ONBOARDING_STEPS = [
+    'welcome',
+    'agreement',
+    'password',
+    'infos',
+    'accounts',
+    'ending'
+]
 
 fixOnboardedSteps = (user) ->
     user.onboardedSteps = user.onboardedSteps or []
@@ -105,3 +115,16 @@ User.validatePassword = (password, errors = {}) ->
         errors.password = localization.t 'password too short'
 
     return errors
+
+# Return the expected onboarding step for given userData
+User.getCurrentOnboardingStep = (userData) ->
+    return ONBOARDING_STEPS[0] unless userData and userData.onboardedSteps
+
+    return ONBOARDING_STEPS.find (step) ->
+        return userData.onboardedSteps.indexOf(step) is -1
+
+# Returns true if user is complete and is ready to log into his Cozy.
+# At this time this memthod check only if the user has completed all onboarding
+# steps.
+User.isRegistered = (userData) ->
+    return ArrayHelper.areEquals userData?.onboardedSteps, ONBOARDING_STEPS

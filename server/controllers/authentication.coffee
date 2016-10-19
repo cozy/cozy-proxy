@@ -10,16 +10,6 @@ localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
 
-# hardcoded onboarding steps order and slug names
-ONBOARDING_STEPS = [
-    'welcome',
-    'agreement',
-    'password',
-    'infos',
-    'accounts',
-    'ending'
-]
-
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -34,14 +24,6 @@ getEnv = (callback) ->
                 apps:     Object.keys require('../lib/router').getRoutes()
 
             callback null, env
-
-# Return the expected onboarding step for given userData
-getCurrentOnboardingStep = (userData) ->
-    return ONBOARDING_STEPS[0] unless userData and userData.onboardedSteps
-
-    return ONBOARDING_STEPS.find (step) ->
-        return userData.onboardedSteps.indexOf(step) is -1
-
 
 module.exports.onboarding = (req, res, next) ->
     getEnv (err, env) ->
@@ -60,7 +42,7 @@ module.exports.onboarding = (req, res, next) ->
                     next error
 
                 # According to steps changes
-                if userData?.onboardedSteps is ONBOARDING_STEPS
+                if User.isRegistered userData
                     res.redirect '/login'
                 else
                     if userData
@@ -71,7 +53,7 @@ module.exports.onboarding = (req, res, next) ->
                     # registration mode
                     # TODO: this one is temporary, and need to be removed
                     # when we merge CSS again.
-                    env.currentStep = getCurrentOnboardingStep userData
+                    env.currentStep = User.getCurrentOnboardingStep userData
                     res.render 'index', {env: env, onboarding: true}
 
 
@@ -160,7 +142,7 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
             userToSave[property] = requestData[property]
 
     # if final step done, user is registred
-    if userToSave?.onboardedSteps is ONBOARDING_STEPS
+    if User.isRegistered userToSave
         userToSave.activated = true
 
     validationErrors = User.validate userToSave
@@ -189,9 +171,19 @@ module.exports.loginIndex = (req, res, next) ->
         if err
             next new Error err
         else
-            return res.redirect '/register'
-            res.set 'X-Cozy-Login-Page', 'true'
-            res.render 'index', env: env
+            # get user data
+            User.first (err, userData) ->
+                if err
+                    error = new Error "[Error to access cozy user] #{err.code}"
+                    error.status   = 500
+                    error.template = name: 'error'
+                    next error
+
+                if not User.isRegistered userData
+                    return res.redirect '/register'
+
+                res.set 'X-Cozy-Login-Page', 'true'
+                res.render 'index', env: env
 
 
 module.exports.forgotPassword = (req, res, next) ->

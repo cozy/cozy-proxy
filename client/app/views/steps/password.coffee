@@ -1,4 +1,5 @@
 StepView = require '../step'
+passwordHelper = require '../../lib/password_helper'
 
 
 module.exports = class PasswordView extends StepView
@@ -8,6 +9,7 @@ module.exports = class PasswordView extends StepView
     events:
         'click .next': 'onSubmit'
         'click [action=password-visibility]': 'onToggleVisibility'
+        'keyup input': 'checkPasswordStrength'
 
 
     isVisible: false
@@ -31,6 +33,14 @@ module.exports = class PasswordView extends StepView
         # Update Button Icon
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
 
+    initialize: (args...) ->
+        super args...
+        @passwordStrength = 0
+
+    checkPasswordStrength: ->
+        password = @$('input[name=password]').val()
+        @passwordStrength = passwordHelper.getComplexityPercentage password
+        @$('progress').attr 'value', @passwordStrength
 
     # Get 1rst error only
     # err is an object such as:
@@ -71,7 +81,12 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
+    serializeData: ->
+        {
+            passwordStrength: @passwordStrength
+        }
+
 
     onSubmit: (event)->
         event?.preventDefault()
-        @model.submit @getDataFromDOM()
+        # @model.submit @getDataFromDOM()

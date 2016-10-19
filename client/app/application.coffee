@@ -15,8 +15,6 @@ Onboarding = require './lib/onboarding'
 StepModel = require './models/step'
 ProgressionModel = require './models/progression'
 
-timezones = require './lib/timezones'
-
 
 class App extends Application
 

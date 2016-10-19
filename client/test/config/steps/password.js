@@ -60,21 +60,4 @@ describe('Step: password', () => {
         });
 
     });
-
-
-    describe('#submit', () => {
-
-        it('should send POST request', () => {
-            // Define global.jQUery
-            // so that configPassword could use it
-            global.jQuery.post = sinon.spy()
-            let data = { email: '', password: 'plop', timezone: TimeZones[0]}
-            PasswordConfig.submit(data);
-
-            data = JSON.stringify(data);
-            assert(global.jQuery.post.calledOnce);
-            assert(global.jQuery.post.calledWith('/register', data));
-        });
-
-    });
 });

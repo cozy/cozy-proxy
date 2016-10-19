@@ -1,13 +1,13 @@
 StepView = require '../step'
-_ = require 'underscore'
+
 
 module.exports = class PasswordView extends StepView
 
     template: require '../templates/view_steps_password'
 
     events:
-        'click .next': 'doSubmit'
-        'click [action=password-visibility]': 'doToggleVisibility'
+        'click .next': 'onSubmit'
+        'click [action=password-visibility]': 'onToggleVisibility'
 
 
     initialize: (args...) ->
@@ -22,20 +22,6 @@ module.exports = class PasswordView extends StepView
         @$('input[name=password]').attr 'type', inputType
         @$('[action=password-visibility] span').html t(visibilityTxt)
         @$('[action=password-visibility]').attr 'class', visibilityClassName
-
-
-    # Get 1rst error only
-    # err is an object such as:
-    # {type: 'step empty fields', error: 'username' }
-    #
-    # Error can only come from:
-    # user values or password value
-    serializeData: () ->
-        if (err = @errors)? and 'object' is typeof err
-            err = err.shift() if err.length
-            return { error: t(err.text, {name: err.error}) }
-        else
-            return {}
 
 
     # Get 1rst error only
@@ -73,7 +59,7 @@ module.exports = class PasswordView extends StepView
         }
 
 
-    doToggleVisibility: (event) ->
+    onToggleVisibility: (event) ->
         event?.preventDefault()
 
         isVisible = @model.get('isVisible') or false
@@ -87,6 +73,6 @@ module.exports = class PasswordView extends StepView
         }
 
 
-    doSubmit: (event)->
+    onSubmit: (event) ->
         event?.preventDefault()
         @model.submit @getDataFromDOM()

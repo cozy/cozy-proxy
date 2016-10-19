@@ -208,7 +208,7 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#triggerStepChange', () => {
+    describe('#triggerStepChanged', () => {
         it('should not throw error when `stepChangedHandlers` is empty', () => {
             // arrange
             let onboarding = new Onboarding(null, [{
@@ -225,7 +225,7 @@ describe('Onboarding', () => {
 
             let fn = () => {
                 // act
-                onboarding.triggerStepChange(stepToTrigger);
+                onboarding.triggerStepChanged(stepToTrigger);
             };
 
             // assert
@@ -253,7 +253,7 @@ describe('Onboarding', () => {
             onboarding.onStepChanged(callback2);
 
             // act
-            onboarding.triggerStepChange(stepToTrigger);
+            onboarding.triggerStepChanged(stepToTrigger);
 
             // assert
             assert(callback1.calledOnce);
@@ -288,7 +288,7 @@ describe('Onboarding', () => {
             assert.equal(firstStep, onboarding.currentStep);
         });
 
-        it('should call `triggerStepChange`', () => {
+        it('should call `triggerStepChanged`', () => {
             // arrange
             let onboarding = new Onboarding(null, [
                 {
@@ -303,14 +303,14 @@ describe('Onboarding', () => {
             ]);
 
             let firstStep = onboarding.steps[0];
-            onboarding.triggerStepChange = sinon.spy();
+            onboarding.triggerStepChanged = sinon.spy();
 
             // act
             onboarding.triggerStepChange(firstStep);
 
             // assert
-            assert(onboarding.triggerStepChange.calledOnce);
-            assert(onboarding.triggerStepChange.calledWith(firstStep));
+            assert(onboarding.triggerStepChanged.calledOnce);
+            assert(onboarding.triggerStepChanged.calledWith(firstStep));
         });
     });
 
@@ -538,6 +538,7 @@ describe('Onboarding', () => {
             // act
             onboarding.triggerStepChange(step);
             let result = onboarding.getProgression(step);
+
 
             // assert
             assert.equal(2, result.current);
@@ -874,7 +875,6 @@ describe('Onboarding.Step', () => {
             assert(callback2.calledWith(step));
         });
     });
-
 
     describe('#submit', () => {
         it('should call save', () => {

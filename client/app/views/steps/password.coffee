@@ -14,11 +14,8 @@ module.exports = class PasswordView extends StepView
         # TODO: get user info
         # from server
         return {
-            email: 'toto@cozycloud.cc'
-            public_name: 'toto'
-            timezone: timezones[0]
             password: @$('input[name=password]').val()
-            allow_stats: false
+            onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
 

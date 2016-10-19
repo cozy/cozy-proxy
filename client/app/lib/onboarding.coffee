@@ -51,9 +51,9 @@ class Step
             handler(@)
 
 
-    triggerFailed: (args...) ->
+    triggerFailed: (error) ->
         @failedHandlers?.forEach (handler) =>
-            handler(@, args...)
+            handler(@, error)
 
 
     # Returns true if the step has to be submitted by the user
@@ -72,16 +72,18 @@ class Step
     # in the near future
     submit: (data={}) ->
         return @save data
-        .then @handleSubmitSuccess, @handleSubmitError
+        .then @handleSubmitSuccess
+        .catch @handleSubmitError
 
 
     # Handler for error occuring during a submit()
     handleSubmitError: (error) =>
-        throw new Error 'Unable to save step information'
+        @triggerFailed error
 
 
     # Handler for submit success
-    handleSubmitSuccess: => @triggerCompleted()
+    handleSubmitSuccess: =>
+        @triggerCompleted()
 
 
     # Save data
@@ -98,12 +100,9 @@ class Step
 
 
     # Error handler for save() call
-    handleSaveError: =>
-        throw new Error 'Error occured during save'
-
-
-    error: (err) ->
-        @triggerFailed err
+    handleSaveError: (err) =>
+        error = Object.values err.errors
+        throw new Error error
 
 
 # Main class
@@ -130,8 +129,7 @@ module.exports = class Onboarding
             , []
 
         if currentStepName
-            @currentStep = @getStepByName currentStepName
-            if not @currentStep
+            unless (@currentStep = @getStepByName currentStepName)
                 throw new Error 'Given current step does not exist in step list'
 
 

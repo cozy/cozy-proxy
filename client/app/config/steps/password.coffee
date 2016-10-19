@@ -6,7 +6,6 @@ module.exports = {
     route: 'register/password',
     view : 'steps/password'
 
-
     # If OK, return null
     # if not return an Array of errors
     # that will be triggered throw onboarding
@@ -24,7 +23,9 @@ module.exports = {
                 url: '/register'
                 data: JSON.stringify data
                 success: resolve
-                error: (req) => reject req.responseJSON
-            })).then @handleSaveSuccess, @handleSaveError
+                error: (req) -> reject req.responseJSON
+            }))
+            .then @handleSaveSuccess
+            .catch @handleSaveError
 
 }

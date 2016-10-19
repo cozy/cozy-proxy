@@ -13,7 +13,7 @@ module.exports = class StepView extends LayoutView
     initialize: (options={}) ->
         super options
 
-        @errors = options.errors
+        @error = options.error
 
         @progressionView = new ProgressionView \
             model: options.progression

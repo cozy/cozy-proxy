@@ -32,6 +32,7 @@ class App extends Application
         steps = require './config/steps/all'
         @on 'start', =>
 
+<<<<<<< e56ffa7ecc3e1a42d77fa2d788622008c6521735
             user = {
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
@@ -40,6 +41,16 @@ class App extends Application
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
             @onboarding.onStepFailed (step) => @handleStepFailed(step)
+=======
+            # TODO: Get the user with a better way later
+            user = {
+                username: ENV.username
+            }
+
+            @onboarding = new Onboarding(user, steps)
+            @onboarding.onStepChanged @handleStepChanged
+            @onboarding.onStepFailed @handleStepFailed
+>>>>>>> [review] userModel is useless
 
             @initializeRouter()
 
@@ -87,6 +98,7 @@ class App extends Application
         @layout.showChildView 'content',
             new StepView
                 model: new StepModel step: step, next: nextStep
+                errors: err
                 progression: new ProgressionModel \
                     @onboarding.getProgression step
 

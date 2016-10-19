@@ -40,6 +40,14 @@ class App extends Application
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
             @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
+            # TODO: Get the user with a better way later
+            user = {
+                username: ENV.username
+            }
+
+            @onboarding = new Onboarding(user, steps)
+            @onboarding.onStepChanged @handleStepChanged
+            @onboarding.onStepFailed @handleStepFailed
 
             @initializeRouter()
 

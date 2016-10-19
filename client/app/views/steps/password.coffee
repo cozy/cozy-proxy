@@ -7,7 +7,7 @@ module.exports = class PasswordView extends StepView
     template: require '../templates/view_steps_password'
 
     events:
-        'click button': 'doSubmit'
+        'click button': 'onSubmit'
 
 
     getDataFromDOM: ->
@@ -19,6 +19,6 @@ module.exports = class PasswordView extends StepView
         }
 
 
-    doSubmit: (event)->
+    onSubmit: (event)->
         event?.preventDefault()
         @model.submit @getDataFromDOM()

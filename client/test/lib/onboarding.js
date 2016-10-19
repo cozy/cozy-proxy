@@ -742,7 +742,6 @@ describe('Onboarding.Step', () => {
         it('should call overriding method', () => {
             // arrange
             let spy = sinon.spy();
-            let defaultSpy = sinon.spy(Step.prototype, "isActive");
             let step = new Step({ isActive: spy });
 
             // act
@@ -750,7 +749,6 @@ describe('Onboarding.Step', () => {
 
             // assert
             assert(spy.calledOnce);
-            assert.equal(0, defaultSpy.callCount);
         });
 
         it('should not call overriding method on other steps', () => {

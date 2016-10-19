@@ -1,5 +1,5 @@
 module.exports = {
     name: 'agreement',
-    route: 'agreement',
+    route: 'register/agreement',
     view : 'steps/agreement'
 }

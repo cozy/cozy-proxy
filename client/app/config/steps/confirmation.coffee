@@ -1,5 +1,5 @@
 module.exports = {
     name: 'confirmation',
-    route: 'confirmation',
+    route: 'register/confirmation',
     view : 'steps/confirmation'
 }

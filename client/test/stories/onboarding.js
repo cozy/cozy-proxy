@@ -22,23 +22,35 @@ describe('Password Stories', () => {
     describe('Add a password', () => {
 
         beforeEach(() => {
-            // Select 1rst step
-            currentIndex = 3;
-            onboarding.goToStep(onboarding.steps[currentIndex]);
+            const jsdom = require('jsdom-global')();
+            global.jQuery = require('jquery');
+
+            // Select password step
+            onboarding.goToStep(onboarding.getStepByName('password'));
         });
 
 
-        it('should go to `nextStep` when password is OK', () => {
-            const passwordStep = onboarding.steps[currentIndex];
-            const nextStep = onboarding.steps[currentIndex + 1];
+        it('should go to `nextStep` when password is OK', (done) => {
+            const passwordStep = onboarding.getStepByName('password');
+            const passwordStepIndex = onboarding.steps.indexOf(passwordStep);
+            const nextStep = onboarding.steps[passwordStepIndex+1];
+
+            sinon.stub(global.jQuery, 'post');
+            global.jQuery.post.yieldsTo('success');
 
             // Select StepPassword
             onboarding.goToStep(passwordStep);
-            assert.deepEqual(passwordStep, onboarding.currentStep)
 
             // Submit password value
             passwordStep.submit({ password: 'toto' })
-            assert.deepEqual(nextStep, onboarding.currentStep)
+
+            // Deal with async Promise call
+            setTimeout(() => {
+                assert.deepEqual(onboarding.getCurrentStep(), nextStep);
+                global.jQuery.post.restore();
+                done()
+            }, 10);
+
         });
 
 

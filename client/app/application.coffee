@@ -29,13 +29,14 @@ class App extends Application
         @on 'start', =>
 
             user = {
-                username: ENV.username
+                username: ENV.username,
+                hasValidInfos: ENV.hasValidInfos
             }
 
-            @onboarding = new Onboarding(user, steps)
+            @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
 
-            @initializeRouter @onboarding.steps
+            @initializeRouter()
 
             @layout = new AppLayout()
             @layout.render()
@@ -49,29 +50,12 @@ class App extends Application
     # Initialize routes relative to onboarding step.
     # The idea is to configure the router externally as a "native"
     # Backbone Router
-    # @param steps a list of Step instance
-    initializeRouter: (steps) =>
+    initializeRouter: () =>
         @router = new Router app: @
         @router.route \
-            'register(?step=:step)',
+            'register(/:step)',
             'register',
-            (step) => @handleStepRoute(step)
-
-        steps.forEach (step) => @initializeStepRoute step
-
-
-    # Initialize one route only
-    # @param router Backbone.Router instance
-    # @param step Step instance
-    initializeStepRoute: (step) =>
-        StepView = require "./views/#{step.view}"
-        @router.route "#{step.route}", "route:#{step.route}", () =>
-            nextStep = @onboarding.getNextStep step
-            @layout.showChildView 'content',
-                new StepView
-                    model: new StepModel step: step, next: nextStep
-                    progression: new ProgressionModel \
-                        @onboarding.getProgression step
+            @handleRegisterRoute
 
 
     # Internal handler called when the onboarding's internal step has just
@@ -81,14 +65,25 @@ class App extends Application
         @router.navigate step.route, trigger: true
 
 
-    # Register is the default main route for Onboarding
-    handleStepRoute: (stepName='preset') ->
+    # Handler for register route, display onboarding's current step
+    handleRegisterRoute: =>
         # Load onboarding stylesheet
         AppStyles = require './styles/onboarding.styl'
 
-        step = @onboarding.getStepByName stepName
-        throw new Error 'Step does not exist' unless step
-        @onboarding.goToStep @onboarding.getStepByName stepName
+        currentStep = @onboarding.getCurrentStep()
+        @router.navigate currentStep.route
+        @showStep(currentStep)
+
+
+    # Load the view for the given step
+    showStep: (step) ->
+        StepView = require "./views/#{step.view}"
+        nextStep = @onboarding.getNextStep step
+        @layout.showChildView 'content',
+            new StepView
+                model: new StepModel step: step, next: nextStep
+                progression: new ProgressionModel \
+                    @onboarding.getProgression step
 
 
 # Exports Application singleton instance

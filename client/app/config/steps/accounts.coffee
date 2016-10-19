@@ -1,5 +1,5 @@
 module.exports = {
     name: 'accounts',
-    route: 'accounts',
+    route: 'register/accounts',
     view: 'steps/accounts'
 }

@@ -11,20 +11,10 @@ class Step
           'isActive',
           'fetchUser',
           'validate',
-          'submit'
+          'save'
         ].forEach (property) =>
             if step[property]?
-
-                # Do not override submit
-                # such as @submit that allow to goto next step
-                # @submit mussnt be overidden but @isActive yes
-                if property is 'submit'
-                    nativeCallback = @[property]
-                    @[property] = (args...) =>
-                        step[property].call @, args...
-                        nativeCallback.call @, args...
-                else
-                    @[property] = step[property]
+                @[property] = step[property]
 
         @fetchUser user
 
@@ -60,13 +50,40 @@ class Step
     isActive: (user) ->
         return true
 
+
     # Submit the step
     # This method should be overriden by step given as parameter to add
     # for example a validation step.
     # Maybe it should return a Promise or a call a callback couple
     # in the near future
-    submit: () ->
-        @triggerCompleted()
+    submit: (data={}) ->
+        return @save data
+        .then @handleSubmitSuccess, @handleSubmitError
+
+
+    # Handler for error occuring during a submit()
+    handleSubmitError: (error) =>
+        throw new Error 'Unable to save step information'
+
+
+    # Handler for submit success
+    handleSubmitSuccess: => @triggerCompleted()
+
+
+    # Save data
+    # By default this method returns a resolved promise, but it can overriden
+    # by specifying another save method in constructor parameters
+    # @param data : JS object containing data to save
+    save: (data={}) ->
+        return Promise.resolve(data)
+
+    # Success handler for save() call
+    handleSaveSuccess: (data) =>
+        return data
+
+    # Error handler for save() call
+    handleSaveError: =>
+        throw new Error 'Error occured during save'
 
 
 # Main class
@@ -74,11 +91,11 @@ class Step
 module.exports = class Onboarding
 
 
-    constructor: (user, steps) ->
-        @initialize user, steps
+    constructor: (user, steps, currentStepName) ->
+        @initialize user, steps, currentStepName
 
 
-    initialize: (user, steps) ->
+    initialize: (user, steps, currentStepName) ->
         throw new Error 'Missing mandatory `steps` parameter' unless steps
 
         @user = user
@@ -90,6 +107,11 @@ module.exports = class Onboarding
                     stepModel.onCompleted @handleStepCompleted
                 return activeSteps
             , []
+
+        if currentStepName
+            @currentStep = @getStepByName currentStepName
+            if not @currentStep
+                throw new Error 'Given current step does not exist in step list'
 
 
     # Records handler for 'stepChanged' pseudo-event, triggered when
@@ -176,6 +198,10 @@ module.exports = class Onboarding
             return null
 
         return @steps[nextStepIndex]
+
+
+    getCurrentStep: () =>
+        return @currentStep
 
 
 # Step is exposed for test purposes only

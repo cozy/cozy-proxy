@@ -23,7 +23,12 @@ Howerver, it will be possible to override class methods in config objects (not i
 
 ## Methods
 ### Onboarding
-#### initialize(user, steps)
+#### initialize(user, steps, currentStepName)
+#### parameters
+* `user`: JS object representing user's properties
+* `steps`: Array of JS object representing steps
+* `currentStepName`: String reprensenting the current (or first) step in onboarding.
+
 Set the user and the steps list for the current onboarding.
 Called by the constructor method.
 The steps list should look like :
@@ -99,6 +104,10 @@ progression will be
 }
 ```
 
+#### getCurrentStep()
+
+Returns onboarding's current step.
+
 ### Step
 
 #### constructor(options, user)
@@ -139,6 +148,11 @@ console.log(step.useremail);
 
 Returns true if the step has to be active for the given `user`. Returns `true` by default.
 This method can be overriden by specifying an `isActive` method in constructor parameter.
+
+#### save(data)
+* `data`: Data to send to the server
+
+This method returns by default a resolved Promise. This method may be overriden in a step object config. To work, it just needs to return a Promise.
 
 ##### Example
 ```javascript

@@ -2,7 +2,7 @@ jQuery = require 'jquery'
 
 module.exports = {
     name: 'password',
-    route: 'password',
+    route: 'register/password',
     view : 'steps/password'
 
     # If OK, return null
@@ -10,7 +10,13 @@ module.exports = {
     validate: (data) ->
         return null
 
-    submit: (data) ->
+    save: (data) ->
         data = JSON.stringify data
-        jQuery.post('/register', data)
+        return new Promise((resolve, reject) ->
+            jQuery.post({
+                url: '/register'
+                data: data
+                success: resolve
+                error: reject
+            })).then @handleSaveSuccess, @handleSaveError
 }

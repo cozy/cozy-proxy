@@ -1,5 +1,10 @@
 module.exports = {
-    name: 'preset', # named 'preset' to match existing codebase.
-    route: 'welcome',
-    view : 'steps/welcome'
+    name: 'welcome',
+    route: 'register/welcome',
+    view: 'steps/welcome',
+    save: (data) ->
+        return fetch '/register',
+            method: 'POST',
+            body: JSON.stringify {onboardedSteps: ['welcome']}
+        .then @handleSaveSuccess, @handleSaveError
 }

@@ -67,7 +67,7 @@ module.exports = class PasswordView extends StepView
         isVisible = @model.get('isVisible') or false
         visibilityAction = if isVisible then 'hide' else 'show'
         {
-            visibilityClassName: "#{visibilityAction}-password"
+            visibilityClassName: "#{visibilityAction}-password icon"
             visibilityTxt: "step password #{visibilityAction}"
             inputType: if isVisible then 'text' else 'password'
         }

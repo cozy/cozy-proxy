@@ -6,7 +6,6 @@ module.exports = {
     route: 'register/password',
     view : 'steps/password'
 
-
     # If OK, return null
     # if not return an Array of errors
     # that will be triggered throw onboarding

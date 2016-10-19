@@ -51,9 +51,9 @@ class Step
             handler(@)
 
 
-    triggerFailed: (args...) ->
+    triggerFailed: (error) ->
         @failedHandlers?.forEach (handler) =>
-            handler(@, args...)
+            handler(@, error)
 
 
     triggerFailed: (error) ->
@@ -78,7 +78,8 @@ class Step
     # in the near future
     submit: (data={}) ->
         return @save data
-        .then @handleSubmitSuccess, @handleSubmitError
+        .then @handleSubmitSuccess
+        .catch @handleSubmitError
 
 
     # Handler for error occuring during a submit()
@@ -87,7 +88,8 @@ class Step
 
 
     # Handler for submit success
-    handleSubmitSuccess: => @triggerCompleted()
+    handleSubmitSuccess: =>
+        @triggerCompleted()
 
 
     # Save data
@@ -137,8 +139,7 @@ module.exports = class Onboarding
             , []
 
         if currentStepName
-            @currentStep = @getStepByName currentStepName
-            if not @currentStep
+            unless (@currentStep = @getStepByName currentStepName)
                 throw new Error 'Given current step does not exist in step list'
 
 

@@ -28,8 +28,8 @@ class App extends Application
     ###
     initialize: ->
         steps = require './config/steps/all'
-        @on 'start', =>
 
+        @on 'start', =>
             user = {
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
@@ -72,7 +72,7 @@ class App extends Application
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    handleStepChanged: (step) =>
+    handleStepChanged: (step) ->
         @router.navigate step.route, trigger: true
 
 

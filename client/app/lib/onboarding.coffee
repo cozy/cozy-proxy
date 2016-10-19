@@ -9,10 +9,22 @@ class Step
           'route',
           'view',
           'isActive',
-          'fetchUser'
+          'fetchUser',
+          'validate',
+          'submit'
         ].forEach (property) =>
-            if step[property]
-                @[property] = step[property]
+            if step[property]?
+
+                # Do not override submit
+                # such as @submit that allow to goto next step
+                # @submit mussnt be overidden but @isActive yes
+                if property is 'submit'
+                    nativeCallback = @[property]
+                    @[property] = (args...) =>
+                        step[property].call @, args...
+                        nativeCallback.call @, args...
+                else
+                    @[property] = step[property]
 
         @fetchUser user
 
@@ -38,6 +50,7 @@ class Step
         if @completedHandlers
             @completedHandlers.forEach (handler) =>
                 handler(@)
+
 
     # Returns true if the step has to be submitted by the user
     # This method returns true by default, but can be overriden

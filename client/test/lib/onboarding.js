@@ -673,6 +673,7 @@ describe('Onboarding', () => {
             assert.isNull(result);
         });
     });
+
 });
 
 describe('Onboarding.Step', () => {
@@ -741,9 +742,7 @@ describe('Onboarding.Step', () => {
         it('should call overriding method', () => {
             // arrange
             let spy = sinon.spy();
-            let step = new Step({
-                isActive: spy
-            });
+            let step = new Step({ isActive: spy });
 
             // act
             let result = step.isActive();
@@ -833,8 +832,10 @@ describe('Onboarding.Step', () => {
         });
     });
 
+
     describe('#submit', () => {
-        it('should call triggerCompleted', () => {
+
+        it('should call triggerCompleted (default #submit)', () => {
             // arrange
             let step = new Step();
             step.triggerCompleted = sinon.spy();
@@ -843,6 +844,21 @@ describe('Onboarding.Step', () => {
             step.submit();
 
             // assert
+            assert(step.triggerCompleted.calledOnce);
+        });
+
+
+        it('should call triggerCompleted (overriden #submit)', () => {
+            // arrange
+            let configSubmit = sinon.spy();
+            let step = new Step({ submit: configSubmit });
+            step.triggerCompleted = sinon.spy();
+
+            // act
+            step.submit();
+
+            // assert
+            assert(configSubmit.calledOnce);
             assert(step.triggerCompleted.calledOnce);
         });
     });

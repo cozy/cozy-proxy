@@ -10,10 +10,7 @@ module.exports = class PasswordView extends StepView
         'click [action=password-visibility]': 'onToggleVisibility'
 
 
-    initialize: (args...) ->
-        super args...
-
-        @model.on 'change', @renderInput
+    isVisible: false
 
 
     renderInput: =>
@@ -41,21 +38,24 @@ module.exports = class PasswordView extends StepView
 
 
     serializeInputData: =>
-        isVisible = @model.get('isVisible') or false
-        visibilityAction = if isVisible then 'hide' else 'show'
+        visibilityAction = if @isVisible then 'hide' else 'show'
         icon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
+        type = if @isVisible then 'text' else 'password'
         {
             visibilityTxt: "step password #{visibilityAction}"
             visibilityIcon: icon
-            inputType: if isVisible then 'text' else 'password'
+            inputType: type
         }
 
 
     onToggleVisibility: (event) ->
         event?.preventDefault()
 
-        isVisible = @model.get('isVisible') or false
-        @model.set { isVisible: not isVisible }
+        # Update Visibility
+        @isVisible = not @isVisible
+
+        # Update Component
+        @renderInput()
 
 
     getDataFromDOM: ->

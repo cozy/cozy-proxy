@@ -20,7 +20,7 @@ module.exports = class PasswordView extends StepView
         @$('input[name=password]').attr 'type', data.inputType
 
         # Update Button title
-        @$('[action=password-visibility] span').html t(data.visibilityTxt)
+        @$('[action=password-visibility]').attr 'alt', t(data.visibilityTxt)
 
         # Update Button Icon
         @$('.icon use').attr 'xlink:href', data.visibilityIcon

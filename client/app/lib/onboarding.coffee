@@ -88,7 +88,8 @@ class Step
 
 
     # Handler for submit success
-    handleSubmitSuccess: => @triggerCompleted()
+    handleSubmitSuccess: =>
+        @triggerCompleted()
 
 
     # Save data
@@ -98,9 +99,11 @@ class Step
     save: (data={}) ->
         return Promise.resolve(data)
 
+
     # Success handler for save() call
     handleSaveSuccess: (data) =>
         return data
+
 
     # Error handler for save() call
     handleSaveError: (err) =>

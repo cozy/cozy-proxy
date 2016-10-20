@@ -17,11 +17,16 @@ module.exports = class PasswordView extends StepView
 
 
     renderInput: =>
-        {inputType, visibilityTxt, visibilityClassName} = @serializeInputData()
+        data = @serializeInputData()
 
-        @$('input[name=password]').attr 'type', inputType
-        @$('[action=password-visibility] span').html t(visibilityTxt)
-        @$('[action=password-visibility]').attr 'class', visibilityClassName
+        # Show/hide password value
+        @$('input[name=password]').attr 'type', data.inputType
+
+        # Update Button title
+        @$('[action=password-visibility] span').html t(data.visibilityTxt)
+
+        # Update Button Icon
+        @$('.icon use').attr 'xlink:href', data.visibilityIcon
 
 
     # Get 1rst error only
@@ -35,28 +40,13 @@ module.exports = class PasswordView extends StepView
         }
 
 
-    # Get 1rst error only
-    # err is an object such as:
-    # {type: 'step empty fields', error: 'username' }
-    #
-    # Error can only come from:
-    # user values or password value
-    serializeData: () ->
-        if (err = @errors)? and 'object' is typeof err
-            err = err.shift() if err.length
-            return { error: t(err.text, {name: err.error}) }
-        else
-            return {}
-
-
     serializeInputData: =>
         isVisible = @model.get('isVisible') or false
         visibilityAction = if isVisible then 'hide' else 'show'
-        visibilityIcon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
+        icon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
         {
-            visibilityClassName: "#{visibilityAction}-password icon"
             visibilityTxt: "step password #{visibilityAction}"
-            visibilityIcon
+            visibilityIcon: icon
             inputType: if isVisible then 'text' else 'password'
         }
 

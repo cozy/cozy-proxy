@@ -52,7 +52,7 @@ module.exports = class PasswordView extends StepView
     serializeInputData: =>
         isVisible = @model.get('isVisible') or false
         visibilityAction = if isVisible then 'hide' else 'show'
-        visibilityIcon = "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
+        visibilityIcon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
         {
             visibilityClassName: "#{visibilityAction}-password icon"
             visibilityTxt: "step password #{visibilityAction}"

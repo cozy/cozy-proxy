@@ -883,21 +883,7 @@ describe('Onboarding.Step', () => {
             let savePromise = Promise.resolve();
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
-        });
 
-
-        it('should call `triggerCompleted` (overwritten #submit)', () => {
-            // arrange
-            let configSubmit = sinon.spy();
-            let step = new Step({ submit: configSubmit });
-            step.triggerCompleted = sinon.spy();
-
-            // act
-            step.submit();
-
-            // assert
-            assert(configSubmit.calledOnce);
-            assert(step.triggerCompleted.calledOnce);
         });
     });
 

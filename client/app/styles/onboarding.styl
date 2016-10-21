@@ -131,6 +131,53 @@ button
 .errors
     color: $red
 
+// password strength bar
+progress
+    width         100%
+    margin        1em 0
+    color         $blue
+    font-size     .4em
+    line-height   1.5em
+    text-indent   .5em
+    height        1em
+    background    $grey-01
+    border        none
+    border-radius 20px
+
+    // chrome and safari
+    &::-webkit-progress-bar
+        background    $grey-01
+        border-radius 20px
+
+    &::-webkit-progress-value
+        background    $blue
+        border-radius 20px
+
+    // firefox
+    &::-moz-progress-bar
+        background    $blue
+        border-radius 20px
+
+    &.pw-weak
+        color   $pw-red
+        &::-webkit-progress-value
+            background    $pw-red
+        &::-moz-progress-bar
+            background    $pw-red
+    &.pw-average
+        color   $pw-orange
+        &::-webkit-progress-value
+            background    $pw-orange
+        &::-moz-progress-bar
+            background    $pw-orange
+    &.pw-strong
+        color   $pw-green
+        &::-webkit-progress-value
+            background    $pw-green
+        &::-moz-progress-bar
+            background    $pw-green
+
+
 
 // BREADCRUMB
 footer

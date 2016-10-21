@@ -42,6 +42,12 @@ module.exports = class PasswordView extends StepView
         password = @$('input[name=password]').val()
         @passwordStrength = passwordHelper.getComplexityPercentage password
         @$('progress').attr 'value', @passwordStrength
+        if @passwordStrength <= 33
+            @$('progress').attr 'class', 'pw-weak'
+        else if @passwordStrength > 33 and @passwordStrength <= 66
+            @$('progress').attr 'class', 'pw-average'
+        else
+            @$('progress').attr 'class', 'pw-strong'
 
     # Get 1rst error only
     # err is an object such as:
@@ -92,4 +98,8 @@ module.exports = class PasswordView extends StepView
 
     onSubmit: (event)->
         event?.preventDefault()
-        # @model.submit @getDataFromDOM()
+        isPasswordWeak = @passwordStrength <= 33
+        if isPasswordWeak
+            return false
+        else
+            @model.submit @getDataFromDOM()

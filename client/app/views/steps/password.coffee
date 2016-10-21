@@ -38,22 +38,17 @@ module.exports = class PasswordView extends StepView
     initialize: (args...) ->
         super args...
         # lowest level is 1 to display a red little part
-        @passwordStrength = 1
+        @passwordStrength = {percentage: 1, label: 'weak'}
         @updatePasswordStrength = updatePasswordStrength.bind(@)
 
     updatePasswordStrength= ->
         password = @$('input[name=password]').val()
-        @passwordStrength = passwordHelper.getComplexityPercentage password
+        @passwordStrength = passwordHelper.getStrength password
 
-        if @passwordStrength is 0 then @passwordStrength = 1
-        @$('progress').attr 'value', @passwordStrength
-
-        if @passwordStrength <= 33
-            @$('progress').attr 'class', 'pw-weak'
-        else if @passwordStrength > 33 and @passwordStrength <= 66
-            @$('progress').attr 'class', 'pw-moderate'
-        else
-            @$('progress').attr 'class', 'pw-strong'
+        if @passwordStrength.percentage is 0
+             @passwordStrength.percentage = 1
+        @$('progress').attr 'value', @passwordStrength.percentage
+        @$('progress').attr 'class', 'pw-' + @passwordStrength.label
 
     initialize: (args...) ->
         super args...
@@ -89,7 +84,7 @@ module.exports = class PasswordView extends StepView
         }
 
     checkPasswordStrength: ->
-        _.throttle(@updatePasswordStrength, 2000)()
+        _.throttle(@updatePasswordStrength, 3000)()
 
     serializeInputData: =>
         visibilityAction = if @isVisible then 'hide' else 'show'

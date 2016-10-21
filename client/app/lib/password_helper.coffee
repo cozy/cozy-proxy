@@ -1,6 +1,8 @@
 # Return given password srength as an object {percentage, label}
 module.exports.getStrength = (password) ->
-    if not password?.length
+    if not password and password isnt ''
+        throw new Error 'password parameter is missing'
+    if not password.length
         {percentage: 0, label: 'weak'}
     charsPoints = 0
     upperPoints = if ((password.match(/[A-Z]/g) || []).length) then 26 else 0

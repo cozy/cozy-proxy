@@ -45,7 +45,7 @@ module.exports = class PasswordView extends StepView
         if @passwordStrength <= 33
             @$('progress').attr 'class', 'pw-weak'
         else if @passwordStrength > 33 and @passwordStrength <= 66
-            @$('progress').attr 'class', 'pw-average'
+            @$('progress').attr 'class', 'pw-moderate'
         else
             @$('progress').attr 'class', 'pw-strong'
 

@@ -37,13 +37,17 @@ module.exports = class PasswordView extends StepView
 
     initialize: (args...) ->
         super args...
-        @passwordStrength = 0
+        # lowest level is 1 to display a red little part
+        @passwordStrength = 1
         @updatePasswordStrength = updatePasswordStrength.bind(@)
 
     updatePasswordStrength= ->
         password = @$('input[name=password]').val()
         @passwordStrength = passwordHelper.getComplexityPercentage password
+
+        if @passwordStrength is 0 then @passwordStrength = 1
         @$('progress').attr 'value', @passwordStrength
+
         if @passwordStrength <= 33
             @$('progress').attr 'class', 'pw-weak'
         else if @passwordStrength > 33 and @passwordStrength <= 66

@@ -28,7 +28,6 @@ class Step
         @username = user.username
 
 
-
     # Record handlers for 'completed' internal pseudo-event
     onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
@@ -99,11 +98,9 @@ class Step
     save: (data={}) ->
         return Promise.resolve(data)
 
-
     # Success handler for save() call
     handleSaveSuccess: (data) =>
         return data
-
 
     # Error handler for save() call
     handleSaveError: (err) =>

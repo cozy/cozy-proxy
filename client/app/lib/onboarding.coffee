@@ -54,7 +54,7 @@ class Step
     triggerFailed: (error) ->
         if @failedHandlers
             @failedHandlers.forEach (handler) =>
-            handler(@, error)
+                handler(@, error)
 
 
     # Returns true if the step has to be submitted by the user

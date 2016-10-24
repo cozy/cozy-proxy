@@ -7,8 +7,9 @@
 
 // Icons
 
-[data-type=password] svg
-    background-color: #4dcec5
+#password-figure
+    svg
+        background-color: #4dcec5
 
 
 // LAYOUTS
@@ -33,22 +34,21 @@ header
             display: block
 
         svg
-            width:          (72 / 16)em
+            max-width:      (72 / 16)em
             height:         (72 / 16)em
             border-radius:  50%
             padding:        1.5em
-            box-shadow:     0 0 1em 0 #ccc
+            box-shadow:     0 1px 3px rgba(50,54,63,0.19), 0 4px 12px rgba(50,54,63,0.12)
 
     h1
         margin: 0
 
 
-figure[data-type='welcome']
+#welcome-figure
     svg
-        width:      auto
-        height:     (200 / 16)em
-        padding:    0
-        box-shadow: none
+        max-width:      100%
+        height:         12.5em
+        box-shadow:     none
 
 
 footer
@@ -79,27 +79,42 @@ footer
 form
     font-size: .9em
 
+    .line
+        position: relative
+
+        button[action="password-visibility"]
+            position:   absolute
+            top:        0
+            right:      0
+
+        button.icon
+            background: none
+            padding: .55em
+
+            svg
+                width: 1em
+                height: 1em
+                display: block
+
 label
     display: block
     text-transform: uppercase
-    color: gray
+    color: $grey-07
     font-size: .9em
     padding: .55em 0
 
 input[type=text]
 input[type=password]
-    display: inline-block
-    width: 100%
-    padding: 0.75em 0.75em 0.9em
-    border-radius: 4px
-
-button
-    border: 0
-    width: 100%
+    display:        inline-block
+    width:          100%
+    padding:        0.75em 0.75em 0.9em
+    border-radius:  4px
+    box-sizing:     border-box;
 
 
 [role=button]
 button
+    border:           0
     display:          block
     padding:          .55em
     border-radius:    4px
@@ -109,11 +124,14 @@ button
     color:            white
 
 .errors
-    color: red
+    color: $red
 
 
 // BREADCRUMB
 footer
+    button
+        width: 100%
+
     ol
         display:         flex
         list-style-type: none

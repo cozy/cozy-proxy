@@ -30,9 +30,9 @@ module.exports = class PasswordView extends StepView
     # err is an object such as:
     # { type: 'password', text:'step empty fields'}
     serializeData: () ->
-        {
+        return Object.assign {}, @serializeInputData(), {
             error:      @error.message if @error
-            stepName:   @model.get 'name'
+            id:         "#{@model.get 'name'}-figure"
             figureid:   require '../../assets/sprites/illustrate-password.svg'
         }
 
@@ -42,9 +42,9 @@ module.exports = class PasswordView extends StepView
         icon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
         type = if @isVisible then 'text' else 'password'
         {
-            visibilityTxt: "step password #{visibilityAction}"
+            visibilityTxt:  "step password #{visibilityAction}"
             visibilityIcon: icon
-            inputType: type
+            inputType:      type
         }
 
 

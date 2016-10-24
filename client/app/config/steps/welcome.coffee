@@ -6,6 +6,5 @@ module.exports = {
         return fetch '/register',
             method: 'POST',
             body: JSON.stringify {onboardedSteps: ['welcome']}
-        .then @handleSaveSuccess
-        .catch @handleSaveError
+        .then @handleSaveSuccess, @handleSaveError
 }

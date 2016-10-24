@@ -77,8 +77,7 @@ class Step
     # in the near future
     submit: (data={}) ->
         return @save data
-        .then @handleSubmitSuccess
-        .catch @handleSubmitError
+        .then @handleSubmitSuccess, @handleSubmitError
 
 
     # Handler for error occuring during a submit()

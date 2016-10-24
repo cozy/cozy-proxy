@@ -1,5 +1,6 @@
 StepView = require '../step'
 passwordHelper = require '../../lib/password_helper'
+_ = require 'underscore'
 
 
 module.exports = class PasswordView extends StepView

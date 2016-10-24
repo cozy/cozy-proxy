@@ -1,6 +1,5 @@
 jQuery = require 'jquery'
 
-
 module.exports = {
     name: 'password',
     route: 'register/password',

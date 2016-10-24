@@ -11,10 +11,8 @@ Router    = require './routes'
 AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
-
 StepModel = require './models/step'
 ProgressionModel = require './models/progression'
-
 
 class App extends Application
 
@@ -28,8 +26,8 @@ class App extends Application
     ###
     initialize: ->
         steps = require './config/steps/all'
-
         @on 'start', =>
+
             user = {
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
@@ -98,7 +96,6 @@ class App extends Application
                 error: err
                 progression: new ProgressionModel \
                     @onboarding.getProgression step
-
 
 
 # Exports Application singleton instance

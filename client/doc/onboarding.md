@@ -52,8 +52,7 @@ Record the function callback as handler for every time the current onboarding st
 
 #### onStepFailed(callback)
 
-
-#### handleStepCompleted()
+#### goToNext()
 Select the next step on the list and trigger the related events.
 
 #### goToStep(step)

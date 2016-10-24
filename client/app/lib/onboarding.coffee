@@ -57,12 +57,6 @@ class Step
             handler(@, error)
 
 
-    triggerFailed: (error) ->
-        if @failedHandlers
-            @failedHandlers.forEach (handler) =>
-            handler(@, error)
-
-
     # Returns true if the step has to be submitted by the user
     # This method returns true by default, but can be overriden
     # by config steps
@@ -88,8 +82,7 @@ class Step
 
 
     # Handler for submit success
-    handleSubmitSuccess: =>
-        @triggerCompleted()
+    handleSubmitSuccess: => @triggerCompleted()
 
 
     # Save data
@@ -99,24 +92,20 @@ class Step
     save: (data={}) ->
         return Promise.resolve(data)
 
-
     # Success handler for save() call
     handleSaveSuccess: (data) =>
         return data
-
 
     # Error handler for save() call
     handleSaveError: (err) =>
         error = Object.values err.errors
         throw new Error error
 
-    error: (err) ->
-        @triggerFailed err
-
 
 # Main class
 # Onboarding is the component in charge of managing steps
 module.exports = class Onboarding
+
 
     constructor: (user, steps, currentStepName) ->
         @initialize user, steps, currentStepName
@@ -148,12 +137,6 @@ module.exports = class Onboarding
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
         @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
-
-
-    onStepFailed: (callback) ->
-        throw new Error 'Callback parameter should be a function' \
-            unless typeof callback is 'function'
-        @stepFailedHandlers = (@stepFailedHandlers or []).concat callback
 
 
     onStepFailed: (callback) ->
@@ -197,24 +180,6 @@ module.exports = class Onboarding
         if @stepChangedHandlers
             @stepChangedHandlers.forEach (handler) ->
                 handler step
-
-
-    handleStepError: (step, err) =>
-        @currentStep = step
-        @currentError = err
-        @triggerStepErrors step, err
-
-
-    # Trigger a 'StapFailed' pseudo-event
-    triggerStepErrors: (step, args...) =>
-        @stepFailedHandlers?.forEach (handler) ->
-
-
-    # Trigger a 'StapFailed' pseudo-event
-    triggerStepErrors: (step, err) =>
-        if @stepFailedHandlers
-            @stepFailedHandlers.forEach (handler) ->
-                handler step, err
 
 
     handleStepError: (step, err) =>

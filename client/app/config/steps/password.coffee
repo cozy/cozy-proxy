@@ -1,8 +1,5 @@
 jQuery = require 'jquery'
 
-REQUIRED_KEYS = ['username', 'email', 'public_name', 'timezone', 'allow_stats']
-
-
 module.exports = {
     name: 'password',
     route: 'register/password',
@@ -10,7 +7,7 @@ module.exports = {
 
     # If OK, return null
     # if not return an Array of errors
-    # Triggered throw onboarding
+    # that will be triggered throw onboarding
     # to dispatch error into app
     validate: (data={}) ->
         unless data.password?
@@ -28,4 +25,5 @@ module.exports = {
                 error: (req) -> reject req.responseJSON
             }))
             .then @handleSaveSuccess, @handleSaveError
+
 }

@@ -11,10 +11,8 @@ Router    = require './routes'
 AppLayout = require './views/app_layout'
 
 Onboarding = require './lib/onboarding'
-
 StepModel = require './models/step'
 ProgressionModel = require './models/progression'
-
 
 class App extends Application
 
@@ -29,6 +27,7 @@ class App extends Application
     initialize: ->
         steps = require './config/steps/all'
         @on 'start', =>
+
             user = {
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
@@ -37,14 +36,6 @@ class App extends Application
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
             @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
-            # TODO: Get the user with a better way later
-            user = {
-                username: ENV.username
-            }
-
-            @onboarding = new Onboarding(user, steps)
-            @onboarding.onStepChanged @handleStepChanged
-            @onboarding.onStepFailed @handleStepFailed
 
             @initializeRouter()
 
@@ -71,7 +62,7 @@ class App extends Application
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    handleStepChanged: (step) =>
+    handleStepChanged: (step) ->
         @router.navigate step.route, trigger: true
 
 

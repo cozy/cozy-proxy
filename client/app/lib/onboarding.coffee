@@ -32,7 +32,7 @@ class Step
     onCompleted: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-        @completedHandlers ?= []
+        @completedHandlers = @completedHandlers or []
         @completedHandlers.push callback
 
 
@@ -46,12 +46,14 @@ class Step
     # Trigger 'completed' pseudo-event
     # returnValue is from configStep.submit
     triggerCompleted: () ->
-        @completedHandlers?.forEach (handler) =>
-            handler(@)
+        if @completedHandlers
+            @completedHandlers.forEach (handler) =>
+                handler(@)
 
 
     triggerFailed: (error) ->
-        @failedHandlers?.forEach (handler) =>
+        if @failedHandlers
+            @failedHandlers.forEach (handler) =>
             handler(@, error)
 
 
@@ -86,8 +88,7 @@ class Step
 
 
     # Handler for submit success
-    handleSubmitSuccess: =>
-        @triggerCompleted()
+    handleSubmitSuccess: => @triggerCompleted()
 
 
     # Save data
@@ -135,7 +136,8 @@ module.exports = class Onboarding
             , []
 
         if currentStepName
-            unless (@currentStep = @getStepByName currentStepName)
+            @currentStep = @getStepByName currentStepName
+            if not @currentStep
                 throw new Error 'Given current step does not exist in step list'
 
 
@@ -144,17 +146,13 @@ module.exports = class Onboarding
     onStepChanged: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-
-        @stepChangedHandlers ?= []
-        @stepChangedHandlers = @stepChangedHandlers.concat callback
+        @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
 
 
     onStepFailed: (callback) ->
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
-
-        @stepFailedHandlers ?= []
-        @stepFailedHandlers = @stepFailedHandlers.concat callback
+        @stepFailedHandlers = (@stepFailedHandlers or []).concat callback
 
 
     onStepFailed: (callback) ->

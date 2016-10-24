@@ -35,6 +35,9 @@ describe('Password Stories', () => {
 
 
     describe('Add a password', () => {
+        let passwordStep;
+        let passwordStepIndex;
+        let nextStep;
 
         beforeEach(() => {
             const jsdom = require('jsdom-global')();
@@ -42,19 +45,22 @@ describe('Password Stories', () => {
 
             // Select password step
             onboarding.goToStep(onboarding.getStepByName('password'));
+
+            passwordStep = onboarding.getStepByName('password');
+            passwordStepIndex = onboarding.steps.indexOf(passwordStep);
+            nextStep = onboarding.steps[passwordStepIndex+1];
         });
 
         afterEach(() => {
             // Select 1rst step
             currentIndex = undefined;
+
+            // Reset spy
+            global.jQuery.post.restore();
         });
 
 
-        it('should go to `nextStep` when password is OK', (done) => {
-            const passwordStep = onboarding.getStepByName('password');
-            const passwordStepIndex = onboarding.steps.indexOf(passwordStep);
-            const nextStep = onboarding.steps[passwordStepIndex+1];
-
+        it('should go to `nextStep`', (done) => {
             sinon.stub(global.jQuery, 'post');
             global.jQuery.post.yieldsTo('success');
 
@@ -67,13 +73,28 @@ describe('Password Stories', () => {
             // Deal with async Promise call
             setTimeout(() => {
                 assert.deepEqual(onboarding.getCurrentStep(), nextStep);
-                global.jQuery.post.restore();
                 done()
             }, 10);
         });
 
 
-        it.skip('shouldnt go to `nextStep` when errors');
+        it('shouldnt change currentStep when errors', (done) => {
+            sinon.stub(global.jQuery, 'post').returns(false);
+            global.jQuery.post.yieldsTo('error');
+
+            // Select StepPassword
+            onboarding.goToStep(passwordStep);
+
+            // Submit password value
+            passwordStep.submit({ password: 'toto' })
+
+            // Deal with async Promise call
+            setTimeout(() => {
+                assert.deepEqual(onboarding.getCurrentStep(), passwordStep);
+                done()
+            }, 10);
+
+        });
     });
 
 });

@@ -19,4 +19,5 @@ module.exports = class WelcomeView extends StepView
     serializeData: ->
         _.extend super,
             link:     'https://cozy.io'
+            stepName: @model.get 'name'
             figureid: require '../../assets/sprites/illustration-welcome.svg'

@@ -5,6 +5,12 @@
 @import "./base/_colors.styl"
 
 
+// Icons
+
+[data-type=password] svg
+    background-color: #4dcec5
+
+
 // LAYOUTS
 [role=application]
     display:     flex
@@ -27,11 +33,22 @@ header
             display: block
 
         svg
-            max-width: 100%
-            height:    (200 / 16)em
+            width:          (72 / 16)em
+            height:         (72 / 16)em
+            border-radius:  50%
+            padding:        1.5em
+            box-shadow:     0 0 1em 0 #ccc
 
     h1
         margin: 0
+
+
+figure[data-type='welcome']
+    svg
+        width:      auto
+        height:     (200 / 16)em
+        padding:    0
+        box-shadow: none
 
 
 footer
@@ -58,7 +75,31 @@ footer
 
 
 // FORMS
+
+form
+    font-size: .9em
+
+label
+    display: block
+    text-transform: uppercase
+    color: gray
+    font-size: .9em
+    padding: .55em 0
+
+input[type=text]
+input[type=password]
+    display: inline-block
+    width: 100%
+    padding: 0.75em 0.75em 0.9em
+    border-radius: 4px
+
+button
+    border: 0
+    width: 100%
+
+
 [role=button]
+button
     display:          block
     padding:          .55em
     border-radius:    4px
@@ -67,6 +108,8 @@ footer
     text-transform:   uppercase
     color:            white
 
+.errors
+    color: red
 
 
 // BREADCRUMB

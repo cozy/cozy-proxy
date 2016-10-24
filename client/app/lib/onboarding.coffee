@@ -11,7 +11,8 @@ class Step
           'isActive',
           'fetchUser',
           'validate',
-          'save'
+          'save',
+          'error'
         ].forEach (property) =>
             if step[property]?
                 @[property] = step[property]
@@ -35,11 +36,25 @@ class Step
         @completedHandlers.push callback
 
 
+    onFailed: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+        @failedHandlers = @failedHandlers or []
+        @failedHandlers.push callback
+
+
     # Trigger 'completed' pseudo-event
+    # returnValue is from configStep.submit
     triggerCompleted: () ->
         if @completedHandlers
             @completedHandlers.forEach (handler) =>
                 handler(@)
+
+
+    triggerFailed: (error) ->
+        if @failedHandlers
+            @failedHandlers.forEach (handler) =>
+            handler(@, error)
 
 
     # Returns true if the step has to be submitted by the user
@@ -63,7 +78,7 @@ class Step
 
     # Handler for error occuring during a submit()
     handleSubmitError: (error) =>
-        throw new Error 'Unable to save step information'
+        @triggerFailed error
 
 
     # Handler for submit success
@@ -82,8 +97,9 @@ class Step
         return data
 
     # Error handler for save() call
-    handleSaveError: =>
-        throw new Error 'Error occured during save'
+    handleSaveError: (err) =>
+        error = Object.values err.errors
+        throw new Error error
 
 
 # Main class
@@ -105,6 +121,7 @@ module.exports = class Onboarding
                 if stepModel.isActive user
                     activeSteps.push stepModel
                     stepModel.onCompleted @handleStepCompleted
+                    stepModel.onFailed @handleStepError
                 return activeSteps
             , []
 
@@ -120,6 +137,12 @@ module.exports = class Onboarding
         throw new Error 'Callback parameter should be a function' \
             unless typeof callback is 'function'
         @stepChangedHandlers = (@stepChangedHandlers or []).concat callback
+
+
+    onStepFailed: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+        @stepFailedHandlers = (@stepFailedHandlers or []).concat callback
 
 
     # Handler for 'stepSubmitted' pseudo-event, triggered by a step
@@ -157,6 +180,19 @@ module.exports = class Onboarding
         if @stepChangedHandlers
             @stepChangedHandlers.forEach (handler) ->
                 handler step
+
+
+    handleStepError: (step, err) =>
+        @currentStep = step
+        @currentError = err
+        @triggerStepErrors step, err
+
+
+    # Trigger a 'StapFailed' pseudo-event
+    triggerStepErrors: (step, err) =>
+        if @stepFailedHandlers
+            @stepFailedHandlers.forEach (handler) ->
+                handler step, err
 
 
     # Trigger a 'done' pseudo-event, corresponding to onboarding end.

@@ -25,18 +25,16 @@ describe('Step: password', () => {
 
     describe('#validate', () => {
 
-        it('should return null', () => {
-            // Empty cases
-            assert.equal(null, PasswordConfig.validate({}))
-            assert.equal(null, PasswordConfig.validate())
-            assert.equal(null, PasswordConfig.validate(''))
-
-            let data = { email: '', password: 'plop', timezone: TimeZones[0]}
+        it('should return `null`', () => {
+            const data = {
+                'password': 'plop'
+            }
             assert.equal(null, PasswordConfig.validate(data))
         });
 
-        it.skip('should return [errors]', () => {
-
+        it('Should return {errors} when `data` is empty', () => {
+            let error = PasswordConfig.validate({});
+            assert.equal('password', error.type);
         });
     });
 

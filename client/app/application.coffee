@@ -35,6 +35,7 @@ class App extends Application
 
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
+            @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
 
             @initializeRouter()
 
@@ -65,6 +66,16 @@ class App extends Application
         @router.navigate step.route, trigger: true
 
 
+    # Update view with error message
+    # only if view is still displayed
+    # otherwhise dispatch the error in console
+    handleStepFailed: (step, err) ->
+        if @onboarding.currentStep isnt step
+            console.error err.stack
+        else
+            @showStep step, err
+
+
     # Handler for register route, display onboarding's current step
     handleRegisterRoute: =>
         # Load onboarding stylesheet
@@ -76,12 +87,13 @@ class App extends Application
 
 
     # Load the view for the given step
-    showStep: (step) ->
+    showStep: (step, err=null) ->
         StepView = require "./views/#{step.view}"
         nextStep = @onboarding.getNextStep step
         @layout.showChildView 'content',
             new StepView
                 model: new StepModel step: step, next: nextStep
+                error: err
                 progression: new ProgressionModel \
                     @onboarding.getProgression step
 

@@ -7,16 +7,23 @@ module.exports = {
 
     # If OK, return null
     # if not return an Array of errors
-    validate: (data) ->
-        return null
+    # that will be triggered throw onboarding
+    # to dispatch error into app
+    validate: (data={}) ->
+        unless data.password?
+            return { type: 'password', text:'step empty fields'}
+        else
+            return null
+
 
     save: (data) ->
-        data = JSON.stringify data
         return new Promise((resolve, reject) ->
             jQuery.post({
                 url: '/register'
-                data: data
+                data: JSON.stringify data
                 success: resolve
-                error: reject
-            })).then @handleSaveSuccess, @handleSaveError
+                error: (req) -> reject req.responseJSON
+            }))
+            .then @handleSaveSuccess, @handleSaveError
+
 }

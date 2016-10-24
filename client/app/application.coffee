@@ -35,7 +35,7 @@ class App extends Application
 
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
-            @onboarding.onStepFailed (args...) => @handleStepFailed(args...)
+            @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
 
             @initializeRouter()
 
@@ -62,14 +62,14 @@ class App extends Application
     # Internal handler called when the onboarding's internal step has just
     # changed.
     # @param step Step instance
-    handleStepChanged: (step) =>
+    handleStepChanged: (step) ->
         @router.navigate step.route, trigger: true
 
 
     # Update view with error message
     # only if view is still displayed
     # otherwhise dispatch the error in console
-    handleStepFailed: (step, err) =>
+    handleStepFailed: (step, err) ->
         if @onboarding.currentStep isnt step
             console.error err.stack
         else

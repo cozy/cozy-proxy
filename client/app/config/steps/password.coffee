@@ -24,7 +24,6 @@ module.exports = {
                 success: resolve
                 error: (req) -> reject req.responseJSON
             }))
-            .then @handleSaveSuccess
-            .catch @handleSaveError
+            .then @handleSaveSuccess, @handleSaveError
 
 }

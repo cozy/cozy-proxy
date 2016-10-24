@@ -194,7 +194,7 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#goToNext', () => {
+    describe('#handleStepCompleted', () => {
         it('should call Onboarding#goToNext', () => {
             // arrange
             let onboarding = new Onboarding(null, []);
@@ -253,7 +253,7 @@ describe('Onboarding', () => {
             onboarding.onStepChanged(callback2);
 
             // act
-            onboarding.goToStep(stepToTrigger);
+            onboarding.triggerStepChanged(stepToTrigger);
 
             // assert
             assert(callback1.calledOnce);
@@ -264,7 +264,7 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#triggerStepChanged', () => {
+    describe('#goToStep', () => {
         it('should set new current step', () => {
             // arrange
             let onboarding = new Onboarding(null, [
@@ -306,7 +306,7 @@ describe('Onboarding', () => {
             onboarding.triggerStepChanged = sinon.spy();
 
             // act
-            onboarding.triggerStepChanged(firstStep);
+            onboarding.goToStep(firstStep);
 
             // assert
             assert(onboarding.triggerStepChanged.calledOnce);
@@ -364,7 +364,7 @@ describe('Onboarding', () => {
             onboarding.goToStep = sinon.spy();
 
             // act
-            onboarding.handleStepCompleted();
+            onboarding.goToNext();
 
             // assert
             assert(onboarding.goToStep.calledOnce);
@@ -394,7 +394,7 @@ describe('Onboarding', () => {
             onboarding.triggerDone = sinon.spy();
 
             // act
-            onboarding.handleStepCompleted();
+            onboarding.goToNext();
 
             // assert
             assert(onboarding.triggerDone.calledOnce);
@@ -508,7 +508,7 @@ describe('Onboarding', () => {
             let step = onboarding.getStepByName('test');
 
             // act
-            onboarding.triggerStepChanged(step);
+            onboarding.goToStep(step);
             let result = onboarding.getProgression(step);
 
             // assert
@@ -536,7 +536,7 @@ describe('Onboarding', () => {
             let step = onboarding.getStepByName('test2');
 
             // act
-            onboarding.triggerStepChanged(step);
+            onboarding.goToStep(step);
             let result = onboarding.getProgression(step);
 
 
@@ -565,7 +565,7 @@ describe('Onboarding', () => {
             let step = onboarding.getStepByName('test3');
 
             // act
-            onboarding.triggerStepChanged(step);
+            onboarding.goToStep(step);
             let result = onboarding.getProgression(step);
 
 
@@ -600,7 +600,6 @@ describe('Onboarding', () => {
             assert.deepEqual(expectedLabels, result.labels);
         });
     });
-
 
     describe('#getNextStep', () => {
         it('should throw error when no step is given in parameter', () => {
@@ -757,15 +756,18 @@ describe('Onboarding.Step', () => {
             assert.isUndefined(result.inject);
         });
 
-        it('should overwrite default `isActive`', () => {
+        it('should override default isActive with new one', () => {
             // arrange
-            let configIsActive = (user) => {};
+            let overridingIsActive = (user) => {};
+            let options = {
+                isActive: overridingIsActive
+            };
 
             // act
-            let step = new Step({ isActive: configIsActive });
+            let step = new Step(options);
 
             // assert
-            assert.equal(configIsActive, step.isActive);
+            assert.equal(overridingIsActive, step.isActive);
         });
     });
 
@@ -874,6 +876,7 @@ describe('Onboarding.Step', () => {
         });
     });
 
+
     describe('#submit', () => {
         it('should call save', () => {
             // arrange
@@ -882,11 +885,16 @@ describe('Onboarding.Step', () => {
             let promiseStub = sinon.stub(step, 'save');
             promiseStub.returns(savePromise);
 
+            // act
+            step.submit();
+
+            // assert
+            assert(step.save.calledOnce);
         });
     });
 
     describe('#fetchUser', () => {
-        it('should fetch `username` by default', () => {
+        it('should fetch username by default', () => {
             // arrange
             let username = 'Claude';
 
@@ -897,7 +905,7 @@ describe('Onboarding.Step', () => {
             assert.equal(username, step.username);
         });
 
-        it('should call `specific` method', () => {
+        it('should call overriding method', () => {
             // arrange
             let spy = sinon.spy();
 
@@ -911,7 +919,7 @@ describe('Onboarding.Step', () => {
             assert(spy.calledOnce);
         });
 
-        it('should call `default` method on other steps', () => {
+        it('should not call overriding method on other steps', () => {
             // arrange
             let spy = sinon.spy();
 

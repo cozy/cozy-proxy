@@ -13,17 +13,23 @@ module.exports = class PasswordView extends StepView
     isVisible: false
 
 
+    onRender: ->
+        @$inputPassword = @$('input[name=password]')
+        @$visibilityButton = @$('[action=password-visibility]')
+        @$visibilityIcon = @$('.icon use')
+
+
     renderInput: =>
         data = @serializeInputData()
 
         # Show/hide password value
-        @$('input[name=password]').attr 'type', data.inputType
+        @$inputPassword.attr 'type', data.inputType
 
         # Update Button title
-        @$('[action=password-visibility]').attr 'alt', t(data.visibilityTxt)
+        @$visibilityButton.attr 'alt', t(data.visibilityTxt)
 
         # Update Button Icon
-        @$('.icon use').attr 'xlink:href', data.visibilityIcon
+        @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
 
 
     # Get 1rst error only

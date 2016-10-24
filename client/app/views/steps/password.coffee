@@ -36,11 +36,13 @@ module.exports = class PasswordView extends StepView
         # Update Button Icon
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
 
+
     initialize: (args...) ->
         super args...
         # lowest level is 1 to display a red little part
         @passwordStrength = {percentage: 1, label: 'weak'}
         @updatePasswordStrength = updatePasswordStrength.bind(@)
+
 
     updatePasswordStrength= ->
         password = @$('input[name=password]').val()
@@ -84,8 +86,6 @@ module.exports = class PasswordView extends StepView
             passwordStrength: @passwordStrength
         }
 
-    checkPasswordStrength: ->
-        _.throttle(@updatePasswordStrength, 3000)()
 
     serializeInputData: =>
         visibilityAction = if @isVisible then 'hide' else 'show'
@@ -113,11 +113,6 @@ module.exports = class PasswordView extends StepView
         return {
             password: @$inputPassword.val()
             onboardedSteps: ['welcome', 'agreement', 'password']
-        }
-
-    serializeData: ->
-        {
-            passwordStrength: @passwordStrength
         }
 
 

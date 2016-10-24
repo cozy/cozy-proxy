@@ -106,10 +106,18 @@ label
 input[type=text]
 input[type=password]
     display:        inline-block
-    width:          100%
     padding:        0.75em 0.75em 0.9em
     border-radius:  4px
     box-sizing:     border-box;
+
+// Managing input width with flex
+form p
+  display: flex
+  flex-direction: column
+
+button
+    border: 0
+    width: 100%
 
 
 [role=button]

@@ -41,7 +41,7 @@ describe('Password Stories', () => {
             global.jQuery = require('jquery');
 
             // Select password step
-            onboarding.triggerStepChanged(onboarding.getStepByName('password'));
+            onboarding.goToStep(onboarding.getStepByName('password'));
         });
 
         afterEach(() => {
@@ -59,7 +59,7 @@ describe('Password Stories', () => {
             global.jQuery.post.yieldsTo('success');
 
             // Select StepPassword
-            onboarding.triggerStepChanged(passwordStep);
+            onboarding.goToStep(passwordStep);
 
             // Submit password value
             passwordStep.submit({ password: 'toto' })

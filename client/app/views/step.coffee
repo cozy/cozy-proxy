@@ -10,8 +10,8 @@ module.exports = class StepView extends LayoutView
         progression: '.progression'
 
 
-    initialize: (options={}) ->
-        super options
+    initialize: (options) ->
+        super(options)
 
         @error = options.error
 

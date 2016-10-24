@@ -194,17 +194,17 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#handleStepCompleted', () => {
-        it('should call Onboarding#handleStepCompleted', () => {
+    describe('#goToNext', () => {
+        it('should call Onboarding#goToNext', () => {
             // arrange
             let onboarding = new Onboarding(null, []);
-            onboarding.handleStepCompleted = sinon.spy();
+            onboarding.goToNext = sinon.spy();
 
             // act
             onboarding.handleStepCompleted(null);
 
             // assert
-            assert(onboarding.handleStepCompleted.calledOnce);
+            assert(onboarding.goToNext.calledOnce);
         });
     });
 
@@ -253,7 +253,7 @@ describe('Onboarding', () => {
             onboarding.onStepChanged(callback2);
 
             // act
-            onboarding.triggerStepChanged(stepToTrigger);
+            onboarding.goToStep(stepToTrigger);
 
             // assert
             assert(callback1.calledOnce);
@@ -282,7 +282,7 @@ describe('Onboarding', () => {
             let firstStep = onboarding.steps[0];
 
             // act
-            onboarding.triggerStepChanged(firstStep);
+            onboarding.goToStep(firstStep);
 
             // assert
             assert.equal(firstStep, onboarding.currentStep);
@@ -314,8 +314,8 @@ describe('Onboarding', () => {
         });
     });
 
-    describe('#handleStepCompleted', () => {
-        it('should call triggerStepChanged with first step', () => {
+    describe('#goToNext', () => {
+        it('should call goToStep with first step', () => {
             // arrange
             let onboarding = new Onboarding(null, [
                 {
@@ -330,17 +330,17 @@ describe('Onboarding', () => {
             ]);
 
             let firstStep = onboarding.steps[0];
-            onboarding.triggerStepChanged = sinon.spy();
+            onboarding.goToStep = sinon.spy();
 
             // act
-            onboarding.handleStepCompleted();
+            onboarding.goToNext();
 
             // assert
-            assert(onboarding.triggerStepChanged.calledOnce);
-            assert(onboarding.triggerStepChanged.calledWith(firstStep));
+            assert(onboarding.goToStep.calledOnce);
+            assert(onboarding.goToStep.calledWith(firstStep));
         });
 
-        it('should call triggerStepChanged with next step', () => {
+        it('should call goToStep with next step', () => {
             // arrange
             let onboarding = new Onboarding(null, [
                 {
@@ -360,15 +360,15 @@ describe('Onboarding', () => {
 
             let secondStep = onboarding.steps[1];
             let thirdStep = onboarding.steps[2];
-            onboarding.triggerStepChanged(secondStep);
-            onboarding.triggerStepChanged = sinon.spy();
+            onboarding.goToStep(secondStep);
+            onboarding.goToStep = sinon.spy();
 
             // act
             onboarding.handleStepCompleted();
 
             // assert
-            assert(onboarding.triggerStepChanged.calledOnce);
-            assert(onboarding.triggerStepChanged.calledWith(thirdStep));
+            assert(onboarding.goToStep.calledOnce);
+            assert(onboarding.goToStep.calledWith(thirdStep));
         });
 
         it('should call triggerDone when current step is the last one', () => {
@@ -390,7 +390,7 @@ describe('Onboarding', () => {
             ]);
 
             let thirdStep = onboarding.steps[2];
-            onboarding.triggerStepChanged(thirdStep);
+            onboarding.goToStep(thirdStep);
             onboarding.triggerDone = sinon.spy();
 
             // act

@@ -166,6 +166,11 @@ module.exports = class Onboarding
     # Maybe validation should be called here
     # Maybe we will return a Promise or call some callbacks in the future.
     handleStepCompleted: =>
+        @goToNext()
+
+
+    # Go to the next step in the list.
+    goToNext: () ->
         currentIndex = @steps.indexOf(@currentStep)
 
         if @currentStep? and currentIndex is -1
@@ -175,24 +180,35 @@ module.exports = class Onboarding
         nextIndex = currentIndex+1
 
         if @steps[nextIndex]
-            @triggerStepChanged @steps[nextIndex]
+            @goToStep @steps[nextIndex]
         else
             @triggerDone()
 
 
     # Go directly to a given step.
-    triggerStepChanged: (step, err) =>
+    goToStep: (step) ->
         @currentStep = step
+        @triggerStepChanged step
 
-        # Trigger a 'StapChanged' pseudo-event.
-        @stepChangedHandlers?.forEach (handler) ->
-            handler step, err
+
+    # Trigger a 'StepChanged' pseudo-event.
+    triggerStepChanged: (step) ->
+        if @stepChangedHandlers
+            @stepChangedHandlers.forEach (handler) ->
+                handler step
+
+
+    handleStepError: (step, err) =>
+        @currentStep = step
+        @currentError = err
+        @triggerStepErrors step, err
 
 
     # Trigger a 'StapFailed' pseudo-event
-    triggerStepErrors: (step, args...) =>
-        @stepFailedHandlers?.forEach (handler) ->
-            handler step, args...
+    triggerStepErrors: (step, err) =>
+        if @stepFailedHandlers
+            @stepFailedHandlers.forEach (handler) ->
+                handler step, err
 
 
     handleStepError: (step, err) =>

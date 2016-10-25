@@ -21,7 +21,12 @@ module.exports = class PasswordView extends StepView
         @$inputPassword = @$('input[name=password]')
         @$visibilityButton = @$('[action=password-visibility]')
         @$visibilityIcon = @$('.icon use')
-        @$strengthBar = @$('progress')
+        @$strengthBar = @$('.progress')
+        @$errorContainer=@$('.errors')
+        if @error
+            @handleError(@error)
+        else
+            @$errorContainer.hide()
 
 
     renderInput: =>
@@ -81,7 +86,6 @@ module.exports = class PasswordView extends StepView
     # { type: 'password', text:'step empty fields'}
     serializeData: () ->
         return Object.assign {}, @serializeInputData(), {
-            error:      @error.message if @error
             id:         "#{@model.get 'name'}-figure"
             figureid:   require '../../assets/sprites/icon-lock.svg'
             passwordStrength: @passwordStrength
@@ -116,11 +120,16 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
+    handleError: (error) ->
+        @error = error
+        @$errorContainer.html(t(@error))
+        @$errorContainer.show()
+
 
     onSubmit: (event)->
         event?.preventDefault()
         if @passwordStrength.label is 'weak'
             @$inputPassword.addClass('error')
-            return false
+            @handleError("password too weak")
         else
             @model.submit @getDataFromDOM()

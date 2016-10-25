@@ -26,7 +26,7 @@ module.exports = class PasswordView extends StepView
         @$inputPassword.attr 'type', data.inputType
 
         # Update Button title
-        @$visibilityButton.attr 'alt', t(data.visibilityTxt)
+        @$visibilityButton.attr 'title', t(data.visibilityTxt)
 
         # Update Button Icon
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
@@ -39,13 +39,14 @@ module.exports = class PasswordView extends StepView
         return Object.assign {}, @serializeInputData(), {
             error:      @error.message if @error
             id:         "#{@model.get 'name'}-figure"
-            figureid:   require '../../assets/sprites/illustrate-password.svg'
+            figureid:   require '../../assets/sprites/icon-lock.svg'
         }
 
 
     serializeInputData: =>
         visibilityAction = if @isVisible then 'hide' else 'show'
-        icon = require "../../assets/sprites/#{visibilityAction}-eye-icon.svg"
+        iconState = if @isVisible then 'closed' else 'open'
+        icon = require "../../assets/sprites/icon-eye-#{iconState}.svg"
         type = if @isVisible then 'text' else 'password'
         {
             visibilityTxt:  "step password #{visibilityAction}"

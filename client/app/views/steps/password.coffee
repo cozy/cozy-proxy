@@ -16,7 +16,8 @@ module.exports = class PasswordView extends StepView
     isVisible: false
 
 
-    onRender: ->
+    onRender: (args...) ->
+        super args...
         @$inputPassword = @$('input[name=password]')
         @$visibilityButton = @$('[action=password-visibility]')
         @$visibilityIcon = @$('.icon use')

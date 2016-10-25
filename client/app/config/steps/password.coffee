@@ -17,13 +17,9 @@ module.exports = {
 
 
     save: (data) ->
-        return new Promise((resolve, reject) ->
-            jQuery.post({
-                url: '/register'
-                data: JSON.stringify data
-                success: resolve
-                error: (req) -> reject req.responseJSON
-            }))
-            .then @handleSaveSuccess, @handleSaveError
+        return fetch '/register',
+            method: 'POST',
+            body: JSON.stringify data
+        .then @handleSaveSuccess, @handleSaveError
 
 }

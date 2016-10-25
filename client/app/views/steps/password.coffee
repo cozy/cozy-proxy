@@ -26,7 +26,7 @@ module.exports = class PasswordView extends StepView
         @$inputPassword.attr 'type', data.inputType
 
         # Update Button title
-        @$visibilityButton.attr 'alt', t(data.visibilityTxt)
+        @$visibilityButton.attr 'title', t(data.visibilityTxt)
 
         # Update Button Icon
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon

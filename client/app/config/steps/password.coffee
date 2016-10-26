@@ -10,8 +10,13 @@ module.exports = {
     # that will be triggered throw onboarding
     # to dispatch error into app
     validate: (data={}) ->
+        errors = {}
         unless data.password?
-            return { type: 'password', text:'step empty fields'}
+            errors.password = 'step empty fields'
+        unless data.passwordStrength?.label is 'weak'
+            errors.password = 'password too weak'
+        if Object.keys(errors).length
+            return errors
         else
             return null
 

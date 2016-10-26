@@ -120,7 +120,7 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
-    handleError: (error) ->
+    handleErrorMessage: (error) ->
         @error = error
         @$errorContainer.html(t(@error))
         @$errorContainer.show()
@@ -128,8 +128,11 @@ module.exports = class PasswordView extends StepView
 
     onSubmit: (event)->
         event?.preventDefault()
-        if @passwordStrength.label is 'weak'
-            @$inputPassword.addClass('error')
-            @handleError("password too weak")
+        data = @getDataFromDOM()
+        errors = @model.validate data
+        if errors
+            if errors?.password
+                @$inputPassword.addClass('error')
+                @handleErrorMessage(errors.password)
         else
-            @model.submit @getDataFromDOM()
+            @model.submit data

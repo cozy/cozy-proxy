@@ -21,6 +21,7 @@ module.exports = class PasswordView extends StepView
         @$inputPassword = @$('input[name=password]')
         @$visibilityButton = @$('[action=password-visibility]')
         @$visibilityIcon = @$('.icon use')
+        @$strengthBar = @$('.progress')
 
 
     renderInput: =>
@@ -44,13 +45,12 @@ module.exports = class PasswordView extends StepView
 
 
     updatePasswordStrength= _.throttle( ->
-        password = @$('input[name=password]').val()
-        @passwordStrength = passwordHelper.getStrength password
+        @passwordStrength = passwordHelper.getStrength @$inputPassword.val()
 
         if @passwordStrength.percentage is 0
             @passwordStrength.percentage = 1
-        @$('progress').attr 'value', @passwordStrength.percentage
-        @$('progress').attr 'class', 'pw-' + @passwordStrength.label
+        @$strengthBar.attr 'value', @passwordStrength.percentage
+        @$strengthBar.attr 'class', 'pw-' + @passwordStrength.label
         @$inputPassword.removeClass('error')
     , 500)
 
@@ -95,7 +95,7 @@ module.exports = class PasswordView extends StepView
 
     getDataFromDOM: ->
         return {
-            password: @$('input[name=password]').val()
+            password: @$inputPassword.val()
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 

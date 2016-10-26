@@ -29,3 +29,6 @@ module.exports = class StepModel extends Backbone.Model
         # Goto next Step
         @step.submit(data)
         return true
+
+    validate: (data={}) ->
+        return @step.validate(data)

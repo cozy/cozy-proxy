@@ -40,7 +40,7 @@ module.exports = class PasswordView extends StepView
     initialize: (args...) ->
         super args...
         # lowest level is 1 to display a red little part
-        @passwordStrength = {percentage: 1, label: 'weak'}
+        @passwordStrength = passwordHelper.getStrength ''
         @updatePasswordStrength = updatePasswordStrength.bind(@)
 
 

@@ -3,7 +3,9 @@ module.exports.getStrength = (password) ->
     if not password and password isnt ''
         throw new Error 'password parameter is missing'
     if not password.length
-        {percentage: 0, label: 'weak'}
+        # lowest level is 1 to display a little part of the strength bar
+        # in the view
+        return {percentage: 1, label: 'weak'}
     charsPoints = 0
     upperPoints = if ((password.match(/[A-Z]/g) || []).length) then 26 else 0
     lowerPoints = if ((password.match(/[a-z]/g) || []).length) then 26 else 0

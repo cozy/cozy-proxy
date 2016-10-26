@@ -8,14 +8,12 @@ describe('Step: password', () => {
     let jQuery;
     let jsdom;
     let PasswordConfig;
-    let TimeZones;
 
 
     before(function () {
       jsdom = require('jsdom-global')();
       global.jQuery = require('jquery');
       PasswordConfig = require('../../../app/config/steps/password.coffee');
-      TimeZones = require('../../../app/lib/timezones.coffee');
     });
 
     after(function () {
@@ -45,7 +43,9 @@ describe('Step: password', () => {
             // Define global.jQUery
             // so that configPassword could use it
             sinon.stub(global.jQuery, 'post');
-            let data = { email: '', password: 'plop', timezone: TimeZones[0]}
+            let data = {password: 'plop',
+              onboardedSteps: ['welcome', 'password']
+            }
             PasswordConfig.save(data);
 
             data = JSON.stringify(data);

@@ -1,4 +1,6 @@
 StepView = require '../step'
+passwordHelper = require '../../lib/password_helper'
+_ = require 'underscore'
 
 
 module.exports = class PasswordView extends StepView
@@ -8,15 +10,18 @@ module.exports = class PasswordView extends StepView
     events:
         'click .next': 'onSubmit'
         'click [action=password-visibility]': 'onToggleVisibility'
+        'keyup input': 'checkPasswordStrength'
 
 
     isVisible: false
 
 
-    onRender: ->
+    onRender: (args...) ->
+        super args...
         @$inputPassword = @$('input[name=password]')
         @$visibilityButton = @$('[action=password-visibility]')
         @$visibilityIcon = @$('.icon use')
+        @$strengthBar = @$('progress')
 
 
     renderInput: =>
@@ -32,6 +37,28 @@ module.exports = class PasswordView extends StepView
         @$visibilityIcon.attr 'xlink:href', data.visibilityIcon
 
 
+    initialize: (args...) ->
+        super args...
+        # lowest level is 1 to display a red little part
+        @passwordStrength = passwordHelper.getStrength ''
+        @updatePasswordStrength = updatePasswordStrength.bind(@)
+
+
+    updatePasswordStrength= _.throttle( ->
+        @passwordStrength = passwordHelper.getStrength @$inputPassword.val()
+
+        if @passwordStrength.percentage is 0
+            @passwordStrength.percentage = 1
+        @$strengthBar.attr 'value', @passwordStrength.percentage
+        @$strengthBar.attr 'class', 'pw-' + @passwordStrength.label
+        @$inputPassword.removeClass('error')
+    , 500)
+
+
+    checkPasswordStrength: ->
+        @updatePasswordStrength()
+
+
     # Get 1rst error only
     # err is an object such as:
     # { type: 'password', text:'step empty fields'}
@@ -40,6 +67,7 @@ module.exports = class PasswordView extends StepView
             error:      @error.message if @error
             id:         "#{@model.get 'name'}-figure"
             figureid:   require '../../assets/sprites/icon-lock.svg'
+            passwordStrength: @passwordStrength
         }
 
 
@@ -67,11 +95,15 @@ module.exports = class PasswordView extends StepView
 
     getDataFromDOM: ->
         return {
-            password: @$('input[name=password]').val()
+            password: @$inputPassword.val()
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
 
     onSubmit: (event)->
         event?.preventDefault()
-        @model.submit @getDataFromDOM()
+        if @passwordStrength.label is 'weak'
+            @$inputPassword.addClass('error')
+            return false
+        else
+            @model.submit @getDataFromDOM()

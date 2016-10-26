@@ -90,9 +90,10 @@ class App extends Application
     showStep: (step, err=null) ->
         StepView = require "./views/#{step.view}"
         nextStep = @onboarding.getNextStep step
+        next = nextStep?.route or @onboardingSuccessRedirect
         @layout.showChildView 'content',
             new StepView
-                model: new StepModel step: step, next: nextStep
+                model: new StepModel step: step, next: next
                 error: err
                 progression: new ProgressionModel \
                     @onboarding.getProgression step

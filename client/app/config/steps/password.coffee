@@ -11,10 +11,11 @@ module.exports = {
     # to dispatch error into app
     validate: (data={}) ->
         errors = {}
-        unless data.password?
+        if not data?.password
             errors.password = 'step empty fields'
-        unless data.passwordStrength?.label is 'weak'
+        else if data.passwordStrength?.label is 'weak'
             errors.password = 'password too weak'
+
         if Object.keys(errors).length
             return errors
         else

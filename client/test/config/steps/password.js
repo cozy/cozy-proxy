@@ -47,7 +47,7 @@ describe('Step: password', () => {
             }
             let error = PasswordConfig.validate(data);
 
-            assert.equal('password too weak', error.password);
+            assert.equal('step password too weak', error.password);
         });
     });
 

@@ -14,7 +14,7 @@ module.exports = {
         if not data?.password
             errors.password = 'step empty fields'
         else if data.passwordStrength?.label is 'weak'
-            errors.password = 'password too weak'
+            errors.password = 'step password too weak'
 
         if Object.keys(errors).length
             return errors

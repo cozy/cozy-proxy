@@ -24,7 +24,7 @@ module.exports = class PasswordView extends StepView
         @$strengthBar = @$('.progress')
         @$errorContainer=@$('.errors')
         if @error
-            @handleError(@error)
+            @handleErrorMessage(@error)
         else
             @$errorContainer.hide()
 

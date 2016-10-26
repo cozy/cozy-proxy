@@ -1,4 +1,5 @@
 jQuery = require 'jquery'
+passwordHelper = require '../../lib/password_helper'
 
 module.exports = {
     name: 'password',
@@ -11,9 +12,10 @@ module.exports = {
     # to dispatch error into app
     validate: (data={}) ->
         errors = {}
+        passwordStrength = passwordHelper.getStrength data.password
         if not data?.password
             errors.password = 'step empty fields'
-        else if data.passwordStrength?.label is 'weak'
+        else if passwordStrength?.label is 'weak'
             errors.password = 'step password too weak'
 
         if Object.keys(errors).length

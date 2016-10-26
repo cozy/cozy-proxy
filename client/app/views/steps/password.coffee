@@ -44,15 +44,15 @@ module.exports = class PasswordView extends StepView
 
 
     updatePasswordStrength= _.throttle( ->
-            password = @$('input[name=password]').val()
-            @passwordStrength = passwordHelper.getStrength password
+        password = @$('input[name=password]').val()
+        @passwordStrength = passwordHelper.getStrength password
 
-            if @passwordStrength.percentage is 0
-                 @passwordStrength.percentage = 1
-            @$('progress').attr 'value', @passwordStrength.percentage
-            @$('progress').attr 'class', 'pw-' + @passwordStrength.label
-            @$inputPassword.removeClass('error')
-        , 500)
+        if @passwordStrength.percentage is 0
+            @passwordStrength.percentage = 1
+        @$('progress').attr 'value', @passwordStrength.percentage
+        @$('progress').attr 'class', 'pw-' + @passwordStrength.label
+        @$inputPassword.removeClass('error')
+    , 500)
 
 
     checkPasswordStrength: ->

@@ -8,7 +8,6 @@ describe('Step: password', () => {
     let jQuery;
     let jsdom;
     let PasswordConfig;
-    let TimeZones;
 
 
     before(function () {

@@ -7,7 +7,7 @@ describe('PasswordHelper', () => {
 
   describe('#getStrength', () => {
 
-    it('should return 0% and weak label for empty password', () => {
+    it('should return 1% and weak label for empty password', () => {
       // arrange
       let password = '';
 
@@ -15,7 +15,7 @@ describe('PasswordHelper', () => {
       let strength = passwordHelper.getStrength(password);
 
       // assert
-      assert.equal(strength.percentage, 0);
+      assert.equal(strength.percentage, 1);
       assert.equal(strength.label, 'weak');
     });
 

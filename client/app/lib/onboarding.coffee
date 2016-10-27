@@ -98,8 +98,7 @@ class Step
 
     # Error handler for save() call
     handleSaveError: (err) =>
-        error = Object.values err.errors
-        throw new Error error
+        throw new Error err.error
 
 
 # Main class

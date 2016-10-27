@@ -25,14 +25,29 @@ describe('Step: password', () => {
 
         it('should return `null`', () => {
             const data = {
-                'password': 'plop'
+                password: 'PassworD',
+                passwordStrength: {percentage: 53.62500000000001,
+                  label: 'moderate'}
             }
             assert.equal(null, PasswordConfig.validate(data))
         });
 
+
         it('Should return {errors} when `data` is empty', () => {
             let error = PasswordConfig.validate({});
-            assert.equal('password', error.type);
+            assert.equal('step empty fields', error.password);
+        });
+
+
+        it('Should return {errors} when `password` is too weak', () => {
+            const data = {
+                password: 'password',
+                passwordStrength: {percentage: 20.109375000000004,
+                  label: 'weak'}
+            }
+            let error = PasswordConfig.validate(data);
+
+            assert.equal('step password too weak', error.password);
         });
     });
 

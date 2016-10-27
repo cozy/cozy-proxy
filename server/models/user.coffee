@@ -127,4 +127,11 @@ User.getCurrentOnboardingStep = (userData) ->
 # At this time this memthod check only if the user has completed all onboarding
 # steps.
 User.isRegistered = (userData) ->
-    return ArrayHelper.areEquals userData?.onboardedSteps, ONBOARDING_STEPS
+    hasCompletedOnboarding = ArrayHelper.areEquals userData?.onboardedSteps,
+        ONBOARDING_STEPS
+
+    # Old user existing before onboarding refactor
+    isLegacyUser = userData and userData.password and \
+        (not userData.onboardedSteps or not userData.onboardedSteps.length)
+
+    return hasCompletedOnboarding or isLegacyUser

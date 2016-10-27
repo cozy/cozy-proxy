@@ -12,7 +12,7 @@
     "step welcome anon": "Welcome!",
     "step welcome logout": "You're not %{name}?",
     "step welcome congrats": "Congratulation, thanks to you, your personal data are in a safe place, in your Cozy.",
-    "step welcome next": "continue",
+    "step welcome next": "Next",
     "step preset": "settings",
     "step import": "import your datas",
     "step email settings": "configure your email",

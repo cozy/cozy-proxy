@@ -24,7 +24,7 @@ module.exports = class PasswordView extends StepView
         @$strengthBar = @$('progress')
         @$errorContainer=@$('.errors')
         if @error
-            @handleErrorMessage(@error)
+            @renderError(@error)
         else
             @$errorContainer.hide()
 
@@ -51,6 +51,7 @@ module.exports = class PasswordView extends StepView
 
     updatePasswordStrength= _.throttle( ->
         @passwordStrength = passwordHelper.getStrength @$inputPassword.val()
+
         if @passwordStrength.percentage is 0
             @passwordStrength.percentage = 1
         @$strengthBar.attr 'value', @passwordStrength.percentage
@@ -102,7 +103,7 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
-    handleErrorMessage: (error) ->
+    renderError: (error) ->
         @error = error
         @$errorContainer.html(t(@error))
         @$errorContainer.show()
@@ -115,6 +116,6 @@ module.exports = class PasswordView extends StepView
         if errors
             if errors?.password
                 @$inputPassword.addClass('error')
-                @handleErrorMessage(errors.password)
+                @renderError(errors.password)
         else
             @model.submit data

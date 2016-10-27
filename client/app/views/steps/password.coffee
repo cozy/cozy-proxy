@@ -21,7 +21,7 @@ module.exports = class PasswordView extends StepView
         @$inputPassword = @$('input[name=password]')
         @$visibilityButton = @$('[action=password-visibility]')
         @$visibilityIcon = @$('.icon use')
-        @$strengthBar = @$('.progress')
+        @$strengthBar = @$('progress')
         @$errorContainer=@$('.errors')
         if @error
             @handleErrorMessage(@error)
@@ -51,24 +51,6 @@ module.exports = class PasswordView extends StepView
 
     updatePasswordStrength= _.throttle( ->
         @passwordStrength = passwordHelper.getStrength @$inputPassword.val()
-
-        if @passwordStrength.percentage is 0
-            @passwordStrength.percentage = 1
-        @$strengthBar.attr 'value', @passwordStrength.percentage
-        @$strengthBar.attr 'class', 'pw-' + @passwordStrength.label
-        @$inputPassword.removeClass('error')
-    , 500)
-
-    initialize: (args...) ->
-        super args...
-        # lowest level is 1 to display a red little part
-        @passwordStrength = passwordHelper.getStrength ''
-        @updatePasswordStrength = updatePasswordStrength.bind(@)
-
-
-    updatePasswordStrength= _.throttle( ->
-        @passwordStrength = passwordHelper.getStrength @$inputPassword.val()
-
         if @passwordStrength.percentage is 0
             @passwordStrength.percentage = 1
         @$strengthBar.attr 'value', @passwordStrength.percentage
@@ -114,7 +96,7 @@ module.exports = class PasswordView extends StepView
         @renderInput()
 
 
-    getDataFromDOM: ->
+    getDataForSubmit: ->
         return {
             password: @$inputPassword.val()
             onboardedSteps: ['welcome', 'agreement', 'password']
@@ -128,7 +110,7 @@ module.exports = class PasswordView extends StepView
 
     onSubmit: (event)->
         event?.preventDefault()
-        data = @getDataFromDOM()
+        data = @getDataForSubmit()
         errors = @model.validate data
         if errors
             if errors?.password

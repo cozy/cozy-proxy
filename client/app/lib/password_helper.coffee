@@ -6,17 +6,26 @@ module.exports.getStrength = (password) ->
         # lowest level is 1 to display a little part of the strength bar
         # in the view
         return {percentage: 1, label: 'weak'}
-    charsPoints = 0
-    upperPoints = if ((password.match(/[A-Z]/g) || []).length) then 26 else 0
-    lowerPoints = if ((password.match(/[a-z]/g) || []).length) then 26 else 0
-    digitPoints = if ((password.match(/[0-9]/g) || []).length) then 10 else 0
-    specialPoints =
-        if ((password.match(/[^A-Za-z0-9]]/g) || []).length) then 10 else 0
 
-    charsPoints += upperPoints + lowerPoints + digitPoints + specialPoints
+    charsets = [
+        # upper
+        { regexp: /[A-Z]/g, size: 26 },
+        # lower
+        { regexp: /[a-z]/g, size: 26 },
+        # digit
+        { regexp: /[0-9]/g, size: 10 },
+        # special
+        { regexp: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g, size: 30 }
+    ]
+
+    possibleChars = charsets.reduce (possibleChars, charset) ->
+        if charset.regexp.test password
+            possibleChars += charset.size
+        return possibleChars
+    , 0
 
     passwordStrength =
-        (Math.log Math.pow(password.length, charsPoints)) / (Math.log 2)
+        (Math.log Math.pow(password.length, possibleChars)) / (Math.log 2)
 
     # levels
     _at33percent = 128

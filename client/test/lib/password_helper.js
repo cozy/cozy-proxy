@@ -20,41 +20,42 @@ describe('PasswordHelper', () => {
     });
 
 
-    it('should return ~20% and "weak" label for "password"', () => {
+    it('should be under 33% and "weak" label for "azerty"', () => {
       // arrange
-      let password = 'password';
+      let password = 'azerty';
 
       // act
       let strength = passwordHelper.getStrength(password);
 
       // assert
-      assert.equal(strength.percentage, 20.109375000000004);
+      assert.isBelow(strength.percentage, 33);
       assert.equal(strength.label, 'weak');
     });
 
 
-    it('should return ~53% and "moderate" label for "PassworD"', () => {
+    it('should be between 33% and 66% "moderate" label for "aZerrt1"', () => {
       // arrange
-      let password = 'PassworD';
+      let password = 'aZerrt1';
 
       // act
       let strength = passwordHelper.getStrength(password);
 
       // assert
-      assert.equal(strength.percentage, 53.62500000000001);
+      assert.isAbove(strength.percentage, 33);
+      assert.isBelow(strength.percentage, 66);
       assert.equal(strength.label, 'moderate');
     });
 
 
-    it('should return ~83% and "strong" label for "P&33w0rrrD$"', () => {
+    it('should be above 66% and "strong" label for "@Zeerrt1"', () => {
       // arrange
-      let password = 'P&33w0rrrD$';
+      let password = '@Zeerrt1';
 
       // act
       let strength = passwordHelper.getStrength(password);
 
       // assert
-      assert.equal(strength.percentage, 83.78310951387205);
+      assert.isAbove(strength.percentage, 66);
       assert.equal(strength.label, 'strong');
     });
 

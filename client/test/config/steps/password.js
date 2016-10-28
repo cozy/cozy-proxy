@@ -35,7 +35,7 @@ describe('Step: password', () => {
 
         it('Should return {errors} when `data` is empty', () => {
             let error = PasswordConfig.validate({});
-            assert.equal('step empty fields', error.password);
+            assert.equal('step password empty', error.password);
         });
 
 

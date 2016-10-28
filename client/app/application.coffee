@@ -73,7 +73,7 @@ class App extends Application
         if @onboarding.currentStep isnt step
             console.error err.stack
         else
-            @showStep step, err
+            @showStep step, err.message
 
 
     # Handler for register route, display onboarding's current step

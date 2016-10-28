@@ -13,7 +13,7 @@ module.exports = {
     validate: (data={}) ->
         errors = {}
         if not data or not data.password
-            errors.password = 'step empty fields'
+            errors.password = 'step password empty'
         else if data.password
             passwordStrength = passwordHelper.getStrength data.password
             if passwordStrength?.label is 'weak'
@@ -33,6 +33,7 @@ module.exports = {
                 success: resolve
                 error: (req) -> reject req.responseJSON
             }))
-            .then @handleSaveSuccess, @handleSaveError
-
+            .then @handleSaveSuccess, (err) =>
+                throw new Error 'step password server error' unless err
+                @handleSaveError err
 }

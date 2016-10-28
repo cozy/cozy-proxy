@@ -66,7 +66,7 @@ module.exports = class PasswordView extends StepView
 
     # Get 1rst error only
     # err is an object such as:
-    # { type: 'password', text:'step empty fields'}
+    # { type: 'password', text:'step password empty'}
     serializeData: () ->
         return Object.assign {}, @serializeInputData(), {
             id:         "#{@model.get 'name'}-figure"
@@ -103,13 +103,8 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
-    renderError: (error, useTranslation = true) ->
-        @error = error
-        if useTranslation
-            @$errorContainer.html(t(@error))
-        else
-            # error from server doesn't need translation
-            @$errorContainer.html(@error)
+    renderError: (error) ->
+        @$errorContainer.html(t(error))
         @$errorContainer.show()
 
 

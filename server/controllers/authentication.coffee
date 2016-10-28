@@ -76,7 +76,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         passwordValidationError =
             User.validatePassword requestData.password
         if Object.keys(passwordValidationError).length
-            dataErrors.password = localization.t 'password not valid'
+            dataErrors.password = passwordValidationError.password
     [
         'allow_stats',
         'isCGUaccepted',

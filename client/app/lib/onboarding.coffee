@@ -96,9 +96,20 @@ class Step
     handleSaveSuccess: (data) =>
         return data
 
+
+    _joinValues: (objectData, separator) =>
+        result = ''
+        for key,value of objectData
+            result += ('' + value + separator)
+        return result
+
     # Error handler for save() call
     handleSaveError: (err) =>
-        throw new Error err.error
+        if not Object.keys(err.errors)
+            throw new Error err.error
+        else
+            throw new Error @_joinValues(err.errors, '\n')
+
 
 
 # Main class

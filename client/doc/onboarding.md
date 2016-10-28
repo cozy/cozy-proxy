@@ -190,4 +190,20 @@ Also, maybe it should return a Promise to handle correctly remote synchronisatio
 
 #### onFailed(callback)
 
-#### error()
+#### Attribute: error
+Type: Object
+Property to provide errors from onboarding and server side.
+This property will also be used inside the onboarding view to handle UX errors.
+Expected an ```error``` string or an ```errors``` object:
+
+```javascript
+{
+    error: "error key", //to be translated
+    // or error from server
+    errors {
+        password: "",
+        email: "",
+        ...
+    }
+}
+```

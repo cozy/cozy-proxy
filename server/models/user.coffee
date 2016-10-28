@@ -6,6 +6,7 @@ helpers      = require '../lib/helpers'
 timezones    = require '../lib/timezones'
 localization = require '../lib/localization_manager'
 ArrayHelper = require '../lib/array_helper'
+passwordHelper = require '../lib/password_helper'
 
 client = new Client urlHelper.dataSystem.url()
 if process.env.NODE_ENV in ['production', 'test']
@@ -111,8 +112,12 @@ User.checkInfos = (data) ->
 
 
 User.validatePassword = (password, errors = {}) ->
-    if not password? or password.length < 8
-        errors.password = localization.t 'password too short'
+    if not password
+        errors.password = localization.t 'password missing'
+    else
+        passwordStrength = passwordHelper.getStrength password
+        if passwordStrength.label is 'weak'
+            errors.password = localization.t 'password too weak'
 
     return errors
 

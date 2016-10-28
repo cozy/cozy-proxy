@@ -24,7 +24,7 @@ module.exports = class PasswordView extends StepView
         @$strengthBar = @$('progress')
         @$errorContainer=@$('.errors')
         if @error
-            @renderError(@error)
+            @renderError(@error, false)
         else
             @$errorContainer.hide()
 
@@ -103,9 +103,13 @@ module.exports = class PasswordView extends StepView
             onboardedSteps: ['welcome', 'agreement', 'password']
         }
 
-    renderError: (error) ->
+    renderError: (error, useTranslation = true) ->
         @error = error
-        @$errorContainer.html(t(@error))
+        if useTranslation
+            @$errorContainer.html(t(@error))
+        else
+            # error from server doesn't need translation
+            @$errorContainer.html(@error)
         @$errorContainer.show()
 
 

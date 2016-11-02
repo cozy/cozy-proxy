@@ -9,7 +9,7 @@ helpers      = require '../lib/helpers'
 localization = require '../lib/localization_manager'
 passwordKeys = require '../lib/password_keys'
 otpManager   = require '../lib/2fa_manager'
-
+Authentication = require '../middlewares/authentication'
 
 getEnv = (callback) ->
     User.getUsername (err, username) ->
@@ -93,14 +93,19 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         User.all (err, users) ->
             return next new Error err if err
             # if existing user document with password -> request rejected
-            if users[0]?.password
+            if users[0]?.password and not requestData.password?
                 error        = new Error 'Not authorized'
                 error.status = 401
                 return next error
             else if users.length
                 users[0].merge userToSave, (err) ->
                     return next new Error err if err
-                    res.status(200).send(result: 'User data correctly updated')
+                    if requestData.password?
+                        return Authentication.authenticate(req, res, next)
+                    else
+                        res
+                            .status(200)
+                            .send(result: 'User data correctly updated')
             else
                 Instance.createOrUpdate instanceData, (err) ->
                     return next new Error err if err

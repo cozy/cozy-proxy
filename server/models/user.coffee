@@ -20,7 +20,7 @@ ONBOARDING_STEPS = [
     'password',
     'infos',
     'accounts',
-    'ending'
+    'confirmation'
 ]
 
 fixOnboardedSteps = (user) ->

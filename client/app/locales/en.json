@@ -30,7 +30,7 @@
     "step password description": "Your password has to be as complicated as possible. It will prevent malicious people to access your own cloud. Using an uppercase, a number and a special character is mandatory.",
     "step password server error": "Something went wrong. Your password has not been saved.",
     "step accounts title": "Your Cozy has been successfully created!",
-    "step accounts description line 1": "Now, we will accompagny you to connect your Cozy to your services. ",
+    "step accounts description line 1": "Now, we will accompagny you to connect your Cozy to your services.",
     "step accounts description line 2": "In the end, Cozy's goal is to help you reclaim your data!",
     "step accounts next": "Browse",
     "step accounts server error": "An error occurred while saving your progression. Reloading the page should fix the problem.",

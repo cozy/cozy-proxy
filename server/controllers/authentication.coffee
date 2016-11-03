@@ -93,7 +93,7 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         User.all (err, users) ->
             return next new Error err if err
             # if existing user document with password -> request rejected
-            if users[0]?.password and not requestData.password?
+            if users[0]?.password
                 error        = new Error 'Not authorized'
                 error.status = 401
                 return next error

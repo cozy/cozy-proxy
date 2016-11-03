@@ -13,3 +13,5 @@ locales
 !build/server/locales
 
 client/public
+
+!.gitkeep

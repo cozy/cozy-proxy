@@ -1,0 +1,14 @@
+extends _view_step_base
+
+
+block header
+    if username
+        h1= t('step welcome user', {name: username})
+    else
+        h1= t('step welcome anon')
+
+block region
+    p= t('step welcome congrats')
+
+block controls
+    a(href=next role="button" class="next")= t('step welcome next')

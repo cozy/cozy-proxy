@@ -110,12 +110,10 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
             else if users.length
                 users[0].merge userToSave, (err) ->
                     return next new Error err if err
-                    if requestData.password?
-                        return Authentication.authenticate(req, res, next)
-                    else
-                        res
-                            .status(200)
-                            .send(result: 'User data correctly updated')
+                    return next() if next
+                    res
+                        .status(200)
+                        .send(result: 'User data correctly updated')
             else
                 Instance.createOrUpdate instanceData, (err) ->
                     return next new Error err if err

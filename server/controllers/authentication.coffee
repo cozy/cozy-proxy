@@ -42,8 +42,18 @@ module.exports.onboarding = (req, res, next) ->
                     next error
 
                 # According to steps changes
-                if User.isRegistered userData
+                # If authenticatable but not registered yet
+                # -> need authentication to continue next registration steps
+                if not req.isAuthenticated() and \
+                    User.isAuthenticatable(userData) and \
+                    not User.isRegistered(userData)
+                        res.redirect '/login?next=/register'
+                # if already registered -> login to cozy home
+                else if User.isRegistered userData
                     res.redirect '/login'
+                # access onboarding, here the user is not register and:
+                # - either he is authenticatable and will be authenticated
+                # - either he is not authenticatable (first three steps)
                 else
                     if userData
                         hasValidInfos = User.checkInfos userData
@@ -185,7 +195,11 @@ module.exports.loginIndex = (req, res, next) ->
                     next error
 
                 if not User.isRegistered userData
-                    return res.redirect '/register'
+                    if not User.isAuthenticatable userData
+                        return res.redirect '/register'
+                    # avoid looping between register and login redirection
+                    else if req.url isnt '/login?next=/register'
+                        return res.redirect '/login?next=/register'
 
                 res.set 'X-Cozy-Login-Page', 'true'
                 res.render 'index', env: env

@@ -20,8 +20,10 @@ ONBOARDING_STEPS = [
     'password',
     'infos',
     'accounts',
-    'ending'
+    'confirmation'
 ]
+
+LAST_UNAUTHENTICATED_STEP = 'password'
 
 fixOnboardedSteps = (user) ->
     user.onboardedSteps = user.onboardedSteps or []
@@ -140,3 +142,16 @@ User.isRegistered = (userData) ->
         (not userData.onboardedSteps or not userData.onboardedSteps.length)
 
     return hasCompletedOnboarding or isLegacyUser
+
+
+# Returns true if the user data contains enough informations fotr cozy
+# authentication
+User.isAuthenticatable = (userData) ->
+    return false unless userData?.onboardedSteps?
+
+    hasCompletedLastNotAuthenticatedStep = \
+        LAST_UNAUTHENTICATED_STEP in userData.onboardedSteps
+
+    hasPassword = userData and userData.password and userData.salt
+
+    return hasCompletedLastNotAuthenticatedStep and hasPassword

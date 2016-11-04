@@ -14,13 +14,25 @@ module.exports =
     'routes': get: index.showRoutes
     'routes/reset*': get: index.resetRoutes
 
+    'register/password':
+        post: [
+            utils.isNotAuthenticated,
+            auth.saveUnauthenticatedUser,
+            # Transparently authenticate the user after a setting the password
+            utils.authenticate
+        ]
+
     'register/:step':
         get: [utils.isNotAuthenticated, auth.onboarding]
 
     'register':
-        get: [utils.isNotAuthenticated, auth.onboarding]
+        get: [utils.isNotRegistered, auth.onboarding]
         post: [utils.isNotAuthenticated, auth.saveUnauthenticatedUser]
-        put: [utils.isAuthenticated, auth.saveAuthenticatedUser]
+        put: [
+            utils.isAuthenticated,
+            utils.isNotRegistered,
+            auth.saveAuthenticatedUser
+        ]
 
     'login':
         get: [utils.isNotAuthenticated, auth.loginIndex]
@@ -67,6 +79,7 @@ module.exports =
     '.well-known/:module': all: experiment.webfingerAccount
 
     '*': all: [
+        utils.isRegistered
         utils.isAuthenticated
         index.defaultRedirect
     ]

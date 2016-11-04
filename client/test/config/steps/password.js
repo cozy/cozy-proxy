@@ -68,7 +68,7 @@ describe('Step: password', () => {
             let spyArgument = global.jQuery.post.getCalls(0)[0].args[0];
 
             assert(global.jQuery.post.calledOnce);
-            assert.equal('/register', spyArgument.url);
+            assert.equal('/register/password', spyArgument.url);
             assert.deepEqual(data, spyArgument.data);
 
             global.jQuery.post.restore();

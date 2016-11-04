@@ -28,7 +28,7 @@ module.exports = {
     save: (data) ->
         return new Promise((resolve, reject) ->
             jQuery.post({
-                url: '/register'
+                url: '/register/password'
                 data: JSON.stringify data
                 success: resolve
                 error: (req) -> reject req.responseJSON

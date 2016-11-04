@@ -5,13 +5,6 @@
 @import "./base/_colors.styl"
 
 
-// Icons
-
-#password-figure
-    svg
-        background-color: #4dcec5
-
-
 // LAYOUTS
 [role=application]
     display:     flex
@@ -36,8 +29,14 @@ header
         svg
             max-width:      (72 / 16)em
             height:         (72 / 16)em
+
+
+        .svg-wrapper
+            margin: auto
+            max-width:      (72 / 16)em
+            height:         (72 / 16)em
             border-radius:  50%
-            padding:        1.5em
+            padding:        1em
             box-shadow:     0 1px 3px rgba(50,54,63,0.19), 0 4px 12px rgba(50,54,63,0.12)
 
     h1
@@ -50,6 +49,13 @@ header
         height:         12.5em
         box-shadow:     none
 
+
+// Icons
+#password-figure .svg-wrapper
+        background-color: #4dcec5
+
+#accounts-figure .svg-wrapper
+        background-color: #ffae5f
 
 footer
     margin-top: 2em

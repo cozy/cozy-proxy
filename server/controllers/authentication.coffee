@@ -67,6 +67,20 @@ module.exports.onboarding = (req, res, next) ->
                     res.render 'index', {env: env, onboarding: true}
 
 
+# Disallow authenticated user
+# Some endpoints, mainly those called by first onboarding steps with post
+# method are not expecting an authentified user. But the situation could happen
+# when developing and after a user authentication followed by user deletion in
+# DB. User is still authenticated but does not exist anymore in DB. As it is
+# not an expected state in production, we return a 403 forbidden error.
+module.exports.disallowAuthenticatedUser = (req, res, next) ->
+    if req.isAuthenticated()
+        res.status(403).send error: 'Not allowed to access this \
+            enpoint while being authentified'
+    else
+        next()
+
+
 # Save unauthenticated user document (only if password doesn't exist)
 # Expected request body format (? means optionnal)
 # ?password

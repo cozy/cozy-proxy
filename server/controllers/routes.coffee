@@ -16,7 +16,7 @@ module.exports =
 
     'register/password':
         post: [
-            utils.isNotAuthenticated,
+            auth.disallowAuthenticatedUser,
             auth.saveUnauthenticatedUser,
             # Transparently authenticate the user after a setting the password
             utils.authenticate
@@ -27,7 +27,7 @@ module.exports =
 
     'register':
         get: [utils.isNotRegistered, auth.onboarding]
-        post: [utils.isNotAuthenticated, auth.saveUnauthenticatedUser]
+        post: [auth.disallowAuthenticatedUser, auth.saveUnauthenticatedUser]
         put: [
             utils.isAuthenticated,
             utils.isNotRegistered,

@@ -33,6 +33,5 @@ module.exports = class ConfirmationView extends StepView
 
 
     renderError: (error) ->
-        console.debug 'renderError', error
         @$errorContainer.html(t(error))
         @$errorContainer.show()

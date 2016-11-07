@@ -10,11 +10,29 @@ module.exports = class ConfirmationView extends StepView
     events:
         'click @ui.next': 'onSubmit'
 
+
+    onRender: (args...) ->
+        super args...
+        @$errorContainer=@$('.errors')
+
+        if @error
+            @renderError(@error)
+        else
+            @$errorContainer.hide()
+
+
     onSubmit: (event) ->
         event.preventDefault()
         @model.submit()
+
 
     serializeData: ->
         _.extend super,
             id: "#{@model.get 'name'}-figure"
             figureid: require '../../assets/sprites/icon-raised-hands.svg'
+
+
+    renderError: (error) ->
+        console.debug 'renderError', error
+        @$errorContainer.html(t(error))
+        @$errorContainer.show()

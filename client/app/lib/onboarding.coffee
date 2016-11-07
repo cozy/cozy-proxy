@@ -105,10 +105,11 @@ class Step
 
     # Error handler for save() call
     handleSaveError: (err) =>
-        if not Object.keys(err.errors)
-            throw new Error err.error
-        else
+        if err.errors and Object.keys(err.errors)
             throw new Error @_joinValues(err.errors, '\n')
+        else
+            throw new Error err.error
+
 
 
 

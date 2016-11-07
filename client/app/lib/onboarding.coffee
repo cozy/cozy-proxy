@@ -208,7 +208,8 @@ module.exports = class Onboarding
 
     # Trigger a 'done' pseudo-event, corresponding to onboarding end.
     triggerDone: ()->
-        throw new Error 'Not implemented yet'
+        # redirection to the cozy home
+        window.location.replace '/'
 
 
     # Returns an internal step by its name.

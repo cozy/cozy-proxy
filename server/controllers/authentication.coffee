@@ -74,7 +74,6 @@ module.exports.onboarding = (req, res, next) ->
 # DB. User is still authenticated but does not exist anymore in DB. As it is
 # not an expected state in production, we return a 403 forbidden error.
 module.exports.disallowAuthenticatedUser = (req, res, next) ->
-    console.log req.isAuthenticated()
     if req.isAuthenticated()
         res.status(403).send error: 'Not allowed to access this \
             enpoint while being authentified'

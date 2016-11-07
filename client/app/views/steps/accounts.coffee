@@ -33,6 +33,5 @@ module.exports = class AccountsView extends StepView
 
 
     renderError: (error) ->
-        console.debug 'renderError', error
         @$errorContainer.html(t(error))
         @$errorContainer.show()

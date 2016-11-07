@@ -1,8 +1,11 @@
-extends view_base
+extends _view_step_base
+
+
+block header
+    h1=t('step confirmation title')
 
 block region
-    h1=t('Votre Cozy a bien été créé')
-    footer
-        .controls
-            button=t('CONTINUER')
-        .progression
+    p=t('step confirmation description')
+
+block controls
+    button(class="next")= t('step confirmation next')

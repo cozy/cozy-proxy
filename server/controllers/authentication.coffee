@@ -22,6 +22,8 @@ getEnv = (callback) ->
                 username: username
                 otp:      !!otp
                 apps:     Object.keys require('../lib/router').getRoutes()
+                myAccountsUrl: process.env.COZY_MYACCOUNTS_URL \
+                    or 'app/konnectors'
 
             callback null, env
 

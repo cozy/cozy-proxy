@@ -156,6 +156,12 @@ module.exports = class Onboarding
         @stepFailedHandlers = (@stepFailedHandlers or []).concat callback
 
 
+    onDone: (callback) ->
+        throw new Error 'Callback parameter should be a function' \
+            unless typeof callback is 'function'
+        @onDoneHandler = (@onDoneHandler or []).concat callback
+
+
     # Handler for 'stepSubmitted' pseudo-event, triggered by a step
     # when it has been successfully submitted
     # Maybe validation should be called here
@@ -207,9 +213,10 @@ module.exports = class Onboarding
 
 
     # Trigger a 'done' pseudo-event, corresponding to onboarding end.
-    triggerDone: ()->
-        # redirection to the cozy home
-        window.location.replace '/'
+    triggerDone: (err)->
+        if @onDoneHandler
+            @onDoneHandler.forEach (handler) ->
+                handler err
 
 
     # Returns an internal step by its name.

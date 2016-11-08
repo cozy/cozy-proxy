@@ -16,6 +16,9 @@ ProgressionModel = require './models/progression'
 
 class App extends Application
 
+    # URL for the redirection when the onboarding is finished
+    endingRedirection = '/'
+
     ###
     Sets application
 
@@ -32,9 +35,6 @@ class App extends Application
                 username: ENV.username,
                 hasValidInfos: ENV.hasValidInfos
             }
-
-            # URL for the redirection when the onboarding is finished
-            @endingRedirection = '/'
 
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)

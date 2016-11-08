@@ -16,6 +16,9 @@ ProgressionModel = require './models/progression'
 
 class App extends Application
 
+    # URL for the redirection when the onboarding is finished
+    endingRedirection = '/'
+
     ###
     Sets application
 
@@ -36,6 +39,7 @@ class App extends Application
             @onboarding = new Onboarding(user, steps, ENV.currentStep)
             @onboarding.onStepChanged (step) => @handleStepChanged(step)
             @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
+            @onboarding.onDone () => @handleTriggerDone()
 
             @initializeRouter()
 
@@ -64,6 +68,11 @@ class App extends Application
     # @param step Step instance
     handleStepChanged: (step) ->
         @router.navigate step.route, trigger: true
+
+
+    # Internal handler called when the onboarding is finished
+    handleTriggerDone: () ->
+        window.location.replace @endingRedirection
 
 
     # Update view with error message

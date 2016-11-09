@@ -17,7 +17,8 @@ ProgressionModel = require './models/progression'
 class App extends Application
 
     # URL for the redirection when the onboarding is finished
-    endingRedirection = '/'
+    endingRedirection: '/'
+    accountsStepName: 'accounts'
 
     ###
     Sets application
@@ -96,17 +97,32 @@ class App extends Application
 
 
     # Load the view for the given step
-    showStep: (step, err=null) ->
+    showStep: (step, err=null) =>
         StepView = require "./views/#{step.view}"
         nextStep = @onboarding.getNextStep step
-        next = nextStep?.route or @onboardingSuccessRedirect
-        @layout.showChildView 'content',
-            new StepView
-                model: new StepModel step: step, next: next
-                error: err
-                progression: new ProgressionModel \
-                    @onboarding.getProgression step
+        next = nextStep?.route or @endingRedirection
 
+        stepView = new StepView
+            model: new StepModel step: step, next: next
+            error: err
+            progression: new ProgressionModel \
+                @onboarding.getProgression step
+
+        if step.name is @accountsStepName
+            stepView.on 'browse:myaccounts', @handleBrowseMyAccount
+
+        @layout.showChildView 'content', stepView
+
+
+    # Handler when browse action is submited from the Accounts step view.
+    # This handler show a dedicated view that encapsulate an iframe loading
+    # MyAccounts application.
+    handleBrowseMyAccount: (stepModel) =>
+        MyAccountsView = require './views/register/my_accounts'
+        view = new MyAccountsView
+            model: stepModel
+            myAccountsUrl: ENV.myAccountsUrl
+        @layout.showChildView 'content', view
 
 # Exports Application singleton instance
 module.exports = new App()

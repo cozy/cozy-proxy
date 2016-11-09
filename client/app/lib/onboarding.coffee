@@ -1,5 +1,9 @@
 # Local class Step
 class Step
+
+    # Default error message when a server error occurs
+    serverErrorMessage: 'step server error'
+
     # Retrieves properties from config Step plain object
     # @param step : config step, i.e. plain object containing custom properties
     #   and methods.
@@ -93,8 +97,16 @@ class Step
         return Promise.resolve(data)
 
     # Success handler for save() call
-    handleSaveSuccess: (data) =>
-        return data
+    handleSaveSuccess: (response) =>
+        # Success ? Hell no we still have to check the status !
+        if not response.ok
+            # At this time we consider that every failed HTTP response has
+            # to be treated like a server error.
+            # if we need in the future, we may decide to differenciate behavior
+            # according to error status ranges.
+            @handleServerError response
+
+        return response
 
 
     _joinValues: (objectData, separator) =>
@@ -111,6 +123,8 @@ class Step
             throw new Error err.error
 
 
+    handleServerError: (response) =>
+        throw new Error @serverErrorMessage
 
 
 # Main class

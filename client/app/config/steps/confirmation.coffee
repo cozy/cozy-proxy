@@ -16,6 +16,5 @@ module.exports = {
             # Authentify
             credentials: 'include',
             body: JSON.stringify {onboardedSteps: onboardedSteps}
-        .then @handleSaveSuccess, (err) =>
-            throw new Error 'step accounts server error'
+        .then @handleSaveSuccess, @handleServerError
 }

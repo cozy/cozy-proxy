@@ -23,7 +23,7 @@ module.exports = class AccountsView extends StepView
 
     onSubmit: (event)->
         event.preventDefault()
-        @model.submit()
+        @triggerMethod 'browse:myaccounts', @model
 
 
     serializeData: ->

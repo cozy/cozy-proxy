@@ -7,12 +7,16 @@
 
 // LAYOUTS
 [role=application]
-    display      flex
     min-height   100vh
     font-family  'Source Sans Pro', sans-serif
 
+// div inserted magically by Marionnette
+main > div
+    display      flex
+    min-height   100vh
 
-main
+
+.step-wrapper
     flex       0 1 30em
     margin     auto
     padding    1em
@@ -230,3 +234,9 @@ footer
         // mark upcoming items in grey
         &[aria-selected=true] ~ li
             background-color  $grey-02
+
+
+// MY ACCOUNTS IFRAME
+.my-accounts-container
+    flex-grow 1
+    border-width 0

@@ -33,7 +33,12 @@ module.exports = {
                 success: resolve
                 error: (req) -> reject req.responseJSON
             }))
-            .then @handleSaveSuccess, (err) =>
+            .then (response) =>
+                # set response format to be compatible with expected fetch
+                # response in Onboarding class
+                response.ok = response.success
+                @handleSaveSuccess response
+            , (err) =>
                 throw new Error 'step password server error' unless err
                 @handleSaveError err
 }

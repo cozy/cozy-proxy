@@ -62,7 +62,8 @@ describe('Password Stories', () => {
 
         it('should go to `nextStep`', (done) => {
             sinon.stub(global.jQuery, 'post');
-            global.jQuery.post.yieldsTo('success');
+            global.jQuery.post.yieldsTo('success', {success: true});
+
 
             // Select StepPassword
             onboarding.goToStep(passwordStep);

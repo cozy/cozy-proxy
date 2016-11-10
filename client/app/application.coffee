@@ -109,7 +109,7 @@ class App extends Application
                 @onboarding.getProgression step
 
         if step.name is @accountsStepName
-            stepView.on 'browse:myaccounts', @handleBrowseMyAccount
+            stepView.on 'browse:myaccounts', @handleBrowseMyAccounts
 
         @layout.showChildView 'content', stepView
 
@@ -117,7 +117,7 @@ class App extends Application
     # Handler when browse action is submited from the Accounts step view.
     # This handler show a dedicated view that encapsulate an iframe loading
     # MyAccounts application.
-    handleBrowseMyAccount: (stepModel) =>
+    handleBrowseMyAccounts: (stepModel) =>
         MyAccountsView = require './views/register/my_accounts'
         view = new MyAccountsView
             model: stepModel

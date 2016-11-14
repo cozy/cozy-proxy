@@ -1,7 +1,7 @@
 ## Onboarding component
 
 ### Modelisation naive diagram
-![Modelisation naive diagram](assets/onboarding-modelisation.jpg "Diagram")
+![Modelisation naive diagram](diagrams/onboarding.png "Diagram")
 
 ### Onboarding class
 
@@ -9,8 +9,8 @@ This class, located in `lib/onboarding`, is an agnostic and framework free onboa
 
 This class has to facilitate migration to another framework in the future. At this time, the framework used is Backbone/Marionette and Onboarding is implemented like a classical POO object.
 
-### Step object
-Step objects are simple configurationJavaScript object declared in separated files. Their role is to describe each onboarding step, with properties, but also with methods when needed, as validation methods for example. They are located in `steps` directory.
+### Step objects
+Step objects are simple configuration JavaScript object declared in separated files. Their role is to describe each onboarding step, with properties, but also with methods when needed, as validation methods for example. They are located in `steps` directory.
 
 #### Step class
 
@@ -19,12 +19,14 @@ The class represents an onboarding step, for example the greetings step or the p
 It takes as parameter a simple JavaScript object described in previous paragraph.
 It also ensures that each step will have defaults mandatory methods like `submit`.
 
-Howerver, it will be possible to override class methods in config objects (not implemented yet).
+However, it will be possible to override class methods in config objects (not implemented yet).
 
-## Methods
+---
+
+## Properties
 ### Onboarding
 #### initialize(user, steps, currentStepName)
-#### parameters
+##### Parameters
 * `user`: JS object representing user's properties
 * `steps`: Array of JS object representing steps
 * `currentStepName`: String reprensenting the current (or first) step in onboarding.
@@ -48,9 +50,22 @@ The steps list should look like :
 ##### Parameters
 * `callback`: function
 
-Record the function callback as handler for every time the current onboarding step will change.
+Record the callback function as handler for every time the current onboarding step will __change__.
 
 #### onStepFailed(callback)
+##### Parameters
+* `callback`: function
+
+Record the callback function as handler for every time the current onboarding step will __fail__.
+
+#### onDone(callback)
+##### Parameters
+* `callback`: function
+
+Record the callback function as handler for when all onboarding steps will be completed with sucess (the whole onboarding process is done). It can be see as the last callback function to be run at the very end of the onboarding process.
+
+#### handleStepCompleted()
+Handler for 'stepSubmitted' pseudo-event, triggered by a step when it has been successfully submitted.
 
 #### goToNext()
 Select the next step on the list and trigger the related events.
@@ -61,9 +76,31 @@ Select the next step on the list and trigger the related events.
 
 Go directly to the given step and trigger required events. Useful for go back in onboarding.
 
+#### triggerStepChanged(step)
+##### Parameters
+* `step`: Step
 
-#### triggerStepErrors(step, req)
+Trigger a 'StepChanged' pseudo-event. Run all `stepChangedHandlers` handlers when the current step is changed.
 
+#### handleStepError(step, err)
+##### Parameters
+* `step`: Step
+* `err`: error object when failure
+
+Handler for 'stepFailed' pseudo-event, triggered by a step when it has been failed.
+
+#### triggerStepErrors(step, err)
+##### Parameters
+* `step`: Step
+* `err`: error object when failure
+
+Trigger a 'StepFailed' pseudo-event. Run all `stepFailedHandlers` handlers when the current step is failed.
+
+#### triggerDone(err)
+##### Parameters
+* `err`: error object when failure
+
+Trigger a 'onboardingDone' pseudo-event. Run all `onDoneHandler` handlers when the whole onboarding process is finished by the user.
 
 #### getStepByName(stepName)
 ##### Parameters
@@ -90,18 +127,27 @@ Returns null if the given step is the last one.
 
 Throw error if step does not exist in onboarding step list or if step parameter is missing.
 
+#### getCurrentStep()
+
+Returns onboarding's current step.
+
 #### Example
 ```javascript
 let user = retrieveUserInAWayOrAnother();
 let step1Options = {name: 'example1'};
 let step2Options = {name: 'example2'};
 
-let onboarding = new Onboarding(user, [step1, step2]);
+let onboarding = new Onboarding(
+    user,
+    [step1Options, step2Options]
+);
 
 let step2 = onboarding.getStepByName('example2');
 let progression = onboarding.getProgression(step);
 ```
-progression will be
+
+And the `progression` will be:
+
 ```javascript
 {
     current: 2,
@@ -110,11 +156,12 @@ progression will be
 }
 ```
 
-#### getCurrentStep()
-
-Returns onboarding's current step.
-
 ### Step
+
+#### Attribute: serverErrorMessage
+Type: String
+Property to provide a default error message key when a server error occurs.
+This key will be used, according to the current locale, to get the matching translated error message.
 
 #### constructor(options, user)
 * `options`: JS Object containing step properties and specific methods
@@ -149,18 +196,35 @@ console.log(step.useremail);
 // > claude@example.org
 ```
 
+#### onCompleted(callback)
+##### Parameters
+* `callback`: function
+
+Add the given callback to the list of handlers (`completedHandlers`) to call when a step is submitted.
+
+#### onFailed(callback)
+##### Parameters
+* `callback`: function
+
+Add the given callback to the list of handlers (`failedHandlers`) to call when a step is failed.
+
+#### triggerCompleted()
+Trigger a 'completed' pseudo-event. Run all `completedHandlers` handlers when the current step is successfully completed.
+
+#### triggerFailed(error)
+##### Parameters
+* `error`: error object
+Trigger a 'failed' pseudo-event. Run all `failedHandlers` handlers when the current step is failed.
+
 #### isActive(user)
+##### Parameters
 * `user`: JS Object
 
 Returns true if the step has to be active for the given `user`. Returns `true` by default.
 This method can be overriden by specifying an `isActive` method in constructor parameter.
 
-#### save(data)
-* `data`: Data to send to the server
-
-This method returns by default a resolved Promise. This method may be overriden in a step object config. To work, it just needs to return a Promise.
-
 ##### Example
+
 ```javascript
 let step = new Step({
     isActive: (user) => {
@@ -176,34 +240,38 @@ let result2 = step.isActive({name: Claudia});
 // result = false
 ```
 
-
-#### onCompleted(callback)
+#### submit(data)
 ##### Parameters
-* `callback`: function
+* `data`: Data to be saved
 
-Add the given callback to the list of handlers to call when a step is submitted.
-
-#### submit()
 Submit the step, i.e. try to register it as done. This method should be overriden in config steps to manage specific submits or validation, for steps with forms for example.
-Also, maybe it should return a Promise to handle correctly remote synchronisation.
+Also, maybe it should return a Promise (return by the save method) to handle correctly remote synchronisation.
 
+#### handleSubmitError(error)
+##### Parameters
+* `error`: error object
 
-#### onFailed(callback)
+Handler call when an error occurred during a `submit()`.
 
-#### Attribute: error
-Type: Object
-Property to provide errors from onboarding and server side.
-This property will also be used inside the onboarding view to handle UX errors.
-Expected an ```error``` string or an ```errors``` object:
+#### handleSubmitSuccess()
+Handler call when success during a `submit()`.
 
-```javascript
-{
-    error: "error key", //to be translated
-    // or error from server
-    errors {
-        password: "",
-        email: "",
-        ...
-    }
-}
-```
+#### save(data)
+##### Parameters
+* `data`: Data to send to the server
+
+This method returns by default a resolved Promise. This method may be overriden in a step object config. To work, it just needs to return a Promise.
+
+#### handleSaveSuccess()
+Handler call when success during a `save()`.
+
+#### handleSaveError(error)
+##### Parameters
+* `error`: error object
+
+Handler call when an error occurred during a `save()`.
+
+#### handleServerError(response)
+* `response`: JS object with `fetch()` response format
+
+Handler call when an error is detected in or as the response from the server (with `fetch()`).

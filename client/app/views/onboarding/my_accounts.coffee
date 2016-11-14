@@ -3,6 +3,11 @@
 module.exports = class MyAccountsView extends LayoutView
     template: require '../templates/my_accounts'
 
+    ui:
+        next: '.controls .next'
+
+    events:
+        'click @ui.next': 'onSubmit'
 
     initialize: (options) ->
         super options
@@ -13,3 +18,7 @@ module.exports = class MyAccountsView extends LayoutView
         data = super()
         data.myAccountsUrl = @myAccountsUrl
         return data
+
+    onSubmit: (event) ->
+        event.preventDefault()
+        @model.submit()

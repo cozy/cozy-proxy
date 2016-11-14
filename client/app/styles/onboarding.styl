@@ -1,9 +1,12 @@
 /**
  * OnBoarding Styles
  */
-
 @import "./base/_colors.styl"
 
+// Should be imported from another stylus in the future,
+// 'base/_fonts' for example
+// Variable used as divisor for px to em calculations.
+base-font-size = 16
 
 // LAYOUTS
 [role=application]
@@ -245,17 +248,17 @@ footer
 
 .my-accounts-footer
     font-size 16px
-    height  (48 / 16)em
+    height  (48 / base-font-size)em
     display flex
-    padding (8 / 16)em (32 / 16)em
+    padding (8 / base-font-size)em (32 / base-font-size)em
     margin-top 0
-    box-shadow 0 (-8 / 16)em (12 / 16)em 0 rgba(0, 0, 0, 0.15);
+    box-shadow 0 (-8 / base-font-size)em (12 / base-font-size)em 0 rgba(0, 0, 0, 0.15);
 
     p
       flex-grow 1
-      line-height (20 / 16)em
+      line-height (20 / base-font-size)em
 
     .next
-      padding (8 / 16)em (32 / 16)em
-      height (32 / 16)em
-      line-height: (32 / 16)em
+      padding (8 / base-font-size)em (32 / base-font-size)em
+      height (32 / base-font-size)em
+      line-height: (32 / base-font-size)em

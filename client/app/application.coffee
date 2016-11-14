@@ -118,7 +118,7 @@ class App extends Application
     # This handler show a dedicated view that encapsulate an iframe loading
     # MyAccounts application.
     handleBrowseMyAccounts: (stepModel) =>
-        MyAccountsView = require './views/register/my_accounts'
+        MyAccountsView = require './views/onboarding/my_accounts'
         view = new MyAccountsView
             model: stepModel
             myAccountsUrl: ENV.myAccountsUrl

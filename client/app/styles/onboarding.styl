@@ -15,15 +15,17 @@ base-font-size = 16
     font-family  'Source Sans Pro', sans-serif
 
 // div inserted magically by Marionnette
+main
+    display        flex
+    flex-direction column
+
 main > div
     display      flex
-    flex-direction column
     min-height   100vh
 
 
 .step-wrapper
     flex       0 1 30em
-    max-width  30em
     margin     auto
     padding    1em
 
@@ -141,18 +143,14 @@ input[type=password]
         background      none
 
 
-// Managing input width with flex
-form p
-  display         flex
-  flex-direction  column
-
-
-
 [role=button]
 button
+    // mutualize behavior between button and a
+    box-sizing        border-box
     border            0
     display           block
-    padding           .55em
+    padding           .55em (32/base-font-size)em
+    min-height        (40/base-font-size)em
     border-radius     4px
     background-color  $blue
     text-align        center
@@ -255,23 +253,30 @@ footer
 
 
 // MY ACCOUNTS IFRAME
+.my-accounts-wrapper
+    flex           1 0 100%
+    display        flex
+    flex-direction column
+
 .my-accounts-container
     flex-grow 1
     border-width 0
 
 .my-accounts-footer
+    box-sizing border-box
     font-size 16px
-    height  (48 / base-font-size)em
     display flex
-    padding (8 / base-font-size)em (32 / base-font-size)em
     margin-top 0
     box-shadow 0 (-8 / base-font-size)em (12 / base-font-size)em 0 rgba(0, 0, 0, 0.15);
 
     p
       flex-grow 1
+      margin (14 / base-font-size)em (32 / base-font-size)em
       line-height (20 / base-font-size)em
 
+    .controls
+        display flex
+        align-items center
+
     .next
-      padding (8 / base-font-size)em (32 / base-font-size)em
-      height (32 / base-font-size)em
-      line-height: (32 / base-font-size)em
+      margin (4 / base-font-size)em (32 / base-font-size)em

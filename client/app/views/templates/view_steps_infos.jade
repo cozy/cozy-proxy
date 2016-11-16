@@ -28,7 +28,9 @@ block region
 
         p(class='line')
             label(for="timezone")=t('step infos timezone label')
-            input(type="text", name="timezone", id="timezone" placeholder=t("step infos timezone placeholder"))
+            select(type="text", name="timezone", id="timezone")
+                each timezone, i in timezones
+                    option(value=timezone)=timezone
             p.error-label(data-for="timezone")
 
         p(class="errors")

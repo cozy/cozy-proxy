@@ -201,6 +201,7 @@ label
 
 input[type=text]
 input[type=password]
+select
     display         inline-block
     padding         0.75em 0.75em 0.9em
     border-radius   4px
@@ -217,6 +218,15 @@ input[type=password]
     &.error
         border          1px solid $red
         background      none
+
+select
+    -moz-appearance     none
+    -webkit-appearance  none
+    appearance          none
+    &::-ms-expand { display: none }
+    background-image    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16px' height='16px'><polyline points='14.764,4.966 8.053,11.677 1.342,4.966'/></svg>")
+    background-position right 8px center
+    background-repeat   no-repeat
 
 
 [role=button]

@@ -16,6 +16,7 @@ module.exports = class InfosView extends StepView
         _.extend super,
             id: "#{@model.get 'name'}-figure"
             figureid: require '../../assets/sprites/icon-clipboard.svg'
+            timezones: require '../../lib/timezones'
 
 
     onSubmit: (event)->

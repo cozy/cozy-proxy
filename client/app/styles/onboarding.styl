@@ -2,6 +2,7 @@
  * OnBoarding Styles
  */
 @import "./base/_colors.styl"
+@import "./cozy-ui/icons.styl"
 
 // Should be imported from another stylus in the future,
 // 'base/_fonts' for example
@@ -162,6 +163,7 @@ button
     text-transform    uppercase
     color             white
 
+
 .errors
     color  $red
 
@@ -210,6 +212,22 @@ progress
             background    $pw-green
         &::-moz-progress-bar
             background    $pw-green
+
+
+    &[disabled]
+    &[aria-disabled=true]
+        opacity: .5
+        cursor:  default
+
+    &[aria-busy=true]
+        position: relative
+
+        &::before
+            width:      1em
+            height:     1em
+            @extend     $icon-spinner-white
+            margin-top: -.5em
+            right:      1em
 
 
 

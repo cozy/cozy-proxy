@@ -29,18 +29,7 @@ class App extends Application
     - layout: the application layout view, rendered.
     ###
     initialize: ->
-        steps = require './config/steps/all'
         @on 'start', =>
-
-            user = {
-                username: ENV.username,
-                hasValidInfos: ENV.hasValidInfos
-            }
-
-            @onboarding = new Onboarding(user, steps, ENV.currentStep)
-            @onboarding.onStepChanged (step) => @handleStepChanged(step)
-            @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
-            @onboarding.onDone () => @handleTriggerDone()
 
             @initializeRouter()
 
@@ -58,10 +47,12 @@ class App extends Application
     # Backbone Router
     initializeRouter: () =>
         @router = new Router app: @
-        @router.route \
-            'register(/:step)',
-            'register',
-            @handleRegisterRoute
+        # if onboarding, the pathname will be '/register*'
+        if window.location.pathname.indexOf('/register') is 0
+            @router.route \
+                'register(/:step)',
+                'register',
+                @initializeOnboarding
 
 
     # Internal handler called when the onboarding's internal step has just
@@ -87,9 +78,21 @@ class App extends Application
 
 
     # Handler for register route, display onboarding's current step
-    handleRegisterRoute: =>
+    initializeOnboarding: =>
         # Load onboarding stylesheet
         AppStyles = require './styles/onboarding.styl'
+        # onboarding steps config
+        steps = require './config/steps/all'
+
+        user = {
+            username: ENV.username,
+            hasValidInfos: ENV.hasValidInfos
+        }
+
+        @onboarding = new Onboarding(user, steps, ENV.currentStep)
+        @onboarding.onStepChanged (step) => @handleStepChanged(step)
+        @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
+        @onboarding.onDone () => @handleTriggerDone()
 
         currentStep = @onboarding.getCurrentStep()
         @router.navigate currentStep.route

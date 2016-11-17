@@ -1,25 +1,21 @@
 'use strict';
 let assert = require('chai').assert;
 let sinon = require('sinon');
-
+let fetchMock = require('fetch-mock');
 
 describe('Step: password', () => {
-
-    let jQuery;
+    
     let jsdom;
     let PasswordConfig;
 
-
     before(function () {
-      jsdom = require('jsdom-global')();
-      global.jQuery = require('jquery');
-      PasswordConfig = require('../../../app/config/steps/password.coffee');
+        jsdom = require('jsdom-global')();
+        PasswordConfig = require('../../../app/config/steps/password.coffee');
     });
 
     after(function () {
-      jsdom();
+        jsdom();
     });
-
 
     describe('#validate', () => {
 
@@ -54,24 +50,20 @@ describe('Step: password', () => {
 
     describe('#save', () => {
 
+        after(() => {
+            fetchMock.restore();
+        });
+
         it('should send POST request', () => {
-            // Define global.jQUery
-            // so that configPassword could use it
-            sinon.stub(global.jQuery, 'post');
+            fetchMock.post('*', 200);
             let data = {password: 'plop',
               onboardedSteps: ['welcome', 'password']
             }
             PasswordConfig.save(data);
 
-            data = JSON.stringify(data);
-
-            let spyArgument = global.jQuery.post.getCalls(0)[0].args[0];
-
-            assert(global.jQuery.post.calledOnce);
-            assert.equal('/register/password', spyArgument.url);
-            assert.deepEqual(data, spyArgument.data);
-
-            global.jQuery.post.restore();
+            assert.ok(fetchMock.called());
+            assert.equal('/register/password', fetchMock.lastUrl());
+            assert.deepEqual(JSON.stringify(data), fetchMock.lastOptions().body);
         });
 
     });

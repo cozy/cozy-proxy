@@ -19,6 +19,18 @@ module.exports = class InfosView extends StepView
             timezones: require '../../lib/timezones'
 
 
+    getFormData: () ->
+        @$publicName ?= @$ '#public_name'
+        @$email ?= @$ '#email'
+        @$timezone ?= @$ '#timezone'
+
+        return {
+            public_name: @$publicName.val()
+            email: @$email.val()
+            timezone: @$timezone.val()
+        }
+
+
     onSubmit: (event)->
         event.preventDefault()
-        @model.submit()
+        @model.submit(@getFormData())

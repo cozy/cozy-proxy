@@ -26,19 +26,8 @@ module.exports = {
 
 
     save: (data) ->
-        return new Promise((resolve, reject) ->
-            jQuery.post({
-                url: '/register/password'
-                data: JSON.stringify data
-                success: resolve
-                error: (req) -> reject req.responseJSON
-            }))
-            .then (response) =>
-                # set response format to be compatible with expected fetch
-                # response in Onboarding class
-                response.ok = response.success
-                @handleSaveSuccess response
-            , (err) =>
-                throw new Error 'step password server error' unless err
-                @handleSaveError err
+        return fetch '/register/password',
+            method: 'POST',
+            body: JSON.stringify data
+        .then @handleSaveSuccess, @handleServerError
 }

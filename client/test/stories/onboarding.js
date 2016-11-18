@@ -1,5 +1,7 @@
 'use strict';
 
+let fetchMock = require('fetch-mock');
+
 describe('Password Stories', () => {
 
     let assert;
@@ -41,7 +43,6 @@ describe('Password Stories', () => {
 
         beforeEach(() => {
             const jsdom = require('jsdom-global')();
-            global.jQuery = require('jquery');
 
             // Select password step
             onboarding.goToStep(onboarding.getStepByName('password'));
@@ -55,15 +56,13 @@ describe('Password Stories', () => {
             // Select 1rst step
             currentIndex = undefined;
 
-            // Reset spy
-            global.jQuery.post.restore();
+            // Reset mock
+            fetchMock.restore();
         });
 
 
         it('should go to `nextStep`', (done) => {
-            sinon.stub(global.jQuery, 'post');
-            global.jQuery.post.yieldsTo('success', {success: true});
-
+            fetchMock.post('*', 200);
 
             // Select StepPassword
             onboarding.goToStep(passwordStep);
@@ -80,8 +79,7 @@ describe('Password Stories', () => {
 
 
         it('shouldnt change currentStep when errors', (done) => {
-            sinon.stub(global.jQuery, 'post').returns(false);
-            global.jQuery.post.yieldsTo('error');
+            fetchMock.post('*', 500);
 
             // Select StepPassword
             onboarding.goToStep(passwordStep);

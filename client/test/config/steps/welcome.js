@@ -3,7 +3,7 @@ let assert = require('chai').assert;
 let fetchMock = require('fetch-mock');
 
 describe('Step: welcome', () => {
-	let jsdom;
+    let jsdom;
     let WelcomeConfig;
 
     before(function () {

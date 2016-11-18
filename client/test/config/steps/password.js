@@ -4,7 +4,7 @@ let sinon = require('sinon');
 let fetchMock = require('fetch-mock');
 
 describe('Step: password', () => {
-    
+
     let jsdom;
     let PasswordConfig;
 

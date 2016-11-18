@@ -170,7 +170,7 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         'timezone',
         'onboardedSteps'
     ].forEach (property) =>
-        if requestData[property]
+        if requestData[property]?
             userToSave[property] = requestData[property]
 
     # if final step done, user is registred

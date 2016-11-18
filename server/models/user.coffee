@@ -94,11 +94,18 @@ User.getUsername = (callback) ->
 
 
 User.validate = (data, errors = {}) ->
+    ['public_name', 'email', 'timezone'].reduce((errors, field) ->
+        if not(typeof data[field] is 'undefined') \
+                and data[field].trim().length is 0
+            errors[field] = "missing #{field}"
+        return errors
+    , errors)
+
     if data.email and not helpers.checkEmail data.email
-        errors.email = localization.t 'invalid email format'
+        errors.email = 'invalid email format'
 
     if data.timezone and not (data.timezone in timezones)
-        errors.timezone = localization.t 'invalid timezone'
+        errors.timezone = 'invalid timezone'
 
     return errors
 

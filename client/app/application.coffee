@@ -48,11 +48,10 @@ class App extends Application
     initializeRouter: () =>
         @router = new Router app: @
         # if onboarding, the pathname will be '/register*'
-        if window.location.pathname.indexOf('/register') is 0
-            @router.route \
-                'register(/:step)',
-                'register',
-                @initializeOnboarding
+        @router.route \
+            'register(/:step)',
+            'register',
+            @handleRegisterRoute
 
 
     # Internal handler called when the onboarding's internal step has just
@@ -77,11 +76,8 @@ class App extends Application
             @showStep step, err.message
 
 
-    # Handler for register route, display onboarding's current step
-    initializeOnboarding: =>
-        # Load onboarding stylesheet
-        AppStyles = require './styles/onboarding.styl'
-        # onboarding steps config
+    # Initialize the onboarding component
+    initializeOnboarding: ->
         steps = require './config/steps/all'
 
         user = {
@@ -89,10 +85,20 @@ class App extends Application
             hasValidInfos: ENV.hasValidInfos
         }
 
-        @onboarding = new Onboarding(user, steps, ENV.currentStep)
-        @onboarding.onStepChanged (step) => @handleStepChanged(step)
-        @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
-        @onboarding.onDone () => @handleTriggerDone()
+        onboarding = new Onboarding(user, steps, ENV.currentStep)
+        onboarding.onStepChanged (step) => @handleStepChanged(step)
+        onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
+        onboarding.onDone () => @handleTriggerDone()
+
+        return onboarding
+
+
+    # Handler for register route, display onboarding's current step
+    handleRegisterRoute: =>
+        @onboarding ?= @initializeOnboarding()
+
+        # Load onboarding stylesheet
+        AppStyles = require './styles/onboarding.styl'
 
         currentStep = @onboarding.getCurrentStep()
         @router.navigate currentStep.route

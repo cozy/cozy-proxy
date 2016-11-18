@@ -29,18 +29,7 @@ class App extends Application
     - layout: the application layout view, rendered.
     ###
     initialize: ->
-        steps = require './config/steps/all'
         @on 'start', =>
-
-            user = {
-                username: ENV.username,
-                hasValidInfos: ENV.hasValidInfos
-            }
-
-            @onboarding = new Onboarding(user, steps, ENV.currentStep)
-            @onboarding.onStepChanged (step) => @handleStepChanged(step)
-            @onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
-            @onboarding.onDone () => @handleTriggerDone()
 
             @initializeRouter()
 
@@ -58,6 +47,7 @@ class App extends Application
     # Backbone Router
     initializeRouter: () =>
         @router = new Router app: @
+        # if onboarding, the pathname will be '/register*'
         @router.route \
             'register(/:step)',
             'register',
@@ -86,8 +76,27 @@ class App extends Application
             @showStep step, err.message
 
 
+    # Initialize the onboarding component
+    initializeOnboarding: ->
+        steps = require './config/steps/all'
+
+        user = {
+            username: ENV.username,
+            hasValidInfos: ENV.hasValidInfos
+        }
+
+        onboarding = new Onboarding(user, steps, ENV.currentStep)
+        onboarding.onStepChanged (step) => @handleStepChanged(step)
+        onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
+        onboarding.onDone () => @handleTriggerDone()
+
+        return onboarding
+
+
     # Handler for register route, display onboarding's current step
     handleRegisterRoute: =>
+        @onboarding ?= @initializeOnboarding()
+
         # Load onboarding stylesheet
         AppStyles = require './styles/onboarding.styl'
 

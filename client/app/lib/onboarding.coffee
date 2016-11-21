@@ -70,12 +70,33 @@ class Step
         return true
 
 
+    # Validate data related to step
+    # This method may be overriden by step options
+    # @param data: Data to validate
+    # @return a validation object like following :
+    #   {
+    #       success: Boolean
+    #       error: single error message
+    #       errors: Array containg key value, typically used to validate
+    #                multiple fields in a form.
+    #   }
+    validate: (data) ->
+        return success: true, error: null, errors: []
+
+
     # Submit the step
     # This method should be overriden by step given as parameter to add
     # for example a validation step.
     # Maybe it should return a Promise or a call a callback couple
     # in the near future
     submit: (data={}) ->
+        validation = @validate data
+
+        if not validation.success
+            return Promise.reject \
+                message: validation.error,
+                errors: validation.errors
+
         return @save data
             .then @handleSubmitSuccess
 

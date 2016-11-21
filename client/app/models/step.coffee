@@ -21,12 +21,8 @@ module.exports = class StepModel extends Backbone.Model
 
 
     submit: (data={}) ->
-        # Dispatch Error
-        if @step.validate? and (errors = @step.validate(data))
-            return Promise.reject(errors)
-
-        # Goto next Step
         return @step.submit(data)
+
 
     validate: (data={}) ->
         return @step.validate(data)

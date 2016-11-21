@@ -117,4 +117,7 @@ module.exports = class PasswordView extends StepView
                 @$inputPassword.addClass('error')
                 @renderError(errors.password)
         else
-            @model.submit data
+            @model
+                .submit data
+                .then null, (error) =>
+                    @renderError error.message

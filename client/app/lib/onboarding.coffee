@@ -77,13 +77,12 @@ class Step
     # in the near future
     submit: (data={}) ->
         return @save data
-        .then @handleSubmitSuccess, @handleSubmitError
+            .then @handleSubmitSuccess
 
 
     # Handler for error occuring during a submit()
     handleSubmitError: (error) =>
         @triggerFailed error
-
 
     # Handler for submit success
     handleSubmitSuccess: => @triggerCompleted()
@@ -100,11 +99,11 @@ class Step
     handleSaveSuccess: (response) =>
         # Success ? Hell no we still have to check the status !
         if not response.ok
-            # At this time we consider that every failed HTTP response has
-            # to be treated like a server error.
-            # if we need in the future, we may decide to differenciate behavior
-            # according to error status ranges.
-            @handleServerError response
+            return @handleServerError response unless response.status is 400
+
+            # Validation error
+            return response.json().then (json) =>
+                throw message: 'validation error', errors: json.errors
 
         return response
 

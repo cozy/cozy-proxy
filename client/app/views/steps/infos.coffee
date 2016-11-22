@@ -17,6 +17,13 @@ module.exports = class InfosView extends StepView
         'timezone'
     ]
 
+    # Step may contain errors, for example when data fetching has failed.
+    onRender: ->
+        error = @model.get 'error'
+        if error
+            @showErrors(message: error)
+
+
     serializeData: ->
         _.extend super,
             id: "#{@model.get 'name'}-figure"
@@ -87,11 +94,18 @@ module.exports = class InfosView extends StepView
     #            as value]
     #   }
     showErrors: ({message, errors}) =>
-        @$errorPlaceholders ?= []
+        if message
+            @$errorMessagePlaceholder ?= @$ '.errors'
+            @$errorMessagePlaceholder.text(t(message)).show()
+        else
+            @$errorMessagePlaceholder?.text('').hide()
 
-        @fields.forEach (field) =>
-            if errors[field]
-                @showError field, errors[field]
-            else
-                # We hide errors now to have a smoother rendering
-                @hideError field
+        if errors
+            @$errorPlaceholders ?= []
+
+            @fields.forEach (field) =>
+                if errors[field]
+                    @showError field, errors[field]
+                else
+                    # We hide errors now to have a smoother rendering
+                    @hideError field

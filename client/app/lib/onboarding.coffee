@@ -44,6 +44,10 @@ class Step
         return @name
 
 
+    getError: () ->
+        return @error
+
+
     fetchData: () ->
         return Promise.resolve(@)
 

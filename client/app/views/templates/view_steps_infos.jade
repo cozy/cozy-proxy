@@ -14,6 +14,7 @@ block region
                 type="text",
                 name="public_name",
                 id="public_name",
+                value=public_name,
                 placeholder=t("step infos public_name placeholder"))
             p.error-label(data-for="public_name")
 
@@ -23,14 +24,19 @@ block region
                 type="text",
                 name="email",
                 id="email",
+                value=email
                 placeholder=t("step infos email placeholder"))
             p.error-label(data-for="email")
 
         p(class='line')
             label(for="timezone")=t('step infos timezone label')
             select(type="text", name="timezone", id="timezone")
-                each timezone, i in timezones
-                    option(value=timezone)=timezone
+                each label in timezones
+                    if(label === timezone)
+                        option(value=label, selected="selected")=label
+                    else
+                        option(value=label)=label
+
             p.error-label(data-for="timezone")
 
         p(class="errors")

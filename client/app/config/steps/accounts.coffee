@@ -2,6 +2,10 @@ module.exports = {
     name: 'accounts',
     route: 'register/accounts',
     view: 'steps/accounts',
+
+    isActive: (user) ->
+        return 'konnectors' in ENV.apps
+
     save: (data) ->
         onboardedSteps = [
             'welcome',

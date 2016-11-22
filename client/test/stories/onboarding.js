@@ -14,8 +14,9 @@ describe('Password Stories', () => {
 
     let StepModel;
 
-
     before(() => {
+        global.ENV = { apps: [] };
+
         assert = require('chai').assert;
         sinon = require('sinon');
         StepModel = require('../../app/models/step.coffee');
@@ -33,8 +34,11 @@ describe('Password Stories', () => {
 
         // Initialize Onboarding
         onboarding = new Onboarding({}, Steps);
-    })
+    });
 
+    after(() => {
+        delete global.ENV;
+    });
 
     describe('Add a password', () => {
         let passwordStep;

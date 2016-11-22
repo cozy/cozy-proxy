@@ -20,6 +20,13 @@ module.exports = {
         return not user.hasValidInfos
 
 
+    getData: () ->
+        return \
+            public_name: @publicName,
+            email: @email,
+            timezone: @timezone
+
+
     fetchData: () ->
         return fetch '/user?fields=public_name,email,timezone',
             method: 'GET',

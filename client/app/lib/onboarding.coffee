@@ -15,6 +15,7 @@ class Step
           'isActive',
           'fetchUser',
           'fetchData',
+          'getData',
           'validate',
           'save',
           'error'
@@ -33,9 +34,12 @@ class Step
         @publicName = user.public_name
 
 
-    # "Abstract method" which may be overriden by step options, to provide
-    # a mechanism for fetching data related to step.
-    # Returns a resolved promise by default.
+    # Returns data related to step.
+    # This is a default method that may be overriden
+    getData: () ->
+        return public_name: @publicName
+
+
     fetchData: () ->
         return Promise.resolve(@)
 

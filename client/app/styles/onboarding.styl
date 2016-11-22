@@ -55,6 +55,25 @@ header
         margin  0
 
 
+.agreements
+    figure
+        margin      0 auto 2em
+        text-align  center
+
+        svg
+            max-width       (50 / 16)em
+            height          (50 / 16)em
+
+        .svg-wrapper
+            margin          auto
+            max-width       (50 / 16)em
+            height          (50 / 16)em
+            border-radius   50%
+            padding         1.5em
+            box-shadow      0 1px 3px rgba(50,54,63,0.19), 0 4px 12px rgba(50,54,63,0.12)
+
+
+
 #welcome-figure
     svg
         max-width       100%
@@ -71,6 +90,42 @@ header
 
 #confirmation-figure .svg-wrapper
         background-color  #2ce096
+
+// agreeemnt step elements
+.agreements
+    display         flex
+    flex-direction  row
+    flex-wrap       wrap
+    width           150%
+    margin          1.5em 0em 1.5em -25%
+
+    .agreements-element
+        flex-grow       1
+        padding         0em 1.5%
+        margin          1em 0em
+        flex-basis      30%
+
+        p
+            margin      auto
+            width       90%
+
+    #home .svg-wrapper
+        background-color #40de8e
+    #privacy .svg-wrapper
+        background-color #ffa044
+    #legal .svg-wrapper
+        background-color #a75bcb
+    #transparency .svg-wrapper
+        background-color #ff5d47
+    #control .svg-wrapper
+        background-color #4daef2
+    #community .svg-wrapper
+        background-color #ffc644
+
+.stats-agreement .checkbox
+    float           left
+    margin-right    .5em
+    line-height     1
 
 footer
     margin-top  2em

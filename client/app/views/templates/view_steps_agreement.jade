@@ -5,36 +5,18 @@ block header
 
 block region
     div.agreements
-        div.agreements-element
-            figure#home
-                .svg-wrapper
-                    svg: use(xlink:href=home_figure)
-            p=t('step agreement home element')
-        div.agreements-element
-            figure#privacy
-                .svg-wrapper
-                    svg: use(xlink:href=privacy_figure)
-            p=t('step agreement privacy element')
-        div.agreements-element
-            figure#legal
-                .svg-wrapper
-                    svg: use(xlink:href=legal_figure)
-            p=t('step agreement legal element')
-        div.agreements-element
-            figure#transparency
-                .svg-wrapper
-                    svg: use(xlink:href=transparency_figure)
-            p=t('step agreement transparency element')
-        div.agreements-element
-            figure#control
-                .svg-wrapper
-                    svg: use(xlink:href=control_figure)
-            p=t('step agreement control element')
-        div.agreements-element
-            figure#community
-                .svg-wrapper
-                    svg: use(xlink:href=community_figure)
-            p=t('step agreement community element')
+        each figure,elementName in figures
+            div.agreements-element
+                figure(id=elementName)
+                    .svg-wrapper
+                        svg: use(xlink:href=figure)
+                p=t('step agreement ' + elementName + ' element')
+
+
+    div.stats-agreement
+        input(type="checkbox")
+        p=t('step agreement stats')
+
     p=t('step agreement description')
 
 

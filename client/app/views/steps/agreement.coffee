@@ -4,8 +4,12 @@ _ = require 'underscore'
 module.exports = class AgreementView extends StepView
     template: require '../templates/view_steps_agreement'
 
+    ui:
+        next: '.controls .next'
+        checkbox: '.checkbox input'
+
     events:
-        'click button': 'onSubmit'
+        'click @ui.next': 'onSubmit'
 
 
     serializeData: ->
@@ -22,4 +26,5 @@ module.exports = class AgreementView extends StepView
 
 
     onSubmit: (event)->
-        @model.submit()
+        allowStats = @ui.checkbox?[0].checked || false
+        @model.submit {allowStats: allowStats}

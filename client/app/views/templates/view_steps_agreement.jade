@@ -18,7 +18,11 @@ block region
             input(type="checkbox")
         p=t('step agreement stats')
 
-    p=t('step agreement description')
+    p
+        span=(t('step agreement description 1') + ' ')
+        a(href=cguLink)=t('step agreement description link')
+        span=(' ' + t('step agreement description 2'))
+
 
 
 block controls

@@ -23,6 +23,7 @@ module.exports = class AgreementView extends StepView
                 transparency: require '../../assets/sprites/icon-magnifier.svg'
                 control: require '../../assets/sprites/icon-magic-finger.svg'
                 community: require '../../assets/sprites/icon-smiley.svg'
+            cguLink: 'https://cozy.io'
 
 
     onSubmit: (event)->

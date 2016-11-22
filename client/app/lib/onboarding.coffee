@@ -40,6 +40,10 @@ class Step
         return public_name: @publicName
 
 
+    getName: () ->
+        return @name
+
+
     fetchData: () ->
         return Promise.resolve(@)
 

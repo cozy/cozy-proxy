@@ -17,6 +17,8 @@ module.exports = class StepModel extends Backbone.Model
         for property, value of @step.getData()
             @set property, value
 
+        @set 'name', @step.getName()
+
         @set 'next', next
 
 

@@ -198,6 +198,31 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         next error
 
 
+module.exports.user = (req, res, next) ->
+    if req.isAuthenticated()
+        User.first (err, userData) ->
+            if err
+                error = new Error "[Error to access cozy user] #{err.code}"
+                error.status   = 500
+                error.template = name: 'error'
+                next error
+            else
+                allowedProperties = ['public_name', 'email', 'timezone']
+                fields = req.query.fields?.split(',')
+
+                userInfos = fields?.reduce( (data, property) ->
+                    if property in allowedProperties
+                        data[property] = userData[property] or null
+                    return data
+                , {}) or {}
+
+                res.status(200).send userInfos
+    else
+        error         = new Error 'Forbidden'
+        error.status  = 403
+        next error
+
+
 module.exports.loginIndex = (req, res, next) ->
     getEnv (err, env) ->
         if err

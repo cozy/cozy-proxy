@@ -45,6 +45,7 @@ module.exports =
         post: auth.resetPassword
 
     'authenticated': get: auth.authenticated
+    'user': get: auth.user
     'status': get: index.status
 
     'public/:name/*': all: apps.publicApp

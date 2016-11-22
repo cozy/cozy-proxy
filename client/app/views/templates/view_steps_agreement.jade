@@ -1,8 +1,42 @@
-extends view_base
+extends _view_step_base
+
+block header
+    h1=t('step agreement title')
 
 block region
-    h1=t('Conditions générales')
-    footer
-        .controls
-            button=t('CONTINUER')
-        .progression
+    div.agreements
+        div.agreements-element
+            figure#home
+                .svg-wrapper
+                    svg: use(xlink:href=home_figure)
+            p=t('step agreement home element')
+        div.agreements-element
+            figure#privacy
+                .svg-wrapper
+                    svg: use(xlink:href=privacy_figure)
+            p=t('step agreement privacy element')
+        div.agreements-element
+            figure#legal
+                .svg-wrapper
+                    svg: use(xlink:href=legal_figure)
+            p=t('step agreement legal element')
+        div.agreements-element
+            figure#transparency
+                .svg-wrapper
+                    svg: use(xlink:href=transparency_figure)
+            p=t('step agreement transparency element')
+        div.agreements-element
+            figure#control
+                .svg-wrapper
+                    svg: use(xlink:href=control_figure)
+            p=t('step agreement control element')
+        div.agreements-element
+            figure#community
+                .svg-wrapper
+                    svg: use(xlink:href=community_figure)
+            p=t('step agreement community element')
+    p=t('step agreement description')
+
+
+block controls
+    button(class="next")= t('step agreement next')

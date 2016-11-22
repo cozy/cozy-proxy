@@ -108,8 +108,9 @@ module.exports.saveUnauthenticatedUser = (req, res, next) ->
         'isCGUaccepted',
         'onboardedSteps'
     ].forEach (property) =>
-        if requestData[property]
-            userToSave[property] = requestData[property]
+        if requestData[property] isnt undefined \
+            and requestData[property] isnt null
+                userToSave[property] = requestData[property]
 
     # other data
     userToSave.owner = true

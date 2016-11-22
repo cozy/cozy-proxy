@@ -14,6 +14,7 @@ class Step
           'view',
           'isActive',
           'fetchUser',
+          'fetchData',
           'validate',
           'save',
           'error'
@@ -30,6 +31,13 @@ class Step
     # in constructor parameters
     fetchUser: (user={}) ->
         @publicName = user.public_name
+
+
+    # "Abstract method" which may be overriden by step options, to provide
+    # a mechanism for fetching data related to step.
+    # Returns a resolved promise by default.
+    fetchData: () ->
+        return Promise.resolve(@)
 
 
     # Record handlers for 'completed' internal pseudo-event
@@ -223,11 +231,12 @@ module.exports = class Onboarding
     # Go directly to a given step.
     goToStep: (step) ->
         @currentStep = step
-        @triggerStepChanged step
+        step.fetchData()
+            .then @triggerStepChanged, @triggerStepErrors
 
 
     # Trigger a 'StepChanged' pseudo-event.
-    triggerStepChanged: (step) ->
+    triggerStepChanged: (step) =>
         if @stepChangedHandlers
             @stepChangedHandlers.forEach (handler) ->
                 handler step

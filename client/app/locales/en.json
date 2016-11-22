@@ -51,6 +51,7 @@
     "step infos timezone label": "Timezone",
     "step infos timezone placeholder": "Your timezone helps to properly display your calendar.",
     "step infos submit": "Confirm",
+    "step infos fetch data error": "Unable to fetch data from server.",
     "missing public_name": "You need to fill your username.",
     "missing email": "You need to fill your email.",
     "invalid email format": "Your email address doesn't seem correct.",

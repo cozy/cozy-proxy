@@ -19,6 +19,23 @@ module.exports = {
     isActive: (user) ->
         return not user.hasValidInfos
 
+
+    fetchData: () ->
+        return fetch '/user?fields=public_name,email,timezone',
+            method: 'GET',
+            credentials: 'include',
+        .then (response) =>
+            if response.ok
+                return response.json().then (json) =>
+                    @publicName = json.public_name
+                    @email = json.email
+                    @timezone = json.timezone
+                    return @
+            else
+                @error = 'step infos fetch data error'
+                return @
+
+
     # @see Onboarding.validate
     validate: (data) ->
         validation = success: false, errors: []

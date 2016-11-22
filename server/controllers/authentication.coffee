@@ -19,7 +19,7 @@ getEnv = (callback) ->
             return callback err if err
 
             env =
-                username: username
+                public_name: username
                 otp:      !!otp
                 apps:     Object.keys require('../lib/router').getRoutes()
                 myAccountsUrl: process.env.COZY_MYACCOUNTS_URL \

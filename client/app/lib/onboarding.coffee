@@ -29,7 +29,7 @@ class Step
     # This method can be overriden by passing another fetchUser function
     # in constructor parameters
     fetchUser: (user={}) ->
-        @username = user.username
+        @publicName = user.public_name
 
 
     # Record handlers for 'completed' internal pseudo-event

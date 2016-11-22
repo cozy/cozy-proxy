@@ -82,7 +82,7 @@ class App extends Application
         steps = require './config/steps/all'
 
         user = {
-            username: ENV.username,
+            public_name: ENV.public_name
             hasValidInfos: ENV.hasValidInfos,
             apps: ENV.apps
         }

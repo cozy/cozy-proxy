@@ -8,12 +8,12 @@ describe('Password Stories', () => {
     let sinon;
 
     let onboarding;
+    let user;
     let currentIndex;
     let spyPasswordValidate;
     let spyPasswordSubmit;
 
     let StepModel;
-
 
     before(() => {
         assert = require('chai').assert;
@@ -31,10 +31,11 @@ describe('Password Stories', () => {
         spyPasswordSubmit = sinon.spy(PasswordStep, 'submit');
         spyPasswordValidate = sinon.spy(PasswordStep, 'validate');
 
-        // Initialize Onboarding
-        onboarding = new Onboarding({}, Steps);
-    })
+        user = { apps: [] };
 
+        // Initialize Onboarding
+        onboarding = new Onboarding(user, Steps);
+    });
 
     describe('Add a password', () => {
         let passwordStep;

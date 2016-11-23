@@ -60,8 +60,8 @@ module.exports.onboarding = (req, res, next) ->
                     if userData
                         hasValidInfos = User.checkInfos userData
                         env.hasValidInfos = hasValidInfos
-                    if process.env.HIDESTATS
-                        env.HIDESTATS = true
+                    if process.env.HIDE_STATS_AGREEMENT
+                        env.HIDE_STATS_AGREEMENT = true
                     localization.setLocale req.headers['accept-language']
                     # We need to pass a flag to signal the view is in
                     # registration mode

@@ -22,7 +22,7 @@ module.exports = class AgreementView extends StepView
             @$errorContainer.hide()
 
         # Environment variable to hide stats checkbox part
-        if ENV.HIDESTATS
+        if ENV.HIDE_STATS_AGREEMENT
             @$statsPart.hide()
 
 
@@ -43,7 +43,7 @@ module.exports = class AgreementView extends StepView
 
     onSubmit: (event)->
         event.preventDefault()
-        if ENV.HIDESTATS
+        if ENV.HIDE_STATS_AGREEMENT
             allowStats = false
         else
             allowStats = @ui.checkbox?[0].checked

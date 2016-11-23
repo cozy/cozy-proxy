@@ -12,6 +12,15 @@ module.exports = class AgreementView extends StepView
         'click @ui.next': 'onSubmit'
 
 
+    onRender: ->
+        @$errorContainer=@$('.errors')
+
+        if @error
+            @renderError(@error)
+        else
+            @$errorContainer.hide()
+
+
     serializeData: ->
         # the following figures object keys will be the
         # elementName in the related view
@@ -27,5 +36,11 @@ module.exports = class AgreementView extends StepView
 
 
     onSubmit: (event)->
-        allowStats = @ui.checkbox?[0].checked || false
+        event.preventDefault()
+        allowStats = @ui.checkbox?[0].checked
         @model.submit {allowStats: allowStats}
+
+
+    renderError: (error) ->
+        @$errorContainer.html(t(error))
+        @$errorContainer.show()

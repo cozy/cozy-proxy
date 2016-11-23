@@ -120,6 +120,9 @@ class App extends Application
         if step.name is @accountsStepName
             stepView.on 'browse:myaccounts', @handleBrowseMyAccounts
 
+        if ENV.HIDE_STATS_AGREEMENT
+            stepView.disableStatsAgreement()
+
         @layout.showChildView 'content', stepView
 
 

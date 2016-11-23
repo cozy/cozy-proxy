@@ -8,6 +8,7 @@ describe('Password Stories', () => {
     let sinon;
 
     let onboarding;
+    let user;
     let currentIndex;
     let spyPasswordValidate;
     let spyPasswordSubmit;
@@ -15,8 +16,6 @@ describe('Password Stories', () => {
     let StepModel;
 
     before(() => {
-        global.ENV = { apps: [] };
-
         assert = require('chai').assert;
         sinon = require('sinon');
         StepModel = require('../../app/models/step.coffee');
@@ -32,12 +31,10 @@ describe('Password Stories', () => {
         spyPasswordSubmit = sinon.spy(PasswordStep, 'submit');
         spyPasswordValidate = sinon.spy(PasswordStep, 'validate');
 
-        // Initialize Onboarding
-        onboarding = new Onboarding({}, Steps);
-    });
+        user = { apps: [] };
 
-    after(() => {
-        delete global.ENV;
+        // Initialize Onboarding
+        onboarding = new Onboarding(user, Steps);
     });
 
     describe('Add a password', () => {

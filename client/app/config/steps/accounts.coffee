@@ -4,7 +4,7 @@ module.exports = {
     view: 'steps/accounts',
 
     isActive: (user) ->
-        return 'konnectors' in ENV.apps
+        return 'konnectors' in user.apps
 
     save: (data) ->
         onboardedSteps = [

@@ -82,7 +82,8 @@ class App extends Application
 
         user = {
             username: ENV.username,
-            hasValidInfos: ENV.hasValidInfos
+            hasValidInfos: ENV.hasValidInfos,
+            apps: ENV.apps
         }
 
         onboarding = new Onboarding(user, steps, ENV.currentStep)

@@ -92,18 +92,29 @@ header
         background-color  #2ce096
 
 // agreeemnt step elements
+@media screen and (max-width: 700px)
+    .agreements
+        width           100%
+        margin          1.5em 0em 1.5em 0
+    .agreements-element
+        padding         0em 0%
+        flex-basis      100%
+@media screen and (min-width: 701px)
+    .agreements
+        width           150%
+        margin          1.5em 0em 1.5em -25%
+    .agreements-element
+        padding         0em 1.5%
+        flex-basis      30%
+
 .agreements
     display         flex
     flex-direction  row
     flex-wrap       wrap
-    width           150%
-    margin          1.5em 0em 1.5em -25%
 
     .agreements-element
         flex-grow       1
-        padding         0em 1.5%
         margin          1.5em 0em
-        flex-basis      30%
 
         p
             margin      auto

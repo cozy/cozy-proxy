@@ -14,11 +14,16 @@ module.exports = class AgreementView extends StepView
 
     onRender: ->
         @$errorContainer=@$('.errors')
+        @$statsPart = @$('.stats-agreement')
 
         if @error
             @renderError(@error)
         else
             @$errorContainer.hide()
+
+        # Environment variable to hide stats checkbox part
+        if ENV.HIDESTATS
+            @$statsPart.hide()
 
 
     serializeData: ->
@@ -37,7 +42,10 @@ module.exports = class AgreementView extends StepView
 
     onSubmit: (event)->
         event.preventDefault()
-        allowStats = @ui.checkbox?[0].checked
+        if ENV.HIDESTATS
+            allowStats = false
+        else
+            allowStats = @ui.checkbox?[0].checked
         @model.submit {allowStats: allowStats}
 
 

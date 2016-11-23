@@ -30,15 +30,14 @@ module.exports = class AgreementView extends StepView
         # the following figures object keys will be the
         # elementName in the related view
         _.extend super,
-            figures:
-                shield: require '../../assets/sprites/icon-shield.svg'
-                hand: require '../../assets/sprites/icon-hand-files.svg'
-                forbidden:
-                    require '../../assets/sprites/icon-forbidden-sign.svg'
-                magnifier:
-                    require '../../assets/sprites/icon-magnifier-user.svg'
-                safe: require '../../assets/sprites/icon-safe.svg'
-                user: require '../../assets/sprites/icon-user.svg'
+            figures: [
+                require '../../assets/sprites/icon-shield.svg'
+                require '../../assets/sprites/icon-hand-files.svg'
+                require '../../assets/sprites/icon-forbidden-sign.svg'
+                require '../../assets/sprites/icon-magnifier-user.svg'
+                require '../../assets/sprites/icon-safe.svg'
+                require '../../assets/sprites/icon-user.svg'
+            ]
             cguLink: 'https://cozy.io'
 
 

@@ -6,12 +6,12 @@ block header
 
 block region
     div.agreements
-        each figure,elementName in figures
+        each figure,index in figures
             div.agreements-element
-                figure(id=elementName)
+                figure(id='figure'+index)
                     .svg-wrapper
                         svg: use(xlink:href=figure)
-                p=t('step agreement ' + elementName + ' element')
+                p=t('step agreement element ' + index)
 
     div.stats-agreement
         div.checkbox

@@ -12,7 +12,8 @@ module.exports = class AgreementView extends StepView
         'click @ui.next': 'onSubmit'
 
 
-    onRender: ->
+    onRender: (args...) ->
+        super args...
         @$errorContainer=@$('.errors')
         @$statsPart = @$('.stats-agreement')
 

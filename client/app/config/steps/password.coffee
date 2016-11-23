@@ -28,6 +28,7 @@ module.exports = {
     save: (data) ->
         return fetch '/register/password',
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify data
         .then @handleSaveSuccess, @handleServerError
 }

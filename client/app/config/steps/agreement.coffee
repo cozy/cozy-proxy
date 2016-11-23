@@ -7,11 +7,15 @@ module.exports = {
             'welcome',
             'agreement'
         ]
+        if data and data.allowStats
+            allowStats = data.allowStats
+        else
+            allowStats = false
         return fetch '/register',
             method: 'POST',
             body: JSON.stringify
                 onboardedSteps: onboardedSteps,
                 isCGUaccepted: true,
-                allow_stats: data.allowStats
+                allow_stats: allowStats
         .then @handleSaveSuccess, @handleServerError
 }

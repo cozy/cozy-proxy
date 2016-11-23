@@ -31,12 +31,14 @@ module.exports = class AgreementView extends StepView
         # elementName in the related view
         _.extend super,
             figures:
-                home: require '../../assets/sprites/icon-house.svg'
-                privacy: require '../../assets/sprites/icon-padlock.svg'
-                legal: require '../../assets/sprites/icon-hammer.svg'
-                transparency: require '../../assets/sprites/icon-magnifier.svg'
-                control: require '../../assets/sprites/icon-magic-finger.svg'
-                community: require '../../assets/sprites/icon-smiley.svg'
+                shield: require '../../assets/sprites/icon-shield.svg'
+                hand: require '../../assets/sprites/icon-hand-files.svg'
+                forbidden:
+                    require '../../assets/sprites/icon-forbidden-sign.svg'
+                magnifier:
+                    require '../../assets/sprites/icon-magnifier-user.svg'
+                safe: require '../../assets/sprites/icon-safe.svg'
+                user: require '../../assets/sprites/icon-user.svg'
             cguLink: 'https://cozy.io'
 
 

@@ -9,7 +9,8 @@ module.exports = {
     # Return validation object
     # @see Onboarding.validate
     validate: (data={}) ->
-        validation = succes: false, \
+        validation =
+            success: false,
             errors: []
         if not data or not data.password
             validation.errors['password'] = 'step password empty'

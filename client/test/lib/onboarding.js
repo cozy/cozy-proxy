@@ -140,6 +140,77 @@ describe('Onboarding', () => {
       assert.deepEqual(step2, onboarding.currentStep)
     });
 
+    it('should set first step as current step', () => {
+        // arrange
+        let user = null;
+        let steps = [{
+          name: 'test',
+          route: 'testroute',
+          view: 'testview'
+        }, {
+          name: 'test2',
+          route: 'testroute2',
+          view: 'testview2'
+        }];
+
+        let onboardedSteps = []
+
+        // act
+        let onboarding = new Onboarding(user, steps, onboardedSteps);
+        let step1 = onboarding.getStepByName('test');
+
+        // assert
+        assert.deepEqual(step1, onboarding.currentStep)
+    });
+
+    it('should set first step as current step with bad onboardedSteps', () => {
+        // arrange
+        let user = null;
+        let steps = [{
+          name: 'test',
+          route: 'testroute',
+          view: 'testview'
+        }, {
+          name: 'test2',
+          route: 'testroute2',
+          view: 'testview2'
+        }];
+
+        let onboardedSteps = ['test3', 'test4', 'test5']
+
+        // act
+        let onboarding = new Onboarding(user, steps, onboardedSteps);
+        let step1 = onboarding.getStepByName('test');
+
+        // assert
+        assert.deepEqual(step1, onboarding.currentStep)
+    });
+
+    it(
+        'should set first step as current step with completed onboardedSteps',
+        () => {
+            // arrange
+            let user = null;
+            let steps = [{
+              name: 'test',
+              route: 'testroute',
+              view: 'testview'
+            }, {
+              name: 'test2',
+              route: 'testroute2',
+              view: 'testview2'
+            }];
+
+            let onboardedSteps = ['test', 'test2']
+
+            // act
+            let onboarding = new Onboarding(user, steps, onboardedSteps);
+            let step1 = onboarding.getStepByName('test');
+
+            // assert
+            assert.deepEqual(step1, onboarding.currentStep)
+    });
+
     it('should throw an error if steps parameter is empty', () => {
       // arrange
       let user = null;

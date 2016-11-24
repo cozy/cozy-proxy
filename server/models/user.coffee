@@ -130,12 +130,6 @@ User.validatePassword = (password, errors = {}) ->
 
     return errors
 
-# Return the expected onboarding step for given userData
-User.getCurrentOnboardingStep = (userData) ->
-    return ONBOARDING_STEPS[0] unless userData and userData.onboardedSteps
-
-    return ONBOARDING_STEPS.find (step) ->
-        return userData.onboardedSteps.indexOf(step) is -1
 
 # Returns true if user is complete and is ready to log into his Cozy.
 # At this time this memthod check only if the user has completed all onboarding

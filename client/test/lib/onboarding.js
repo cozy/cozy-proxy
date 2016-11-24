@@ -14,7 +14,7 @@ describe('Onboarding', () => {
         lastname: 'Causi'
       };
 
-      let steps = [];
+      let steps = [{name: 'test'}];
 
       // act
       let onboarding = new Onboarding(user, steps);
@@ -130,36 +130,99 @@ describe('Onboarding', () => {
         view: 'testview2'
       }];
 
-      let step2Name = 'test2'
+      let onboardedSteps = ['test']
 
       // act
-      let onboarding = new Onboarding(user, steps, step2Name);
-      let step2 = onboarding.getStepByName(step2Name);
+      let onboarding = new Onboarding(user, steps, onboardedSteps);
+      let step2 = onboarding.getStepByName('test2');
 
       // assert
       assert.deepEqual(step2, onboarding.currentStep)
     });
 
-    it('should throw an error if given current step does not exist', () => {
+    it('should set first step as current step', () => {
+        // arrange
+        let user = null;
+        let steps = [{
+          name: 'test',
+          route: 'testroute',
+          view: 'testview'
+        }, {
+          name: 'test2',
+          route: 'testroute2',
+          view: 'testview2'
+        }];
+
+        let onboardedSteps = []
+
+        // act
+        let onboarding = new Onboarding(user, steps, onboardedSteps);
+        let step1 = onboarding.getStepByName('test');
+
+        // assert
+        assert.deepEqual(step1, onboarding.currentStep)
+    });
+
+    it('should set first step as current step with bad onboardedSteps', () => {
+        // arrange
+        let user = null;
+        let steps = [{
+          name: 'test',
+          route: 'testroute',
+          view: 'testview'
+        }, {
+          name: 'test2',
+          route: 'testroute2',
+          view: 'testview2'
+        }];
+
+        let onboardedSteps = ['test3', 'test4', 'test5']
+
+        // act
+        let onboarding = new Onboarding(user, steps, onboardedSteps);
+        let step1 = onboarding.getStepByName('test');
+
+        // assert
+        assert.deepEqual(step1, onboarding.currentStep)
+    });
+
+    it(
+        'should set first step as current step with completed onboardedSteps',
+        () => {
+            // arrange
+            let user = null;
+            let steps = [{
+              name: 'test',
+              route: 'testroute',
+              view: 'testview'
+            }, {
+              name: 'test2',
+              route: 'testroute2',
+              view: 'testview2'
+            }];
+
+            let onboardedSteps = ['test', 'test2']
+
+            // act
+            let onboarding = new Onboarding(user, steps, onboardedSteps);
+            let step1 = onboarding.getStepByName('test');
+
+            // assert
+            assert.deepEqual(step1, onboarding.currentStep)
+    });
+
+    it('should throw an error if steps parameter is empty', () => {
       // arrange
       let user = null;
-      let steps = [{
-        name: 'test',
-        route: 'testroute',
-        view: 'testview'
-      }, {
-        name: 'test2',
-        route: 'testroute2',
-        view: 'testview2'
-      }];
+      let steps = [];
 
       let fn = () => {
         // act
-        let onboarding = new Onboarding(user, steps, 'test3');
+        let onboarding = new Onboarding(user, steps);
       };
 
       // assert
-      assert.throw(fn, 'Given current step does not exist in step list');
+      assert.throw(fn, '`steps` parameter is empty');
     });
   });
 
@@ -167,7 +230,7 @@ describe('Onboarding', () => {
   describe('#onStepChanged', () => {
     it('should add given callback to step changed handlers', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let callback = (step) => {};
 
       // act
@@ -181,7 +244,7 @@ describe('Onboarding', () => {
 
     it('should throw an error when callback is not a function', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let randomString = 'abc';
       let fn = () => {
         // act
@@ -196,7 +259,7 @@ describe('Onboarding', () => {
   describe('#onStepFailed', () => {
     it('should add given callback to step failed handlers', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let callback = (step) => {};
 
       // act
@@ -210,7 +273,7 @@ describe('Onboarding', () => {
 
     it('should throw an error when callback is not a function', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let randomString = 'abc';
       let fn = () => {
         // act
@@ -225,7 +288,7 @@ describe('Onboarding', () => {
   describe('#onDone', () => {
     it('should add given callback to onDone handler', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let callback = (step) => {};
 
       // act
@@ -239,7 +302,7 @@ describe('Onboarding', () => {
 
     it('should throw an error when callback is not a function', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       let randomString = 'abc';
       let fn = () => {
         // act
@@ -254,7 +317,7 @@ describe('Onboarding', () => {
   describe('#handleStepCompleted', () => {
     it('should call Onboarding#goToNext', () => {
       // arrange
-      let onboarding = new Onboarding(null, []);
+      let onboarding = new Onboarding(null, [{name: 'test'}]);
       onboarding.goToNext = sinon.spy();
 
       // act
@@ -267,7 +330,7 @@ describe('Onboarding', () => {
 
 
   describe('#goToNext', () => {
-    it('should call goToStep with first step', () => {
+    it('should call goToStep with second step', () => {
       // arrange
       let onboarding = new Onboarding(null, [
         {
@@ -281,7 +344,7 @@ describe('Onboarding', () => {
         }
       ]);
 
-      let firstStep = onboarding.steps[0];
+      let secondStep = onboarding.steps[1];
       onboarding.goToStep = sinon.spy();
 
       // act
@@ -289,7 +352,7 @@ describe('Onboarding', () => {
 
       // assert
       assert(onboarding.goToStep.calledOnce);
-      assert(onboarding.goToStep.calledWith(firstStep));
+      assert(onboarding.goToStep.calledWith(secondStep));
     });
 
     it('should call goToStep with next step', () => {

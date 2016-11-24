@@ -94,18 +94,17 @@ module.exports = class InfosView extends StepView
     #            as value]
     #   }
     showErrors: ({message, errors}) =>
+
         if message
             @$errorMessagePlaceholder ?= @$ '.errors'
             @$errorMessagePlaceholder.text(t(message)).show()
         else
             @$errorMessagePlaceholder?.text('').hide()
 
-        if errors
-            @$errorPlaceholders ?= []
-
-            @fields.forEach (field) =>
-                if errors[field]
-                    @showError field, errors[field]
-                else
-                    # We hide errors now to have a smoother rendering
-                    @hideError field
+        @$errorPlaceholders ?= []
+        @fields.forEach (field) =>
+            if errors and errors[field]
+                @showError field, errors[field]
+            else
+                # We hide errors now to have a smoother rendering
+                @hideError field

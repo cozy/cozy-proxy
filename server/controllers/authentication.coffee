@@ -19,7 +19,7 @@ getEnv = (callback) ->
             return callback err if err
 
             env =
-                username: username
+                public_name: username
                 otp:      !!otp
                 apps:     Object.keys require('../lib/router').getRoutes()
                 myAccountsUrl: process.env.COZY_MYACCOUNTS_URL \
@@ -170,7 +170,7 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         'timezone',
         'onboardedSteps'
     ].forEach (property) =>
-        if requestData[property]
+        if requestData[property]?
             userToSave[property] = requestData[property]
 
     # if final step done, user is registred
@@ -195,6 +195,31 @@ module.exports.saveAuthenticatedUser = (req, res, next) ->
         error        = new Error 'Errors with validation'
         error.errors = validationErrors
         error.status = 400
+        next error
+
+
+module.exports.user = (req, res, next) ->
+    if req.isAuthenticated()
+        User.first (err, userData) ->
+            if err
+                error = new Error "[Error to access cozy user] #{err.code}"
+                error.status   = 500
+                error.template = name: 'error'
+                next error
+            else
+                allowedProperties = ['public_name', 'email', 'timezone']
+                fields = req.query.fields?.split(',')
+
+                userInfos = fields?.reduce( (data, property) ->
+                    if property in allowedProperties
+                        data[property] = userData[property] or null
+                    return data
+                , {}) or {}
+
+                res.status(200).send userInfos
+    else
+        error         = new Error 'Forbidden'
+        error.status  = 403
         next error
 
 

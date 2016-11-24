@@ -59,7 +59,7 @@ class App extends Application
     # changed.
     # @param step Step instance
     handleStepChanged: (step) ->
-        @router.navigate step.route, trigger: true
+        @showStep step
 
 
     # Internal handler called when the onboarding is finished
@@ -82,7 +82,7 @@ class App extends Application
         steps = require './config/steps/all'
 
         user = {
-            username: ENV.username,
+            public_name: ENV.public_name
             hasValidInfos: ENV.hasValidInfos,
             apps: ENV.apps
         }
@@ -104,7 +104,7 @@ class App extends Application
 
         currentStep = @onboarding.getCurrentStep()
         @router.navigate currentStep.route
-        @showStep(currentStep)
+        @onboarding.goToStep(currentStep)
 
 
     # Load the view for the given step

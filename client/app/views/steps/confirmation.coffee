@@ -23,7 +23,10 @@ module.exports = class ConfirmationView extends StepView
 
     onSubmit: (event) ->
         event.preventDefault()
-        @model.submit()
+        @model
+            .submit()
+            .then null, (error) =>
+                @renderError error.message
 
 
     serializeData: ->

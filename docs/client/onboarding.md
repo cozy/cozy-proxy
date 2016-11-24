@@ -74,7 +74,7 @@ Select the next step on the list and trigger the related events.
 ##### Parameters
 * `step`: Step
 
-Go directly to the given step and trigger required events. Useful for go back in onboarding.
+Go to the given step. Fetch data related to step by calling `fetchData`. If it's a success, trigger `stepChanged` pseudo-event (i.e. call `triggerStepChanged` method).
 
 #### triggerStepChanged(step)
 ##### Parameters
@@ -170,7 +170,7 @@ This key will be used, according to the current locale, to get the matching tran
 #### fetchUser(user)
 * `user`: JS Object
 
-Map some given user properties to the step. By default, the method just map the `username` for every step.
+Map given user properties to the step. By default, the method just map the `public_name` for every step.
 
 This method may be overriden by specifying a `fetchUser` method in constructor parameter.
 
@@ -179,13 +179,13 @@ __This method is called in the constructor__.
 ##### Example
 ```javascript
 let user = {
-    username: 'Claude',
+    public_name: 'Claude',
     email: 'claude@example.org'
 };
 
 let step = new Step({
     fetchUser: (user) => {
-        @username = user.username
+        @username = user.public_name
         @useremail = user.email
     }, user
 });
@@ -195,6 +195,42 @@ console.log(step.username);
 console.log(step.useremail);
 // > claude@example.org
 ```
+
+#### fetchData()
+Returns a resolved Promise by default. This method can be overriden by step's options, to fetch data from server for example. This method is called internally by the onboarding object in `goToStep()` method.
+
+When overriding this class, the idea is to map data to step into a success handler.
+##### Example :
+```coffeescript
+fetchData : () ->
+    return fetch '/user?fields=public_name,email,timezone',
+        method: 'GET',
+        credentials: 'include',
+    .then (response) =>
+        if response.ok
+            return response.json().then (json) =>
+                @publicName = json.public_name
+                @email = json.email
+                @timezone = json.timezone
+                return @
+        else
+            @error = 'step infos fetch data error'
+            return @
+```
+
+#### getData()
+Returns data related to the current step. Return the following default object by default (for user _Claude Causi_):
+```javascript
+{
+    public_name: 'Claude Causi'
+}
+```
+
+#### getName()
+Returns step's name.
+
+#### getError()
+Returns step's error property, if it is set.
 
 #### onCompleted(callback)
 ##### Parameters
@@ -244,8 +280,31 @@ let result2 = step.isActive({name: Claudia});
 ##### Parameters
 * `data`: Data to be saved
 
-Submit the step, i.e. try to register it as done. This method should be overriden in config steps to manage specific submits or validation, for steps with forms for example.
-Also, maybe it should return a Promise (return by the save method) to handle correctly remote synchronisation.
+Submit the step, i.e. try to register it as done.
+Returns a Promise, and call `validate(data)` to ensure that data is valid.
+
+#### validate(data)
+##### Parameters
+* `data`: Data to validate
+Validate the given data. Returns an object containing following informations :
+
+```javascript
+{
+    success: <Boolean>, // Did the validation succeed ?
+    error: <String>, // Main error message
+    errors: [] // list of validation error as key: value
+}
+// Example :
+{
+    success: false,
+    error: 'validation error',
+    errors: [
+        'public_name': 'missing public_name'
+    ]
+}
+```
+The `validate()` method is called by `submit()`.
+By default, it returns a successful validation. It can be overriden by step options.
 
 #### handleSubmitError(error)
 ##### Parameters

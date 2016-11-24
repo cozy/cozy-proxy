@@ -378,7 +378,7 @@ describe('Onboarding', () => {
       assert.equal(firstStep, onboarding.currentStep);
     });
 
-    it('should call `triggerStepChanged`', () => {
+    it('should call `step.fetchData`', () => {
       // arrange
       let onboarding = new Onboarding(null, [
         {
@@ -393,14 +393,50 @@ describe('Onboarding', () => {
       ]);
 
       let firstStep = onboarding.steps[0];
-      onboarding.triggerStepChanged = sinon.spy();
+
+      sinon.stub(firstStep, 'fetchData', () => {
+          return Promise.resolve()
+      });
 
       // act
       onboarding.goToStep(firstStep);
 
       // assert
-      assert(onboarding.triggerStepChanged.calledOnce);
-      assert(onboarding.triggerStepChanged.calledWith(firstStep));
+      assert(firstStep.fetchData.calledOnce);
+    });
+
+    it('should call `triggerStepChanged` on `fetchData` on success', (done) => {
+      // arrange
+      let onboarding = new Onboarding(null, [
+        {
+          name: 'test',
+          route: 'testroute',
+          view: 'testview'
+        }, {
+          name: 'test2',
+          route: 'testroute2',
+          view: 'testview2'
+        }
+      ]);
+
+      let firstStep = onboarding.steps[0];
+
+      sinon.stub(firstStep, 'fetchData', () => {
+          return Promise.resolve(firstStep)
+      });
+
+      onboarding.triggerStepChanged = sinon.spy();
+
+      // act
+      onboarding.goToStep(firstStep);
+
+      // Handle Promise asynchronicity
+      setTimeout( () => {
+          // assert
+          assert(onboarding.triggerStepChanged.calledOnce);
+          assert(onboarding.triggerStepChanged.calledWith(firstStep));
+          done();
+      }, 5);
     });
   });
 

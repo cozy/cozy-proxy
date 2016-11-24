@@ -14,21 +14,18 @@ module.exports = class StepModel extends Backbone.Model
 
         # We map the defaults steps properties in the current model
         # There will be more properties/functions in the future.
-        ['name', 'route', 'view', 'username'].forEach (property) =>
-            @set property, step[property]
+        for property, value of @step.getData()
+            @set property, value
+
+        @set 'name', @step.getName()
+        @set 'error', @step.getError()
 
         @set 'next', next
 
 
     submit: (data={}) ->
-        # Dispatch Error
-        if @step.validate? and (errors = @step.validate(data))
-            @step.error = errors
-            return false
+        return @step.submit(data)
 
-        # Goto next Step
-        @step.submit(data)
-        return true
 
     validate: (data={}) ->
         return @step.validate(data)

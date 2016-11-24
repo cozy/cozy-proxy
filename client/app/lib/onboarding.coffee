@@ -14,6 +14,8 @@ class Step
           'view',
           'isActive',
           'fetchUser',
+          'fetchData',
+          'getData',
           'validate',
           'save',
           'error'
@@ -29,7 +31,25 @@ class Step
     # This method can be overriden by passing another fetchUser function
     # in constructor parameters
     fetchUser: (user={}) ->
-        @username = user.username
+        @publicName = user.public_name
+
+
+    # Returns data related to step.
+    # This is a default method that may be overriden
+    getData: () ->
+        return public_name: @publicName
+
+
+    getName: () ->
+        return @name
+
+
+    getError: () ->
+        return @error
+
+
+    fetchData: () ->
+        return Promise.resolve(@)
 
 
     # Record handlers for 'completed' internal pseudo-event
@@ -70,20 +90,40 @@ class Step
         return true
 
 
+    # Validate data related to step
+    # This method may be overriden by step options
+    # @param data: Data to validate
+    # @return a validation object like following :
+    #   {
+    #       success: Boolean
+    #       error: single error message
+    #       errors: Array containg key value, typically used to validate
+    #                multiple fields in a form.
+    #   }
+    validate: (data) ->
+        return success: true, error: null, errors: []
+
+
     # Submit the step
     # This method should be overriden by step given as parameter to add
     # for example a validation step.
     # Maybe it should return a Promise or a call a callback couple
     # in the near future
     submit: (data={}) ->
+        validation = @validate data
+
+        if not validation.success
+            return Promise.reject \
+                message: validation.error,
+                errors: validation.errors
+
         return @save data
-        .then @handleSubmitSuccess, @handleSubmitError
+            .then @handleSubmitSuccess
 
 
     # Handler for error occuring during a submit()
     handleSubmitError: (error) =>
         @triggerFailed error
-
 
     # Handler for submit success
     handleSubmitSuccess: => @triggerCompleted()
@@ -100,11 +140,11 @@ class Step
     handleSaveSuccess: (response) =>
         # Success ? Hell no we still have to check the status !
         if not response.ok
-            # At this time we consider that every failed HTTP response has
-            # to be treated like a server error.
-            # if we need in the future, we may decide to differenciate behavior
-            # according to error status ranges.
-            @handleServerError response
+            return @handleServerError response unless response.status is 400
+
+            # Validation error
+            return response.json().then (json) =>
+                throw message: 'validation error', errors: json.errors
 
         return response
 
@@ -203,11 +243,12 @@ module.exports = class Onboarding
     # Go directly to a given step.
     goToStep: (step) ->
         @currentStep = step
-        @triggerStepChanged step
+        step.fetchData()
+            .then @triggerStepChanged, @triggerStepErrors
 
 
     # Trigger a 'StepChanged' pseudo-event.
-    triggerStepChanged: (step) ->
+    triggerStepChanged: (step) =>
         if @stepChangedHandlers
             @stepChangedHandlers.forEach (handler) ->
                 handler step

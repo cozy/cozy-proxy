@@ -6,24 +6,21 @@ module.exports = {
     route: 'register/password',
     view : 'steps/password'
 
-    # If OK, return null
-    # if not return an Array of errors
-    # that will be triggered throw onboarding
-    # to dispatch error into app
+    # Return validation object
+    # @see Onboarding.validate
     validate: (data={}) ->
-        errors = {}
+        validation =
+            success: false,
+            errors: []
         if not data or not data.password
-            errors.password = 'step password empty'
+            validation.errors['password'] = 'step password empty'
         else if data.password
             passwordStrength = passwordHelper.getStrength data.password
             if passwordStrength?.label is 'weak'
-                errors.password = 'step password too weak'
+                validation.errors['password'] = 'step password too weak'
 
-        if Object.keys(errors).length
-            return errors
-        else
-            return null
-
+        validation.success = Object.keys(validation.errors).length is 0
+        return validation
 
     save: (data) ->
         return fetch '/register/password',

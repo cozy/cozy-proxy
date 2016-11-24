@@ -1,8 +1,30 @@
-extends view_base
+extends _view_step_base
+
+block header
+    h1=t('step agreement title')
+    p=t('step agreement subtitle')
 
 block region
-    h1=t('Conditions générales')
-    footer
-        .controls
-            button=t('CONTINUER')
-        .progression
+    div.agreements
+        each figure,index in figures
+            div.agreements-element
+                figure(id='figure'+index)
+                    .svg-wrapper
+                        svg: use(xlink:href=figure)
+                p=t('step agreement element ' + index)
+
+    div.stats-agreement
+        div.checkbox
+            input(type="checkbox" checked)
+        p=t('step agreement stats')
+
+    p
+        span=(t('step agreement description 1') + ' ')
+        a(href=cguLink)=t('step agreement description link')
+        span=(' ' + t('step agreement description 2'))
+
+    p.errors
+
+
+block controls
+    button(class="next")= t('step agreement next')

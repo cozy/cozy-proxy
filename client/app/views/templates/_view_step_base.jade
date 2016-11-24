@@ -1,12 +1,13 @@
 .step-wrapper
     header
-        figure(id=id)
-            if link
-                a(href=link target="_blank")
-                    svg: use(xlink:href=figureid)
-            else
-                .svg-wrapper
-                    svg: use(xlink:href=figureid)
+        if figureid
+            figure(id=id)
+                if link
+                    a(href=link target="_blank")
+                        svg: use(xlink:href=figureid)
+                else
+                    .svg-wrapper
+                        svg: use(xlink:href=figureid)
 
         block header
 

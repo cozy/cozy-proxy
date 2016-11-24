@@ -19,6 +19,7 @@ class App extends Application
     # URL for the redirection when the onboarding is finished
     endingRedirection: '/'
     accountsStepName: 'accounts'
+    agreementStepName: 'agreement'
 
     ###
     Sets application
@@ -120,6 +121,9 @@ class App extends Application
 
         if step.name is @accountsStepName
             stepView.on 'browse:myaccounts', @handleBrowseMyAccounts
+
+        if step.name is @agreementStepName and ENV.HIDE_STATS_AGREEMENT
+            stepView.disableStatsAgreement()
 
         @layout.showChildView 'content', stepView
 

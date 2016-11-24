@@ -17,11 +17,33 @@ module.exports = class InfosView extends StepView
         'timezone'
     ]
 
+    initialize: (args...) ->
+        super args...
+
+        # Method used to update submit state when text is typed into inputs.
+        # Throttled to avoid too much calls.
+        @updateSubmitState = _.throttle( =>
+            if @formIsFilled()
+                @enableSubmit()
+            else
+                @disableSubmit()
+        , 1000)
+
     # Step may contain errors, for example when data fetching has failed.
     onRender: ->
+        # We store inputs in an array with identifier, mainly because it is
+        # useful for error management
+        @$inputs ?= @fields.reduce (inputs, field) =>
+            inputs[field] = @$ "\##{field}"
+            return inputs
+        , []
+
         error = @model.get 'error'
         if error
             @showErrors(message: error)
+
+        @updateSubmitState()
+        @listenToInputChanges()
 
 
     serializeData: ->
@@ -32,14 +54,7 @@ module.exports = class InfosView extends StepView
 
 
     getFormData: () ->
-        # We store inputs in an array with identifier, mainly because it is
-        # useful for error management
-        @$inputs ?= @fields.reduce (inputs, field) =>
-            inputs[field] = @$ "\##{field}"
-            return inputs
-        , []
-
-        # Alternate ending :
+        # Alternate version :
         # return fields.reduce (data, field) =>
         #     data[field] = @$inputs[field].val()
         #     return data
@@ -50,6 +65,20 @@ module.exports = class InfosView extends StepView
             email: @$inputs['email'].val()
             timezone: @$inputs['timezone'].val()
         }
+
+    # Returns boolean indicating if all form fields has been filled
+    formIsFilled: () ->
+        data = @getFormData()
+        atLeastOneValueIsEmpty = Object.keys(data).find (key) ->
+            return not data[key]
+        return not atLeastOneValueIsEmpty
+
+
+    # Intialize listeners on input to update submit button state.
+    listenToInputChanges: () ->
+        for field, $element of @$inputs
+            $element.on 'input', (event) =>
+                @updateSubmitState()
 
 
     onSubmit: (event) ->

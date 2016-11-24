@@ -68,8 +68,8 @@ describe('Password Stories', () => {
             // Select StepPassword
             onboarding.goToStep(passwordStep);
 
-            // Submit password value
-            passwordStep.submit({ password: 'toto' })
+            // Submit strong password value
+            passwordStep.submit({ password: 'Toto@1234' })
 
             // Deal with async Promise call
             setTimeout(() => {

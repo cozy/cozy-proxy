@@ -59,13 +59,13 @@ describe('Onboarding.Step', () => {
   describe('#fetchUser', () => {
     it('should fetch username by default', () => {
       // arrange
-      let username = 'Claude';
+      let publicName = 'Claude';
 
       // act
-      let step = new Step({}, {username: username});
+      let step = new Step({}, {public_name: publicName});
 
       // assert
-      assert.equal(username, step.username);
+      assert.equal(step.publicName, publicName);
     });
 
     it('should call overriding method', () => {

@@ -29,7 +29,7 @@ However, it will be possible to override class methods in config objects (not im
 ##### Parameters
 * `user`: JS object representing user's properties
 * `steps`: Array of JS object representing steps
-* `currentStepName`: String reprensenting the current (or first) step in onboarding.
+* `onboardedSteps`: Array of string representing the list of step already done. Used to determine current step.
 
 Set the user and the steps list for the current onboarding.
 Called by the constructor method.

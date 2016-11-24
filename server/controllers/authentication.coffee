@@ -67,7 +67,7 @@ module.exports.onboarding = (req, res, next) ->
                     # registration mode
                     # TODO: this one is temporary, and need to be removed
                     # when we merge CSS again.
-                    env.currentStep = User.getCurrentOnboardingStep userData
+                    env.onboardedSteps = userData?.onboardedSteps
                     res.render 'index', {env: env, onboarding: true}
 
 

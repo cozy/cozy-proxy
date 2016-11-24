@@ -87,7 +87,7 @@ class App extends Application
             apps: ENV.apps
         }
 
-        onboarding = new Onboarding(user, steps, ENV.currentStep)
+        onboarding = new Onboarding(user, steps, ENV.onboardedSteps)
         onboarding.onStepChanged (step) => @handleStepChanged(step)
         onboarding.onStepFailed (step, err) => @handleStepFailed(step, err)
         onboarding.onDone () => @handleTriggerDone()

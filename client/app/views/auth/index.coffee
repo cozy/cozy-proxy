@@ -47,7 +47,7 @@ module.exports = class AuthView extends LayoutView
     - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
-        username: window.ENV.username
+        username: window.ENV.public_name
         otp:      window.ENV.otp
         prefix:   @options.type
 

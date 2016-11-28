@@ -2,8 +2,8 @@ extends _view_step_base
 
 
 block header
-    if username
-        h1= t('step welcome user', {name: username})
+    if public_name
+        h1= t('step welcome user', {name: public_name})
     else
         h1= t('step welcome anon')
 

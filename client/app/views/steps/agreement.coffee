@@ -39,7 +39,7 @@ module.exports = class AgreementView extends StepView
                 require '../../assets/sprites/icon-safe.svg'
                 require '../../assets/sprites/icon-user.svg'
             ]
-            cguLink: 'https://cozy.io'
+            cguLink: 'https://files.cozycloud.cc/cgu.pdf'
 
 
     onSubmit: (event)->

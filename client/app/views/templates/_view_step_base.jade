@@ -1,0 +1,22 @@
+.step-wrapper
+    header
+        if figureid
+            figure(id=id)
+                if link
+                    a(href=link target="_blank")
+                        svg: use(xlink:href=figureid)
+                else
+                    .svg-wrapper
+                        svg: use(xlink:href=figureid)
+
+        block header
+
+    div(role="region")
+        block region
+
+
+    footer
+        .controls
+            block controls
+
+        .progression

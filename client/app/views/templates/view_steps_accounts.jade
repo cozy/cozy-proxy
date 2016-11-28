@@ -1,0 +1,14 @@
+extends _view_step_base
+
+
+block header
+    h1= t('step accounts title')
+
+block region
+    p= t('step accounts description line 1')
+    p= t('step accounts description line 2')
+
+    p(class="errors")
+
+block controls
+    a(href=next role="button" class="next")= t('step accounts next')

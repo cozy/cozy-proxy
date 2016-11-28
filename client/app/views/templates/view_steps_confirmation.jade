@@ -1,0 +1,14 @@
+extends _view_step_base
+
+
+block header
+    h1=t('step confirmation title')
+
+block region
+    p= t('step confirmation description line 1')
+    p= t('step confirmation description line 2')
+
+    p(class="errors")
+
+block controls
+    button(class="next")= t('step confirmation next')

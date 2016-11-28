@@ -112,3 +112,24 @@ module.exports.isNotAuthenticated = (req, res, next) ->
         res.redirect '/'
     else
         next()
+
+module.exports.isRegistered = (req, res, next) ->
+    User.first (err, user) ->
+        if err
+            next makeError 401, 'no user found', err
+        else if User.isRegistered user
+            next()
+        else
+            res.redirect '/register'
+
+module.exports.isNotRegistered = (req, res, next) ->
+    User.first (err, user) ->
+        if err
+            # Ok for first onboarding step.
+            next()
+        else if User.isRegistered user
+            # Registered users should not access to onboarding
+            res.redirect '/'
+        else
+            # User is currently completing onbaording.
+            next()

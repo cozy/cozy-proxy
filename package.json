@@ -42,8 +42,11 @@
     "coffee-coverage": "1.0.1",
     "coffee-script": "1.10.0",
     "coffeelint": "1.15.7",
+    "fetch-mock": "^5.5.0",
     "jade": "1.11.0",
     "jade2commonjs": "cozy/jade2commonjs",
+    "jsdom": "9.6.0",
+    "jsdom-global": "2.1.0",
     "mocha": "2.5.3",
     "nock": "8.0.0",
     "node-mocks-http": "1.5.2",
@@ -51,6 +54,7 @@
     "npm-run-all": "1.7.0",
     "rewire": "2.5.1",
     "sinon": "1.17.4",
+    "svg-sprite-loader": "0.0.29",
     "webpack": "1.12.15",
     "xmlhttprequest": "1.8.0"
   },
@@ -75,12 +79,13 @@
     "postbuild": "npm-run-all --parallel copy:*",
     "postinstall": "node postinstall.js",
     "start": "node build/server.js",
-    "test": "npm run test:server",
-    "test:build": "env USE_JS=true npm run test",
+    "test": "npm-run-all test:*",
     "test:server": "env NODE_ENV=test PORT=4444 mocha --reporter spec --compilers coffee:coffee-script/register",
+    "test:client": "mocha client/test/**/* --bail --reporter spec --compilers coffee:coffee-script/register --colors",
+    "test:client:watch": "mocha --watch client/test/**/* --bail --reporter spec --compilers coffee:coffee-script/register --colors",
     "tx": "tx pull --all || true",
     "watch": "npm-run-all --parallel 'watch:*'",
     "watch:client": "cd client && webpack --display-modules --display-chunks --watch",
-    "watch:server": "coffee server.coffee"
+    "watch:server": "nodemon --debug --ignore client/ server.coffee"
   }
 }

@@ -1,6 +1,6 @@
 {
     "index title": "Cozy - Votre nuage personnel privé",
-    "index description": "Cozy est un cloud personnel que vous pouvez héberger chez vous. Il vous permet de prendre le contrôle et d'interconnecter vos données entre elles. Il transforme un petit ordinateur tel qu'un Raspberrry Pi 2 ou un serveur VPS en une puissante plateforme web. Le gestionnaire de contacts, le calendrier, le webmail ou encore le gestionnaire de fichiers sont autant d'applications disponibles par défaut.",
+    "index description": "Cozy est un cloud personnel que vous pouvez héberger chez vous. Il vous permet de prendre le contrôle et d'interconnecter vos données entre elles. Il transforme un petit ordinateur tel qu'un Raspberry Pi 2 ou un serveur VPS en une puissante plateforme web. Le gestionnaire de contacts, le calendrier, le webmail ou encore le gestionnaire de fichiers sont autant d'applications disponibles par défaut.",
     "index noscript title": "Désolé",
     "index noscript message": "Cozy nécessite JavaScript et le cookies activés mais il semble que vous ayez désactivé l'un ou l'autre.",
     "error title": "Oups, une erreur est survenue",
@@ -31,5 +31,9 @@
     "reset password email text": "Il semble que vous ayez oublié le mot de passe de votre Cozy.\nNe vous inquiétez pas, suivez simplement le lien suivant pour en définir un nouveau :\n\nhttps://%{domain}/password/reset/%{key}\n\nN'oubliez pas de mettre à jour toutes vos données chiffrées après ça !\n\nPour plus d'infos, vous pouvez visiter la FAQ de cozy :\n\nhttps://docs.cozy.io/fr/faq.html#que-faire-si-j-oublie-mon-mot-de-passe-",
     "invalid email format": "Votre adresse email ne semble pas valide.",
     "invalid timezone": "Ce fuseau horaire n'est pas valide. Utilisez un format <Continent>/<Pays>, par exemple Europe/Paris.",
-    "password too short": "Votre mot de passe est trop court, il doit contenir au moins 8 caractères."
+    "password missing": "Le mot de passe est vide, veuillez entrer un mot de passe.",
+    "password too weak": "Votre mot de passe est trop simple. Il est recommandé d'utiliser des majuscules, des chiffres, des caractères spéciaux et/ou un mot de passe plus long.",
+    "authenticated with recovery code": "Vous venez de vous connecter à l'aide d'une de vos clés de récupération. Vous avez",
+    "recovery codes left": "clés de récupération restantes.",
+    "recovery codes warning": "Vous n'avez aucune clé de récupération disponible. Veuillez en régénérer depuis la page de Paramètres ou vous pourriez rester coincé hors de votre Cozy."
 }

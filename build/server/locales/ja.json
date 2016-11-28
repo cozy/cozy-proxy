@@ -31,5 +31,9 @@
     "reset password email text": "Cozy のパスワードをお忘れのようです。\nご心配いりません。次のリンクに従って、新しく作成します:\n\nhttps://%{domain}/password/reset/%{key}\n\nその後、暗号化されたデータをすべて更新することを忘れないでください!\n\n詳細情報については、Cozy のよくある質問をご覧ください :\n\nhttps://docs.cozy.io/en/faq.html#what-can-i-do-if-i-forget-my-password-",
     "invalid email format": "メールアドレスが正しくないようです。",
     "invalid timezone": "このタイムゾーンは正しくありません。 <Continent>/<Country> の書式を使用します。例、 America/New_York 。",
-    "password too short": "パスワードが短すぎます。8 文字以上にする必要があります。"
+    "password missing": "パスワードが空です。パスワードを入力してください。",
+    "password too weak": "パスワードの安全度が低すぎます。大文字、数字、特殊文字を追加したり、より長いパスワードにする必要があります。",
+    "authenticated with recovery code": "回復コードのうちの１つでログインしました。",
+    "recovery codes left": "回復コードが残っています。",
+    "recovery codes warning": "利用可能な回復トークンはありません。設定ページでトークンを再生成してください。そうしないと Cozy からロックされる可能性があります。"
 }

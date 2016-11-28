@@ -168,3 +168,27 @@ module.exports.isNotAuthenticated = function(req, res, next) {
     return next();
   }
 };
+
+module.exports.isRegistered = function(req, res, next) {
+  return User.first(function(err, user) {
+    if (err) {
+      return next(makeError(401, 'no user found', err));
+    } else if (User.isRegistered(user)) {
+      return next();
+    } else {
+      return res.redirect('/register');
+    }
+  });
+};
+
+module.exports.isNotRegistered = function(req, res, next) {
+  return User.first(function(err, user) {
+    if (err) {
+      return next();
+    } else if (User.isRegistered(user)) {
+      return res.redirect('/');
+    } else {
+      return next();
+    }
+  });
+};

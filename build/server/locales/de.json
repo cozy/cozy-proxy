@@ -31,5 +31,9 @@
     "reset password email text": "Es scheint als ob Sie das Passwort für Ihr Cozy vergessen haben.\nKeine Sorge; folgen Sie einfach dem Link unten um ein neues zu erstellen:\n\nhttps://%{domain}/password/reset/%{key}\n\nVergessen danach Sie nicht all Ihre verschlüsselten Daten zu aktualiseren!",
     "invalid email format": "Deine E-Mail Adresse scheint ungültig zu sein",
     "invalid timezone": "Die Zeitzone ist ungültig. Bitte benutze das <Kontinent>/<Land> Format, e.g. Europe/Berlin.",
-    "password too short": "Dein Passwort ist zu kurz. Es muss mindestens 8 Zeichen haben."
+    "password missing": "Das Passwortfeld ist leer, bitte geben Sie ein Passwort ein.",
+    "password too weak": "Ihr Passwort ist zu schwach. Sie sollten einen Großbuchstaben, eine Ziffer und ein Sonderzeichen ergänzen oder Ihr Passwort verlängern.",
+    "authenticated with recovery code": "Sie haben sich gerade mit einem Ihrer Wiederherstellungscodes eingeloggt. Sie haben",
+    "recovery codes left": "Wiederherstellungscodes übrig.",
+    "recovery codes warning": "Sie haben keine Wiederherstellungscodes mehr. Bitte generieren Sie neue Wiederherstellungscodes in der Einstellungsseite - andernfalls könnten Sie von Cozy ausgesperrt werden!"
 }

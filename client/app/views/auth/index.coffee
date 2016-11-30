@@ -30,8 +30,8 @@ module.exports = class AuthView extends LayoutView
 
     template: require '../templates/view_auth'
 
-    regions:
-        'feedback': '.feedback'
+    # regions:
+    #     'feedback': '.feedback'
 
     ui:
         passwd: 'input[type=password]'
@@ -105,10 +105,9 @@ module.exports = class AuthView extends LayoutView
     ###
     onRender: ->
         # Render the feedback child view
-        @showChildView 'feedback', new FeedbackView
-            forgot: @options.type is 'login'
-            prefix: @options.type
-            model:  @model
+        # @showChildView 'feedback', new FeedbackView
+        #     forgot: @options.type is 'login'
+        #     model:  @model
 
         # Select all password field content at focus
         asEventStream.call @ui.passwd, 'focus'

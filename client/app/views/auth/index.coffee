@@ -35,6 +35,7 @@ module.exports = class AuthView extends LayoutView
         passwd: 'input[type=password]'
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
+        togglePasswordVisibility: 'button[name=password-visibility]'
 
 
     ###
@@ -150,3 +151,24 @@ module.exports = class AuthView extends LayoutView
         # Re select all password field on failure.
         @model.alert
             .assign @ui.passwd[0], 'select'
+
+        @ui.togglePasswordVisibility.on 'click', (event) =>
+            event.preventDefault()
+            @togglePasswordVisibility()
+
+
+    togglePasswordVisibility: () ->
+        @isPasswordMasked ?= \
+            @ui.passwd.attr('type') is 'password'
+
+        @isPasswordMasked = not @isPasswordMasked
+
+        @ui.passwd
+            .attr 'type', if @isPasswordMasked then 'password' else 'text'
+
+        @ui.togglePasswordVisibility
+            .attr 'aria-pressed', \
+                if @isPasswordMasked then false else true
+            .attr 'title', if @isPasswordMasked \
+                then t('step password show') \
+                else t('step password hide')

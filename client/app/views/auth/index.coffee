@@ -63,6 +63,9 @@ module.exports = class AuthView extends LayoutView
             .map '.target.value'
             .toProperty('')
 
+        password.onValue (value) =>
+            @toggleSubmitEnabling not not value
+
         # Same as above, this one is for the authentication code (OTP)
         auth = asEventStream.call @$el, 'focus keyup blur', @ui.authCode
             .map '.target.value'
@@ -102,6 +105,8 @@ module.exports = class AuthView extends LayoutView
     elements.
     ###
     onRender: ->
+        @toggleSubmitEnabling false
+
         # Render the feedback child view
         # @showChildView 'feedback', new FeedbackView
         #     forgot: @options.type is 'login'
@@ -155,6 +160,12 @@ module.exports = class AuthView extends LayoutView
         @ui.togglePasswordVisibility.on 'click', (event) =>
             event.preventDefault()
             @togglePasswordVisibility()
+
+
+    toggleSubmitEnabling: (force) ->
+        @$(@ui.submit)
+            .attr 'disabled', not force
+            .attr 'aria-disabled', not force
 
 
     togglePasswordVisibility: () ->

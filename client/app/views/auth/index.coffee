@@ -18,8 +18,6 @@ asEventStream = Bacon.$.asEventStream
 
 module.exports = class AuthView extends LayoutView
 
-    tagName: 'form'
-
     className: ->
         "#{@options.type} auth"
 
@@ -44,12 +42,11 @@ module.exports = class AuthView extends LayoutView
 
     - username: username to display, gets from global vars
                 (see server/views/index.jade#L14)
-    - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
         username: window.ENV.public_name
         otp:      window.ENV.otp
-        prefix:   @options.type
+        figureid: require '../../assets/sprites/icon-cozy.svg'
 
 
     ###

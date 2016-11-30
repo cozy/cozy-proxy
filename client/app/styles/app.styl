@@ -84,6 +84,9 @@ header
 
 
 // Icons
+.svg-wrapper
+    background-color #33a6ff // default color : Cozy blue
+
 #password-figure .svg-wrapper
         background-color  #4dcec5
 
@@ -177,7 +180,8 @@ form
             right       0
 
         button.icon
-            background   none
+            background-color   transparent
+            background-repeat no-repeat
             padding      0em
             padding-top  .7em
             width        1.3em
@@ -367,6 +371,17 @@ footer
     .next
       margin (4 / base-font-size)em (32 / base-font-size)em
 
+// LOGIN
 .feedback
     margin-top (16/16)em
 
+.password-visibility-icon
+    position absolute
+    top 0
+    right 0
+    min-height: (32/16)em
+    background-position center center
+    background-image    embedurl("../../assets/sprites/icon-eye-open.svg", "utf8");
+
+    &[aria-pressed]
+        background-image embedurl("../../assets/sprites/icon-eye-closed.svg", "utf8");

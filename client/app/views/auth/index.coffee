@@ -36,6 +36,7 @@ module.exports = class AuthView extends LayoutView
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
         togglePasswordVisibility: 'button[name=password-visibility]'
+        errorContainer: '.errors'
 
 
     ###
@@ -59,11 +60,15 @@ module.exports = class AuthView extends LayoutView
     initialize: ->
         # Create property for password input, delegated from the input element
         # events, mapped to its value
-        password = asEventStream.call @$el, 'focus keyup blur', @ui.passwd
+        password = asEventStream.call @$el, 'input', @ui.passwd
             .map '.target.value'
+            # skipDuplicates avoid multiple updates and
+            # errors message resetting
+            .skipDuplicates()
             .toProperty('')
 
         password.onValue (value) =>
+            @renderErrors ''
             @toggleSubmitEnabling not not value
 
         # Same as above, this one is for the authentication code (OTP)
@@ -96,6 +101,9 @@ module.exports = class AuthView extends LayoutView
         # state-machine.
         @model.isBusy.plug form.map true
         @model.signin.plug form
+
+        @model.get('alert').onValue (error) =>
+            @renderErrors error.message
 
 
     ###
@@ -160,6 +168,11 @@ module.exports = class AuthView extends LayoutView
         @ui.togglePasswordVisibility.on 'click', (event) =>
             event.preventDefault()
             @togglePasswordVisibility()
+
+
+    renderErrors: (message) ->
+        @$(@ui.errorContainer)
+            .text if !!message then t "login #{message}" else ''
 
 
     toggleSubmitEnabling: (force) ->

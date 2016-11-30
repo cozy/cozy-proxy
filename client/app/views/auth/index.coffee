@@ -32,7 +32,7 @@ module.exports = class AuthView extends LayoutView
     #     'feedback': '.feedback'
 
     ui:
-        passwd: 'input[type=password]'
+        passwd: 'input[name=password]'
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
         togglePasswordVisibility: 'button[name=password-visibility]'

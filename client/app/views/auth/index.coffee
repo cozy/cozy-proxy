@@ -172,7 +172,7 @@ module.exports = class AuthView extends LayoutView
 
     renderErrors: (message) ->
         @$(@ui.errorContainer)
-            .text if !!message then t "login #{message}" else ''
+            .text if !!message then t message else ''
 
 
     toggleSubmitEnabling: (force) ->

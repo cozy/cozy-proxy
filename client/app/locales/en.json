@@ -107,6 +107,7 @@
     "login recover error message": "Error sending password recovery message, please check your MTA is running or contact server admin",
     "login wrong password title": "Wrong credentials",
     "login wrong password message": "The credentials you entered are incorrect. Please try again.",
+    "login server error": "An error occured, please try again.",
     "reset welcome": "Reset password",
     "reset enter your password": "%{username}, please enter your new password to reset your access",
     "reset password": "password",

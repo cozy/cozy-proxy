@@ -100,7 +100,7 @@ class App extends Application
         @onboarding ?= @initializeOnboarding()
 
         # Load onboarding stylesheet
-        AppStyles = require './styles/onboarding.styl'
+        AppStyles = require './styles/app.styl'
 
         currentStep = @onboarding.getCurrentStep()
         @router.navigate currentStep.route

@@ -1,16 +1,387 @@
+/**
+ * OnBoarding Styles
+ */
+@import "./base/_colors.styl"
+@import "./cozy-ui/icons.styl"
 
-// base
-@import 'base/_boxes'
-@import 'base/_colors'
-@import 'base/_spacers'
-@import 'base/_fonts'
-@import 'base/_layouts'
-@import 'base/_backgrounds'
-@import 'base/_foregrounds'
+// Should be imported from another stylus in the future,
+// 'base/_fonts' for example
+// Variable used as divisor for px to em calculations.
+base-font-size = 16
 
-// components
-@import 'components/_buttons'
-@import 'components/_forms'
-@import 'components/_icons'
-@import 'components/_main'
-@import 'components/_popup'
+// LAYOUTS
+[role=application]
+    min-height   100vh
+    font-family  'Source Sans Pro', sans-serif
+
+// div inserted magically by Marionnette
+main
+    display        flex
+    flex-direction column
+
+main > div
+    display      flex
+    min-height   100vh
+
+
+.main-wrapper
+    flex       0 1 30em
+    margin     auto
+    padding    9em 1em
+
+
+header
+    figure
+        margin      0 auto 2em
+        text-align  center
+
+        a
+            display  block
+
+        svg
+            max-width       (72 / 16)em
+            height          (72 / 16)em
+
+
+        .svg-wrapper
+            margin          auto
+            max-width       (72 / 16)em
+            height          (72 / 16)em
+            border-radius   50%
+            padding         1em
+            box-shadow      0 1px 3px rgba(50,54,63,0.19), 0 4px 12px rgba(50,54,63,0.12)
+
+    h1
+        margin  0
+    p
+        color   #788195
+
+
+.agreements
+    figure
+        margin      0 auto 2em
+        text-align  center
+
+        svg
+            max-width       (50 / 16)em
+            height          (50 / 16)em
+
+        .svg-wrapper
+            margin          auto
+            max-width       (50 / 16)em
+            height          (50 / 16)em
+            border-radius   50%
+            padding         1.5em
+            box-shadow      0 1px 3px rgba(50,54,63,0.19), 0 4px 12px rgba(50,54,63,0.12)
+
+
+
+#welcome-figure
+    svg
+        max-width       100%
+        height          12.5em
+        box-shadow      none
+
+
+// Icons
+.svg-wrapper
+    background-color #33a6ff // default color : Cozy blue
+
+#password-figure .svg-wrapper
+        background-color  #4dcec5
+
+#infos-figure .svg-wrapper
+        background-color #fc4c83
+
+#accounts-figure .svg-wrapper
+        background-color  #ffae5f
+
+#confirmation-figure .svg-wrapper
+        background-color  #2ce096
+
+// agreeemnt step elements
+@media screen and (max-width: 700px)
+    .agreements
+        width           100%
+        margin          1.5em 0em 1.5em 0
+    .agreements-element
+        padding         0em 2.5%
+        flex-basis      45%
+@media screen and (min-width: 701px)
+    .agreements
+        width           150%
+        margin          1.5em 0em 1.5em -25%
+    .agreements-element
+        padding         0em 1.5%
+        flex-basis      30%
+
+.agreements
+    display         flex
+    flex-direction  row
+    flex-wrap       wrap
+
+    .agreements-element
+        flex-grow       1
+        margin          1.5em 0em
+
+        p
+            margin      auto
+            text-align  center
+            width       90%
+
+    #figure0 .svg-wrapper
+        background-color #40de8e
+    #figure1 .svg-wrapper
+        background-color #ffa044
+    #figure2 .svg-wrapper
+        background-color #ff5d47
+    #figure3 .svg-wrapper
+        background-color #a75bcb
+    #figure4 .svg-wrapper
+        background-color #4daef2
+    #figure5 .svg-wrapper
+        background-color #ffc644
+
+.stats-agreement .checkbox
+    float           left
+    margin-right    .5em
+    line-height     1
+
+footer
+    margin-top  2em
+
+    ol
+        margin   .3em 0 0
+        padding  0
+
+
+
+
+// FOREGROUNDS / FONTS
+
+a
+    color            $blue
+    text-decoration  none
+
+
+// FORMS
+
+form
+    .line
+        position  relative
+
+        // Managing input width with flex
+        display         flex
+        flex-direction  column
+
+        button[action="password-visibility"]
+            position    absolute
+            top         0
+            right       0
+
+        button.icon
+            background-color   transparent
+            background-repeat no-repeat
+            padding      0em
+            padding-top  .7em
+            width        1.3em
+            height       1.3em
+            display      block
+
+            svg
+                width   1.3em
+                height  1.3em
+
+label
+    display           block
+    text-transform    uppercase
+    color             $grey-05
+    font-size         .9em
+    padding           .55em 0
+
+.error-label
+    display none
+    color   $red
+
+input[type=text]
+input[type=password]
+select
+    display         inline-block
+    padding         0.75em 0.75em 0.9em
+    border-radius   4px
+    box-sizing      border-box
+    border          1px solid $grey-03
+    background      #f5f5f5
+    color           black
+    &::placeholder
+        color       $grey-07
+        font-size   1.05em
+    &:focus
+        border          1px solid $blue
+        background      none
+    &.error
+        border          1px solid $red
+        background      none
+
+select
+    -moz-appearance     none
+    -webkit-appearance  none
+    appearance          none
+    &::-ms-expand { display: none }
+    background-image    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16px' height='16px'><polyline points='14.764,4.966 8.053,11.677 1.342,4.966'/></svg>")
+    background-position right 8px center
+    background-repeat   no-repeat
+
+
+[role=button]
+button
+    // mutualize behavior between button and a
+    box-sizing        border-box
+    border            0
+    display           block
+    padding           .55em (32/base-font-size)em
+    min-height        (40/base-font-size)em
+    border-radius     4px
+    background-color  $blue
+    text-align        center
+    text-transform    uppercase
+    color             white
+
+    &[disabled]
+    &[aria-disabled=true]
+        opacity .5
+        cursor  default
+
+    &[aria-busy=true]
+        position relative
+
+        &::after
+            position static
+            width      (16/base-font-size)em
+            height     (16/base-font-size)em
+            margin-left (8/base-font-size)em
+            margin-right (-24/base-font-size)em
+            @extend    $icon-spinner-white
+
+
+.errors
+    color  $red
+
+// password strength bar
+progress
+    width         100%
+    margin        1em 0
+    color         $blue
+    font-size     .4em
+    line-height   1.5em
+    text-indent   .5em
+    height        1em
+    background    $grey-01
+    border        none
+    border-radius 20px
+
+    // chrome and safari
+    &::-webkit-progress-bar
+        background    $grey-01
+        border-radius 20px
+
+    &::-webkit-progress-value
+        background    $blue
+        border-radius 20px
+
+    // firefox
+    &::-moz-progress-bar
+        background    $blue
+        border-radius 20px
+
+    &.pw-weak
+        color   $pw-red
+        &::-webkit-progress-value
+            background    $pw-red
+        &::-moz-progress-bar
+            background    $pw-red
+    &.pw-moderate
+        color   $pw-orange
+        &::-webkit-progress-value
+            background    $pw-orange
+        &::-moz-progress-bar
+            background    $pw-orange
+    &.pw-strong
+        color   $pw-green
+        &::-webkit-progress-value
+            background    $pw-green
+        &::-moz-progress-bar
+            background    $pw-green
+
+
+// BREADCRUMB
+footer
+    button
+        width  100%
+
+    ol
+        display          flex
+        list-style-type  none
+
+    li
+        flex              1 1 1em
+        margin            3px
+        height            3px
+        border-radius     3px
+        background-color  $blue
+        text-indent       -9999em
+
+        &:first-child
+            margin-left  0
+
+        &:last-child
+            margin-right  0
+
+        // mark upcoming items in grey
+        &[aria-selected=true] ~ li
+            background-color  $grey-02
+
+
+// MY ACCOUNTS IFRAME
+.my-accounts-wrapper
+    flex           1 0 100%
+    display        flex
+    flex-direction column
+
+.my-accounts-container
+    flex-grow 1
+    border-width 0
+
+.my-accounts-footer
+    box-sizing border-box
+    font-size 16px
+    display flex
+    margin-top 0
+    box-shadow 0 (-8 / base-font-size)em (12 / base-font-size)em 0 rgba(0, 0, 0, 0.15);
+
+    p
+      flex-grow 1
+      margin (14 / base-font-size)em (32 / base-font-size)em
+      line-height (20 / base-font-size)em
+
+    .controls
+        display flex
+        align-items center
+
+    .next
+      margin (4 / base-font-size)em (32 / base-font-size)em
+
+// LOGIN
+.feedback
+    margin-top (16/16)em
+
+.password-visibility-icon
+    position absolute
+    top 0
+    right 0
+    min-height: (32/16)em
+    background-position center center
+    background-image    embedurl("../../assets/sprites/icon-eye-open.svg", "utf8");
+
+    &[aria-pressed=true]
+        background-image embedurl("../../assets/sprites/icon-eye-closed.svg", "utf8");

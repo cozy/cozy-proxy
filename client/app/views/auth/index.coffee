@@ -18,8 +18,6 @@ asEventStream = Bacon.$.asEventStream
 
 module.exports = class AuthView extends LayoutView
 
-    tagName: 'form'
-
     className: ->
         "#{@options.type} auth"
 
@@ -30,13 +28,15 @@ module.exports = class AuthView extends LayoutView
 
     template: require '../templates/view_auth'
 
-    regions:
-        'feedback': '.feedback'
+    # regions:
+    #     'feedback': '.feedback'
 
     ui:
-        passwd: 'input[type=password]'
+        passwd: 'input[name=password]'
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
+        togglePasswordVisibility: 'button[name=password-visibility]'
+        errorContainer: '.errors'
 
 
     ###
@@ -44,12 +44,11 @@ module.exports = class AuthView extends LayoutView
 
     - username: username to display, gets from global vars
                 (see server/views/index.jade#L14)
-    - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
         username: window.ENV.public_name
         otp:      window.ENV.otp
-        prefix:   @options.type
+        figureid: require '../../assets/sprites/icon-cozy.svg'
 
 
     ###
@@ -61,9 +60,16 @@ module.exports = class AuthView extends LayoutView
     initialize: ->
         # Create property for password input, delegated from the input element
         # events, mapped to its value
-        password = asEventStream.call @$el, 'focus keyup blur', @ui.passwd
+        password = asEventStream.call @$el, 'input', @ui.passwd
             .map '.target.value'
+            # skipDuplicates avoid multiple updates and
+            # errors message resetting
+            .skipDuplicates()
             .toProperty('')
+
+        password.onValue (value) =>
+            @renderErrors ''
+            @toggleSubmitEnabling not not value
 
         # Same as above, this one is for the authentication code (OTP)
         auth = asEventStream.call @$el, 'focus keyup blur', @ui.authCode
@@ -96,6 +102,9 @@ module.exports = class AuthView extends LayoutView
         @model.isBusy.plug form.map true
         @model.signin.plug form
 
+        @model.get('alert').onValue (error) =>
+            @renderErrors error.message
+
 
     ###
     After rendering
@@ -104,11 +113,12 @@ module.exports = class AuthView extends LayoutView
     elements.
     ###
     onRender: ->
+        @toggleSubmitEnabling false
+
         # Render the feedback child view
-        @showChildView 'feedback', new FeedbackView
-            forgot: @options.type is 'login'
-            prefix: @options.type
-            model:  @model
+        # @showChildView 'feedback', new FeedbackView
+        #     forgot: @options.type is 'login'
+        #     model:  @model
 
         # Select all password field content at focus
         asEventStream.call @ui.passwd, 'focus'
@@ -154,3 +164,35 @@ module.exports = class AuthView extends LayoutView
         # Re select all password field on failure.
         @model.alert
             .assign @ui.passwd[0], 'select'
+
+        @ui.togglePasswordVisibility.on 'click', (event) =>
+            event.preventDefault()
+            @togglePasswordVisibility()
+
+
+    renderErrors: (message) ->
+        @$(@ui.errorContainer)
+            .text if !!message then t message else ''
+
+
+    toggleSubmitEnabling: (force) ->
+        @$(@ui.submit)
+            .attr 'disabled', not force
+            .attr 'aria-disabled', not force
+
+
+    togglePasswordVisibility: () ->
+        @isPasswordMasked ?= \
+            @ui.passwd.attr('type') is 'password'
+
+        @isPasswordMasked = not @isPasswordMasked
+
+        @ui.passwd
+            .attr 'type', if @isPasswordMasked then 'password' else 'text'
+
+        @ui.togglePasswordVisibility
+            .attr 'aria-pressed', \
+                if @isPasswordMasked then false else true
+            .attr 'title', if @isPasswordMasked \
+                then t('step password show') \
+                else t('step password hide')

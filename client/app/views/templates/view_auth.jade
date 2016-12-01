@@ -1,16 +1,29 @@
-extends view_base
+extends _base
+
+block header
+    if username
+        h1= t('login welcome user', {username: username})
+    else
+        h1= t('login welcome anon')
 
 block region
-    h1= t(prefix + ' welcome', {username: username})
-    p.help#login-password-tip= t(prefix + ' enter your password')
-    label.with-input(for="#{prefix}-password", aria-describedby="#{prefix}-password-tip")
-        span= t(prefix + ' password')
-        input(id="#{prefix}-password" name="password" type="password" autofocus=true)
-    if otp
-        label.with-input(for="#{prefix}-otp")
-            span= t(prefix + ' otp')
-            input(id="#{prefix}-otp" name="otp" type="number" autofocus=true autocomplete="off")
+    form(id="auth-form")
+        p.help#login-password-tip= t('login enter your password')
 
+        p.line
+            label(
+                for="password",
+                aria-describedby="login-password-tip"
+                )= t('login password')
+            button.icon.password-visibility-icon.masked(
+                type="button",
+                title=t('step password show'),
+                name="password-visibility"
+                )
+            input(id="password" name="password" type="password" autofocus=true)
+
+        p.errors
 
 block controls
-    button.btn.btn-primary(type="submit")= t(prefix + ' submit')
+    button(form="auth-form", type="submit")= t('login submit')
+    // .feedback

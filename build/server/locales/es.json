@@ -22,7 +22,7 @@
     "error server": "Ha ocurrido un error interno.",
     "error bad credentials": "Contraseña incorrecta.",
     "error otp weak counter": "El código OTP ya no es utilizable.",
-    "error otp invalid code": "Código OTP no válido.",
+    "error otp invalid code": "El código OTP no es válido.",
     "error otp unknown": "No se puede autenticar por OTP",
     "error keys not initialized": "No se han inicializado las claves.",
     "error login failed": "Falla de la conexión.",
@@ -31,5 +31,9 @@
     "reset password email text": "Parece que a usted se le ha olvidado la contraseña de su Cozy.\nNo se preocupe, siga simplemente el enlace siguiente para definir una nueva :\n\nhttps://%{domain}/password/reset/%{key}\n\nDespués de eso, ¡no olvide actualizar sus datos cifrados!",
     "invalid email format": "Su dirección email no es válida.",
     "invalid timezone": "Este huso horario no es válido. Por favor use el formato <Continent>/<Country>, por  Etados_Unidos/New_York.",
-    "password too short": "Su contraseña es muy corta, debe tener al menos 8 caracteres."
+    "password missing": "El campo de la consigna está vacío, por favor entre una.",
+    "password too weak": "Su consigna es muy débil. Añada una mayúscula, un número, un carácter especial o una consigna más larga.",
+    "authenticated with recovery code": "Sólo tiene que conectarse con uno de sus códigos de recuperación. Usted tiene los",
+    "recovery codes left": "códigos de recuperación a la izquierda.",
+    "recovery codes warning": "Usted no dispone de tokens de recuperación válidos. Por favor, regenere algunos tokens en la página de Ajustes, de no hacerlo, será deconectado de su Cozy"
 }

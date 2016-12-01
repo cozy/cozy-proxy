@@ -31,5 +31,9 @@
     "reset password email text": "비밀번호 잊어 버린것 같습니다.\n걱정 마세요, 아래 링크로 이동 하여 간단히 새 사용자를 생성  할 수 있습니다:\nhttps://%{domain}/password/reset/%{key}\n생성후 모든 암호화된 데이터를 반드시 업데이트 하세요!",
     "invalid email format": "Your email address seems to be invalid.",
     "invalid timezone": "This timezone is invalid. Please use a <Continent>/<Country> format, e.g. America/New_York.",
-    "password too short": "Your password is too short, it should contain at least 8 characters."
+    "password missing": "The password is empty, please enter a password.",
+    "password too weak": "Your password is too weak. You should add an uppercase, a number, a special character or a longer password.",
+    "authenticated with recovery code": "You just logged in with one of your recovery codes. You have",
+    "recovery codes left": "recovery codes left.",
+    "recovery codes warning": "You have no recovery tokens available. Please regenerate some tokens in the Settings page or you could get locked outside of your Cozy."
 }

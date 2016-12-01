@@ -26,9 +26,16 @@ module.exports = {
   'routes/reset*': {
     get: index.resetRoutes
   },
+  'register/password': {
+    post: [auth.disallowAuthenticatedUser, auth.saveUnauthenticatedUser, utils.authenticate]
+  },
+  'register/:step': {
+    get: [utils.isNotAuthenticated, auth.onboarding]
+  },
   'register': {
-    get: [utils.isNotAuthenticated, auth.registerIndex],
-    post: [auth.register, utils.authenticate]
+    get: [utils.isNotRegistered, auth.onboarding],
+    post: [auth.disallowAuthenticatedUser, auth.saveUnauthenticatedUser],
+    put: [utils.isAuthenticated, utils.isNotRegistered, auth.saveAuthenticatedUser]
   },
   'login': {
     get: [utils.isNotAuthenticated, auth.loginIndex],
@@ -46,6 +53,9 @@ module.exports = {
   },
   'authenticated': {
     get: auth.authenticated
+  },
+  'user': {
+    get: auth.user
   },
   'status': {
     get: index.status
@@ -106,6 +116,6 @@ module.exports = {
     all: experiment.webfingerAccount
   },
   '*': {
-    all: [utils.isAuthenticated, index.defaultRedirect]
+    all: [utils.isRegistered, utils.isAuthenticated, index.defaultRedirect]
   }
 };

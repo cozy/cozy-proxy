@@ -16,7 +16,7 @@ remoteAccess = require('./lib/remote_access');
 axon = require('axon');
 
 module.exports = function(app, server, callback) {
-  var assets, error, socket;
+  var error, hash, socket;
   if (callback == null) {
     callback = function() {};
   }
@@ -24,14 +24,11 @@ module.exports = function(app, server, callback) {
   app.locals.t = localization.t;
   app.locals.getLocale = localization.getLocale;
   try {
-    assets = require(path.join(__dirname, '../webpack-assets')).main;
+    hash = "." + (require('../assets').hash);
   } catch (error) {
-    assets = {
-      js: 'app.js',
-      css: 'app.css'
-    };
+    hash = '';
   }
-  app.locals.assets = assets;
+  app.locals.hash = hash;
   initializeProxy(app, server);
   socket = axon.socket('sub-emitter');
   socket.connect(9105);

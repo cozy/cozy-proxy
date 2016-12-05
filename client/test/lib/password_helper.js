@@ -20,9 +20,9 @@ describe('PasswordHelper', () => {
     });
 
 
-    it('should be under 33% and "weak" label for "azerty"', () => {
+    it('should be under 33% and "weak" label for "Azerty"', () => {
       // arrange
-      let password = 'azerty';
+      let password = 'Azerty';
 
       // act
       let strength = passwordHelper.getStrength(password);
@@ -33,9 +33,9 @@ describe('PasswordHelper', () => {
     });
 
 
-    it('should be between 33% and 66% "moderate" label for "aZerrt1"', () => {
+    it('should be between 33% and 66% "moderate" label for "Azerty1aze$"', () => {
       // arrange
-      let password = 'aZerrt1';
+      let password = 'Azerty1aze$';
 
       // act
       let strength = passwordHelper.getStrength(password);
@@ -47,9 +47,9 @@ describe('PasswordHelper', () => {
     });
 
 
-    it('should be above 66% and "strong" label for "@Zeerrt1"', () => {
+    it('should be above 66% and "strong" label for "Azerty1aze$uiopqs9LT"', () => {
       // arrange
-      let password = '@Zeerrt1';
+      let password = 'Azerty1aze$uiopqs9LT';
 
       // act
       let strength = passwordHelper.getStrength(password);

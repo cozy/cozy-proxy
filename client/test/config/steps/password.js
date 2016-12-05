@@ -21,7 +21,7 @@ describe('Step: password', () => {
 
         it('should return successful validation', () => {
             const data = {
-                password: 'PassworD',
+                password: 'PassworD!2',
                 passwordStrength: {percentage: 53.62500000000001,
                   label: 'moderate'}
             }

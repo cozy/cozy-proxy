@@ -6,7 +6,7 @@ for users and devices.
 
 ## Install
 
-We assume here that the Cozy platform is correctly [installed](https://raw.github.com/cozy/cozy-setup/gh-pages/assets/images/happycloud.png)
+We assume here that the Cozy platform is correctly [installed](https://dev.cozy.io/#getting-started)
  on your server.
 
 Type this command to install the proxy module:

@@ -68,34 +68,3 @@ module.exports = class Router extends Backbone.Router
         @auth '/login',
             backend: window.location.pathname
             type:    'reset'
-
-
-    ###
-    Register route
-
-    Register views uses the same layout view and the step content is a subview
-    component determined by the step param.
-    ###
-    register: (step = 'preset') -> require.ensure [], =>
-        RegisterView      = require '../views/register'
-        RegistrationModel = require '../states/registration'
-
-        currentView = @app.layout.getChildView 'content'
-
-        # Ensure the current view in the app layout is a RegisterView. If not,
-        # then creates a new RegistrationModel state-machine and a RegisterView
-        # and show it in the main AppLayout Region
-        unless currentView? and currentView instanceof RegisterView
-            registration = new RegistrationModel()
-            # We assign the step property to the router's navigate method to
-            # update the URL each time the step changes.
-            registration.get('step')
-                        .map (step) -> "register?step=#{step}" if step
-                        .assign @, 'navigate'
-
-            currentView  = new RegisterView model: registration
-            @app.layout.showChildView 'content', currentView
-
-        # When the RegisterView is render in the AppLayout, set its current
-        # step (default to `preset`).
-        currentView.model.setStep step

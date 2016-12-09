@@ -114,7 +114,7 @@
     "reset welcome user": "Change your password",
     "reset enter your password": "%{username}, set a new password to recover access to your Cozy.",
     "reset password": "password",
-    "reset submit": "reset your password",
+    "reset submit": "Change your password",
     "reset auth success": "password successfully resetted",
     "reset wrong password title": "Your password can't be resetted",
     "reset wrong password message": "The pasword you entered is incorrect, or your reset token is expired",

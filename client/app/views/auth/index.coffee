@@ -11,10 +11,8 @@ $     = require 'jquery'
 
 {LayoutView} = require 'backbone.marionette'
 
-FeedbackView = require './feedback'
-
 asEventStream = Bacon.$.asEventStream
-
+passwordHelper = require '../../lib/password_helper'
 
 module.exports = class AuthView extends LayoutView
 
@@ -28,15 +26,16 @@ module.exports = class AuthView extends LayoutView
 
     template: require '../templates/view_auth'
 
-    # regions:
-    #     'feedback': '.feedback'
-
     ui:
         passwd: 'input[name=password]'
+        strengthBar: 'progress'
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
         togglePasswordVisibility: 'button[name=password-visibility]'
         errorContainer: '.errors'
+        forgot: 'a.forgot'
+        recover: '.recover'
+        recoverLabel: '.recover .coz-busy-label'
 
 
     ###
@@ -48,6 +47,7 @@ module.exports = class AuthView extends LayoutView
     serializeData: ->
         username: window.ENV.public_name
         otp:      window.ENV.otp
+        type:     @options.type # login or reset
         figureid: require '../../assets/sprites/icon-cozy.svg'
 
 
@@ -69,6 +69,7 @@ module.exports = class AuthView extends LayoutView
 
         password.onValue (value) =>
             @renderErrors ''
+            @updatePasswordStrength value
             @toggleSubmitEnabling not not value
 
         # Same as above, this one is for the authentication code (OTP)
@@ -106,6 +107,16 @@ module.exports = class AuthView extends LayoutView
             @renderErrors error.message
 
 
+    updatePasswordStrength: (password) ->
+        return unless password
+        strength = passwordHelper.getStrength password
+
+        if strength.percentage is 0
+            strength.percentage = 1
+
+        @ui.strengthBar.attr 'value', strength.percentage
+        @ui.strengthBar.attr 'class', 'pw-' + strength.label
+
     ###
     After rendering
 
@@ -114,11 +125,6 @@ module.exports = class AuthView extends LayoutView
     ###
     onRender: ->
         @toggleSubmitEnabling false
-
-        # Render the feedback child view
-        # @showChildView 'feedback', new FeedbackView
-        #     forgot: @options.type is 'login'
-        #     model:  @model
 
         # Select all password field content at focus
         asEventStream.call @ui.passwd, 'focus'
@@ -169,10 +175,19 @@ module.exports = class AuthView extends LayoutView
             event.preventDefault()
             @togglePasswordVisibility()
 
+        @ui.forgot.on 'click', (event) =>
+            event.preventDefault()
+            if not @forgotDisabled
+                @triggerMethod 'password:request'
+
 
     renderErrors: (message) ->
         @$(@ui.errorContainer)
             .text if !!message then t message else ''
+
+
+    emptyErrors: () ->
+        @renderErrors ''
 
 
     toggleSubmitEnabling: (force) ->
@@ -196,3 +211,25 @@ module.exports = class AuthView extends LayoutView
             .attr 'title', if @isPasswordMasked \
                 then t('step password show') \
                 else t('step password hide')
+
+
+    disableForgot: () ->
+        @toggleForgot false
+
+
+    enableForgot: () ->
+        @toggleForgot true
+
+
+    toggleForgot: (force) ->
+        @forgotDisabled = \
+            if force is undefined \
+                then not @forgotDisabled \
+                else not force
+
+        @ui.forgot.attr 'aria-disabled': @forgotDisabled,
+        @ui.recover.attr 'aria-busy': @forgotDisabled
+
+        if @forgotDisabled
+            @ui.recoverLabel
+                .text t 'login recover busy'

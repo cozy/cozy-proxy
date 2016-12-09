@@ -2,28 +2,35 @@ extends _base
 
 block header
     if username
-        h1= t('login welcome user', {username: username})
+        h1= t(type + " welcome user", {username: username})
     else
-        h1= t('login welcome anon')
+        h1= t(type + " welcome anon")
 
 block region
-    form(id="auth-form")
-        p.help#login-password-tip= t('login enter your password')
+    form(id=type+"-form")
+        p.help#login-password-tip=t(type+" enter your password", {username: username})
 
         p.line
             label(
                 for="password",
                 aria-describedby="login-password-tip"
-                )= t('login password')
+                )= t(type + " password")
             button.icon.password-visibility-icon.masked(
                 type="button",
-                title=t('step password show'),
+                title=t("step password show"),
                 name="password-visibility"
                 )
             input(id="password" name="password" type="password" autofocus=true)
 
+        if(type=='reset')
+            progress.pw-weak(value=1, max=100)
+
         p.errors
 
 block controls
-    button(form="auth-form", type="submit")= t('login submit')
-    // .feedback
+    button(form=type+"-form", type="submit")= t(type + " submit")
+
+    if(type=='login')
+        .recover
+            span.coz-busy-label
+            a.forgot(href="/login/forgot")=t('login recover')

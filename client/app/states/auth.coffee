@@ -61,10 +61,13 @@ module.exports = class Auth extends StateModel
 
         # Plug error response to `@alert` stream.
         # We assume it's always a server error except for a 401 status.
-        @alert.plug req.errors().mapError (error) ->
-            message = if error.status is 401 \
+        @alert.plug req.errors().mapError (response) ->
+            body = if response?.responseText \
+                then JSON.parse response.responseText
+
+            message = if response.status is 401 \
                 then 'login wrong password message' \
-                else 'login server error'
+                else body?.error or 'login server error'
             return \
                 status: 'error',
                 message: message

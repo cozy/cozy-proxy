@@ -59,12 +59,18 @@ module.exports = class Auth extends StateModel
         @success.plug req.map '.success'
         @alert.plug req.map false
 
-        # Plug error response to `@alert` stream. We assume it's always because
-        # password isn't correct.
-        @alert.plug req.errors().mapError
-            status:  'error'
-            title:   'wrong password title'
-            message: 'wrong password message'
+        # Plug error response to `@alert` stream.
+        # We assume it's always a server error except for a 401 status.
+        @alert.plug req.errors().mapError (response) ->
+            body = if response?.responseText \
+                then JSON.parse response.responseText
+
+            message = if response.status is 401 \
+                then 'login wrong password message' \
+                else body?.error or 'login server error'
+            return \
+                status: 'error',
+                message: message
 
         # Plug ajax request end to reset the button `busy` state
         @isBusy.plug req.mapEnd false

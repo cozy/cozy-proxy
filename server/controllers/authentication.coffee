@@ -68,7 +68,7 @@ module.exports.onboarding = (req, res, next) ->
                     # TODO: this one is temporary, and need to be removed
                     # when we merge CSS again.
                     env.onboardedSteps = userData?.onboardedSteps
-                    res.render 'index', {env: env, onboarding: true}
+                    res.render 'index', {env: env}
 
 
 # Disallow authenticated user
@@ -313,13 +313,13 @@ module.exports.resetPassword = (req, res, next) ->
                                     res.sendStatus 204
 
                 else
-                    error = new Error 'Errors in validation'
+                    error = new Error 'reset password error password too weak'
                     error.errors = validationErrors
                     error.status = 400
                     next error
 
             else
-                error = new Error 'reset error invalid key'
+                error = new Error 'reset password error invalid key'
                 error.status = 400
                 next error
 

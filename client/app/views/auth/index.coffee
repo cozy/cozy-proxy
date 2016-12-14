@@ -11,14 +11,10 @@ $     = require 'jquery'
 
 {LayoutView} = require 'backbone.marionette'
 
-FeedbackView = require './feedback'
-
 asEventStream = Bacon.$.asEventStream
-
+passwordHelper = require '../../lib/password_helper'
 
 module.exports = class AuthView extends LayoutView
-
-    tagName: 'form'
 
     className: ->
         "#{@options.type} auth"
@@ -30,13 +26,16 @@ module.exports = class AuthView extends LayoutView
 
     template: require '../templates/view_auth'
 
-    regions:
-        'feedback': '.feedback'
-
     ui:
-        passwd: 'input[type=password]'
+        passwd: 'input[name=password]'
+        strengthBar: 'progress'
         authCode: 'input[name=otp]'
         submit: '.controls button[type=submit]'
+        togglePasswordVisibility: 'button[name=password-visibility]'
+        errorContainer: '.errors'
+        forgot: 'a.forgot'
+        recover: '.recover'
+        recoverLabel: '.recover .coz-busy-label'
 
 
     ###
@@ -44,12 +43,12 @@ module.exports = class AuthView extends LayoutView
 
     - username: username to display, gets from global vars
                 (see server/views/index.jade#L14)
-    - prefix: type is passed as prefix for locales translations
     ###
     serializeData: ->
         username: window.ENV.public_name
         otp:      window.ENV.otp
-        prefix:   @options.type
+        type:     @options.type # login or reset
+        figureid: require '../../assets/sprites/icon-cozy.svg'
 
 
     ###
@@ -61,9 +60,17 @@ module.exports = class AuthView extends LayoutView
     initialize: ->
         # Create property for password input, delegated from the input element
         # events, mapped to its value
-        password = asEventStream.call @$el, 'focus keyup blur', @ui.passwd
+        password = asEventStream.call @$el, 'input', @ui.passwd
             .map '.target.value'
+            # skipDuplicates avoid multiple updates and
+            # errors message resetting
+            .skipDuplicates()
             .toProperty('')
+
+        password.onValue (value) =>
+            @renderErrors ''
+            @updatePasswordStrength value
+            @toggleSubmitEnabling not not value
 
         # Same as above, this one is for the authentication code (OTP)
         auth = asEventStream.call @$el, 'focus keyup blur', @ui.authCode
@@ -96,6 +103,19 @@ module.exports = class AuthView extends LayoutView
         @model.isBusy.plug form.map true
         @model.signin.plug form
 
+        @model.get('alert').onValue (error) =>
+            @renderErrors error.message
+
+
+    updatePasswordStrength: (password) ->
+        return unless password
+        strength = passwordHelper.getStrength password
+
+        if strength.percentage is 0
+            strength.percentage = 1
+
+        @ui.strengthBar.attr 'value', strength.percentage
+        @ui.strengthBar.attr 'class', 'pw-' + strength.label
 
     ###
     After rendering
@@ -104,11 +124,7 @@ module.exports = class AuthView extends LayoutView
     elements.
     ###
     onRender: ->
-        # Render the feedback child view
-        @showChildView 'feedback', new FeedbackView
-            forgot: @options.type is 'login'
-            prefix: @options.type
-            model:  @model
+        @toggleSubmitEnabling false
 
         # Select all password field content at focus
         asEventStream.call @ui.passwd, 'focus'
@@ -154,3 +170,66 @@ module.exports = class AuthView extends LayoutView
         # Re select all password field on failure.
         @model.alert
             .assign @ui.passwd[0], 'select'
+
+        @ui.togglePasswordVisibility.on 'click', (event) =>
+            event.preventDefault()
+            @togglePasswordVisibility()
+
+        @ui.forgot.on 'click', (event) =>
+            event.preventDefault()
+            if not @forgotDisabled
+                @triggerMethod 'password:request'
+
+
+    renderErrors: (message) ->
+        @$(@ui.errorContainer)
+            .text if !!message then t message else ''
+
+
+    emptyErrors: () ->
+        @renderErrors ''
+
+
+    toggleSubmitEnabling: (force) ->
+        @$(@ui.submit)
+            .attr 'disabled', not force
+            .attr 'aria-disabled', not force
+
+
+    togglePasswordVisibility: () ->
+        @isPasswordMasked ?= \
+            @ui.passwd.attr('type') is 'password'
+
+        @isPasswordMasked = not @isPasswordMasked
+
+        @ui.passwd
+            .attr 'type', if @isPasswordMasked then 'password' else 'text'
+
+        @ui.togglePasswordVisibility
+            .attr 'aria-pressed', \
+                if @isPasswordMasked then false else true
+            .attr 'title', if @isPasswordMasked \
+                then t('step password show') \
+                else t('step password hide')
+
+
+    disableForgot: () ->
+        @toggleForgot false
+
+
+    enableForgot: () ->
+        @toggleForgot true
+
+
+    toggleForgot: (force) ->
+        @forgotDisabled = \
+            if force is undefined \
+                then not @forgotDisabled \
+                else not force
+
+        @ui.forgot.attr 'aria-disabled': @forgotDisabled,
+        @ui.recover.attr 'aria-busy': @forgotDisabled
+
+        if @forgotDisabled
+            @ui.recoverLabel
+                .text t 'login recover busy'

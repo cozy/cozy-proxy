@@ -81,8 +81,7 @@ module.exports.onboarding = function(req, res, next) {
           localization.setLocale(req.headers['accept-language']);
           env.onboardedSteps = userData != null ? userData.onboardedSteps : void 0;
           return res.render('index', {
-            env: env,
-            onboarding: true
+            env: env
           });
         }
       });
@@ -368,13 +367,13 @@ module.exports.resetPassword = function(req, res, next) {
             }
           });
         } else {
-          error = new Error('Errors in validation');
+          error = new Error('reset password error password too weak');
           error.errors = validationErrors;
           error.status = 400;
           return next(error);
         }
       } else {
-        error = new Error('reset error invalid key');
+        error = new Error('reset password error invalid key');
         error.status = 400;
         return next(error);
       }

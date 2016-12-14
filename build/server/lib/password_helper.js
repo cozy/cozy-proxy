@@ -31,10 +31,10 @@ module.exports.getStrength = function(password) {
     }
     return possibleChars;
   }, 0);
-  passwordStrength = (Math.log(Math.pow(password.length, possibleChars))) / (Math.log(2));
-  _at33percent = 128;
-  _at66percent = 192;
-  _at100percent = 256;
+  passwordStrength = (Math.log(Math.pow(possibleChars, password.length))) / (Math.log(2));
+  _at33percent = 64;
+  _at66percent = 128;
+  _at100percent = 192;
   if (passwordStrength <= _at33percent) {
     strengthPercentage = passwordStrength * 33 / _at33percent;
     strengthLabel = 'weak';

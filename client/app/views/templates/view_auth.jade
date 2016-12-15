@@ -22,6 +22,17 @@ block region
                 )
             input(id="password" name="password" type="password" autofocus=true)
 
+        p.line
+            if otp
+                label(for="otp")= t(type + ' otp')
+                input(
+                    id="otp"
+                    name="otp"
+                    type="number"
+                    autofocus="true"
+                    autocomplete="off"
+                )
+
         if(type=='reset')
             progress.pw-weak(value=1, max=100)
 

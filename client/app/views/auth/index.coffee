@@ -30,6 +30,7 @@ module.exports = class AuthView extends LayoutView
         passwd: 'input[name=password]'
         strengthBar: 'progress'
         authCode: 'input[name=otp]'
+        form: 'form'
         submit: '.controls button[type=submit]'
         togglePasswordVisibility: 'button[name=password-visibility]'
         errorContainer: '.errors'
@@ -83,7 +84,12 @@ module.exports = class AuthView extends LayoutView
         # Submit stream, delegated from the submission event, and filtered by
         # the password input (submit can only be triggered if the password field
         # is not empty)
+        # To work on IE, we need to bind both button click and form submit
         submit = asEventStream.call @$el, 'click', @ui.submit
+            .doAction '.preventDefault'
+            .filter @passwordEntered
+
+        submit = asEventStream.call @$el, 'submit', @ui.form
             .doAction '.preventDefault'
             .filter @passwordEntered
 

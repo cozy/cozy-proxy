@@ -40,7 +40,7 @@ class StatusChecker
             @getChecker "proxy", proxyUrl, "routes"
         ], =>
             User.first (err, user) =>
-                if not user? or err
+                if not user?.activated? or err
                     callback null, @status
                 else
                     @status.registered = true

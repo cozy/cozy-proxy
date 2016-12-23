@@ -27,7 +27,7 @@ addons:
         packages:
             - gcc-4.8
             - g++-4.8
-            - netstat
+            - net-tools
 
 before_install:
     - travis_retry pip install --user transifex-client

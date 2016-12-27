@@ -53,6 +53,10 @@ Just add the following lines into this file:
 }
 ```
 
+## Troubleshooting
+
+The Cozy proxy has a default timeout of 120 seconds. If an application doesn't anwser in 120 seconds, the Proxy will close the connection. If your server is slow, you may want to increase this timeout. Just edit `server.js` inside the build directory of your proxy (usually `/usr/local/cozy/apps/proxy/node_modules/cozy-proxy/build/server`) and add `server.timeout = 0` juste after `return americano.start(options, function(err, app, server) {`.
+
 ## Hack
 
 To be hacked, the Cozy Proxy dev environment requires that a CouchDB instance

@@ -150,7 +150,7 @@ var postcss = [
  */
 
 module.exports = {
-    entry: './app/initialize',
+    entry: ['whatwg-fetch', './app/initialize'],
     output: {
         path: path.join(optimize? '../build/client' : '', 'public'),
         filename: optimize? 'app.[hash].js' : 'app.js',

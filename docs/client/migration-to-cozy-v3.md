@@ -22,7 +22,7 @@ instance = {
 > See [here](https://github.com/cozy/cozy-proxy/blob/master/client/app/config/steps/infos.coffee#L25) and [here](https://github.com/cozy/cozy-proxy/blob/master/client/app/config/steps/infos.coffee#L37) for example.
 
 ## Handle registerToken
-Presence of a `registerToken` means that the user access to her Cozy for the first time.
+Presence of a `registerToken` means that the user access to his Cozy for the first time.
 
 If started with a `registerToken`, the onboarding allows the user to create a passPhrase.
 
@@ -53,7 +53,7 @@ onboarding = new Onboarding
 The initial onboardedSteps are disappearing to be fetched later in the process.
 
 ## Dealing without saving first steps
-With Cozy v3, we cannot save the step progression anymore, at least for the steps before the passphrase step. So both `welcome` and `agreement` steps should not have a `save` method anymore (So if the user leaves the onboarding before completing the `password` step, she will have to start from `welcome` step the next time she will access her Cozy).
+With Cozy v3, we cannot save the step progression anymore, at least for the steps before the passphrase step. So both `welcome` and `agreement` steps should not have a `save` method anymore (So if the user leaves the onboarding before completing the `password` step, he will have to start from `welcome` step the next time he will access his Cozy).
 
 The first three steps will be saved with the passphrase, in the current `password` step. We have to ensure that Cozy v3 is ready to handle an `onboardedSteps` property. We may also now ignore saving the first two steps in the `onboardedSteps` property.
 
@@ -74,8 +74,8 @@ Not having this property transmitted by the server will force us to display an e
 Maybe be the `hasValidInfos` property could be encrypted in the `registerToken` ?
 
 ## Handle contextToken
-Presence of `contextToken` means that the user is already authentified. In this case, the onboarding should fetch instance data by performing a `GET` on the endpoint `/instance`. Once data is fetched, especially the `onboardedSteps` property, the onboarding determines the uncompleted steps or redirect the user to her home, as it currently does.
+Presence of `contextToken` means that the user is already authentified. In this case, the onboarding should fetch instance data by performing a `GET` on the endpoint `/instance`. Once data is fetched, especially the `onboardedSteps` property, the onboarding determines the uncompleted steps or redirect the user to his home, as it currently does.
 
 ## Handle missing tokens
 If none of `registerToken` or `contextToken` are passed to the onboarding, we have to throw an error and display a dedicated error page. This is some new stuff which has to be designed.
-This behavior allows us to ignore the case when the user access her Cozy without `registerToken`, as we are not able to detect if a passphrase exists on the Cozy instance.
+This behavior allows us to ignore the case when the user access his Cozy without `registerToken`, as we are not able to detect if a passphrase exists on the Cozy instance.

@@ -11,6 +11,16 @@ Document based on https://github.com/cozy/cozy-stack/blob/master/docs/onboarding
     * `timezone` becomes `tz`
     * `email` becomes `owner-email`
 
+> Remark: when mapped to JavaScript object, properties should be in CamelCase :
+> ```JavaScript
+instance = {
+  publicName: 'Alice Martin',
+  ownerEmail: 'alice@example.com',
+  tz: 'Europe/Paris'
+}
+```
+> See [here](https://github.com/cozy/cozy-proxy/blob/master/client/app/config/steps/infos.coffee#L25) and [here](https://github.com/cozy/cozy-proxy/blob/master/client/app/config/steps/infos.coffee#L37) for example.
+
 ## Handle registerToken
 Presence of a `registerToken` means that the user access to her Cozy for the first time.
 

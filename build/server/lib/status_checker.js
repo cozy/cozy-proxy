@@ -42,7 +42,7 @@ StatusChecker = (function() {
     return async.series([this.getChecker("couchdb", couchUrl), this.getChecker("controller", controllerUrl), this.getChecker("datasystem", dataSystemUrl), this.getChecker("home", homeUrl), this.getChecker("proxy", proxyUrl, "routes")], (function(_this) {
       return function() {
         return User.first(function(err, user) {
-          if ((user == null) || err) {
+          if (((user != null ? user.activated : void 0) == null) || err) {
             return callback(null, _this.status);
           } else {
             _this.status.registered = true;

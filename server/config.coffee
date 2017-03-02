@@ -5,7 +5,6 @@ cookieParser = require 'cookie-parser'
 cookieSession = require 'cookie-session'
 passport = require 'passport'
 randomstring = require 'randomstring'
-usetracker = require './middlewares/usetracker'
 selectiveBodyParser = require './middlewares/selective_body_parser'
 
 # /!\ CAREFUL /!\
@@ -38,7 +37,6 @@ config =
                 showStack: true
             americano.static path.join __dirname, '../client/public'
             selectiveBodyParser
-            usetracker
             authSteps[0]
             authSteps[1]
             authSteps[2]

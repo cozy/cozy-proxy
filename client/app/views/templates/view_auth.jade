@@ -20,7 +20,13 @@ block region
                 title=t("step password show"),
                 name="password-visibility"
                 )
-            input(id="password" name="password" type="password" autofocus=true)
+            input(
+                id="password"
+                name="password"
+                type="password"
+                autofocus=true
+                autocomplete=(type=='reset')?'new-password':'current-password'
+            )
 
         p.line
             if otp
